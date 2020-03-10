@@ -1,0 +1,69 @@
+version: '3.3'
+services:
+  backend:
+    build:
+      context: ../backend
+    command: /start-reload.sh
+    ports:
+      - "8081:80"
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ../backend/app:/app
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+#  graphql-engine:
+#    image: hasura/graphql-engine:v1.0.0-beta.6
+#    expose:
+#      - "8080"
+#    ports:
+#      - "8081:8080"
+#    depends_on:
+#      - db
+#    restart: always
+#    environment:
+#      HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
+#      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+#      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+#      ## uncomment next line to set an admin secret
+#      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+
+#  httpsproxy:
+#    depends_on:
+#      - backend
+#    image: nginx:alpine
+#    container_name: httpsproxy
+#    restart: "no"
+#    networks:
+#      - default
+#    expose:
+#      - "$PROXY_PORT"
+#    ports:
+#      - "443:$PROXY_PORT"
+#    volumes:
+#      - ../nginx/config:/etc/nginx
+#      - ${SSL_FILES_PATH}:/ssl
+
+volumes:
+  db-data:
