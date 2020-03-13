@@ -19,7 +19,7 @@ router = APIRouter()
 
 @router.post("/login/access-token", response_model=Token, tags=["login"])
 def login_access_token(
-    db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
+        db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
     """
     OAuth2 compatible token login, get an access token for future requests
@@ -46,3 +46,8 @@ def test_token(current_user: DBUser = Depends(get_current_user)):
     Test access token
     """
     return current_user
+
+
+@router.get("/login/get_auth_url", tags=["login"])
+def get_auth_url():
+    pass
