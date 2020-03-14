@@ -16,7 +16,7 @@ def get_code_retrieve_params(state: Optional[dict]) -> dict:
         "response_type": "code",
         "client_id": OAUTH_APP_ID,
         "redirect_uri": f"{BASE_URL}/get_code/get_code",
-        "scope": "user_impersonation openid profile email allatclaims",
+        "scope": "user_impersonation openid profile email allatclaims user.read",
         "state": urlsafe_b64encode(str(state).encode())
     }
 
