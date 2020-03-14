@@ -1,7 +1,8 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException, responses
 from fastapi.security import OAuth2PasswordRequestForm
+from urllib.parse import urlencode
 from sqlalchemy.orm import Session
 
 from app import crud
@@ -9,7 +10,7 @@ from app.api.utils.db import get_db
 from app.api.utils.security import get_current_user
 from app.core import config
 from app.core.jwt import create_access_token
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, get_auth_params
 from app.db_models.user import User as DBUser
 from app.models.token import Token
 from app.models.user import User
@@ -48,6 +49,10 @@ def test_token(current_user: DBUser = Depends(get_current_user)):
     return current_user
 
 
-@router.get("/login/get_auth_url", tags=["login"])
-def get_auth_url():
-    pass
+@router.get("/login/test", tags=["login"], response_class=responses.HTMLResponse)
+def loginSSO():
+    params = get_auth_params(None)
+    auth_url = f"{config.OAUTH_AUTHORIZATION_BASE_URL}?{urlencode(params)}"
+    return f"<a href={auth_url}>Залогиниться</a>\n" \
+           f"<br>\n" \
+           f"<a href={config.OAUTH_END_SESSION_ENDPOINT}>Выйти из системы</a>"
