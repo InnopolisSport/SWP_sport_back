@@ -15,7 +15,10 @@ services:
       - ../backend/app:/app
 
   db:
-    image: postgres
+    image: db
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.db
     restart: always
     ports:
       - "5432:5432"
