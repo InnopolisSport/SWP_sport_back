@@ -3,6 +3,8 @@ from urllib.parse import urlencode
 from ast import literal_eval
 from base64 import urlsafe_b64decode
 import requests
+import logging
+
 
 from fastapi import APIRouter, Depends, HTTPException, responses, Query, Response
 from fastapi.security import OAuth2PasswordRequestForm
@@ -20,8 +22,6 @@ from app.models.user import User
 from app.api.utils.link import form_link
 
 router = APIRouter()
-
-import logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -90,6 +90,8 @@ def process_code(code: str, state: str, client_request_id: str = Query(..., alia
         tokens = TokenRetrieval(**data)
         state = literal_eval(urlsafe_b64decode(state.encode()).decode())
         response.set_cookie("access_token", f"Bearer {tokens.access_token}", expires=tokens.expires_in)
+        response.set_cookie("id_token", f"{tokens.id_token}", expires=tokens.expires_in)
+        response.set_cookie("refresh_token", f"{tokens.refresh_token}", expires=tokens.refresh_token_expires_in)
         return responses.RedirectResponse(
             url=form_link(state["redirect_uri"],
                           {
