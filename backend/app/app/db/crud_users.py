@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from app.db.connection import conn
 
 
@@ -20,7 +22,7 @@ def create_user(first_name: str, last_name: str, email: str, user_type: int, cou
     conn.commit()
 
 
-def get_students(course_id=None):
+def get_students(course_id: str = None) -> List[Tuple[int, str, str, str, str]]:
     """
     Retrieves registered students
     @param course_id: str - particular course identifier, leave empty for choosing all courses
@@ -32,11 +34,11 @@ def get_students(course_id=None):
     else:
         cursor.execute(
             'SELECT id, first_name, last_name, email, course_id FROM "user" WHERE (type=0 OR type=2) AND course_id=%s',
-            (course_id, ))
+            (course_id,))
     return cursor.fetchall()
 
 
-def get_trainers():
+def get_trainers() -> List[Tuple[int, str, str, str]]:
     """
     Retrieves registered trainers / club-leaders
     @return list of tuples (user_id, first_name, last_name, email)
@@ -46,7 +48,7 @@ def get_trainers():
     return cursor.fetchall()
 
 
-def get_user(user_id):
+def get_user(user_id: int) -> Tuple[int, str, str, str, str]:
     """
     Retrieves registered user by its id
     @param user_id: int - searched user id
@@ -57,7 +59,7 @@ def get_user(user_id):
     return cursor.fetchone()
 
 
-def find_user_by_email(email):
+def find_user_by_email(email: str) -> Tuple[int, str, str, str, str]:
     """
     Finds registered user by its email
     @param email: str - searched user email
