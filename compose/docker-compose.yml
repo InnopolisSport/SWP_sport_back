@@ -5,7 +5,7 @@ services:
       context: ../backend
     command: /start-reload.sh
     ports:
-      - "8081:80"
+      - "81:80"
     restart: always
     env_file:
       - .env
