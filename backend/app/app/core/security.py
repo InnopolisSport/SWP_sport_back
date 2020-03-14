@@ -11,10 +11,6 @@ def verify_password(plain_password: str, hashed_password: str):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_auth_url():
-    pass
-
-
 def get_code_retrieve_params(state: Optional[dict]) -> dict:
     return {
         "response_type": "code",
