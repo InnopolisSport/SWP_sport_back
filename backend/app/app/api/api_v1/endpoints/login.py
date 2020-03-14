@@ -21,10 +21,11 @@ from app.api.utils.link import form_link
 
 router = APIRouter()
 
-
 import logging
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
 
 @router.post("/login/access-token", response_model=Token, tags=["login"], deprecated=True)
 def login_access_token(
@@ -72,25 +73,23 @@ def process_code(code: str, state: str, client_request_id: str = Query(..., alia
                  *,
                  response: Response):
     params = get_token_retrieve_params(code)
-
-    logger.debug(state)
-
-    state = literal_eval(urlsafe_b64decode(state.encode()).decode())
-
     resp = requests.post(config.OAUTH_TOKEN_URL, data=params, headers={
         'content-type': 'application/json'
     })
 
-    data = resp.json()  # type: dict
+    data = resp.json()
 
     if data.get("error", None):
         raise HTTPException(status_code=401, detail=resp)
     else:
         tokens = TokenRetrieval(**data)
-        response.set_cookie(key="access_token", value=tokens.access_token)
-        response.set_cookie(key="Bearer", value=tokens.access_token)
+        state = literal_eval(urlsafe_b64decode(state.encode()).decode())
+        response.set_cookie("access_token", f"Bearer {tokens.access_token}")
         return responses.RedirectResponse(url=form_link(state["redirect_url"],
-                                                        {"state": state["state"],
-                                                         "Authorization": f"Bearer {tokens.access_token}"
-                                                         })
-                                          , headers={"Authorization": f"Bearer {tokens.access_token}"})
+                                                        {
+                                                            "state": state["state"],
+                                                            "access_token": tokens.access_token,
+                                                            "expires_in": tokens.expires_in,
+                                                        }
+                                                        )
+                                          )

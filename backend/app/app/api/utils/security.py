@@ -17,19 +17,14 @@ from app.db_models.user import User
 from app.models.token import TokenPayload
 
 import logging
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
-# reusable_oauth2 = OAuth2PasswordBearer(
-#     tokenUrl="/api/login/access-token",
-# scopes={"me": "Read information about the current user.", "items": "Read items."},
-# )
 
 reusable_oauth2 = OAuth2(
     flows=OAuthFlowsModel(
         implicit={
             "authorizationUrl": f"{config.BASE_URL}/login/test"
-            # "authorizationUrl": "https://sso.university.innopolis.ru/adfs/oauth2/authorize"
         }
     )
 )
@@ -41,7 +36,7 @@ def get_current_user(
     try:
         logger.debug(token)
         # payload = jwt.decode(token, config.SECRET_KEY, algorithms=[ALGORITHM])
-        payload = jwt.get_unverified_header(token)
+        payload = jwt.get_unverified_header(token)  # TODO: ask IT dep for verification URL
         token_data = TokenPayload(**payload)
     except PyJWTError:
         raise HTTPException(
