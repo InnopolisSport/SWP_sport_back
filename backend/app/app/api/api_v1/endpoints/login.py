@@ -4,7 +4,7 @@ from ast import literal_eval
 from base64 import urlsafe_b64decode
 import requests
 
-from fastapi import APIRouter, Body, Depends, HTTPException, responses, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, responses, Query, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -13,7 +13,7 @@ from app.api.utils.db import get_db
 from app.api.utils.security import get_current_user
 from app.core import config
 from app.core.jwt import create_access_token
-from app.core.security import get_password_hash, get_code_retrieve_params, get_token_retrieve_params
+from app.core.security import get_code_retrieve_params, get_token_retrieve_params
 from app.db_models.user import User as DBUser
 from app.models.token import Token, TokenRetrieval
 from app.models.user import User
@@ -59,13 +59,18 @@ def test_token(current_user: DBUser = Depends(get_current_user)):
     return current_user
 
 
-@router.get("/login/test", tags=["login"], response_class=responses.HTMLResponse)
+@router.get("/loginform", tags=["login"])
+def login_from_form():
+    return responses.RedirectResponse(
+        url="/api/login?state=login&redirect_uri=http%3A%2F%2Fhelpdesk.innopolis.university%2Flogin"
+    )
+
+
+@router.get("/login", tags=["login"], response_class=responses.HTMLResponse)
 def loginSSO(state: str, redirect_uri: str):
-    params = get_code_retrieve_params({"state": state, "redirect_url": redirect_uri})
+    params = get_code_retrieve_params({"state": state, "redirect_uri": redirect_uri})
     auth_url = f"{config.OAUTH_AUTHORIZATION_BASE_URL}?{urlencode(params)}"
-    return f"<a href={auth_url}>Залогиниться</a>\n" \
-           f"<br>\n" \
-           f"<a href={config.OAUTH_END_SESSION_ENDPOINT}>Выйти из системы</a>"
+    return responses.RedirectResponse(url=auth_url)
 
 
 @router.get("/get_code/get_code")
@@ -84,12 +89,13 @@ def process_code(code: str, state: str, client_request_id: str = Query(..., alia
     else:
         tokens = TokenRetrieval(**data)
         state = literal_eval(urlsafe_b64decode(state.encode()).decode())
-        response.set_cookie("access_token", f"Bearer {tokens.access_token}")
-        return responses.RedirectResponse(url=form_link(state["redirect_url"],
-                                                        {
-                                                            "state": state["state"],
-                                                            "access_token": tokens.access_token,
-                                                            "expires_in": tokens.expires_in,
-                                                        }
-                                                        )
-                                          )
+        response.set_cookie("access_token", f"Bearer {tokens.access_token}", expires=tokens.expires_in)
+        return responses.RedirectResponse(
+            url=form_link(state["redirect_uri"],
+                          {
+                              "state": state["state"],
+                              "access_token": tokens.access_token,
+                              "expires_in": tokens.expires_in,
+                          }
+                          )
+        )
