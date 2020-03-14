@@ -1,7 +1,8 @@
+from typing import List, Tuple
 from app.db.connection import conn
 
 
-def create_quiz(author_id):
+def create_quiz(author_id: int):
     """
     Creates new quiz, quiz is marked as active by default
     @param author_id: int - quiz author id
@@ -11,7 +12,7 @@ def create_quiz(author_id):
     conn.commit()
 
 
-def insert_priorities(user_id, quiz_id, priorities):
+def insert_priorities(user_id: int, quiz_id: int, priorities: List[Tuple[int, int]]):
     """
     Records selected priorities for given user
     @param user_id: int - id of user, who marked priorities
@@ -25,7 +26,7 @@ def insert_priorities(user_id, quiz_id, priorities):
     conn.commit()
 
 
-def check_if_user_have_submission(quiz_id, user_id):
+def check_if_user_have_submission(quiz_id: int, user_id: int) -> bool:
     """
     Checks if given user already participated in a given quiz
     @param quiz_id: int - current quiz id
@@ -37,7 +38,7 @@ def check_if_user_have_submission(quiz_id, user_id):
     return cursor.fetchone() is not None
 
 
-def delete_submission(quiz_id, user_id):
+def delete_submission(quiz_id: int, user_id: int):
     """
     Clears submission for a particular user in given quiz, deletes all priority records from previous submission
     @param quiz_id: int - current quiz id

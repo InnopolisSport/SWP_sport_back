@@ -1,7 +1,8 @@
+from typing import List, Tuple
 from app.db import conn
 
 
-def create_sport(name):
+def create_sport(name: str):
     """
     Creates new sport type
     @param name: str - sport type name
@@ -11,7 +12,7 @@ def create_sport(name):
     conn.commit()
 
 
-def get_sports():
+def get_sports() -> List[Tuple[int, str]]:
     """
     Retrieves existing sport types
     @return list of tuples (sport_id, name)
@@ -21,7 +22,7 @@ def get_sports():
     return cursor.fetchall()
 
 
-def delete_sport(sport_id):
+def delete_sport(sport_id: int):
     """
     Deletes existing sport type by its id
     @param sport_id: int - sport id
@@ -31,7 +32,7 @@ def delete_sport(sport_id):
     conn.commit()
 
 
-def create_group(name, sport_id, trainer_id=None):
+def create_group(name: str, sport_id: int, trainer_id: int = None):
     """
     Creates new sport group
     @param name: str - new sport group name
@@ -43,7 +44,7 @@ def create_group(name, sport_id, trainer_id=None):
     conn.commit()
 
 
-def get_groups():
+def get_groups() -> List[Tuple[int, str, str, int]]:
     """
     Retrieves existing sport group
     @return list of tuples (group_id, group_name, sport_name, trainer_id)
@@ -53,7 +54,7 @@ def get_groups():
     return cursor.fetchall()
 
 
-def delete_group(group_id):
+def delete_group(group_id: int):
     """
     Deletes existing group by its id
     @param group_id: int - group id
