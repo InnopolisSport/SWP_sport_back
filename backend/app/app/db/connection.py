@@ -1,15 +1,11 @@
-import os
 import psycopg2
-
-POSTGRES_USER = os.environ['POSTGRES_USER']
-POSTGRES_PASSWORD = os.environ['POSTGRES_PASSWORD']
-POSTGRES_DB = os.environ['POSTGRES_DB']
+from app.core.config import *
 
 
 def create_connection():
     try:
         connection = psycopg2.connect(
-            host='127.0.0.1',
+            host=POSTGRES_SERVER,
             database=POSTGRES_DB,
             user=POSTGRES_USER,
             password=POSTGRES_PASSWORD)
