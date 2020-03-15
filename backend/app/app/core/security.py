@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 from base64 import urlsafe_b64encode
 from typing import Optional
 
-from app.core.config import OAUTH_APP_ID, BASE_URL, OAUTH_SHARED_SECRET
+from app.core.config import OAUTH_APP_ID, API_BASE_URL, OAUTH_SHARED_SECRET
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -15,7 +15,7 @@ def get_code_retrieve_params(state: Optional[dict]) -> dict:
     return {
         "response_type": "code",
         "client_id": OAUTH_APP_ID,
-        "redirect_uri": f"{BASE_URL}/get_code/get_code",
+        "redirect_uri": f"{API_BASE_URL}/get_code/get_code",
         "scope": "user_impersonation openid profile email allatclaims user.read",
         "state": urlsafe_b64encode(str(state).encode())
     }
@@ -30,7 +30,7 @@ def get_token_retrieve_params(code: str) -> dict:
         "client_id": OAUTH_APP_ID,
         "client_secret": OAUTH_SHARED_SECRET,
 
-        "redirect_uri": f"{BASE_URL}/get_code/get_code"
+        "redirect_uri": f"{API_BASE_URL}/get_code/get_code"
     }
 
 
