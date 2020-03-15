@@ -10,7 +10,12 @@ def getenv_boolean(var_name, default_value=False):
 
 
 API_V1_STR = "/api"
-BASE_URL = 'https://helpdesk.innopolis.university/api'
+DOCS_STR = "/docs"
+REDOC_STR = "/redoc"
+BASE_URL = 'https://helpdesk.innopolis.university'
+API_BASE_URL = BASE_URL + API_V1_STR
+DOCS_BASE_URL = BASE_URL + DOCS_STR
+REDOC_BASE_URL = BASE_URL + REDOC_STR
 
 SECRET_KEY = os.getenvb(b"SECRET_KEY")
 if not SECRET_KEY:

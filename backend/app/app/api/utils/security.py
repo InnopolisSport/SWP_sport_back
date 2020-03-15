@@ -24,7 +24,7 @@ logger.setLevel(logging.DEBUG)
 reusable_oauth2 = OAuth2(
     flows=OAuthFlowsModel(
         implicit={
-            "authorizationUrl": f"{config.BASE_URL}/login"
+            "authorizationUrl": f"{config.API_BASE_URL}/login"
         }
     )
 )

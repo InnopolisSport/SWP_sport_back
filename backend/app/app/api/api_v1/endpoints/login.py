@@ -5,7 +5,6 @@ from base64 import urlsafe_b64decode
 import requests
 import logging
 
-
 from fastapi import APIRouter, Depends, HTTPException, responses, Query, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -62,7 +61,7 @@ def test_token(current_user: DBUser = Depends(get_current_user)):
 @router.get("/loginform", tags=["login"])
 def login_from_form():
     return responses.RedirectResponse(
-        url="/api/login?state=login&redirect_uri=http%3A%2F%2Fhelpdesk.innopolis.university%2Flogin"
+        url="/api/login?state=login&redirect_uri=https%3A%2F%2Fhelpdesk.innopolis.university"
     )
 
 
@@ -77,6 +76,11 @@ def loginSSO(state: str, redirect_uri: str):
 def process_code(code: str, state: str, client_request_id: str = Query(..., alias="client-request-id"),
                  *,
                  response: Response):
+    state = literal_eval(urlsafe_b64decode(state.encode()).decode())
+    if not state["redirect_uri"].startswith(config.BASE_URL):
+        raise HTTPException(status_code=400,
+                            detail=f"Redirect uri must start with {config.BASE_URL} Got {state['redirect_uri']}")
+
     params = get_token_retrieve_params(code)
     resp = requests.post(config.OAUTH_TOKEN_URL, data=params, headers={
         'content-type': 'application/json'
@@ -85,19 +89,27 @@ def process_code(code: str, state: str, client_request_id: str = Query(..., alia
     data = resp.json()
 
     if data.get("error", None):
-        raise HTTPException(status_code=401, detail=resp)
+        raise HTTPException(status_code=401, detail=data)
     else:
         tokens = TokenRetrieval(**data)
-        state = literal_eval(urlsafe_b64decode(state.encode()).decode())
         response.set_cookie("access_token", f"Bearer {tokens.access_token}", expires=tokens.expires_in)
         response.set_cookie("id_token", f"{tokens.id_token}", expires=tokens.expires_in)
         response.set_cookie("refresh_token", f"{tokens.refresh_token}", expires=tokens.refresh_token_expires_in)
-        return responses.RedirectResponse(
-            url=form_link(state["redirect_uri"],
-                          {
-                              "state": state["state"],
-                              "access_token": tokens.access_token,
-                              "expires_in": tokens.expires_in,
-                          }
-                          )
-        )
+        if state["redirect_uri"].startswith(config.DOCS_BASE_URL):
+            return responses.RedirectResponse(
+                url=form_link(state["redirect_uri"],
+                              {
+                                  "state": state["state"],
+                                  "access_token": tokens.access_token,
+                                  "expires_in": tokens.expires_in,
+                              }
+                              )
+            )
+        else:
+            return responses.RedirectResponse(
+                url=form_link(state["redirect_uri"],
+                              {
+                                  "state": state["state"]
+                              }
+                              )
+            )
