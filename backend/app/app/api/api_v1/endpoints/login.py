@@ -51,7 +51,7 @@ def login_access_token(
 
 # @router.post("/login/test-token", tags=["login"], response_model=User, deprecated=True)
 @router.post("/login/test-token", tags=["login"], response_model=User)
-def test_token(current_user: DBUser = Depends(get_current_user)):
+def test_token(current_user: dict = Depends(get_current_user)):
     """
     Test access token
     """
@@ -74,8 +74,8 @@ def loginSSO(state: str, redirect_uri: str):
 
 @router.get("/get_code/get_code")
 def process_code(code: str, state: str, client_request_id: str = Query(..., alias="client-request-id"),
-                 *,
-                 response: Response):
+                 # * , response: Response
+                 ):
     state = literal_eval(urlsafe_b64decode(state.encode()).decode())
     if not state["redirect_uri"].startswith(config.BASE_URL):
         raise HTTPException(status_code=400,
@@ -92,24 +92,27 @@ def process_code(code: str, state: str, client_request_id: str = Query(..., alia
         raise HTTPException(status_code=401, detail=data)
     else:
         tokens = TokenRetrieval(**data)
-        response.set_cookie("access_token", f"Bearer {tokens.access_token}", expires=tokens.expires_in)
-        response.set_cookie("id_token", f"{tokens.id_token}", expires=tokens.expires_in)
-        response.set_cookie("refresh_token", f"{tokens.refresh_token}", expires=tokens.refresh_token_expires_in)
         if state["redirect_uri"].startswith(config.DOCS_BASE_URL):
-            return responses.RedirectResponse(
-                url=form_link(state["redirect_uri"],
-                              {
-                                  "state": state["state"],
-                                  "access_token": tokens.access_token,
-                                  "expires_in": tokens.expires_in,
-                              }
-                              )
-            )
+            url = form_link(state["redirect_uri"],
+                            {
+                                "state": state["state"],
+                                "access_token": tokens.access_token,
+                                "expires_in": tokens.expires_in,
+                            }
+                            )
         else:
-            return responses.RedirectResponse(
-                url=form_link(state["redirect_uri"],
-                              {
-                                  "state": state["state"]
-                              }
-                              )
-            )
+            url = form_link(state["redirect_uri"],
+                            {
+                                "state": state["state"]
+                            }
+                            )
+    response = responses.RedirectResponse(
+        url=url,
+        status_code=302
+    )
+    response.set_cookie(key="access_token", value=f"Bearer {tokens.access_token}", expires=tokens.expires_in)
+    response.set_cookie(key="id_token", value=f"{tokens.id_token}", expires=tokens.expires_in)
+    response.set_cookie(key="refresh_token", value=f"{tokens.refresh_token}",
+                        expires=tokens.refresh_token_expires_in)
+
+    return response
