@@ -1,24 +1,22 @@
-from datetime import timedelta
-from urllib.parse import urlencode
+import logging
 from ast import literal_eval
 from base64 import urlsafe_b64decode
-import requests
-import logging
+from datetime import timedelta
+from urllib.parse import urlencode
 
-from fastapi import APIRouter, Depends, HTTPException, responses, Query, Response
+import requests
+from fastapi import APIRouter, Depends, HTTPException, responses, Query
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app import crud
 from app.api.utils.db import get_db
+from app.api.utils.link import form_link
 from app.api.utils.security import get_current_user
 from app.core import config
 from app.core.jwt import create_access_token
 from app.core.security import get_code_retrieve_params, get_token_retrieve_params
-from app.db_models.user import User as DBUser
 from app.models.token import Token, TokenRetrieval
-from app.models.user import User
-from app.api.utils.link import form_link
 
 router = APIRouter()
 
@@ -49,8 +47,7 @@ def login_access_token(
     }
 
 
-# @router.post("/login/test-token", tags=["login"], response_model=User, deprecated=True)
-@router.post("/login/test-token", tags=["login"], response_model=User)
+@router.post("/login/test-token", tags=["login"])
 def test_token(current_user: dict = Depends(get_current_user)):
     """
     Test access token

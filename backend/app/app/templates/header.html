@@ -10,7 +10,7 @@
 <header>
     <img src="../static/images/Inno.png" alt="Innopolis University logo">
     <div>
-        {% if logged_in %}
+        {% if user %}
         <a id="logout-btn" href="#">Log out</a>
         {% else %}
         <a href="/api/loginform">Log in</a>

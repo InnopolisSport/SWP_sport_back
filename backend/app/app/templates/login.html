@@ -13,8 +13,8 @@
 </head>
 <body>
 {%include "header.html"%}
-{% if logged_in %}
-<h1>You are successfully authorized</h1>
+{% if user %}
+<h1>You are successfully authorized as {{user["id"]["upn"]}}</h1>
 {% else %}
 <div class="limiter">
 	<div class="container-login100">
