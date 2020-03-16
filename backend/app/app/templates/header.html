@@ -11,7 +11,7 @@
     <img src="../static/images/Inno.png" alt="Innopolis University logo">
     <div>
         {% if logged_in %}
-        <a>Hello!</a>
+        <a id="logout-btn" href="#">Log out</a>
         {% else %}
         <a href="/api/loginform">Log in</a>
         {% endif %}
@@ -19,4 +19,5 @@
     </div>
 </header>
 </body>
+<script src="../static/js/header.js"></script>
 </html>
