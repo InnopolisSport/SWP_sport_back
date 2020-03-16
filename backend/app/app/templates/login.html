@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Base page</title>
+	<title>InnoSport</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!--===============================================================================================-->
@@ -14,7 +14,7 @@
 <body>
 {%include "header.html"%}
 {% if user %}
-<h1>You are successfully authorized as {{user["id"]["upn"]}}</h1>
+<h1>You are successfully authorized as {{user["id"]["upn"]}} [{{user["id"]["unique_name"]}}]</h1>
 {% else %}
 <div class="limiter">
 	<div class="container-login100">
