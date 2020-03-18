@@ -1,5 +1,19 @@
-version: '3.3'
+version: '3.5'
 services:
+  nginx:
+    restart: always
+    build:
+      context: ../nginx
+    ports:
+      - "81:80"
+    depends_on:
+      - backend
+      - adminpanel
+      - adminer
+    volumes:
+      - ../nginx/logs:/var/log/nginx
+      - ../nginx/access.d:/etc/nginx/access.d
+
   backend:
     build:
       context: ../backend
@@ -13,6 +27,24 @@ services:
       - db
     volumes:
       - ../backend/app:/app
+
+  adminpanel:
+    build:
+      context: ../adminpage
+      dockerfile: Dockerfile
+#   Wait for postgres to startup before running server
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
+    restart: always
+    volumes:
+      - ../adminpage:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DOCKER: 1
 
   db:
     image: db
@@ -36,37 +68,6 @@ services:
     ports:
       - "8080:8080"
 
-#  graphql-engine:
-#    image: hasura/graphql-engine:v1.0.0-beta.6
-#    expose:
-#      - "8080"
-#    ports:
-#      - "8081:8080"
-#    depends_on:
-#      - db
-#    restart: always
-#    environment:
-#      HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
-#      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
-#      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-#      ## uncomment next line to set an admin secret
-#      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-
-#  httpsproxy:
-#    depends_on:
-#      - backend
-#    image: nginx:alpine
-#    container_name: httpsproxy
-#    restart: "no"
-#    networks:
-#      - default
-#    expose:
-#      - "$PROXY_PORT"
-#    ports:
-#      - "443:$PROXY_PORT"
-#    volumes:
-#      - ../nginx/config:/etc/nginx
-#      - ${SSL_FILES_PATH}:/ssl
 
 volumes:
   db-data:
