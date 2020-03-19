@@ -17,9 +17,9 @@ services:
   backend:
     build:
       context: ../backend
-    command: /start-reload.sh
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; /start-reload.sh'
     ports:
-      - "81:80"
+      - "8082:80"
     restart: always
     env_file:
       - .env
