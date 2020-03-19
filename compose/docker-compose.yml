@@ -36,7 +36,7 @@ services:
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
     restart: always
     volumes:
-      - ../adminpage:/code
+      - ../adminpage:/src
     ports:
       - "8000:8000"
     depends_on:
