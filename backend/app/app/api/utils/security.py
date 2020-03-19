@@ -1,40 +1,65 @@
+import logging
+
 import jwt
-from fastapi import Depends, HTTPException, Security
-from fastapi.security import (
-    OAuth2PasswordBearer,
-    # SecurityScopes
-)
+from fastapi import HTTPException, Security, Cookie
+from fastapi.security.oauth2 import OAuthFlowsModel
 from jwt import PyJWTError
-from sqlalchemy.orm import Session
 from starlette.status import HTTP_403_FORBIDDEN
 
 from app import crud
-from app.api.utils.db import get_db
 from app.core import config
 from app.core.jwt import ALGORITHM
-# from app.db_models.user import User
-from app.models.token import TokenPayload
 
-reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl="/api/login/access-token",
-    # scopes={"me": "Read information about the current user.", "items": "Read items."},
+from app.core.security import CookieAuth
+from app.db_models.user import User
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+reusable_oauth2 = CookieAuth(
+    flows=OAuthFlowsModel(
+        implicit={
+            "authorizationUrl": f"{config.API_BASE_URL}/login"
+        }
+    ),
+    auto_error=False
 )
 
 
-def get_current_user(
-        db: Session = Depends(get_db), token: str = Security(reusable_oauth2)
-):
+def process_token(token, id_token):
     try:
-        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[ALGORITHM])
-        token_data = TokenPayload(**payload)
+        # TODO: ask IT dep for verification URL
+        access_payload = jwt.decode(token, verify=False, algorithms=[ALGORITHM])
+        id_payload = jwt.decode(id_token, verify=False, algorithms=[ALGORITHM])
     except PyJWTError:
         raise HTTPException(
             status_code=HTTP_403_FORBIDDEN, detail="Could not validate credentials"
         )
-    user = crud.user.get(db, user_id=token_data.user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+    return {"access": access_payload, "id": id_payload}
+
+
+def get_current_user(
+        token: str = Security(reusable_oauth2),
+        access_token=Cookie(None),  # needs for documentation, anyway cookie token is retrieved by oauth
+        id_token=Cookie(...),
+):
+    if token is None:
+        raise HTTPException(
+            status_code=HTTP_403_FORBIDDEN, detail="Not authenticated"
+        )
+    return process_token(token, id_token)
+
+
+def get_current_user_optional(
+        token: str = Security(reusable_oauth2),
+        access_token=Cookie(None),  # needs for documentation, anyway cookie token is retrieved by oauth
+        id_token=Cookie(None),
+):
+    # TODO Ask IT dep for identification endpoint
+    if token is None or id_token is None:
+        return None
+    return process_token(token, id_token)
 
 
 def get_current_active_user(current_user = Security(get_current_user)):

@@ -1,0 +1,32 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: rgb(128, 188, 39);
+
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+}
+
+header img {
+    background-color: white;
+    width: 60px;
+
+}
+
+header a {
+    color: white;
+    font-size: 20px;
+}
+
+header div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}

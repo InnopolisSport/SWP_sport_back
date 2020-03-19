@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from starlette.requests import Request
 
 from app.api.api_v1.api import api_router
+from app.pages.pages import pages_router
 from app.core import config
 from app.db import *
 
@@ -12,6 +14,9 @@ logger.setLevel(logging.DEBUG)
 
 app = FastAPI(title=config.PROJECT_NAME)
 
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+app.include_router(pages_router)
 app.include_router(api_router, prefix=config.API_V1_STR)
 
 

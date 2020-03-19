@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>InnoSport</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="../static/images/icons/favicon.ico"/>
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="../static/css/login_util.css">
+	<link rel="stylesheet" type="text/css" href="../static/css/login_main.css">
+	<!--===============================================================================================-->
+</head>
+<body>
+{%include "header.html"%}
+{% if user %}
+<h1>You are successfully authorized as {{user["id"]["upn"]}} [{{user["id"]["unique_name"]}}]</h1>
+{% else %}
+<div class="limiter">
+	<div class="container-login100">
+		<div class="wrap-login100">
+			<form action="/api/loginform" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+					<span class="login100-form-title">
+						Sign In
+					</span>
+				<div class="container-login100-form-btn">
+					<button class="login100-form-btn">
+						Sign in
+						</button>
+					</div>
+
+				<div class="flex-col-c p-t-170 p-b-40">
+						<span class="txt3 p-b-9">
+							Innopolis University
+						</span>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endif %}
+</body>
+</html>
