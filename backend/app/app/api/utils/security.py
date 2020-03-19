@@ -11,7 +11,7 @@ from app.core import config
 from app.core.jwt import ALGORITHM
 
 from app.core.security import CookieAuth
-from app.db_models.user import User
+# from app.db_models.user import User
 
 
 logger = logging.getLogger(__name__)
@@ -62,13 +62,13 @@ def get_current_user_optional(
     return process_token(token, id_token)
 
 
-def get_current_active_user(current_user = Security(get_current_user)):
+def get_current_active_user(current_user=Security(get_current_user)):
     if not crud.user.is_active(current_user):
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
 
-def get_current_active_superuser(current_user = Security(get_current_user)):
+def get_current_active_superuser(current_user=Security(get_current_user)):
     if not crud.user.is_superuser(current_user):
         raise HTTPException(
             status_code=400, detail="The user doesn't have enough privileges"
