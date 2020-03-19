@@ -32,24 +32,7 @@
   <title>Survey</title>
 </head>
 <body>
-  <nav class="navbar navbar-expand-md sticky-top">
-    <div class="container">
-      <a class="navbar-brand" href="#">
-        Innopolis Sport Course
-      </a>
-      <button class="navbar-toggler" type = "button" data-toggle="collapse" data-target="#navbarResponsive">
-        <span class = navbar-toggle-icon></span>          
-      </button>
-      <div class="collapse navbar-collapse" id = "navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#">My profile</a>
-          </li>
-          <i class="fas fa-user" style="font-size:28px;color:#black"></i> 
-        </ul>
-      </div>    
-    </div>
-  </nav>
+{%include "header.html"%}
 
 
   <div class="container"  style="overflow-x:auto;">
@@ -65,8 +48,8 @@
       </div>
       <div class="col-md-8 l2">
         <div class="jumbotron bg-light text-black">
-          <h4>Name Surename</h4>
-          <form action="/survey/answer" method="post">
+          <h4>{{user["name"]}} {{user["surname"]}}</h4>
+          <form id="PriorityForm" role="form">
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -80,56 +63,53 @@
                   </tr>
                 </thead>
                 <tbody>
+                {% for sport_id, sport in sports %}
+
                   <tr>
-                    <th scope="col">Sport 1</th>
-                    <th scope="col"><input type="radio" name="row-1" data-col="1"></th>
-                    <th scope="col"><input type="radio" name="row-1" data-col="2"></th>
-                    <th scope="col"><input type="radio" name="row-1" data-col="3"></th>
-                    <th scope="col"><input type="radio" name="row-1" data-col="4"></th>
-                    <th scope="col"><input type="radio" name="row-1" data-col="5"></th>
-                  </tr>
-                  <tr>
-                    <th scope="col">Sport 2</th>
-                    <th scope="col"><input type="radio" name="row-2" data-col="1"></th>
-                    <th scope="col"><input type="radio" name="row-2" data-col="2"></th>
-                    <th scope="col"><input type="radio" name="row-2" data-col="3"></th>
-                    <th scope="col"><input type="radio" name="row-2" data-col="4"></th>
-                    <th scope="col"><input type="radio" name="row-2" data-col="5"></th>
-                  </tr>
-                  <tr>
-                    <th scope="col">Sport 3</th>
-                    <th scope="col"><input type="radio" name="row-3" data-col="1"></th>
-                    <th scope="col"><input type="radio" name="row-3" data-col="2"></th>
-                    <th scope="col"><input type="radio" name="row-3" data-col="3"></th>
-                    <th scope="col"><input type="radio" name="row-3" data-col="4"></th>
-                    <th scope="col"><input type="radio" name="row-3" data-col="5"></th>
-                  </tr>
-                  <tr>
-                    <th scope="col">Sport 4</th>
-                    <th scope="col"><input type="radio" name="row-4" data-col="1"></th>
-                    <th scope="col"><input type="radio" name="row-4" data-col="2"></th>
-                    <th scope="col"><input type="radio" name="row-4" data-col="3"></th>
-                    <th scope="col"><input type="radio" name="row-4" data-col="4"></th>
-                    <th scope="col"><input type="radio" name="row-4" data-col="5"></th>
-                  </tr>
-                  <tr>
-                    <th scope="col">Sport 5</th>
-                    <th scope="col"><input type="radio" name="row-5" data-col="1"></th>
-                    <th scope="col"><input type="radio" name="row-5" data-col="2"></th>
-                    <th scope="col"><input type="radio" name="row-5" data-col="3"></th>
-                    <th scope="col"><input type="radio" name="row-5" data-col="4"></th>
-                    <th scope="col"><input type="radio" name="row-5" data-col="5"></th>
-                  </tr>
+                      <th scope="col">{{sport}}</th>
+                      <th scope="col"><input type="radio" name="row-{{loop.index}}" data-col="1" id={{sport_id}}></th>
+                      <th scope="col"><input type="radio" name="row-{{loop.index}}" data-col="2" id={{sport_id}}></th>
+                      <th scope="col"><input type="radio" name="row-{{loop.index}}" data-col="3" id={{sport_id}}></th>
+                      <th scope="col"><input type="radio" name="row-{{loop.index}}" data-col="4" id={{sport_id}}></th>
+                      <th scope="col"><input type="radio" name="row-{{loop.index}}" data-col="5" id={{sport_id}}></th>
+                    </tr>
+
+                {% endfor %}
                 </tbody>
               </table>
             </div>
             <div class="container pull-right">
-              <button type="submit" class="btn float-right btn-lg btn-primary">Save</button>
+              <button type="submit" onclick="sendResults()" class="btn float-right btn-lg btn-primary">Save</button>
             </div>
           </form>
         </div>
       </div>
     </div>
   </div>
+  <script type="text/javascript">
+    function sendResults(){
+      var form = document.forms.PriorityForm;
+      var ans = 0;
+
+      var data = {};
+      for (var i = 0; i < form.length - 1; i++){
+        if (form[i].checked){
+          ans += 1;
+          data["priority".concat(form[i].getAttribute("data-col"))] = Number(form[i].id);
+        }
+      }
+    if (ans == 5 ) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/survey/answer", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(
+        JSON.stringify(data)
+      );
+    }else{
+      alert("Please, choose 5 priorities!!!!!");
+    }
+   }
+
+  </script>
 </body>
 </html>
