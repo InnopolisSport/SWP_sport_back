@@ -15,6 +15,7 @@ from app.api.utils.link import form_link
 from app.api.utils.security import get_current_user
 from app.core import config
 from app.core.jwt import create_access_token
+
 from app.core.security import get_code_retrieve_params, get_token_retrieve_params
 from app.models.token import Token, TokenRetrieval
 
