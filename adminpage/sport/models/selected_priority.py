@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-class Quiz(models.Model):
+class SelectedPriority(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, null=False)
     group = models.ForeignKey("Group", on_delete=models.CASCADE, null=False)
     priority = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=False)
