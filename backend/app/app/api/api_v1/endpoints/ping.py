@@ -19,6 +19,7 @@ router = APIRouter()
 def pong(db: Session = Depends(get_db)):
     return {"pong": True}
 
+
 @router.get("/me", response_model=User)
 def get_me(current_user: UserInDB = Depends(get_current_user)):
     logger.debug(f"in get_me, current_user type: {type(current_user)} - {current_user}")
