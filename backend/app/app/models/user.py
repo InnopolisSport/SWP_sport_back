@@ -10,7 +10,7 @@ class TokenUser(Base):
     last_name: str
     email: str
     groups: List[str]
-    study_group: Optional[str] = Field(..., description="A study group in format B18-02 if any or None")
+    role: Optional[str] = Field(..., description="A study group in format B18-02 if any or None")
 
     @property
     def full_name(self) -> str:

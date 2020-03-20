@@ -41,7 +41,7 @@ def process_token(token) -> TokenUser:
         last_name=access_payload["family_name"],
         email=access_payload["email"],
         groups=access_payload["group"],
-        study_group=access_payload.get("role", None)
+        role=access_payload.get("role", None)
     )
 
 

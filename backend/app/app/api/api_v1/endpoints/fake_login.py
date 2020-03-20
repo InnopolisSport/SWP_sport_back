@@ -6,6 +6,7 @@ from starlette.status import HTTP_403_FORBIDDEN
 
 from app.core.config import FAKE_LOGIN
 from app.core.jwt import create_access_token
+from app.models.token import Token
 from app.models.user import TokenUser
 
 router = APIRouter()
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-@router.post("/setcookie")
+@router.post("/setcookie", response_model=Token)
 def set_cookie(user_data: TokenUser):
     if not FAKE_LOGIN:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="You can't use fake login on production")
@@ -24,11 +25,11 @@ def set_cookie(user_data: TokenUser):
         "family_name": user_data.last_name,
         "email": user_data.email,
         "group": user_data.groups,
-        "role": user_data.study_group
+        "role": user_data.role
     })
 
-    response = JSONResponse(content={"access_token": access_token})
-    response.set_cookie(key="access_token", value=f"Bearer {access_token}")
+    response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    response.set_cookie(key="access_token", value=access_token)
     # response.set_cookie(key="id_token", value=id_token)
     return response
 
