@@ -14,7 +14,7 @@
 <body>
 {%include "header.html"%}
 {% if user %}
-<h1>You are successfully authorized as {{user["id"]["upn"]}} [{{user["id"]["unique_name"]}}]</h1>
+<h1>You are successfully authorized as {{user.full_name}} [{{user.role}}]</h1>
 {% else %}
 <div class="limiter">
 	<div class="container-login100">

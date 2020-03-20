@@ -107,7 +107,7 @@ def process_code(code: str, state: str, client_request_id: str = Query(..., alia
         url=url,
         status_code=302
     )
-    response.set_cookie(key="access_token", value=f"Bearer {tokens.access_token}", expires=tokens.expires_in)
+    response.set_cookie(key="access_token", value=tokens.access_token, expires=tokens.expires_in)
     # response.set_cookie(key="id_token", value=f"{tokens.id_token}", expires=tokens.expires_in)
     response.set_cookie(key="refresh_token", value=f"{tokens.refresh_token}",
                         expires=tokens.refresh_token_expires_in)
