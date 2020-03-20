@@ -13,3 +13,4 @@ alembic
 SQLAlchemy
 email-validator
 aiofiles
+cryptography
