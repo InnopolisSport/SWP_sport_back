@@ -1,5 +1,5 @@
-from django.db import models
 from django.core.validators import RegexValidator
+from django.db import models
 
 # Create your models here.
 course_id_validator = RegexValidator(r"^[A-Z]{1,2}\d{2}(-[A-Z]{2}-\d{2})?$", "Accepts: B18 B17-SB, etc")
@@ -20,6 +20,7 @@ class User(models.Model):
 
     class Meta:
         db_table = "user"
+        verbose_name_plural = "users"
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.get_type_display()}"

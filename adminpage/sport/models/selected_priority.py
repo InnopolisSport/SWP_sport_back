@@ -1,5 +1,5 @@
-from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db import models
 
 
 class SelectedPriority(models.Model):
@@ -10,6 +10,7 @@ class SelectedPriority(models.Model):
 
     class Meta:
         db_table = "selected_priority"
+        verbose_name_plural = "selected priorities"
         constraints = [
             models.UniqueConstraint(fields=["user_id", "group_id", "quiz_id"], name="unique_priority_vote")
         ]
