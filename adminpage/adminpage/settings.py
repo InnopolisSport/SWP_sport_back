@@ -24,7 +24,7 @@ SECRET_KEY = 'z%zmsh#n6os&g45@(#6k=xl38z=_d4jz$4cct-zole3jjb9j5h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['188.130.155.115', 'helpdesk.innopolis.university']
 
 # Application definition
 
