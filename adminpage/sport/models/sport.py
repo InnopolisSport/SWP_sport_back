@@ -6,6 +6,8 @@ class Sport(models.Model):
 
     class Meta:
         db_table = "sport"
+        verbose_name = "sport type"
+        verbose_name_plural = "sport types"
 
     def __str__(self):
         return f"{self.name}"

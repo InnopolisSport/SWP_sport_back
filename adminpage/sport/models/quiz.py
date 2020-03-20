@@ -1,5 +1,6 @@
-from django.db import models
 from datetime import datetime
+
+from django.db import models
 
 
 class Quiz(models.Model):
@@ -9,6 +10,7 @@ class Quiz(models.Model):
 
     class Meta:
         db_table = "quiz"
+        verbose_name_plural = "quizzes"
 
     def __str__(self):
         return f"{self.created}"
