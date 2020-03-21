@@ -14,14 +14,14 @@
 <body>
 {%include "header.html"%}
 {% if user %}
-<h1>You are successfully authorized as {{user["id"]["upn"]}} [{{user["id"]["unique_name"]}}]</h1>
+<h1>You are successfully authorized as {{user.full_name}} [{{user.role}}]</h1>
 {% else %}
 <div class="limiter">
 	<div class="container-login100">
 		<div class="wrap-login100">
 			<form action="/api/loginform" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
 					<span class="login100-form-title">
-						Sign In
+						InnoSport
 					</span>
 				<div class="container-login100-form-btn">
 					<button class="login100-form-btn">

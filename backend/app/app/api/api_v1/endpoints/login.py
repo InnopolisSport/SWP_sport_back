@@ -15,9 +15,9 @@ from app.api.utils.link import form_link
 from app.api.utils.security import get_current_user
 from app.core import config
 from app.core.jwt import create_access_token
-
 from app.core.security import get_code_retrieve_params, get_token_retrieve_params
 from app.models.token import Token, TokenRetrieval
+from app.models.user import TokenUser
 
 router = APIRouter()
 
@@ -48,7 +48,7 @@ def login_access_token(
     }
 
 
-@router.post("/login/test-token", tags=["login"])
+@router.post("/login/test-token", tags=["login"], response_model=TokenUser)
 def test_token(current_user: dict = Depends(get_current_user)):
     """
     Test access token
@@ -72,7 +72,6 @@ def loginSSO(state: str, redirect_uri: str):
 
 @router.get("/get_code/get_code")
 def process_code(code: str, state: str, client_request_id: str = Query(..., alias="client-request-id"),
-                 # * , response: Response
                  ):
     state = literal_eval(urlsafe_b64decode(state.encode()).decode())
     if not state["redirect_uri"].startswith(config.BASE_URL):
@@ -108,8 +107,8 @@ def process_code(code: str, state: str, client_request_id: str = Query(..., alia
         url=url,
         status_code=302
     )
-    response.set_cookie(key="access_token", value=f"Bearer {tokens.access_token}", expires=tokens.expires_in)
-    response.set_cookie(key="id_token", value=f"{tokens.id_token}", expires=tokens.expires_in)
+    response.set_cookie(key="access_token", value=tokens.access_token, expires=tokens.expires_in)
+    # response.set_cookie(key="id_token", value=f"{tokens.id_token}", expires=tokens.expires_in)
     response.set_cookie(key="refresh_token", value=f"{tokens.refresh_token}",
                         expires=tokens.refresh_token_expires_in)
 
