@@ -1,0 +1,26 @@
+body{
+	background-color: #f0f0f0; /* Цвет фона веб-страницы */
+}
+
+img {
+    width: 400px
+    height: auto;
+    background-size: cover;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.crop {
+    width:  400px;
+    height: 400px;
+    overflow: hidden;
+}
+
+.card {
+    margin-top: 1%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
