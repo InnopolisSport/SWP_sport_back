@@ -12,3 +12,6 @@ psycopg2-binary
 alembic
 SQLAlchemy
 email-validator
+aiofiles
+cryptography
+pytest

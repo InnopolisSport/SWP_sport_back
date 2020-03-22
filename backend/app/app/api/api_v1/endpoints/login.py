@@ -1,25 +1,33 @@
+import logging
+from ast import literal_eval
+from base64 import urlsafe_b64decode
 from datetime import timedelta
+from urllib.parse import urlencode
 
-from fastapi import APIRouter, Body, Depends, HTTPException
+import requests
+from fastapi import APIRouter, Depends, HTTPException, responses, Query
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app import crud
 from app.api.utils.db import get_db
+from app.api.utils.link import form_link
 from app.api.utils.security import get_current_user
 from app.core import config
 from app.core.jwt import create_access_token
-from app.core.security import get_password_hash
-from app.db_models.user import User as DBUser
-from app.models.token import Token
-from app.models.user import User
+from app.core.security import get_code_retrieve_params, get_token_retrieve_params
+from app.models.token import Token, TokenRetrieval
+from app.models.user import TokenUser
 
 router = APIRouter()
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
-@router.post("/login/access-token", response_model=Token, tags=["login"])
+
+@router.post("/login/access-token", response_model=Token, tags=["login"], deprecated=True)
 def login_access_token(
-    db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
+        db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
     """
     OAuth2 compatible token login, get an access token for future requests
@@ -40,9 +48,68 @@ def login_access_token(
     }
 
 
-@router.post("/login/test-token", tags=["login"], response_model=User)
-def test_token(current_user: DBUser = Depends(get_current_user)):
+@router.post("/login/test-token", tags=["login"], response_model=TokenUser)
+def test_token(current_user: dict = Depends(get_current_user)):
     """
     Test access token
     """
     return current_user
+
+
+@router.get("/loginform", tags=["login"])
+def login_from_form():
+    return responses.RedirectResponse(
+        url="/api/login?state=login&redirect_uri=https%3A%2F%2Fhelpdesk.innopolis.university"
+    )
+
+
+@router.get("/login", tags=["login"], response_class=responses.HTMLResponse)
+def loginSSO(state: str, redirect_uri: str):
+    params = get_code_retrieve_params({"state": state, "redirect_uri": redirect_uri})
+    auth_url = f"{config.OAUTH_AUTHORIZATION_BASE_URL}?{urlencode(params)}"
+    return responses.RedirectResponse(url=auth_url)
+
+
+@router.get("/get_code/get_code")
+def process_code(code: str, state: str, client_request_id: str = Query(..., alias="client-request-id"),
+                 ):
+    state = literal_eval(urlsafe_b64decode(state.encode()).decode())
+    if not state["redirect_uri"].startswith(config.BASE_URL):
+        raise HTTPException(status_code=400,
+                            detail=f"Redirect uri must start with {config.BASE_URL} Got {state['redirect_uri']}")
+
+    params = get_token_retrieve_params(code)
+    resp = requests.post(config.OAUTH_TOKEN_URL, data=params, headers={
+        'content-type': 'application/json'
+    })
+
+    data = resp.json()
+
+    if data.get("error", None):
+        raise HTTPException(status_code=401, detail=data)
+    else:
+        tokens = TokenRetrieval(**data)
+        if state["redirect_uri"].startswith(config.DOCS_BASE_URL):
+            url = form_link(state["redirect_uri"],
+                            {
+                                "state": state["state"],
+                                "access_token": tokens.access_token,
+                                "expires_in": tokens.expires_in,
+                            }
+                            )
+        else:
+            url = form_link(state["redirect_uri"],
+                            {
+                                "state": state["state"]
+                            }
+                            )
+    response = responses.RedirectResponse(
+        url=url,
+        status_code=302
+    )
+    response.set_cookie(key="access_token", value=tokens.access_token, expires=tokens.expires_in)
+    # response.set_cookie(key="id_token", value=f"{tokens.id_token}", expires=tokens.expires_in)
+    response.set_cookie(key="refresh_token", value=f"{tokens.refresh_token}",
+                        expires=tokens.refresh_token_expires_in)
+
+    return response
