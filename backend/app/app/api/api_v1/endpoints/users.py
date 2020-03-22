@@ -9,7 +9,7 @@ from app import crud
 from app.api.utils.db import get_db
 from app.api.utils.security import get_current_active_superuser, get_current_active_user
 from app.core import config
-from app.db_models.user import User as DBUser
+# from app.db_models.user import User as DBUser
 from app.models.user import User, UserCreate, UserInDB, UserUpdate
 
 router = APIRouter()
@@ -20,7 +20,7 @@ def read_users(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: DBUser = Depends(get_current_active_superuser),
+    current_user = Depends(get_current_active_superuser),
 ):
     """
     Retrieve users.
@@ -34,7 +34,7 @@ def create_user(
     *,
     db: Session = Depends(get_db),
     user_in: UserCreate,
-    current_user: DBUser = Depends(get_current_active_superuser),
+    current_user = Depends(get_current_active_superuser),
 ):
     """
     Create new user.
@@ -56,7 +56,7 @@ def update_user_me(
     password: str = Body(None),
     full_name: str = Body(None),
     email: EmailStr = Body(None),
-    current_user: DBUser = Depends(get_current_active_user),
+    current_user = Depends(get_current_active_user),
 ):
     """
     Update own user.
@@ -76,7 +76,7 @@ def update_user_me(
 @router.get("/me", response_model=User)
 def read_user_me(
     db: Session = Depends(get_db),
-    current_user: DBUser = Depends(get_current_active_user),
+    current_user = Depends(get_current_active_user),
 ):
     """
     Get current user.
@@ -114,7 +114,7 @@ def create_user_open(
 @router.get("/{user_id}", response_model=User)
 def read_user_by_id(
     user_id: int,
-    current_user: DBUser = Depends(get_current_active_user),
+    current_user = Depends(get_current_active_user),
     db: Session = Depends(get_db),
 ):
     """

@@ -10,13 +10,20 @@ def getenv_boolean(var_name, default_value=False):
 
 
 API_V1_STR = "/api"
+DOCS_STR = "/docs"
+REDOC_STR = "/redoc"
+BASE_URL = 'https://helpdesk.innopolis.university'
+API_BASE_URL = BASE_URL + API_V1_STR
+DOCS_BASE_URL = BASE_URL + DOCS_STR
+REDOC_BASE_URL = BASE_URL + REDOC_STR
+
+FAKE_LOGIN = getenv_boolean("FAKE_LOGIN", False)
 
 SECRET_KEY = os.getenvb(b"SECRET_KEY")
 if not SECRET_KEY:
     SECRET_KEY = os.urandom(32)
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 8  # 60 minutes * 24 hours * 8 days = 8 days
-
 
 PROJECT_NAME = os.getenv("PROJECT_NAME")
 
@@ -32,3 +39,11 @@ FIRST_SUPERUSER = os.getenv("FIRST_SUPERUSER")
 FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD")
 
 USERS_OPEN_REGISTRATION = getenv_boolean("USERS_OPEN_REGISTRATION")
+
+# oAuth credentials
+OAUTH_APP_ID = os.getenv("oauth_appID")
+OAUTH_SHARED_SECRET = os.getenv("oauth_shared_secret")
+OAUTH_AUTHORIZATION_BASE_URL = os.getenv("oauth_authorization_baseURL")
+OAUTH_GET_INFO_URL = os.getenv("oauth_get_infoURL")
+OAUTH_TOKEN_URL = os.getenv("oauth_tokenURL")
+OAUTH_END_SESSION_ENDPOINT = os.getenv("oauth_end_session_endpoint")
