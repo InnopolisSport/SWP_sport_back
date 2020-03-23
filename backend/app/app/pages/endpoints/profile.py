@@ -6,10 +6,10 @@ from app.pages.utils.jinja import templates
 router = APIRouter()
 
 
-@router.get("/login")
+@router.get("/profile")
 def login_page(request: Request,
                current_user: dict = Depends(get_current_user_optional)):
     if current_user is not None:
-        return responses.RedirectResponse(url='/profile')
+        return templates.TemplateResponse("profile.html", {"request": request, "user": current_user})
 
-    return templates.TemplateResponse("login.html", {"request": request})
+    return responses.RedirectResponse(url='/login')
