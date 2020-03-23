@@ -1,4 +1,6 @@
 from typing import List, Tuple
+from ..models.sport import Sport
+from ..models.group import Group
 
 
 def create_sport(conn, name: str):
@@ -12,7 +14,7 @@ def create_sport(conn, name: str):
     conn.commit()
 
 
-def get_sports(conn) -> List[Tuple[int, str]]:
+def get_sports(conn) -> List[Sport]:
     """
     Retrieves existing sport types
     @param conn - Database connection
@@ -20,7 +22,8 @@ def get_sports(conn) -> List[Tuple[int, str]]:
     """
     cursor = conn.cursor()
     cursor.execute('SELECT id, name FROM sport')
-    return cursor.fetchall()
+    res = cursor.fetchall()
+    return list(map(lambda t: Sport(id=t[0], name=t[1]), res))
 
 
 def delete_sport(conn, sport_id: int):
@@ -43,19 +46,20 @@ def create_group(conn, name: str, sport_id: int, trainer_id: int = None):
     @param trainer_id: int - assigned trainer id
     """
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO "group" (name, sport_id, trainer_id) VALUES (%s, %s, %s)', (name, sport_id, trainer_id))
+    cursor.execute('INSERT INTO "group" (name, sport_id_id, trainer_id_id) VALUES (%s, %s, %s)', (name, sport_id, trainer_id))
     conn.commit()
 
 
-def get_groups(conn) -> List[Tuple[int, str, str, int]]:
+def get_groups(conn) -> List[Group]:
     """
     Retrieves existing sport group
     @param conn - Database connection
     @return list of tuples (group_id, group_name, sport_name, trainer_id)
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT g.id, g.name, s.name, g.trainer_id FROM "group" g JOIN sport s ON g.sport_id = s.id')
-    return cursor.fetchall()
+    cursor.execute('SELECT g.id, g.name, s.name, g.trainer_id_id FROM "group" g JOIN sport s ON g.sport_id_id = s.id')
+    res = cursor.fetchall()
+    return list(map(lambda t: Group(id=t[0], name=t[1], sport_name=t[2], trainer_id=t[3]), res))
 
 
 def delete_group(conn, group_id: int):

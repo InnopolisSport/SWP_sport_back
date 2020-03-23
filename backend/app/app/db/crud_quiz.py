@@ -8,7 +8,7 @@ def create_quiz(conn, author_id: int):
     @param author_id: int - quiz author id
     """
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO quiz (author_id) VALUES (%s)', (author_id,))
+    cursor.execute('INSERT INTO quiz (author_id_id) VALUES (%s)', (author_id,))
     conn.commit()
 
 
