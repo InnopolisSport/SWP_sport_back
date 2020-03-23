@@ -1,0 +1,15 @@
+{
+  "name": "sport_back",
+  "version": "1.0.0",
+  "description": "A backend for sport course in IU",
+  "scripts": {
+    "test": "exit 1"
+  },
+  "author": "BS18-02 Sport",
+  "license": "ISC",
+  "dependencies": {
+    "@fullcalendar/core": "latest",
+    "@fullcalendar/daygrid": "latest",
+    "@fullcalendar/timegrid": "latest"
+  }
+}
