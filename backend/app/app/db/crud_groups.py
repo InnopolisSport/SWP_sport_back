@@ -1,10 +1,10 @@
 from typing import List, Tuple
-from app.db import conn
 
 
-def create_sport(name: str):
+def create_sport(conn, name: str):
     """
     Creates new sport type
+    @param conn - Database connection
     @param name: str - sport type name
     """
     cursor = conn.cursor()
@@ -12,9 +12,10 @@ def create_sport(name: str):
     conn.commit()
 
 
-def get_sports() -> List[Tuple[int, str]]:
+def get_sports(conn) -> List[Tuple[int, str]]:
     """
     Retrieves existing sport types
+    @param conn - Database connection
     @return list of tuples (sport_id, name)
     """
     cursor = conn.cursor()
@@ -22,9 +23,10 @@ def get_sports() -> List[Tuple[int, str]]:
     return cursor.fetchall()
 
 
-def delete_sport(sport_id: int):
+def delete_sport(conn, sport_id: int):
     """
     Deletes existing sport type by its id
+    @param conn - Database connection
     @param sport_id: int - sport id
     """
     cursor = conn.cursor()
@@ -32,9 +34,10 @@ def delete_sport(sport_id: int):
     conn.commit()
 
 
-def create_group(name: str, sport_id: int, trainer_id: int = None):
+def create_group(conn, name: str, sport_id: int, trainer_id: int = None):
     """
     Creates new sport group
+    @param conn - Database connection
     @param name: str - new sport group name
     @param sport_id: int - chosen sport type id
     @param trainer_id: int - assigned trainer id
@@ -44,9 +47,10 @@ def create_group(name: str, sport_id: int, trainer_id: int = None):
     conn.commit()
 
 
-def get_groups() -> List[Tuple[int, str, str, int]]:
+def get_groups(conn) -> List[Tuple[int, str, str, int]]:
     """
     Retrieves existing sport group
+    @param conn - Database connection
     @return list of tuples (group_id, group_name, sport_name, trainer_id)
     """
     cursor = conn.cursor()
@@ -54,9 +58,10 @@ def get_groups() -> List[Tuple[int, str, str, int]]:
     return cursor.fetchall()
 
 
-def delete_group(group_id: int):
+def delete_group(conn, group_id: int):
     """
     Deletes existing group by its id
+    @param conn - Database connection
     @param group_id: int - group id
     """
     cursor = conn.cursor()
