@@ -13,9 +13,7 @@
 </head>
 <body>
 {%include "header.html"%}
-{% if user %}
-<h1>You are successfully authorized as {{user.full_name}} [{{user.role}}]</h1>
-{% else %}
+{% if  not user %}
 <div class="limiter">
 	<div class="container-login100">
 		<div class="wrap-login100">
@@ -38,6 +36,8 @@
 		</div>
 	</div>
 </div>
+{% else %}
+    <h1>Some error has happened. Please, contact the developers</h1>
 {% endif %}
 </body>
 </html>
