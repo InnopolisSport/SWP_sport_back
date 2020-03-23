@@ -1,11 +1,10 @@
 from typing import List, Tuple
 
-from app.db.connection import conn
 
-
-def create_user(first_name: str, last_name: str, email: str, user_type: int, course_id: str = None):
+def create_user(conn, first_name: str, last_name: str, email: str, user_type: int, course_id: str = None):
     """
     Creates new user of any type
+    @param conn - Database connection
     @param first_name: str - first name of created user
     @param last_name: str - last name of created user
     @param email: str - email of created user, should be unique
@@ -22,9 +21,10 @@ def create_user(first_name: str, last_name: str, email: str, user_type: int, cou
     conn.commit()
 
 
-def get_students(course_id: str = None) -> List[Tuple[int, str, str, str, str]]:
+def get_students(conn, course_id: str = None) -> List[Tuple[int, str, str, str, str]]:
     """
     Retrieves registered students
+    @param conn - Database connection
     @param course_id: str - particular course identifier, leave empty for choosing all courses
     @return list of tuples (user_id, first_name, last_name, email, course_id)
     """
@@ -38,9 +38,10 @@ def get_students(course_id: str = None) -> List[Tuple[int, str, str, str, str]]:
     return cursor.fetchall()
 
 
-def get_trainers() -> List[Tuple[int, str, str, str]]:
+def get_trainers(conn) -> List[Tuple[int, str, str, str]]:
     """
     Retrieves registered trainers / club-leaders
+    @param conn - Database connection
     @return list of tuples (user_id, first_name, last_name, email)
     """
     cursor = conn.cursor()
@@ -48,9 +49,10 @@ def get_trainers() -> List[Tuple[int, str, str, str]]:
     return cursor.fetchall()
 
 
-def get_user(user_id: int) -> Tuple[int, str, str, str, str]:
+def get_user(conn, user_id: int) -> Tuple[int, str, str, str, str]:
     """
     Retrieves registered user by its id
+    @param conn - Database connection
     @param user_id: int - searched user id
     @return user tuple (user_id, first_name, last_name, email, course_id)
     """
@@ -59,9 +61,10 @@ def get_user(user_id: int) -> Tuple[int, str, str, str, str]:
     return cursor.fetchone()
 
 
-def find_user_by_email(email: str) -> Tuple[int, str, str, str, str]:
+def find_user_by_email(conn, email: str) -> Tuple[int, str, str, str, str]:
     """
     Finds registered user by its email
+    @param conn - Database connection
     @param email: str - searched user email
     @return user tuple (user_id, first_name, last_name, email, course_id)
     """
