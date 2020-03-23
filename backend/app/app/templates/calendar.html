@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ group["name"] }}Schedule</title>
+    <!--TODO: do something with node_modules-->
+    <link rel="stylesheet" href="../../node_modules/@fullcalendar/core/main.css">
+    <link rel="stylesheet" href="../../node_modules/@fullcalendar/daygrid/main.css">
+    <link rel="stylesheet" href="../../node_modules/@fullcalendar/timegrid/main.css">
+
+    <script src="../../node_modules/@fullcalendar/core/main.js"></script>
+    <script src="../../node_modules/@fullcalendar/daygrid/main.js"></script>
+    <script src="../../node_modules/@fullcalendar/timegrid/main.js"></script>
+    <script>
+
+        function getMonday(d) {
+            d = new Date(d);
+            let day = d.getDay(),
+                diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+            return new Date(d.setDate(diff))
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            let calendarEl = document.getElementById('calendar');
+
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: ['timeGrid'],
+                defaultView: 'timeGridWeek',
+                header: {
+                    left: '',
+                    center: 'title',
+                    right: ''
+                },
+                height: 'auto',
+                timeZone: 'Europe/Moscow',
+                firstDay: 1,
+                allDaySlot: false,
+                slotDuration: '00:45:00',
+                minTime: '08:30:00',
+                maxTime: '21:00:00',
+                defaultTimedEventDuration: '01:30',
+                // Event format: yyyy-mm-dd
+                // TODO: create backend for calendar Consider https://fullcalendar.io/docs/events-json-feed
+                // TODO: at backend use a loop of 10 standard colors as matplotlib do ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+                eventSources: [
+
+                    // your event source
+                    {
+                        events: [ // put the array in the `events` property
+                            {
+                                title: 'G1',
+                                start: '2020-03-26T08:30:00',
+                                end: '2020-03-26T10:00:00'
+                            }
+                        ]
+                    },
+
+                    {
+                        events: [ // put the array in the `events` property
+                            {
+                                title: 'G2',
+                                start: '2020-03-26T09:15:00',
+                                end: '2020-03-26T10:45:00'
+                            }
+                        ]
+                    }
+
+                    // any other event sources...
+
+                ],
+                // maxTime: "20:00:00",
+            });
+
+            calendar.render();
+        });
+
+    </script>
+</head>
+<body>
+{% include "header.html" %}
+<div id='calendar'></div>
+
+</body>
+</html>
