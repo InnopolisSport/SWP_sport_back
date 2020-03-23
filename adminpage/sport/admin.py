@@ -7,3 +7,4 @@ admin.site.register(models.Group)
 admin.site.register(models.Quiz)
 admin.site.register(models.SelectedPriority)
 admin.site.register(models.Sport)
+
