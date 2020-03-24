@@ -1,73 +1,184 @@
+from enum import Enum
 from typing import List, Tuple
 
+from ..models.user import Student, Trainer, Admin
 
-def create_user(conn, first_name: str, last_name: str, email: str, user_type: int, course_id: str = None):
+
+class UserTableName(Enum):
+    STUDENT = 'student'
+    TRAINER = 'trainer'
+    ADMIN = 'admin'
+
+
+def __create_user(conn, table_name: UserTableName, first_name: str, last_name: str, email: str):
     """
     Creates new user of any type
+    @param conn - Database connection
+    @param table_name: str - table where to insert created user
+    @param first_name: str - first name of created user
+    @param last_name: str - last name of created user
+    @param email: str - email of created user, should be unique
+    """
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO %s (first_name, last_name, email) VALUES (%s, %s, %s)',
+                   (table_name, first_name, last_name, email))
+    conn.commit()
+
+
+def create_student(conn, first_name: str, last_name: str, email: str):
+    """
+    Creates new student
     @param conn - Database connection
     @param first_name: str - first name of created user
     @param last_name: str - last name of created user
     @param email: str - email of created user, should be unique
-    @param user_type: str - type of created user,
-        type 0 = student
-        type 1 = trainer
-        type 2 = student + trainer
-        type 3 = admin
-    @param course_id: str - course identifier, needed only for students, e. g. 'B18'
     """
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO "user" (first_name, last_name, email, type, course_id) VALUES (%s, %s, %s, %s, %s)',
-                   (first_name, last_name, email, user_type, course_id))
-    conn.commit()
+    __create_user(conn, UserTableName.STUDENT, first_name, last_name, email)
 
 
-def get_students(conn, course_id: str = None) -> List[Tuple[int, str, str, str, str]]:
+def create_trainer(conn, first_name: str, last_name: str, email: str):
+    """
+    Creates new student
+    @param conn - Database connection
+    @param first_name: str - first name of created user
+    @param last_name: str - last name of created user
+    @param email: str - email of created user, should be unique
+    """
+    __create_user(conn, UserTableName.TRAINER, first_name, last_name, email)
+
+
+def create_admin(conn, first_name: str, last_name: str, email: str):
+    """
+    Creates new student
+    @param conn - Database connection
+    @param first_name: str - first name of created user
+    @param last_name: str - last name of created user
+    @param email: str - email of created user, should be unique
+    """
+    __create_user(conn, UserTableName.ADMIN, first_name, last_name, email)
+
+
+def __tuple_to_student(row: Tuple[int, str, str, str]) -> Student:
+    id, first_name, last_name, email = row
+    return Student(id=id, first_name=first_name, last_name=last_name, email=email)
+
+
+def __tuple_to_trainer(row: Tuple[int, str, str, str]) -> Trainer:
+    id, first_name, last_name, email = row
+    return Trainer(id=id, first_name=first_name, last_name=last_name, email=email)
+
+
+def __tuple_to_admin(row: Tuple[int, str, str, str]) -> Admin:
+    id, first_name, last_name, email = row
+    return Admin(id=id, first_name=first_name, last_name=last_name, email=email)
+
+
+def get_students(conn) -> List[Student]:
     """
     Retrieves registered students
     @param conn - Database connection
-    @param course_id: str - particular course identifier, leave empty for choosing all courses
-    @return list of tuples (user_id, first_name, last_name, email, course_id)
+    @return list of all students
     """
     cursor = conn.cursor()
-    if course_id is None:
-        cursor.execute('SELECT id, first_name, last_name, email, course_id FROM "user" WHERE type=0 OR type=2')
-    else:
-        cursor.execute(
-            'SELECT id, first_name, last_name, email, course_id FROM "user" WHERE (type=0 OR type=2) AND course_id=%s',
-            (course_id,))
-    return cursor.fetchall()
+    cursor.execute('SELECT id, first_name, last_name, email FROM %s', (UserTableName.STUDENT,))
+    return list(map(__tuple_to_student, cursor.fetchall()))
 
 
-def get_trainers(conn) -> List[Tuple[int, str, str, str]]:
+def get_trainers(conn) -> List[Trainer]:
     """
-    Retrieves registered trainers / club-leaders
+    Retrieves registered trainers
     @param conn - Database connection
-    @return list of tuples (user_id, first_name, last_name, email)
+    @return list of all trainers
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM "user" WHERE type=1 OR type=2')
-    return cursor.fetchall()
+    cursor.execute('SELECT id, first_name, last_name, email FROM %s', (UserTableName.TRAINER,))
+    return list(map(__tuple_to_trainer, cursor.fetchall()))
 
 
-def get_user(conn, user_id: int) -> Tuple[int, str, str, str, str]:
+def get_admins(conn) -> List[Admin]:
     """
-    Retrieves registered user by its id
+    Retrieves registered administrators
     @param conn - Database connection
-    @param user_id: int - searched user id
-    @return user tuple (user_id, first_name, last_name, email, course_id)
+    @return list of all administrators
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email, course_id FROM "user" WHERE id=%s', (user_id,))
-    return cursor.fetchone()
+    cursor.execute('SELECT id, first_name, last_name, email FROM %s', (UserTableName.ADMIN,))
+    return list(map(__tuple_to_admin, cursor.fetchall()))
 
 
-def find_user_by_email(conn, email: str) -> Tuple[int, str, str, str, str]:
+def get_student(conn, student_id: int) -> Student:
     """
-    Finds registered user by its email
+    Retrieves registered student by its id
     @param conn - Database connection
-    @param email: str - searched user email
-    @return user tuple (user_id, first_name, last_name, email, course_id)
+    @param student_id: int - searched student id
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email, course_id FROM "user" WHERE email=%s', (email,))
-    return cursor.fetchone()
+    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE id=%s',
+                   (UserTableName.STUDENT, student_id))
+    row = cursor.fetchone()
+    return __tuple_to_student(row) if row is not None else None
+
+
+def get_trainer(conn, trainer_id: int) -> Trainer:
+    """
+    Retrieves registered trainer by its id
+    @param conn - Database connection
+    @param trainer_id: int - searched trainer id
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE id=%s',
+                   (UserTableName.TRAINER, trainer_id))
+    row = cursor.fetchone()
+    return __tuple_to_trainer(row) if row is not None else None
+
+
+def get_admin(conn, admin_id: int) -> Admin:
+    """
+    Retrieves registered admin by its id
+    @param conn - Database connection
+    @param admin_id: int - searched admin id
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE id=%s',
+                   (UserTableName.ADMIN, admin_id))
+    row = cursor.fetchone()
+    return __tuple_to_admin(row) if row is not None else None
+
+
+def find_student(conn, email: str) -> Student:
+    """
+    Retrieves registered student by its id
+    @param conn - Database connection
+    @param email: str - searched student email
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE email=%s',
+                   (UserTableName.STUDENT, email))
+    row = cursor.fetchone()
+    return __tuple_to_student(row) if row is not None else None
+
+
+def find_trainer(conn, email: str) -> Trainer:
+    """
+    Retrieves registered trainer by its id
+    @param conn - Database connection
+    @param email: str - searched trainer email
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE email=%s',
+                   (UserTableName.TRAINER, email))
+    row = cursor.fetchone()
+    return __tuple_to_trainer(row) if row is not None else None
+
+
+def find_admin(conn, email: str) -> Admin:
+    """
+    Retrieves registered admin by its id
+    @param conn - Database connection
+    @param email: str - searched admin email
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE email=%s',
+                   (UserTableName.ADMIN, email))
+    row = cursor.fetchone()
+    return __tuple_to_admin(row) if row is not None else None
