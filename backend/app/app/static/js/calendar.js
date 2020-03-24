@@ -2,13 +2,6 @@
 // let d = require("@fullcalendar/daygrid");
 // let t = require("@fullcalendar/timegrid");
 
-function getMonday(d) {
-    d = new Date(d);
-    let day = d.getDay(),
-        diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
-    return new Date(d.setDate(diff))
-}
-
 function sendResults(url, data) {
     let xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
@@ -19,9 +12,10 @@ function sendResults(url, data) {
 }
 
 function enroll(eventClickInfo) {
-    let ans = confirm("Are you sure you want to enroll to " + eventClickInfo.event.title + "?");
+    let group_id = eventClickInfo.event.extendedProps.group_id;
+    let ans = confirm("Are you sure you want to enroll to Group" + group_id + "?");
     if (ans) {
-        sendResults("/enroll", {group_id: 4});
+        sendResults("/enroll", {group_id: group_id});
     }
 }
 
@@ -65,7 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         start: '2020-03-26T08:30:00',
                         end: '2020-03-26T10:00:00',
                         capacity: 35,
-                        currentLoad: 5
+                        currentLoad: 5,
+                        group_id: 1
                     }
                 ]
             },
@@ -77,7 +72,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         start: '2020-03-26T09:15:00',
                         end: '2020-03-26T10:45:00',
                         capacity: 45,
-                        currentLoad: 0
+                        currentLoad: 0,
+                        group_id: 2
                     }
                 ]
             }
