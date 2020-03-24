@@ -22,7 +22,6 @@ function enroll(eventClickInfo) {
 function showCapacity(mouseEnterInfo) {
     let props = mouseEnterInfo.event.extendedProps;
     mouseEnterInfo.el.title = "Available: " + (props.capacity - props.currentLoad) + " / " + props.capacity;
-    mouseEnterInfo.el.showTip();
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -32,9 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
         plugins: ['timeGrid'],
         defaultView: 'timeGridWeek',
         header: {
-            left: '',
-            center: 'title',
+            left: 'title',
+            center: '',
             right: ''
+            // right: 'today, prev, next'
         },
         height: 'auto',
         timeZone: 'Europe/Moscow',
@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // any other event sources...
 
         ],
-        // maxTime: "20:00:00",
     });
 
     calendar.render();
