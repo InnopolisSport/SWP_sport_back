@@ -1,0 +1,11 @@
+{
+  "name": "SWP_sport_back",
+  "version": "1.0.0",
+  "dependencies": {},
+  "devDependencies": {
+    "@fullcalendar/core": "^4.4.0",
+    "@fullcalendar/daygrid": "^4.4.0",
+    "@fullcalendar/timegrid": "^4.4.0",
+    "fullcalendar": "^3.10.1"
+  }
+}
