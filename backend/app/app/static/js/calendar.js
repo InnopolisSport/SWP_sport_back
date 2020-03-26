@@ -3,19 +3,20 @@
 // let t = require("@fullcalendar/timegrid");
 
 function sendResults(url, data) {
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(
-        JSON.stringify(data)
-    );
+    fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            // 'Content-Type': 'application/json'
+        }
+    });
 }
 
 function enroll(eventClickInfo) {
-    let group_id = eventClickInfo.event.extendedProps.group_id;
-    let ans = confirm("Are you sure you want to enroll to Group" + group_id + "?");
+    let group_id = eventClickInfo.event.extendedProps.id;
+    let ans = confirm("Are you sure you want to enroll to Group " + group_id + "?");
     if (ans) {
-        sendResults("/enroll", {group_id: group_id});
+        sendResults("/api/enroll", {group_id: group_id});
     }
 }
 
@@ -47,40 +48,40 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: enroll,
         eventMouseEnter: showCapacity,
         // Event format: yyyy-mm-dd
-        // TODO: create backend for calendar Consider https://fullcalendar.io/docs/events-json-feed
         // TODO: at backend use a loop of 10 standard colors as matplotlib do ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
-        eventSources: [
-
-            // your event source
-            {
-                events: [ // put the array in the `events` property
-                    {
-                        title: 'G1',
-                        start: '2020-03-26T08:30:00',
-                        end: '2020-03-26T10:00:00',
-                        capacity: 35,
-                        currentLoad: 5,
-                        group_id: 1
-                    }
-                ]
-            },
-
-            {
-                events: [ // put the array in the `events` property
-                    {
-                        title: 'G2',
-                        start: '2020-03-26T09:15:00',
-                        end: '2020-03-26T10:45:00',
-                        capacity: 45,
-                        currentLoad: 0,
-                        group_id: 2
-                    }
-                ]
-            }
-
-            // any other event sources...
-
-        ],
+        events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
+        // eventSources: [
+        //
+        //     // your event source
+        //     {
+        //         events: [ // put the array in the `events` property
+        //             {
+        //                 title: 'G1',
+        //                 start: '2020-03-26T08:30:00',
+        //                 end: '2020-03-26T10:00:00',
+        //                 capacity: 35,
+        //                 currentLoad: 5,
+        //                 group_id: 1
+        //             }
+        //         ]
+        //     },
+        //
+        //     {
+        //         events: [ // put the array in the `events` property
+        //             {
+        //                 title: 'G2',
+        //                 start: '2020-03-26T09:15:00',
+        //                 end: '2020-03-26T10:45:00',
+        //                 capacity: 45,
+        //                 currentLoad: 0,
+        //                 group_id: 2
+        //             }
+        //         ]
+        //     }
+        //
+        //     // any other event sources...
+        //
+        // ],
     });
 
     calendar.render();
