@@ -1,6 +1,11 @@
+import logging
 from typing import List
+
 from .crud_users import UserTableName, __tuple_to_student
 from ..models.user import Student
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def get_enrolled_students(conn, group_id: int) -> List[Student]:
@@ -29,3 +34,19 @@ def enroll_students(conn, group_id: int, students: List[int]):
     for student_id in students:
         cursor.execute('INSERT INTO enroll (student_id, group_id) VALUES (%s, %s)', (student_id, group_id))
     conn.commit()
+
+
+def is_enrolled_anywhere(conn, email: str) -> bool:
+    """
+    Retrieves existing sport types
+    @param conn - Database connection
+    @param student_id - student to chech
+    @return list of all enrolled students in a group
+    """
+    cursor = conn.cursor()
+    cursor.execute(f'SELECT count(*) '
+                   f'FROM enroll e, {UserTableName.STUDENT.value} s '
+                   f'WHERE s.email = %s', (email,))
+
+    cnt = cursor.fetchone()[0]
+    return cnt > 0

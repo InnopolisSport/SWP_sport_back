@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ group["name"] }}Schedule</title>
+    <title>{{ sport["name"] }}Schedule</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.css">
@@ -14,7 +14,7 @@
 <body>
 {% include "header.html" %}
 <h1>{{ sport["name"] }}</h1>
-<div id='calendar'></div>
+<div id='calendar' data-sport={{ sport["id"] }}></div>
 
 </body>
 </html>

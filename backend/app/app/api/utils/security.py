@@ -5,7 +5,7 @@ import jwt
 from fastapi import HTTPException, Security, Cookie
 from fastapi.security.oauth2 import OAuthFlowsModel
 from jwt import PyJWTError
-from starlette.status import HTTP_403_FORBIDDEN
+from starlette.status import HTTP_401_UNAUTHORIZED
 
 from app import crud
 from app.core import config
@@ -34,7 +34,7 @@ def process_token(token) -> TokenUser:
         # id_payload = jwt.decode(id_token, verify=False, algorithms=[ALGORITHM])
     except PyJWTError as e:
         raise HTTPException(
-            status_code=HTTP_403_FORBIDDEN, detail=f"Could not validate credentials: {e}"
+            status_code=HTTP_401_UNAUTHORIZED, detail=f"Could not validate credentials: {e}"
         )
     return TokenUser(
         first_name=access_payload["given_name"],
@@ -51,7 +51,7 @@ def get_current_user(
 ) -> TokenUser:
     if token is None:
         raise HTTPException(
-            status_code=HTTP_403_FORBIDDEN, detail="Not authenticated"
+            status_code=HTTP_401_UNAUTHORIZED, detail="Not authenticated"
         )
     return process_token(token)
 
