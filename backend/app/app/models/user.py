@@ -23,34 +23,24 @@ class TokenUser(Base):
         return self.in_group("Students")
 
 
-# Shared properties
-class UserBase(Base):
-    email: Optional[str] = None
-    is_active: Optional[bool] = True
-    is_superuser: Optional[bool] = False
-    full_name: Optional[str] = None
-
-
-class UserBaseInDB(UserBase):
-    id: int = None
-
-
-# Properties to receive via API on creation
-class UserCreate(UserBaseInDB):
+class BaseUser(Base):
+    id: int
+    first_name: str
+    last_name: str
     email: str
-    password: str
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
 
 
-# Properties to receive via API on update
-class UserUpdate(UserBaseInDB):
-    password: Optional[str] = None
-
-
-# Additional properties to return via API
-class User(UserBaseInDB):
+class Trainer(BaseUser):
     pass
 
 
-# Additional properties stored in DB
-class UserInDB(UserBaseInDB):
-    hashed_password: str
+class Student(BaseUser):
+    pass
+
+
+class Admin(BaseUser):
+    pass
