@@ -1,10 +1,11 @@
 from typing import List, Tuple
 from ..models.training import Training
+from datetime import datetime
 
 
-def __tuple_to_training(row: Tuple[int, str, str, int]) -> Training:
-    id, start_timestamp, end_timestamp, group_id = row
-    return Training(id=id, start_timestamp=start_timestamp, end_timestamp=end_timestamp, group_id=group_id)
+def __tuple_to_training(row: Tuple[int, datetime, datetime, int]) -> Training:
+    id, start, end, group_id = row
+    return Training(id=id, start=start, end=end, group_id=group_id)
 
 
 def get_trainings(conn, group_id: int) -> List[Training]:
@@ -15,6 +16,6 @@ def get_trainings(conn, group_id: int) -> List[Training]:
     @return list of all sport types
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, start_timestamp, end_timestamp, group_id FROM training WHERE group_id = %s', (group_id,))
+    cursor.execute('SELECT id, "start", "end", group_id FROM training WHERE group_id = %s', (group_id,))
     rows = cursor.fetchall()
     return list(map(__tuple_to_training, rows))

@@ -20,8 +20,8 @@ def __create_user(conn, table_name: UserTableName, first_name: str, last_name: s
     @param email: str - email of created user, should be unique
     """
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO %s (first_name, last_name, email) VALUES (%s, %s, %s)',
-                   (table_name, first_name, last_name, email))
+    cursor.execute(f'INSERT INTO {table_name.value} (first_name, last_name, email) VALUES (%s, %s, %s)',
+                   (first_name, last_name, email))
     conn.commit()
 
 
@@ -80,7 +80,7 @@ def get_students(conn) -> List[Student]:
     @return list of all students
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM %s', (UserTableName.STUDENT,))
+    cursor.execute(f'SELECT id, first_name, last_name, email FROM {UserTableName.STUDENT.value}')
     return list(map(__tuple_to_student, cursor.fetchall()))
 
 
@@ -91,7 +91,7 @@ def get_trainers(conn) -> List[Trainer]:
     @return list of all trainers
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM %s', (UserTableName.TRAINER,))
+    cursor.execute(f'SELECT id, first_name, last_name, email FROM {UserTableName.TRAINER.value}')
     return list(map(__tuple_to_trainer, cursor.fetchall()))
 
 
@@ -102,7 +102,7 @@ def get_admins(conn) -> List[Admin]:
     @return list of all administrators
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM %s', (UserTableName.ADMIN,))
+    cursor.execute(f'SELECT id, first_name, last_name, email FROM {UserTableName.ADMIN.value}')
     return list(map(__tuple_to_admin, cursor.fetchall()))
 
 
@@ -113,8 +113,9 @@ def get_student(conn, student_id: int) -> Student:
     @param student_id: int - searched student id
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE id=%s',
-                   (UserTableName.STUDENT, student_id))
+    cursor.execute(f'SELECT id, first_name, last_name, email FROM {UserTableName.STUDENT.value} '
+                   f'WHERE id=%s',
+                   (student_id,))
     row = cursor.fetchone()
     return __tuple_to_student(row) if row is not None else None
 
@@ -126,8 +127,9 @@ def get_trainer(conn, trainer_id: int) -> Trainer:
     @param trainer_id: int - searched trainer id
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE id=%s',
-                   (UserTableName.TRAINER, trainer_id))
+    cursor.execute(f'SELECT id, first_name, last_name, email FROM {UserTableName.TRAINER.value} '
+                   f'WHERE id=%s',
+                   (trainer_id,))
     row = cursor.fetchone()
     return __tuple_to_trainer(row) if row is not None else None
 
@@ -139,8 +141,9 @@ def get_admin(conn, admin_id: int) -> Admin:
     @param admin_id: int - searched admin id
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE id=%s',
-                   (UserTableName.ADMIN, admin_id))
+    cursor.execute(f'SELECT id, first_name, last_name, email FROM {UserTableName.ADMIN.value} '
+                   f'WHERE id=%s',
+                   (admin_id,))
     row = cursor.fetchone()
     return __tuple_to_admin(row) if row is not None else None
 
@@ -152,8 +155,9 @@ def find_student(conn, email: str) -> Student:
     @param email: str - searched student email
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE email=%s',
-                   (UserTableName.STUDENT, email))
+    cursor.execute(f'SELECT id, first_name, last_name, email FROM {UserTableName.STUDENT.value} '
+                   f'WHERE email=%s',
+                   (email,))
     row = cursor.fetchone()
     return __tuple_to_student(row) if row is not None else None
 
@@ -165,8 +169,9 @@ def find_trainer(conn, email: str) -> Trainer:
     @param email: str - searched trainer email
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE email=%s',
-                   (UserTableName.TRAINER, email))
+    cursor.execute(f'SELECT id, first_name, last_name, email FROM {UserTableName.TRAINER.value} '
+                   f'WHERE email=%s',
+                   (email,))
     row = cursor.fetchone()
     return __tuple_to_trainer(row) if row is not None else None
 
@@ -178,7 +183,8 @@ def find_admin(conn, email: str) -> Admin:
     @param email: str - searched admin email
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM %s WHERE email=%s',
-                   (UserTableName.ADMIN, email))
+    cursor.execute(f'SELECT id, first_name, last_name, email FROM {UserTableName.ADMIN.value} '
+                   f'WHERE email=%s',
+                   (email,))
     row = cursor.fetchone()
     return __tuple_to_admin(row) if row is not None else None

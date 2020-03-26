@@ -11,9 +11,9 @@ def get_enrolled_students(conn, group_id: int) -> List[Student]:
     @return list of all enrolled students in a group
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT s.id, s.first_name, s.last_name, s.email'
-                   'FROM enrolled e, %s s '
-                   'WHERE s.id = e.student_id AND e.group_id = %s', (UserTableName, group_id))
+    cursor.execute(f'SELECT s.id, s.first_name, s.last_name, s.email '
+                   f'FROM enroll e, {UserTableName.STUDENT.value} s '
+                   f'WHERE s.id = e.student_id AND e.group_id = %s', (group_id,))
     rows = cursor.fetchall()
     return list(map(__tuple_to_student, rows))
 
@@ -27,5 +27,5 @@ def enroll_students(conn, group_id: int, students: List[int]):
     """
     cursor = conn.cursor()
     for student_id in students:
-        cursor.execute('INSERT INTO enrolled (student_id, group_id) VALUES (%s, %s)', (student_id, group_id))
+        cursor.execute('INSERT INTO enroll (student_id, group_id) VALUES (%s, %s)', (student_id, group_id))
     conn.commit()

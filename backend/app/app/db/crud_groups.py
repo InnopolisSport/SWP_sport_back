@@ -40,7 +40,7 @@ def get_groups(conn) -> List[Group]:
         @return list of all groups
         """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, name, sport.name, semester.name, capacity, description, trainer_id'
-                   'FROM group, sport, semester WHERE sport_id = sport.id AND semester_id = semester.id')
+    cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id '
+                   'FROM "group" g, sport, semester WHERE sport_id = sport.id AND semester_id = semester.id')
     rows = cursor.fetchall()
     return list(map(__tuple_to_group, rows))

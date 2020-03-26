@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from .base import Base
 
 
 class Training(Base):
     id: int
-    start_timestamp: str
-    end_timestamp: str
+    start: datetime
+    end: datetime
     group_id: int
