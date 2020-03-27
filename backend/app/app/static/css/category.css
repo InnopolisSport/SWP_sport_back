@@ -2,25 +2,107 @@ body{
 	background-color: #f0f0f0; /* Цвет фона веб-страницы */
 }
 
-img {
-    width: 400px
-    height: auto;
-    background-size: cover;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-}
-
-.crop {
-    width:  400px;
-    height: 400px;
-    overflow: hidden;
-}
-
 .card {
     margin-top: 1%;
     margin-left: 10%;
     margin-right: 10%;
+}
+
+/*
+    Properties for different screen sizes
+*/
+@media only screen and (max-width: 800px) {
+
+    h1 {
+        font-size: 150%;
+    }
+
+    img {
+        width: 200px
+        height: auto;
+        background-size: cover;
+    }
+
+    .crop {
+        width:  200px;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .landscape {
+        display: none;
+    }
+
+    .portrait {
+        display: block;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr
+    }
+
+    .grid-item {
+        margin-bottom: 1rem;
+    }
+}
+
+@media only screen and (min-width: 801px) and (max-width: 1200px) {
+
+    h1 {
+        font-size: 150%;
+    }
+
+    img {
+        width: 200px
+        height: auto;
+        background-size: cover;
+    }
+
+    .crop {
+        width:  200px;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .landscape {
+        display: block;
+    }
+
+    .portrait {
+        display: none;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media only screen and (min-width: 1201px) {
+
+    img {
+        width: 300px
+        height: auto;
+        background-size: cover;
+    }
+
+    .crop {
+        width:  300px;
+        height: 300px;
+        overflow: hidden;
+    }
+
+    .landscape {
+        display: block;
+    }
+
+    .portrait {
+        display: none;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }
