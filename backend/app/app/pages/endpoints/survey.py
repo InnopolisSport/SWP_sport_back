@@ -1,20 +1,15 @@
 from fastapi import APIRouter, Request, Depends
+
+from app.api.utils.security import get_current_user
 from app.pages.utils.jinja import templates
-from app.pages.utils.db import get_db
-from app.db.crud_groups import get_sports
 
 router = APIRouter()
 
 
-@router.get("/survey")
-def survey_page(request: Request, db=Depends(get_db)):
-    return templates.TemplateResponse("survey.html",
+@router.get("/survey/category")
+def survey_type(request: Request, user=Depends(get_current_user)):
+    return templates.TemplateResponse("category.html",
                                       {
                                           "request": request,
-                                          "sports": get_sports(),
-                                          "user": {
-                                              "name": "MYNAME",
-                                              "surname": "MYSURNAME"
-                                          }
-                                      }
-                                      )
+                                          "user": user
+                                      })
