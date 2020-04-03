@@ -36,3 +36,8 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         return responses.RedirectResponse(url=f"/api/login?state=login&redirect_uri={request.url}")
     else:
         return await default_http_exception_handler(request, exc)
+
+
+@app.get("/favicon.ico")
+def get_favicon():
+    return responses.FileResponse("/app/app/static/images/icons/favicon.ico")

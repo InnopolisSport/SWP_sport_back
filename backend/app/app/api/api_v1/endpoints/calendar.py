@@ -14,14 +14,15 @@ router = APIRouter()
 
 
 def convert_training(t: Tuple[str, datetime, datetime, int, int]) -> dict:
+    title, start, end, capacity, group_id = t
     return {
-        "title": t[0],
-        "start": t[1],
-        "end": t[2],
+        "title": title,
+        "start": start,
+        "end": end,
         "extendedProps": {
-            "capacity": t[3],
+            "capacity": capacity,
             "currentLoad": 5,
-            "id": t[4]
+            "id": group_id
         }
     }
 

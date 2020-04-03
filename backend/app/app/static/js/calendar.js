@@ -2,21 +2,102 @@
 // let d = require("@fullcalendar/daygrid");
 // let t = require("@fullcalendar/timegrid");
 
-function sendResults(url, data) {
-    fetch(url, {
+const colors = [
+    '#1f77b4',
+    '#ff7f0e',
+    '#2ca02c',
+    '#d62728',
+    '#9467bd',
+    '#8c564b',
+    '#e377c2',
+    '#7f7f7f',
+    '#bcbd22',
+    '#17becf',
+];
+
+const color_limit = colors.length;
+var color_ptr = 0;
+
+var group_colors = {};
+
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+
+function get_color(group) {
+    if (group_colors.hasOwnProperty(group)) {
+        // Keep it to assign consistent colors
+    } else if (color_ptr < color_limit) {
+        // Start assigning colors from the list
+        group_colors[group] = colors[color_ptr];
+        color_ptr += 1;
+        return group_colors[group];
+    } else {
+        // If it happen that we finished the list - assign random colors
+        group_colors[group] = getRandomColor();
+    }
+    return group_colors[group];
+
+}
+
+async function sendResults(url, data) {
+    let response = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(data),
-        headers: {
-            // 'Content-Type': 'application/json'
-        }
+        // headers: {
+        //     // 'Content-Type': 'application/json'
+        // }
     });
+    return await response.json();
+}
+
+function goto_profile() {
+    window.location.href = "/profile";
 }
 
 function enroll(eventClickInfo) {
+
     let group_id = eventClickInfo.event.extendedProps.id;
     let ans = confirm("Are you sure you want to enroll to Group " + group_id + "?");
     if (ans) {
-        sendResults("/api/enroll", {group_id: group_id});
+        sendResults("/api/enroll", {group_id: group_id})
+            .then(data => {
+                if (data.ok) {
+                    goto_profile();
+                } else {
+                    switch (data.error.code) {
+                        // Have already been enrolled
+                        case 1:
+                            goto_profile();
+                            break;
+                        //The group is full
+                        case 2:
+                            eventClickInfo.el.style.backgroundColor = '#ff0000';
+                            break;
+                    }
+                    alert(data.error.description);
+                }
+            });
+    }
+}
+
+
+function render(info) {
+    let element = info.el;
+    let event = info.event;
+
+    let props = event.extendedProps;
+    let available = props.capacity - props.currentLoad;
+    if (available <= 0) {
+        element.style.backgroundColor = "#ff0000"
+    } else {
+        element.style.backgroundColor = get_color(props.id)
     }
 }
 
@@ -41,47 +122,17 @@ document.addEventListener('DOMContentLoaded', function () {
         timeZone: 'Europe/Moscow',
         firstDay: 1,
         allDaySlot: false,
-        slotDuration: '00:45:00',
-        minTime: '08:30:00',
+        slotDuration: '00:30:00',
+        minTime: '08:00:00',
         maxTime: '21:00:00',
         defaultTimedEventDuration: '01:30',
         eventClick: enroll,
         eventMouseEnter: showCapacity,
+        eventRender: render,
         // Event format: yyyy-mm-dd
         // TODO: at backend use a loop of 10 standard colors as matplotlib do ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
         events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
-        // eventSources: [
-        //
-        //     // your event source
-        //     {
-        //         events: [ // put the array in the `events` property
-        //             {
-        //                 title: 'G1',
-        //                 start: '2020-03-26T08:30:00',
-        //                 end: '2020-03-26T10:00:00',
-        //                 capacity: 35,
-        //                 currentLoad: 5,
-        //                 group_id: 1
-        //             }
-        //         ]
-        //     },
-        //
-        //     {
-        //         events: [ // put the array in the `events` property
-        //             {
-        //                 title: 'G2',
-        //                 start: '2020-03-26T09:15:00',
-        //                 end: '2020-03-26T10:45:00',
-        //                 capacity: 45,
-        //                 currentLoad: 0,
-        //                 group_id: 2
-        //             }
-        //         ]
-        //     }
-        //
-        //     // any other event sources...
-        //
-        // ],
+
     });
 
     calendar.render();

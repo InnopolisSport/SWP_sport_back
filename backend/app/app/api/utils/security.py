@@ -27,7 +27,7 @@ reusable_oauth2 = CookieAuth(
 
 
 def process_token(token) -> TokenUser:
-    logger.debug(f"Access: {token}\n\n")
+    # logger.debug(f"Access: {token}\n\n")
     try:
         # TODO: ask IT dep for verification URL
         access_payload = jwt.decode(token, verify=False, algorithms=[ALGORITHM])

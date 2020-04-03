@@ -22,4 +22,4 @@ class Schedule(models.Model):
         verbose_name_plural = "schedule timeslots"
 
     def __str__(self):
-        return f"{self.group} {self.weekday} {self.start}-{self.end}"
+        return f"{self.group} {self.get_weekday_display()} {self.start}-{self.end}"
