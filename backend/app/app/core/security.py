@@ -1,3 +1,4 @@
+import logging
 from base64 import urlsafe_b64encode
 from typing import Optional
 
@@ -5,11 +6,13 @@ from fastapi import Request
 from fastapi.exceptions import HTTPException
 from fastapi.security.oauth2 import OAuth2, OAuthFlowsModel
 from passlib.context import CryptContext
-from starlette.status import HTTP_403_FORBIDDEN
+from starlette.status import HTTP_401_UNAUTHORIZED
 
 from app.core.config import OAUTH_APP_ID, API_BASE_URL, OAUTH_SHARED_SECRET
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class CookieAuth(OAuth2):
@@ -22,7 +25,7 @@ class CookieAuth(OAuth2):
         if (not authorization_header) and (not authorization_cookie):
             if self.auto_error:
                 raise HTTPException(
-                    status_code=HTTP_403_FORBIDDEN, detail="Not authenticated"
+                    status_code=HTTP_401_UNAUTHORIZED, detail="Not authenticated"
                 )
             else:
                 return None
