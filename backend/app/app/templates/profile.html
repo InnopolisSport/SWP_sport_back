@@ -18,14 +18,19 @@
     <div class="card-header">
         Profile
     </div>
-    <img class="center profile"
+    <!--
+        <img class="center profile"
          src="https://mail.innopolis.ru/owa/service.svc/s/GetPersonaPhoto?email=d.manakovskiy@innopolis.university&size=HR240x240"
          alt="Avatar">
-
+    -->
     <div class="card-body">
         <h1 class="card-title">{{ user["first_name"] }} {{ user["last_name"] }}</h1>
+        <h4 class="card-title">{{ user["role"] }}</h4>
         {% if user.is_student %}
-            <a href="/survey/category" class="btn btn-primary">Choose the group</a>
+            {% if sport_group %}
+                <p>Your sport group is: {{ sport_group }}</p>
+            {% endif %}
+            <a href="/survey/category" class="btn btn-primary">Choose new sport group</a>
         {% endif %}
     </div>
 </div>
