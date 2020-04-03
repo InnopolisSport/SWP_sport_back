@@ -9,10 +9,10 @@ const colors = [
     '#d62728',
     '#9467bd',
     '#8c564b',
-    '#e377c2',
+    '#b4005a',
     '#7f7f7f',
-    '#bcbd22',
-    '#17becf',
+    '#7b7c1f',
+    '#157786',
 ];
 
 const color_limit = colors.length;
@@ -94,6 +94,7 @@ function render(info) {
 
     let props = event.extendedProps;
     let available = props.capacity - props.currentLoad;
+    element.style.fontSize = "99";
     if (available <= 0) {
         element.style.backgroundColor = "#ff0000"
     } else {
