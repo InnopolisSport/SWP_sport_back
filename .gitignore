@@ -4,6 +4,3 @@
 __pycache__/
 /nginx/logs/error.log
 /nginx/logs/access.log
-
-
-backend/app/node_modules/*
