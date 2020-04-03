@@ -2,7 +2,7 @@ import logging
 
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
-from app.db.connection import conn
+from app.db.connection import create_connection
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 max_tries = 60 * 5  # 5 minutes
 wait_seconds = 1
 
+conn = create_connection()
 db_session = conn.cursor()
 
 @retry(
@@ -31,6 +32,7 @@ def main():
     logger.info("Initializing service")
     init()
     logger.info("Service finished initializing")
+    conn.close()
 
 
 if __name__ == "__main__":

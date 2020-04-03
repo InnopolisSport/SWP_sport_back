@@ -164,7 +164,7 @@ iframe {
 
 .container-login100 {
   width: 100%;  
-  min-height: 100vh;
+  min-height: 95vh;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -313,7 +313,7 @@ iframe {
 }
 
 .login100-form-btn:hover {
-  background-color: #1b3815;
+  background-color: #65941e;
 }
 
 

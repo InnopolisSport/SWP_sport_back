@@ -13,6 +13,3 @@ def create_connection():
     except psycopg2.DatabaseError as e:
         print("Connection to database failed", e)
         exit(1)
-
-
-conn = create_connection()

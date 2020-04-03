@@ -1,12 +1,12 @@
-html, body {
+html, body.head {
     margin: 0;
     padding: 0;
 }
 
-header {
+header.head {
     background-color: rgb(128, 188, 39);
 
-    height: 60px;
+    height: 5vh;
 
     display: flex;
     align-items: center;
@@ -14,18 +14,18 @@ header {
 
 }
 
-header img {
+header img.head {
     background-color: white;
     width: 60px;
 
 }
 
-header a {
+header a.head {
     color: white;
     font-size: 20px;
 }
 
-header div {
+header div.head {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
