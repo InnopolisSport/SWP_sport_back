@@ -8,6 +8,11 @@ def get_next_monday() -> date:
     return today + timedelta(days=-today.weekday(), weeks=1)
 
 
+def get_current_monday() -> date:
+    today = date.today()
+    return today - timedelta(days=today.weekday())
+
+
 def generate_trainings(group_id: int, monday: date = None):
     conn = create_connection()
     cursor = conn.cursor()
@@ -35,3 +40,5 @@ def generate_trainings(group_id: int, monday: date = None):
     conn.commit()
     cursor.close()
     conn.close()
+
+# generate_trainings(1, get_current_monday())
