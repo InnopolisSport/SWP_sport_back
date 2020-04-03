@@ -36,17 +36,30 @@ def enroll_students(conn, group_id: int, students: List[int]):
     conn.commit()
 
 
+def reenroll_student(conn, group_id: int, student_id: int):
+    """
+    Enrolls given student in a group, removes all previous enrollments
+    @param conn - Database connection
+    @param group_id - new enrolled group id
+    @param student_id - enrolled student id
+    """
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM enroll WHERE student_id = %s', (student_id,))
+    cursor.execute('INSERT INTO enroll (student_id, group_id) VALUES (%s, %s)', (student_id, group_id))
+    conn.commit()
+
+
 def is_enrolled_anywhere(conn, email: str) -> bool:
     """
     Retrieves existing sport types
     @param conn - Database connection
-    @param student_id - student to chech
+    @param email - student to check
     @return list of all enrolled students in a group
     """
     cursor = conn.cursor()
     cursor.execute(f'SELECT count(*) '
                    f'FROM enroll e, {UserTableName.STUDENT.value} s '
-                   f'WHERE s.email = %s', (email,))
+                   f'WHERE s.email = %s AND e.student_id = s.id', (email,))
 
     cnt = cursor.fetchone()[0]
     return cnt > 0

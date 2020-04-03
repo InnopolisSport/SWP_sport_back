@@ -11,3 +11,7 @@ class Group(Base):
     capacity: int
     description: Optional[str] = ''
     trainer_id: Optional[int] = None
+
+    @property
+    def qualified_name(self):
+        return f'{self.name} ({self.sport_name})'
