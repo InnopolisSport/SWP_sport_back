@@ -58,3 +58,34 @@ def get_groups(conn) -> List[Group]:
                    'FROM "group" g, sport, semester WHERE sport_id = sport.id AND semester_id = semester.id')
     rows = cursor.fetchall()
     return list(map(__tuple_to_group, rows))
+
+
+def get_current_load(conn, group_id: int) -> int:
+    """
+    Retrieves number of enrolled students in a group
+    @param conn - Database connection
+    @param group_id - id of searched group
+    @return number of enrolled students
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT count(*) FROM enroll WHERE group_id = %s', (group_id,))
+    count = cursor.fetchone()[0]
+    return count
+
+
+def get_student_main_group(conn, student_id) -> Group:
+    """
+    Retrieves current primary group, where student is enrolled
+    @param conn - Database connection
+    @param student_id - id of searched user
+    @return number of enrolled students
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id '
+                   'FROM enroll e, "group" g, sport, semester '
+                   'WHERE sport_id = sport.id '
+                   'AND semester_id = semester.id '
+                   'AND e.group_id = g.id '
+                   'AND e.student_id = %s', (student_id,))
+    row = cursor.fetchone()
+    return __tuple_to_group(row) if row is not None else None

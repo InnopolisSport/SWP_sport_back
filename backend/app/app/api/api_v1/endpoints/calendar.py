@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, Path
 
 from app.api.utils.db import get_db
 from app.db.crud_training import get_trainings_in_time
+from app.db.crud_groups import get_current_load
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -13,7 +14,7 @@ logger.setLevel(logging.DEBUG)
 router = APIRouter()
 
 
-def convert_training(t: Tuple[str, datetime, datetime, int, int]) -> dict:
+def convert_training(db, t: Tuple[str, datetime, datetime, int, int]) -> dict:
     title, start, end, capacity, group_id = t
     return {
         "title": title,
@@ -21,7 +22,7 @@ def convert_training(t: Tuple[str, datetime, datetime, int, int]) -> dict:
         "end": end,
         "extendedProps": {
             "capacity": capacity,
-            "currentLoad": 5,
+            "currentLoad": get_current_load(db, group_id),
             "id": group_id
         }
     }
@@ -30,4 +31,4 @@ def convert_training(t: Tuple[str, datetime, datetime, int, int]) -> dict:
 @router.get("/{sport_id}/schedule")
 def get_schedule(db=Depends(get_db), *, sport_id: int = Path(..., gt=0), start: datetime, end: datetime):
     trainings = get_trainings_in_time(db, sport_id, start, end)
-    return list(map(convert_training, trainings))
+    return list(map(lambda training: convert_training(db, training), trainings))
