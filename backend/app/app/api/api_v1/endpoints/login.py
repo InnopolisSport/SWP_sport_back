@@ -12,10 +12,11 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.api.utils.db import get_db
 from app.api.utils.link import form_link
-from app.api.utils.security import get_current_user
+from app.api.utils.security import get_current_user, process_token
 from app.core import config
 from app.core.jwt import create_access_token
 from app.core.security import get_code_retrieve_params, get_token_retrieve_params
+from app.db import find_student, create_student
 from app.models.token import Token, TokenRetrieval
 from app.models.user import TokenUser
 
@@ -72,7 +73,7 @@ def loginSSO(state: str, redirect_uri: str):
 
 @router.get("/get_code/get_code")
 def process_code(code: str, state: str, client_request_id: str = Query(..., alias="client-request-id"),
-                 ):
+                 db=Depends(get_db)):
     state = literal_eval(urlsafe_b64decode(state.encode()).decode())
     if not state["redirect_uri"].startswith(config.BASE_URL):
         raise HTTPException(status_code=400,
@@ -103,6 +104,11 @@ def process_code(code: str, state: str, client_request_id: str = Query(..., alia
                                 "state": state["state"]
                             }
                             )
+    token_user = process_token(tokens.access_token)
+    if token_user.is_student() and find_student(db, token_user.email) is None:
+        create_student(db, token_user.first_name, token_user.last_name, token_user.email)
+
+    # TODO: create trainers and admins
     response = responses.RedirectResponse(
         url=url,
         status_code=302
