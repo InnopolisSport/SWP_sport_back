@@ -22,7 +22,13 @@ def enroll(enroll_req: EnrollRequest, db: Session = Depends(get_db),
            user: TokenUser = Depends(get_current_user)):
     group_id = enroll_req.group_id
     if not user.is_student():
-        pass
+        return responses.JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={
+            "ok": False,
+            "error": {
+                "description": "Not a student account",
+                "code": 3,
+            }
+        })
     student_id = find_student(db, user.email).id
     try:
         reenroll_student(db, group_id, student_id)
