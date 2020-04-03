@@ -1,5 +1,6 @@
 import logging
 
+import psycopg2.errors
 from fastapi import APIRouter, Depends, responses, status
 from sqlalchemy.orm import Session
 
@@ -25,9 +26,23 @@ def enroll(enroll_req: EnrollRequest, db: Session = Depends(get_db),
     if is_enrolled_anywhere(db, user.email):
         return responses.JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={
             "ok": False,
-            "description": "You have already been enrolled to a group"
+            "error": {
+                "description": "You have already been enrolled to a group",
+                "code": 1,
+            }
         })
     else:
         student_id = find_student(db, user.email).id
-        enroll_students(db, group_id, [student_id])
-        return responses.JSONResponse(status_code=status.HTTP_200_OK)
+        try:
+            enroll_students(db, group_id, [student_id])
+        except psycopg2.errors.RaiseException as e:
+            return responses.JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={
+                "ok": False,
+                "error": {
+                    "description": "Group you have chosen already full",
+                    "code": 2,
+                }
+            })
+        return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
+            "ok": True
+        })
