@@ -1,4 +1,5 @@
 from datetime import datetime, date, timedelta
+from typing import Optional
 
 from app.db.connection import create_connection
 
@@ -13,15 +14,28 @@ def get_current_monday() -> date:
     return today - timedelta(days=today.weekday())
 
 
-def generate_trainings(group_id: int, monday: date = None):
-    conn = create_connection()
-    cursor = conn.cursor()
+def generate_trainings(group_id: Optional[int] = None, monday: date = None, conn=None, cursor=None):
+    """
+    Generates trainings for a given group (if given group_id) or for all otherwise,
+    starting with week of given monday (if given) or next week otherwise
+    :param group_id:
+    :param monday:
+    :param conn:
+    :param cursor:
+    """
+    new = False
+    if cursor is None:
+        new = True
+        conn = create_connection()
+        cursor = conn.cursor()
     if monday is None:
         monday = get_next_monday()
-
-    cursor.execute("""SELECT weekday, start, "end" from schedule where group_id=%s""", (group_id,))
+    if group_id is None:
+        cursor.execute("""SELECT weekday, start, "end", group_id from schedule""")
+    else:
+        cursor.execute("""SELECT weekday, start, "end", group_id from schedule where group_id=%s""", (group_id,))
     for schedule in cursor.fetchall():
-        weekday, start, end = schedule
+        weekday, start, end, group_id = schedule
         training_day = monday + timedelta(days=weekday)
 
         training_start = datetime.combine(
@@ -38,7 +52,12 @@ def generate_trainings(group_id: int, monday: date = None):
                        (group_id, training_start, training_end)
                        )
     conn.commit()
-    cursor.close()
-    conn.close()
 
-# generate_trainings(1, get_current_monday())
+    if new:
+        cursor.close()
+        conn.close()
+
+
+generate_trainings(group_id=None,
+                   monday=get_current_monday()
+                   )
