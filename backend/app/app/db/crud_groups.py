@@ -1,6 +1,7 @@
 from typing import List, Tuple, Optional
-from ..models.sport import Sport
+
 from ..models.group import Group
+from ..models.sport import Sport
 
 
 def __tuple_to_sport(row: Tuple[int, str]) -> Sport:
@@ -31,6 +32,19 @@ def get_sports(conn) -> List[Sport]:
     cursor.execute('SELECT id, name FROM sport')
     rows = cursor.fetchall()
     return list(map(__tuple_to_sport, rows))
+
+
+def get_sport_by_id(conn, sport_id: int) -> Optional[Sport]:
+    """
+    Retrieves sport by id if any
+    @param conn - Database connection
+    @param sport_id - An id of sport you want to retrieve
+    @return Sport if sport with given id is present, None otherwise
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, name FROM sport WHERE id = %s', (sport_id,))
+    row = cursor.fetchone()
+    return __tuple_to_sport(row) if row else None
 
 
 def get_groups(conn) -> List[Group]:
