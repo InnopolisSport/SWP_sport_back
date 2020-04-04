@@ -11,6 +11,7 @@ class Group(Base):
     capacity: int
     description: Optional[str] = ''
     trainer_id: Optional[int] = None
+    is_club: bool
 
     @property
     def qualified_name(self):
