@@ -13,6 +13,7 @@ API_V1_STR = "/api"
 DOCS_STR = "/docs"
 REDOC_STR = "/redoc"
 BASE_URL = 'https://helpdesk.innopolis.university'
+BASE_LOCAL_URL = 'http://188.130.155.115'
 API_BASE_URL = BASE_URL + API_V1_STR
 DOCS_BASE_URL = BASE_URL + DOCS_STR
 REDOC_BASE_URL = BASE_URL + REDOC_STR
