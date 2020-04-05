@@ -1,5 +1,5 @@
-body{
-	background-color: #f0f0f0; /* Цвет фона веб-страницы */
+body {
+    background-color: #f0f0f0; /* Цвет фона веб-страницы */
 }
 
 .card {
@@ -24,7 +24,7 @@ body{
     }
 
     .crop {
-        width:  200px;
+        width: 200px;
         height: 200px;
         overflow: hidden;
     }
@@ -45,6 +45,10 @@ body{
     .grid-item {
         margin-bottom: 1rem;
     }
+
+    .dropdown-content {
+        min-width: 200px;
+    }
 }
 
 @media only screen and (min-width: 801px) and (max-width: 1200px) {
@@ -60,7 +64,7 @@ body{
     }
 
     .crop {
-        width:  200px;
+        width: 200px;
         height: 200px;
         overflow: hidden;
     }
@@ -77,6 +81,10 @@ body{
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
     }
+
+    .dropdown-content {
+        min-width: 200px;
+    }
 }
 
 @media only screen and (min-width: 1201px) {
@@ -88,7 +96,7 @@ body{
     }
 
     .crop {
-        width:  300px;
+        width: 300px;
         height: 300px;
         overflow: hidden;
     }
@@ -105,6 +113,10 @@ body{
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
     }
+
+    .dropdown-content {
+        min-width: 300px;
+    }
 }
 
 
@@ -115,10 +127,10 @@ body{
 
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
-    display: none;
     position: absolute;
+    display: none;
     background-color: #f1f1f1;
-    min-width: 160px;
+    /*min-width: 160px;*/
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
