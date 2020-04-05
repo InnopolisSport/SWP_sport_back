@@ -44,12 +44,13 @@
 
             <div class="grid-item">
                 <div class="dropdown">
-                    <a href="#"> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
+                    <a> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
                     <div class="dropdown-content club-dropdown">
                         {% if clubs %}
                             {% for club in clubs %}
                                 <a class="{{ club["id"] }}"
-                                   onclick="enroll({{ club["id"] }}, '{{ club["name"] }}')">{{ club["name"] }}</a>
+                                   href="#"
+                                   onclick="enroll_club({{ club["id"] }}, '{{ club["name"] }}')">{{ club["name"] }}</a>
                             {% endfor %}
                         {% else %}
                             <!-- If change this, don't forget to change the same string in category.js -->
@@ -60,8 +61,8 @@
             </div>
             <div class="grid-item">
                 <div class="dropdown">
-                    <a href="#"> <img class="crop dropdown-image" src="../static/images/categories/iu_trainer.png"
-                                      alt="Trainings with IU trainer"></a>
+                    <a> <img class="crop dropdown-image" src="../static/images/categories/iu_trainer.png"
+                             alt="Trainings with IU trainer"></a>
                     <div class="dropdown-content">
                         {% if sports %}
                             {% for sport in sports %}
@@ -74,8 +75,14 @@
                 </div>
             </div>
             <div class="grid-item">
-                <a href="#"> <img class="crop" src="../static/images/categories/sc_trainer.png"
-                                  alt="Trainings with SC trainer"></a>
+                <div class="dropdown">
+                    <img class="crop"
+                         src="../static/images/categories/sc_trainer.png"
+                         alt="Trainings with SC trainer">
+                    <div class="dropdown-content">
+                        <a href="#" onclick="enroll_sc({{ sc_training_group_id }})">SC Trainings</a>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -89,12 +96,13 @@
             </div>
             <div class="grid-item">
                 <div class="dropdown">
-                    <a href="#"> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
+                    <a> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
                     <div class="dropdown-content club-dropdown">
                         {% if clubs %}
                             {% for club in clubs %}
                                 <a class="{{ club["id"] }}"
-                                   onclick="enroll({{ club["id"] }}, '{{ club["name"] }}')">{{ club["name"] }}</a>
+                                   href="#"
+                                   onclick="enroll_club({{ club["id"] }}, '{{ club["name"] }}')">{{ club["name"] }}</a>
                             {% endfor %}
                         {% else %}
                             <!-- If change this, don't forget to change the same string in category.js -->
@@ -108,8 +116,8 @@
             </div>
             <div class="grid-item">
                 <div class="dropdown">
-                    <a href="#"> <img class="crop dropdown-image" src="../static/images/categories/iu_trainer.png"
-                                      alt="Trainings with IU trainer"></a>
+                    <a> <img class="crop dropdown-image" src="../static/images/categories/iu_trainer.png"
+                             alt="Trainings with IU trainer"></a>
                     <div class="dropdown-content">
                         {% if sports %}
                             {% for sport in sports %}
@@ -125,8 +133,14 @@
                 <h1>SC Trainer</h1>
             </div>
             <div class="grid-item">
-                <a href="#"> <img class="crop" src="../static/images/categories/sc_trainer.png"
-                                  alt="Trainings with SC trainer"></a>
+                <div class="dropdown">
+                    <img class="crop"
+                         src="../static/images/categories/sc_trainer.png"
+                         alt="Trainings with SC trainer">
+                    <div class="dropdown-content">
+                        <a href="#" onclick="enroll_sc({{ sc_training_group_id }})">SC Trainings</a>
+                    </div>
+                </div>
             </div>
 
         </div>

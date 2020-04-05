@@ -1,5 +1,6 @@
 from typing import List, Tuple, Optional
 
+from ..core.config import SC_TRAINERS_GROUP_NAME
 from ..models.group import Group
 from ..models.sport import Sport
 
@@ -104,3 +105,16 @@ def get_student_main_group(conn, student_id) -> Group:
                    'AND e.student_id = %s', (student_id,))
     row = cursor.fetchone()
     return __tuple_to_group(row) if row is not None else None
+
+
+def get_sc_training_group(conn) -> Group:
+    cursor = conn.cursor()
+    cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id, is_club '
+                   'FROM "group" g, sport, semester '
+                   'WHERE sport_id = sport.id '
+                   'AND semester_id = semester.id '
+                   'AND g.name = %s', (SC_TRAINERS_GROUP_NAME,))
+    row = cursor.fetchone()
+    if row is None:
+        raise ValueError("Unable to find SC training group")
+    return __tuple_to_group(row)
