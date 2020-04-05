@@ -64,7 +64,7 @@ function goto_profile() {
 function enroll(eventClickInfo) {
 
     let group_id = eventClickInfo.event.extendedProps.id;
-    let ans = confirm("Are you sure you want to enroll to Group " + group_id + "?");
+    let ans = confirm("Are you sure you want to enroll to group " + eventClickInfo.event.title + "?");
     if (ans) {
         sendResults("/api/enroll", {group_id: group_id})
             .then(data => {

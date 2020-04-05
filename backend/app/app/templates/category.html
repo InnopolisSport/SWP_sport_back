@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="../static/css/category.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.js"></script>
+    <script src="../static/js/category.js"></script>
 </head>
 <body>
 {% include "header.html" %}
@@ -42,24 +43,33 @@
 
 
             <div class="grid-item">
-                <a href="#"> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
+                <div class="dropdown">
+                    <a href="#"> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
+                    <div class="dropdown-content club-dropdown">
+                        {% if clubs %}
+                            {% for club in clubs %}
+                                <a class="{{ club["id"] }}"
+                                   onclick="enroll({{ club["id"] }}, '{{ club["name"] }}')">{{ club["name"] }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <!-- If change this, don't forget to change the same string in category.js -->
+                            <a>No clubs are available</a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
             <div class="grid-item">
                 <div class="dropdown">
                     <a href="#"> <img class="crop dropdown-image" src="../static/images/categories/iu_trainer.png"
                                       alt="Trainings with IU trainer"></a>
                     <div class="dropdown-content">
-                        {% for sport in sports %}
-                            <a href="/calendar/{{ sport["id"] }}">{{ sport["name"] }}</a>
-                        {% endfor %}
-                        <!--
-                        <a href="#">Swimming </a>
-                        <a href="#">Basic strength training </a>
-                        <a href="#">Functional training </a>
-                        <a href="#">General Physical Training with elements of game sports </a>
-                        <a href="#">Stretching </a>
-                        <a href="#">Fitness exercises </a>
-                        -->
+                        {% if sports %}
+                            {% for sport in sports %}
+                                <a href="/calendar/{{ sport["id"] }}">{{ sport["name"] }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <a>No sports are available</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -78,7 +88,20 @@
                 <h1>Student Club</h1>
             </div>
             <div class="grid-item">
-                <a href="#"> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
+                <div class="dropdown">
+                    <a href="#"> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
+                    <div class="dropdown-content club-dropdown">
+                        {% if clubs %}
+                            {% for club in clubs %}
+                                <a class="{{ club["id"] }}"
+                                   onclick="enroll({{ club["id"] }}, '{{ club["name"] }}')">{{ club["name"] }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <!-- If change this, don't forget to change the same string in category.js -->
+                            <a>No clubs are available</a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
             <div class="grid-item">
                 <h1>IU Trainer</h1>
@@ -88,9 +111,13 @@
                     <a href="#"> <img class="crop dropdown-image" src="../static/images/categories/iu_trainer.png"
                                       alt="Trainings with IU trainer"></a>
                     <div class="dropdown-content">
-                        {% for sport in sports %}
-                            <a href="/calendar/{{ sport["id"] }}">{{ sport["name"] }}</a>
-                        {% endfor %}
+                        {% if sports %}
+                            {% for sport in sports %}
+                                <a href="/calendar/{{ sport["id"] }}">{{ sport["name"] }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <a>No sports are available</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -104,5 +131,6 @@
 
         </div>
     </div>
+</div>
 </body>
 </html>
