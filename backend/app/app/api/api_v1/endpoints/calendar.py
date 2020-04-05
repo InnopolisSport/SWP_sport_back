@@ -5,8 +5,8 @@ from typing import Tuple
 from fastapi import APIRouter, Depends, Path
 
 from app.api.utils.db import get_db
-from app.db.crud_training import get_trainings_in_time
 from app.db.crud_groups import get_current_load
+from app.db.crud_training import get_trainings_in_time
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -22,6 +22,7 @@ def convert_training(db, t: Tuple[str, datetime, datetime, int, int]) -> dict:
         "end": end,
         "extendedProps": {
             "capacity": capacity,
+            # TODO: n+1 problem?
             "currentLoad": get_current_load(db, group_id),
             "id": group_id
         }

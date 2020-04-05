@@ -3,7 +3,7 @@ from django.db import models
 
 class Sport(models.Model):
     name = models.CharField(max_length=50, null=False)
-    special = models.BooleanField(default=False, null=False)
+    special = models.BooleanField(default=False, null=False, verbose_name="Special or Club only sport")
 
     class Meta:
         db_table = "sport"
