@@ -18,13 +18,13 @@ function check_empty(list) {
     if (list.childElementCount === 0) {
         const empty_text_node = document.createElement("a");
         empty_text_node.text = "No clubs are available";
-        empty_text_node.href = "#";
+        // empty_text_node.href = "#";
         list.appendChild(empty_text_node);
     }
 }
 
-function enroll(club_id, club_name) {
-    const ans = confirm('Are you sure you want to enroll to club ' + club_name + '?');
+function enroll_club(club_id, club_name) {
+    const ans = confirm('Are you sure you want to enroll to club ' + club_name + ' ?');
     if (ans) {
         sendResults("/api/enroll", {"group_id": club_id})
             .then(data => {
@@ -45,5 +45,19 @@ function enroll(club_id, club_name) {
                     alert(data.error.description);
                 }
             });
+    }
+}
+
+function enroll_sc(group_id) {
+    const ans = confirm('Are you sure you want to enroll to trainings with SC trainers ?');
+    if (ans) {
+        sendResults("/api/enroll", {"group_id": group_id})
+            .then(data => {
+                if (data.ok) {
+                    goto_profile();
+                } else {
+                    alert(data.error.description);
+                }
+            })
     }
 }
