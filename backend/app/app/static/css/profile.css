@@ -3,7 +3,7 @@ body.profile {
     margin: 0px;
     width: 100%;
     height: 100%;
-    background-color:  #f0f0f0;
+    background-color: #f0f0f0;
 }
 
 img.profile {
@@ -37,8 +37,19 @@ a:hover {
     color: #ffffff;
 }
 
-.card {
-    margin-top: 1%;
-    margin-left: 25%;
-    margin-right: 25%;
+@media only screen and (max-width: 800px) {
+    .card {
+        margin-top: 1%;
+        margin-left: 10%;
+        margin-right: 10%;
+    }
 }
+
+@media only screen and (min-width: 801px) {
+    .card {
+        margin-top: 1%;
+        margin-left: 25%;
+        margin-right: 25%;
+    }
+}
+
