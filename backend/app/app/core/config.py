@@ -9,6 +9,8 @@ def getenv_boolean(var_name, default_value=False):
     return result
 
 
+SC_TRAINERS_GROUP_NAME = "SC trainers"
+
 API_V1_STR = "/api"
 DOCS_STR = "/docs"
 REDOC_STR = "/redoc"
