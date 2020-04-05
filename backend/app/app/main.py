@@ -33,7 +33,12 @@ async def db_session_middleware(request: Request, call_next):
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     if exc.status_code == status.HTTP_401_UNAUTHORIZED:
-        return responses.RedirectResponse(url=f"/api/login?state=login&redirect_uri={request.url}")
+        url = str(request.url)
+        if url.startswith(config.BASE_LOCAL_URL):
+            url = config.BASE_URL + url[len(config.BASE_LOCAL_URL):]
+        return responses.RedirectResponse(
+            url=f"/api/login?state=login&redirect_uri={url}")
+
     else:
         return await default_http_exception_handler(request, exc)
 
