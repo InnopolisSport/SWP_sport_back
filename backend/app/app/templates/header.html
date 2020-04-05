@@ -6,16 +6,16 @@
     <title>Document</title>
     <link rel="stylesheet" href="../static/css/header.css">
 </head>
-<body>
-<header>
-    <img src="../static/images/Inno.png" alt="Innopolis University logo">
+<body class="head">
+<header class="head">
+    <img class="head" src="../static/images/Inno.png" alt="Innopolis University logo">
     <div>
         {% if user %}
-        <a id="logout-btn" href="#">Log out</a>
+            <a class="head" href="/profile">{{ user["first_name"] }} {{ user["last_name"] }}</a>
+            <a class="head" id="logout-btn" href="#">Log out</a>
         {% else %}
-        <a href="/api/loginform">Log in</a>
+            <a class="head" href="/api/loginform">Log in</a>
         {% endif %}
-        <!--            <a>Text2</a>-->
     </div>
 </header>
 </body>

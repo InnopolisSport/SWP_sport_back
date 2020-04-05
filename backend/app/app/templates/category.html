@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Survey</title>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap-grid.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap-reboot.css">
+
+    <link rel="stylesheet" href="../static/css/category.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.js"></script>
+    <script src="../static/js/category.js"></script>
+</head>
+<body>
+{% include "header.html" %}
+
+
+<div class="card text-center">
+    <!-- 3 columns for landscape -->
+    <div class="card-body landscape">
+        <div class="grid-container">
+
+            <div class="grid-item">
+                <h1>Student Club</h1>
+            </div>
+            <div class="grid-item">
+                <h1>IU Trainer</h1>
+            </div>
+            <div class="grid-item">
+                <h1>SC Trainer</h1>
+            </div>
+
+
+            <div class="grid-item">
+                <div class="dropdown">
+                    <a> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
+                    <div class="dropdown-content club-dropdown">
+                        {% if clubs %}
+                            {% for club in clubs %}
+                                <a class="{{ club["id"] }}"
+                                   href="#"
+                                   onclick="enroll_club({{ club["id"] }}, '{{ club["name"] }}')">{{ club["name"] }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <!-- If change this, don't forget to change the same string in category.js -->
+                            <a>No clubs are available</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="grid-item">
+                <div class="dropdown">
+                    <a> <img class="crop dropdown-image" src="../static/images/categories/iu_trainer.png"
+                             alt="Trainings with IU trainer"></a>
+                    <div class="dropdown-content">
+                        {% if sports %}
+                            {% for sport in sports %}
+                                <a href="/calendar/{{ sport["id"] }}">{{ sport["name"] }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <a>No sports are available</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="grid-item">
+                <div class="dropdown">
+                    <img class="crop"
+                         src="../static/images/categories/sc_trainer.png"
+                         alt="Trainings with SC trainer">
+                    <div class="dropdown-content">
+                        <a href="#" onclick="enroll_sc({{ sc_training_group_id }})">SC Trainings</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- 1 column for landscape -->
+    <div class="card-body portrait">
+        <div class="grid-container">
+
+            <div class="grid-item">
+                <h1>Student Club</h1>
+            </div>
+            <div class="grid-item">
+                <div class="dropdown">
+                    <a> <img class="crop" src="../static/images/categories/club.png" alt="Trainings in clubs"></a>
+                    <div class="dropdown-content club-dropdown">
+                        {% if clubs %}
+                            {% for club in clubs %}
+                                <a class="{{ club["id"] }}"
+                                   href="#"
+                                   onclick="enroll_club({{ club["id"] }}, '{{ club["name"] }}')">{{ club["name"] }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <!-- If change this, don't forget to change the same string in category.js -->
+                            <a>No clubs are available</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="grid-item">
+                <h1>IU Trainer</h1>
+            </div>
+            <div class="grid-item">
+                <div class="dropdown">
+                    <a> <img class="crop dropdown-image" src="../static/images/categories/iu_trainer.png"
+                             alt="Trainings with IU trainer"></a>
+                    <div class="dropdown-content">
+                        {% if sports %}
+                            {% for sport in sports %}
+                                <a href="/calendar/{{ sport["id"] }}">{{ sport["name"] }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <a>No sports are available</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="grid-item">
+                <h1>SC Trainer</h1>
+            </div>
+            <div class="grid-item">
+                <div class="dropdown">
+                    <img class="crop"
+                         src="../static/images/categories/sc_trainer.png"
+                         alt="Trainings with SC trainer">
+                    <div class="dropdown-content">
+                        <a href="#" onclick="enroll_sc({{ sc_training_group_id }})">SC Trainings</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
