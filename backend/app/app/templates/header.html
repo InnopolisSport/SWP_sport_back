@@ -12,9 +12,9 @@
     <div>
         {% if user %}
             <a class="head" href="/profile">{{ user["first_name"] }} {{ user["last_name"] }}</a>
-            <a class="head" id="logout-btn" href="#">Log out</a>
+<!--            <a class="head" id="logout-btn" href="#">Log out</a>-->
         {% else %}
-            <a class="head" href="/api/loginform">Log in</a>
+            <a class="head" href="/api/loginform">Sign in</a>
         {% endif %}
     </div>
 </header>
