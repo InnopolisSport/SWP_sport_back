@@ -1,7 +1,5 @@
 # [SWP] SportComplex service
 
-TODO: change the database
-
 ## Requirements:
 * Python3
 * Docker
@@ -22,50 +20,66 @@ Swagger documentation is at `localhost:<port>/docs`
 Redoc documentation is at `localhost:<port>/redoc`
 ```
 .
-├── alembic - migration manager
-│   ├── env.py
-│   ├── README
-│   ├── script.py.mako
-│   └── versions - migration folder
-├── alembic.ini
-└── app
-    ├── api - folder for apis
-    │   ├── api_v1 - an API
-    │   │   ├── api.py - main router for an API
-    │   │   ├── endpoints - routers for a particular API group
-    │   │   │   ├── __init__.py
-    │   │   │   ├── items.py
-    │   │   │   ├── login.py
-    │   │   │   ├── ping.py
-    │   │   │   └── users.py
-    │   │   └── __init__.py
-    │   ├── __init__.py
-    │   └── utils
-    │       ├── db.py - common db functional for API
-    │       ├── __init__.py
-    │       └── security.py - common security functional for API
-    ├── backend_pre_start.py - Waiting for a DB to start
-    ├── core - core functionality + config
-    │   ├── config.py
-    │   ├── __init__.py
-    │   ├── jwt.py
-    │   └── security.py
-    ├── crud - CRUD operations on db_models
-    │   ├── __init__.py
-    │   ├── item.py
-    │   └── user.py
-    ├── db - classes for alembic
-    │   ├── base_class.py
-    │   ├── base.py
-    │   ├── init_db.py
-    │   ├── __init__.py
-    │   └── session.py
-    ├── db_models - SQL alchemy models
-    │   ├── __init__.py
-    │   ├── item.py
-    │   └── user.py
-    ├── initial_data.py -- insert some initial data in DB
-    ├── __init__.py
-    ├── main.py
-    └── models -- Pydantic models
+├── adminpage - Adminpage django app.
+│   ├── adminpage
+│   │   ├── __init__.py
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── wsgi.py
+│   ├── constraints.sql - Constraints that must be present at the db
+│   ├── Dockerfile
+│   ├── __init__.py
+│   ├── manage.py
+│   ├── requirements.txt
+│   └── sport
+│       ├── admin.py
+│       ├── apps.py
+│       ├── __init__.py
+│       ├── migrations - auto-generated migrations
+│       ├── models - SQL Alchemy db models
+│       ├── tests.py
+│       └── views.py
+├── backend - FAST API app
+│   ├── app
+│   │   ├── app
+│   │   │   ├── api
+│   │   │   │   ├── api_v1
+│   │   │   │   │   ├── api.py
+│   │   │   │   │   ├── endpoints - folder for API endpoints
+│   │   │   │   │   └── __init__.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── utils - folder for API utilities
+│   │   │   ├── backend_pre_start.py
+│   │   │   ├── core - Core server functionality
+│   │   │   │   ├── config.py - configuration
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── jwt.py - token generation
+│   │   │   │   └── security.py - user verification
+│   │   │   ├── db - folder for CRUD
+│   │   │   ├── __init__.py
+│   │   │   ├── main.py - sever initialization
+│   │   │   ├── models - folder for pydantic models used in the code
+│   │   │   ├── backend_pre_start.py - code to be executed before the server run.
+│   │   │   ├── pages - code connected to page render
+│   │   │   │   ├── endpoints - endpoints for pages
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pages.py
+│   │   │   │   └── utils - utils for page rendering
+│   │   │   ├── static - folder for all static files
+│   │   │   ├── tasks.py - background tasks
+│   │   │   ├── templates - jinja2 templates
+│   │   │   └── tests - folder for pytest tests
+│   │   ├── prestart.sh
+│   │   └── requirements.txt
+│   ├── Dockerfile
+│   └── Dockerfile.db
+├── compose - compose for the project
+│   └── docker-compose.yml
+├── nginx - load balancer and proxy
+│   ├── access.d
+│   ├── conf - configuration folder
+│   ├── Dockerfile
+│   └── logs - log folder
+└── README.md
+
 ```
