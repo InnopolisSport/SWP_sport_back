@@ -1,9 +1,6 @@
 import logging
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-
-from app.api.utils.db import get_db
+from fastapi import APIRouter
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -12,7 +9,5 @@ router = APIRouter()
 
 
 @router.post("/")
-def pong(db: Session = Depends(get_db)):
+def pong():
     return {"pong": True}
-
-
