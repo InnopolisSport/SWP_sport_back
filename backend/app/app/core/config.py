@@ -10,6 +10,7 @@ def getenv_boolean(var_name, default_value=False):
 
 
 SC_TRAINERS_GROUP_NAME = "SC trainers"
+BACHELOR_PREFIX = "B"
 
 API_V1_STR = "/api"
 DOCS_STR = "/docs"
