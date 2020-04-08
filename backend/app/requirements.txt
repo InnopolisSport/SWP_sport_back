@@ -6,12 +6,7 @@ fastapi
 uvicorn
 gunicorn
 pyjwt
-python-multipart
 jinja2
 psycopg2-binary
-alembic
-SQLAlchemy
-email-validator
 aiofiles
-cryptography
 pytest
