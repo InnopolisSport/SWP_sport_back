@@ -3,6 +3,7 @@ from typing import Optional, List
 from pydantic import Field
 
 from .base import Base
+from app.core.config import BACHELOR_PREFIX
 
 
 class TokenUser(Base):
@@ -20,7 +21,7 @@ class TokenUser(Base):
         return self.groups.__contains__(group)
 
     def is_student(self) -> bool:
-        return self.in_group("Students")
+        return self.in_group("Students") and self.role.startswith(BACHELOR_PREFIX)
 
 
 class BaseUser(Base):
