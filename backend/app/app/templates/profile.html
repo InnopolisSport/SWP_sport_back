@@ -27,6 +27,12 @@
         <h1 class="card-title">{{ user["first_name"] }} {{ user["last_name"] }}</h1>
         <h4 class="card-title">{{ user["role"] }}</h4>
         {% if user.is_student %}
+            <!--
+                TODO: add reference to the DB
+                Probably something like this:
+                <p>You have <b>{{ user["hours"] }}</b> hour(s)}</p>
+            -->
+            <p>You have <b>0</b> hour(s)}</p>
             {% if sport_group %}
                 <p>Your sport group is: {{ sport_group }}</p>
             {% endif %}
