@@ -77,5 +77,5 @@ def get_enrollment_mapping(conn) -> List[Tuple[str, str]]:
                    f'LEFT JOIN enroll e ON e.student_id = s.id '
                    f'LEFT JOIN "group" g ON e.group_id = g.id '
                    f'LEFT JOIN semester se ON g.semester_id = se.id '
-                   f'AND se.start = (SELECT max(start) FROM semester)')
+                   f'AND se.id = current_semester()')
     return cursor.fetchall()

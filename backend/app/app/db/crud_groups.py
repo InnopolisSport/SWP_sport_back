@@ -62,17 +62,17 @@ def get_groups(conn, clubs: Optional[bool] = None) -> List[Group]:
     """
     cursor = conn.cursor()
     if clubs is None:
-        cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id, is_club '
-                       'FROM "group" g, sport, semester '
-                       'WHERE start = (SELECT max(start) FROM semester) '
+        cursor.execute('SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club '
+                       'FROM "group" g, sport, semester s '
+                       'WHERE s.id = current_semester() '
                        'AND sport_id = sport.id '
-                       'AND semester_id = semester.id ')
+                       'AND semester_id = s.id ')
     else:
-        cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id, is_club '
-                       'FROM "group" g, sport, semester '
-                       'WHERE start = (SELECT max(start) FROM semester) '
+        cursor.execute('SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club '
+                       'FROM "group" g, sport, semester s '
+                       'WHERE s.id = current_semester() '
                        'AND sport_id = sport.id '
-                       'AND semester_id = semester.id '
+                       'AND semester_id = s.id '
                        'AND is_club = %s', (clubs,))
     rows = cursor.fetchall()
     return list(map(__tuple_to_group, rows))
@@ -99,11 +99,11 @@ def get_student_main_group(conn, student_id) -> Group:
     @return number of enrolled students
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id, is_club '
-                   'FROM enroll e, "group" g, sport, semester '
-                   'WHERE start = (SELECT max(start) FROM semester) '
+    cursor.execute('SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club '
+                   'FROM enroll e, "group" g, sport, semester s '
+                   'WHERE s.id = current_semester() '
                    'AND sport_id = sport.id '
-                   'AND semester_id = semester.id '
+                   'AND semester_id = s.id '
                    'AND e.group_id = g.id '
                    'AND e.student_id = %s', (student_id,))
     row = cursor.fetchone()
@@ -112,11 +112,11 @@ def get_student_main_group(conn, student_id) -> Group:
 
 def get_sc_training_group(conn) -> Group:
     cursor = conn.cursor()
-    cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id, is_club '
-                   'FROM "group" g, sport, semester '
-                   'WHERE start = (SELECT max(start) FROM semester) '
+    cursor.execute('SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club '
+                   'FROM "group" g, sport, semester s '
+                   'WHERE s.id = current_semester() '
                    'AND sport_id = sport.id '
-                   'AND semester_id = semester.id '
+                   'AND semester_id = s.id '
                    'AND g.name = %s', (SC_TRAINERS_GROUP_NAME,))
     row = cursor.fetchone()
     if row is None:

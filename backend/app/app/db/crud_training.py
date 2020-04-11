@@ -27,10 +27,8 @@ def get_trainings_in_time(conn, sport_id: int, start: datetime, end: datetime) \
     cursor = conn.cursor()
     cursor.execute('SELECT g.name, t.start, t."end", g.capacity, g.id '
                    'FROM sport sp '
-                   'JOIN "group" g ON g.sport_id = sp.id '
+                   'JOIN "group" g ON g.sport_id = sp.id AND g.semester_id = current_semester() '
                    'JOIN training t ON t.group_id = g.id '
-                   'JOIN semester se ON g.semester_id = se.id '
-                   'WHERE se.start = (SELECT max(start) FROM semester) '
                    'AND sp.id = %s '
                    'AND t.start >= %s '
                    'AND t.end <= %s', (sport_id, start, end))
