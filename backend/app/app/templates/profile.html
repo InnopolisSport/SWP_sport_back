@@ -28,9 +28,13 @@
         <h4 class="card-title">{{ user["role"] }}</h4>
         {% if user.is_student %}
             {% if sport_group %}
-                <p>Your sport group is: {{ sport_group }}</p>
+                <p>Your sport group for semester <b>{{ semester_name }}</b> is: {{ sport_group }}</p>
             {% endif %}
+            {% if enroll_open %}
             <a href="/survey/category" class="btn btn-primary">Choose new sport group</a>
+            {% else %}
+            <a href="#" class="btn btn-primary disabled">Self-enroll is already closed</a>
+            {% endif %}
         {% endif %}
     </div>
 </div>
