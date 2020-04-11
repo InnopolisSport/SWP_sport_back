@@ -64,12 +64,14 @@ def get_groups(conn, clubs: Optional[bool] = None) -> List[Group]:
     if clubs is None:
         cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id, is_club '
                        'FROM "group" g, sport, semester '
-                       'WHERE sport_id = sport.id '
+                       'WHERE start = (SELECT max(start) FROM semester) '
+                       'AND sport_id = sport.id '
                        'AND semester_id = semester.id ')
     else:
         cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id, is_club '
                        'FROM "group" g, sport, semester '
-                       'WHERE sport_id = sport.id '
+                       'WHERE start = (SELECT max(start) FROM semester) '
+                       'AND sport_id = sport.id '
                        'AND semester_id = semester.id '
                        'AND is_club = %s', (clubs,))
     rows = cursor.fetchall()
@@ -99,7 +101,8 @@ def get_student_main_group(conn, student_id) -> Group:
     cursor = conn.cursor()
     cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id, is_club '
                    'FROM enroll e, "group" g, sport, semester '
-                   'WHERE sport_id = sport.id '
+                   'WHERE start = (SELECT max(start) FROM semester) '
+                   'AND sport_id = sport.id '
                    'AND semester_id = semester.id '
                    'AND e.group_id = g.id '
                    'AND e.student_id = %s', (student_id,))
@@ -111,7 +114,8 @@ def get_sc_training_group(conn) -> Group:
     cursor = conn.cursor()
     cursor.execute('SELECT g.id, g.name, sport.name, semester.name, capacity, description, trainer_id, is_club '
                    'FROM "group" g, sport, semester '
-                   'WHERE sport_id = sport.id '
+                   'WHERE start = (SELECT max(start) FROM semester) '
+                   'AND sport_id = sport.id '
                    'AND semester_id = semester.id '
                    'AND g.name = %s', (SC_TRAINERS_GROUP_NAME,))
     row = cursor.fetchone()
