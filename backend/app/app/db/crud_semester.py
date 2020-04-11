@@ -16,6 +16,6 @@ def get_ongoing_semester(conn) -> Semester:
     @return ongoing semester
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, name, start, "end", choice_deadline FROM semester ORDER BY start DESC LIMIT 1')
+    cursor.execute('SELECT id, name, start, "end", choice_deadline FROM semester WHERE id = current_semester()')
     row = cursor.fetchone()
     return __tuple_to_semester(row) if row is not None else None
