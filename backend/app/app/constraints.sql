@@ -19,14 +19,32 @@ CREATE CONSTRAINT TRIGGER check_group_capacity_trigger
 EXECUTE FUNCTION check_group_capacity();
 
 
+CREATE OR REPLACE FUNCTION current_semester() RETURNS int AS
+$$
+DECLARE
+    semester_id int;
+BEGIN
+    SELECT id INTO STRICT semester_id FROM semester WHERE now() >= start AND now() <= "end" LIMIT 1;
+    RETURN semester_id;
+END;
+$$ LANGUAGE plpgsql;
+
 
 -- valid time intervals
-ALTER TABLE schedule DROP CONSTRAINT IF EXISTS start_before_end;
-ALTER TABLE training DROP CONSTRAINT IF EXISTS start_before_end;
-ALTER TABLE training DROP CONSTRAINT IF EXISTS same_date;
+ALTER TABLE schedule
+    DROP CONSTRAINT IF EXISTS start_before_end;
+ALTER TABLE training
+    DROP CONSTRAINT IF EXISTS start_before_end;
+ALTER TABLE training
+    DROP CONSTRAINT IF EXISTS same_date;
+ALTER TABLE semester
+    DROP CONSTRAINT IF EXISTS start_before_end;
+
 ALTER TABLE schedule
     ADD CONSTRAINT start_before_end CHECK (start < "end");
 ALTER TABLE training
     ADD CONSTRAINT start_before_end CHECK (start < "end");
 ALTER TABLE training
     ADD CONSTRAINT same_date CHECK (date(start) = date("end"));
+ALTER TABLE semester
+    ADD CONSTRAINT start_before_end CHECK (start < "end");
