@@ -2,7 +2,6 @@ import logging
 
 import psycopg2.errors
 from fastapi import APIRouter, Depends, responses, status
-from starlette.status import HTTP_401_UNAUTHORIZED
 
 from app.api.utils.db import get_db
 from app.api.utils.security import get_current_user
@@ -58,7 +57,7 @@ def enroll(enroll_req: EnrollRequest, db=Depends(get_db),
 @router.get('/export_enroll')
 def export_enroll(db=Depends(get_db), user: TokenUser = Depends(get_current_user)):
     if not user.is_admin():
-        return responses.JSONResponse(status_code=HTTP_401_UNAUTHORIZED, content={
+        return responses.JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={
             "ok": False,
             "error": {
                 "description": "Only admin can view enrollment mapping",
