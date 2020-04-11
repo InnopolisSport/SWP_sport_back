@@ -2,11 +2,12 @@ import logging
 
 import psycopg2.errors
 from fastapi import APIRouter, Depends, responses, status
+from starlette.status import HTTP_401_UNAUTHORIZED
 
 from app.api.utils.db import get_db
 from app.api.utils.security import get_current_user
 from app.db import get_ongoing_semester
-from app.db.crud_enrolled import reenroll_student
+from app.db.crud_enrolled import reenroll_student, get_enrollment_mapping
 from app.db.crud_users import find_student
 from app.models.group import EnrollRequest
 from app.models.user import TokenUser
@@ -52,3 +53,17 @@ def enroll(enroll_req: EnrollRequest, db=Depends(get_db),
     return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
         "ok": True
     })
+
+
+@router.get('/export_enroll')
+def export_enroll(db=Depends(get_db), user: TokenUser = Depends(get_current_user)):
+    if not user.is_admin():
+        return responses.JSONResponse(status_code=HTTP_401_UNAUTHORIZED, content={
+            "ok": False,
+            "error": {
+                "description": "Only admin can view enrollment mapping",
+                "code": 1
+            }
+        })
+    # TODO: export as a file
+    return get_enrollment_mapping(db)
