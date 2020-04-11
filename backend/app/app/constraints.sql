@@ -47,4 +47,4 @@ ALTER TABLE training
 ALTER TABLE training
     ADD CONSTRAINT same_date CHECK (date(start) = date("end"));
 ALTER TABLE semester
-    ADD CONSTRAINT start_before_end CHECK (start < "end");
+    ADD CONSTRAINT start_before_end CHECK (start <= choice_deadline AND choice_deadline <= "end");
