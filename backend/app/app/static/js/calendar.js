@@ -72,8 +72,10 @@ function enroll(eventClickInfo) {
                     goto_profile();
                 } else {
                     switch (data.error.code) {
-                        // Have already been enrolled
-                        case 1:
+                        // Not a student account
+                        case 3:
+                        // Deadline passed
+                        case 4:
                             goto_profile();
                             break;
                         //The group is full
