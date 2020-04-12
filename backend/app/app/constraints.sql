@@ -24,11 +24,10 @@ $$
 DECLARE
     semester_id int;
 BEGIN
-    SELECT id INTO STRICT semester_id FROM semester WHERE now() >= start AND now() <= "end" LIMIT 1;
+    SELECT id INTO STRICT semester_id FROM semester WHERE now() >= start ORDER BY start DESC LIMIT 1;
     RETURN semester_id;
 END;
 $$ LANGUAGE plpgsql;
-
 
 -- valid time intervals
 ALTER TABLE schedule
