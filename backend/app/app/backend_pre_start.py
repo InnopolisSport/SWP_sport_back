@@ -32,7 +32,8 @@ def init():
             db_session.execute(f.read())
         conn.commit()
     except Exception as e:
-        logger.warning(e)
+        logger.error(e)
+        raise e
 
 
 def main():
