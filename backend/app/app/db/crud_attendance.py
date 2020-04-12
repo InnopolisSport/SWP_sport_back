@@ -75,6 +75,8 @@ def mark_hours(conn, student_id: int, training_id: id, hours: float):
     @param training_id - searched training id
     @param hours - marked hours
     """
+    if hours <= 0:
+        raise ValueError('Amount of hours should be positive')
     cursor = conn.cursor()
     cursor.execute('INSERT INTO attendance (student_id, training_id, hours) VALUES (%s, %s, %s)',
                    (student_id, training_id, hours))
