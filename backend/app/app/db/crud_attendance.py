@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import List, Tuple, Optional
 
 from ..models.user import Student
-from . import UserTableName
 from .crud_users import __tuple_to_student
 from ..models.attendance import AttendanceSemester, AttendanceTraining
 
@@ -29,12 +28,12 @@ def get_brief_hours(conn, student_id: int) -> List[AttendanceSemester]:
     @return list of tuples (semester, hours)
     """
     cursor = conn.cursor()
-    cursor.execute(f'SELECT s.id, s.name, sum(a.hours) '
-                   f'FROM semester s, training t, "group" g, attendance a '
-                   f'WHERE a.student_id = %s '
-                   f'AND a.training_id = t.id '
-                   f'AND t.group_id = g.id '
-                   f'GROUP BY s.id', (student_id,))
+    cursor.execute('SELECT s.id, s.name, sum(a.hours) '
+                   'FROM semester s, training t, "group" g, attendance a '
+                   'WHERE a.student_id = %s '
+                   'AND a.training_id = t.id '
+                   'AND t.group_id = g.id '
+                   'GROUP BY s.id', (student_id,))
     rows = cursor.fetchall()
     return list(map(__tuple_to_attendance, rows))
 
@@ -49,20 +48,20 @@ def get_detailed_hours(conn, student_id: int, semester_id: Optional[int] = None)
     """
     cursor = conn.cursor()
     if semester_id is None:
-        cursor.execute(f'SELECT g.name, t.start, a.hours '
-                       f'FROM semester s, training t, "group" g, attendance a '
-                       f'WHERE a.student_id = %s '
-                       f'AND a.training_id = t.id '
-                       f'AND t.group_id = g.id '
-                       f'AND g.semester_id = s.id '
-                       f'AND s.start = (SELECT max(start) FROM semester)', (student_id,))
+        cursor.execute('SELECT g.name, t.start, a.hours '
+                       'FROM semester s, training t, "group" g, attendance a '
+                       'WHERE a.student_id = %s '
+                       'AND a.training_id = t.id '
+                       'AND t.group_id = g.id '
+                       'AND g.semester_id = s.id '
+                       'AND s.start = (SELECT max(start) FROM semester)', (student_id,))
     else:
-        cursor.execute(f'SELECT g.name, t.start, a.hours '
-                       f'FROM training t, "group" g, attendance a '
-                       f'WHERE a.student_id = %s '
-                       f'AND a.training_id = t.id '
-                       f'AND t.group_id = g.id '
-                       f'AND g.semester_id = %s', (student_id, semester_id))
+        cursor.execute('SELECT g.name, t.start, a.hours '
+                       'FROM training t, "group" g, attendance a '
+                       'WHERE a.student_id = %s '
+                       'AND a.training_id = t.id '
+                       'AND t.group_id = g.id '
+                       'AND g.semester_id = %s', (student_id, semester_id))
     rows = cursor.fetchall()
     return list(map(__tuple_to_training_attendance, rows))
 
@@ -91,11 +90,11 @@ def get_training_participants(conn, training_id: int) -> List[Student]:
     @return list of students
     """
     cursor = conn.cursor()
-    cursor.execute(f'SELECT s.id, s.first_name, s.last_name, s.email '
-                   f'FROM training t, "group" g, enroll e, {UserTableName.STUDENT.value} s '
-                   f'WHERE t.id = %s '
-                   f'AND g.id = t.group_id '
-                   f'AND e.student_id = s.id '
-                   f'AND e.group_id = g.id', (training_id,))
+    cursor.execute('SELECT s.id, s.first_name, s.last_name, s.email '
+                   'FROM training t, "group" g, enroll e, student s '
+                   'WHERE t.id = %s '
+                   'AND g.id = t.group_id '
+                   'AND e.student_id = s.id '
+                   'AND e.group_id = g.id', (training_id,))
     rows = cursor.fetchall()
     return list(map(__tuple_to_student, rows))
