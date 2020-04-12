@@ -15,12 +15,6 @@ img.profile {
     height: auto;
 }
 
-.btn {
-    background-color: blueviolet;
-    border-color: #ffffff;
-    color: #ffffff;
-}
-
 a:hover {
     color: #ffffff;
 }
