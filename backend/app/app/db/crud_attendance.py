@@ -93,8 +93,20 @@ def get_training_participants(conn, training_id: int) -> List[Student]:
     cursor.execute('SELECT s.id, s.first_name, s.last_name, s.email '
                    'FROM training t, "group" g, enroll e, student s '
                    'WHERE t.id = %s '
+                   'AND s.is_ill = FALSE '
                    'AND g.id = t.group_id '
                    'AND e.student_id = s.id '
                    'AND e.group_id = g.id', (training_id,))
     rows = cursor.fetchall()
     return list(map(__tuple_to_student, rows))
+
+
+def toggle_illness(conn, student_id: int):
+    """
+    Toggles student's illness
+    @param conn - Database connection
+    @param student_id - Searched student id
+    """
+    cursor = conn.cursor()
+    cursor.execute('UPDATE student SET is_ill = not is_ill WHERE id = %s', (student_id,))
+    conn.commit()
