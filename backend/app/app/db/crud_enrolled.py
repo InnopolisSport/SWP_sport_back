@@ -1,5 +1,5 @@
 import logging
-from typing import List, Tuple
+from typing import List
 
 from .crud_users import UserTableName, __tuple_to_student
 from ..models.user import Student
@@ -63,19 +63,3 @@ def is_enrolled_anywhere(conn, email: str) -> bool:
 
     cnt = cursor.fetchone()[0]
     return cnt > 0
-
-
-def get_enrollment_mapping(conn) -> List[Tuple[str, str]]:
-    """
-    Generates report for current semester with all enrolled students
-    @param conn - Database connection
-    @return list of tuples with student email and primary group name
-    """
-    cursor = conn.cursor()
-    cursor.execute(f'SELECT s.email, g.name '
-                   f'FROM {UserTableName.STUDENT.value} s '
-                   f'LEFT JOIN enroll e ON e.student_id = s.id '
-                   f'LEFT JOIN "group" g ON e.group_id = g.id '
-                   f'LEFT JOIN semester se ON g.semester_id = se.id '
-                   f'AND se.id = current_semester()')
-    return cursor.fetchall()
