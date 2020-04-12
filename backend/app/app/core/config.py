@@ -12,6 +12,8 @@ def getenv_boolean(var_name, default_value=False):
 SC_TRAINERS_GROUP_NAME = "SC trainers"
 BACHELOR_PREFIX = "B"
 
+DEBUG = FAKE_LOGIN = getenv_boolean("DEBUG", False)
+
 API_V1_STR = "/api"
 DOCS_STR = "/docs"
 REDOC_STR = "/redoc"
@@ -20,8 +22,6 @@ BASE_LOCAL_URL = 'http://188.130.155.115'
 API_BASE_URL = BASE_URL + API_V1_STR
 DOCS_BASE_URL = BASE_URL + DOCS_STR
 REDOC_BASE_URL = BASE_URL + REDOC_STR
-
-FAKE_LOGIN = getenv_boolean("FAKE_LOGIN", False)
 
 SECRET_KEY = os.getenvb(b"SECRET_KEY")
 if not SECRET_KEY:
