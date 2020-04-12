@@ -28,7 +28,8 @@ def init():
         raise e
 
     try:
-        db_session.execute(open("./app/constraints.sql", "r").read())
+        with open("./app/constraints.sql", "r") as f:
+            db_session.execute(f.read())
         conn.commit()
     except Exception as e:
         logger.warning(e)
