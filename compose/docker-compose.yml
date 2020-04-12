@@ -27,8 +27,6 @@ services:
       - db
     volumes:
       - ../backend/app:/app
-    environment:
-      FAKE_LOGIN: ${SWP_FAKE_LOGIN}
 
   adminpanel:
     build:
