@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Profile</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
     <link rel="stylesheet" href="../static/css/profile.css">
+    <script src="../static/js/profile.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
 
 </head>
 
-{%include "header.html"%}
+{% include "header.html" %}
 
 <body class="profile">
 
@@ -18,21 +19,38 @@
     <div class="card-header">
         Profile
     </div>
-    <!--
-        <img class="center profile"
-         src="https://mail.innopolis.ru/owa/service.svc/s/GetPersonaPhoto?email=d.manakovskiy@innopolis.university&size=HR240x240"
-         alt="Avatar">
-    -->
     <div class="card-body">
         <h1 class="card-title">{{ user["first_name"] }} {{ user["last_name"] }}</h1>
         <h4 class="card-title">{{ user["role"] }}</h4>
         {% if user.is_student %}
-            {% if sport_group %}
-                <p>Your sport group for semester <b>{{ semester_name }}</b> is: {{ sport_group }}</p>
+            <meta id="illness-data" data-ill="{{ student.is_ill }}">
+
+            {% if student["sport_group"] %}
+                <p>
+                    Your sport group for semester <b>{{ common["semester_name"] }}</b>
+                    is: {{ student["sport_group"] }}
+                </p>
             {% endif %}
-            {% if enroll_open %}
-            <a href="/survey/category" class="btn btn-primary">Choose new sport group</a>
-            {% endif %}
+
+
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-sm-3">
+                        {% if student.is_ill %}
+                            <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
+                            </button>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-3">
+                        <a href="/survey/category"
+                           class="btn btn-primary {% if not common["enroll_open"] %}disabled{% endif %}">Choose sport
+                            group</a>
+                    </div>
+                </div>
+            </div>
         {% endif %}
     </div>
 </div>
