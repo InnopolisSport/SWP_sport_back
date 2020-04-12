@@ -12,4 +12,5 @@ class Semester(Base):
 
     @property
     def is_enroll_open(self):
+        # db stores timestamps in the UTC format, so we need to use UTC timezone here
         return datetime.now(timezone.utc) < self.choice_deadline
