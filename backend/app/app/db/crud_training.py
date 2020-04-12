@@ -25,10 +25,12 @@ def get_trainings(conn, group_id: int) -> List[Training]:
 def get_trainings_in_time(conn, sport_id: int, start: datetime, end: datetime) \
         -> List[Tuple[str, datetime, datetime, int, int]]:
     cursor = conn.cursor()
-    cursor.execute('select g.name, t.start, t."end", g.capacity, g.id '
-                   'from sport s '
-                   'join "group" g on g.sport_id = s.id '
-                   'join training t on t.group_id = g.id '
-                   'where s.id = %s and t.start >= %s and t.end <= %s', (sport_id, start, end))
+    cursor.execute('SELECT g.name, t.start, t."end", g.capacity, g.id '
+                   'FROM sport sp '
+                   'JOIN "group" g ON g.sport_id = sp.id AND g.semester_id = current_semester() '
+                   'JOIN training t ON t.group_id = g.id '
+                   'AND sp.id = %s '
+                   'AND t.start >= %s '
+                   'AND t.end <= %s', (sport_id, start, end))
     rows = cursor.fetchall()
     return rows

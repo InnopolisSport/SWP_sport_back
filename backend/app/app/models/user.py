@@ -3,6 +3,7 @@ from typing import Optional, List
 from pydantic import Field
 
 from .base import Base
+from app.core.config import BACHELOR_PREFIX
 
 
 class TokenUser(Base):
@@ -17,10 +18,14 @@ class TokenUser(Base):
         return f"{self.first_name} {self.last_name}"
 
     def in_group(self, group: str) -> bool:
-        return self.groups.__contains__(group)
+        return group in self.groups
 
     def is_student(self) -> bool:
-        return self.in_group("Students")
+        return self.in_group("Students") and self.role.startswith(BACHELOR_PREFIX)
+
+    def is_admin(self) -> bool:
+        # TODO: clarify admin tag
+        return self.in_group("Student Affairs and Development Office")
 
 
 class BaseUser(Base):
@@ -39,7 +44,7 @@ class Trainer(BaseUser):
 
 
 class Student(BaseUser):
-    pass
+    is_ill: bool
 
 
 class Admin(BaseUser):

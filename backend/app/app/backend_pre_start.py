@@ -27,6 +27,13 @@ def init():
         logger.error(e)
         raise e
 
+    try:
+        with open("./app/constraints.sql", "r") as f:
+            db_session.execute(f.read())
+        conn.commit()
+    except Exception as e:
+        logger.warning(e)
+
 
 def main():
     logger.info("Initializing service")

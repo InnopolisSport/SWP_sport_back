@@ -23,4 +23,4 @@ class GroupRequest(models.Model):
         verbose_name_plural = "group requests"
 
     def __str__(self):
-        return f"{self.student.email}"
+        return f"{self.student} -> {self.group}"

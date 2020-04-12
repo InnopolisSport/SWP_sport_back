@@ -11,4 +11,5 @@ class Training(models.Model):
         verbose_name_plural = "trainings"
 
     def __str__(self):
-        return f"{self.group.name}"
+        return f"{self.group} at {self.start.date()} " \
+               f"{self.start.time().strftime('%H:%M')}-{self.end.time().strftime('%H:%M')}"
