@@ -12,6 +12,15 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+
+def getenv_boolean(var_name, default_value=False):
+    result = default_value
+    env_value = os.getenv(var_name)
+    if env_value is not None:
+        result = env_value.upper() in ("TRUE", "1")
+    return result
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,7 +31,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getenv_boolean("DEBUG", default_value=False)
 
 ALLOWED_HOSTS = ['188.130.155.115', 'helpdesk.innopolis.university', 'localhost']
 
