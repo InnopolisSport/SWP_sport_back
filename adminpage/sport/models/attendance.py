@@ -11,4 +11,4 @@ class Attendance(models.Model):
         verbose_name_plural = "attendance"
 
     def __str__(self):
-        return f"student {self.student.id} -> {self.training.id}"
+        return f"{self.student} -> {self.training}, {self.hours} hours"
