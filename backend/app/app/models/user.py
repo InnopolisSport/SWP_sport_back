@@ -44,7 +44,7 @@ class Trainer(BaseUser):
 
 
 class Student(BaseUser):
-    pass
+    is_ill: bool
 
 
 class Admin(BaseUser):

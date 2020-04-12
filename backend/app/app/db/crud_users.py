@@ -12,7 +12,7 @@ def create_student(conn, first_name: str, last_name: str, email: str):
     @param email: str - email of created user, should be unique
     """
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO student (first_name, last_name, email) VALUES (%s, %s, %s)',
+    cursor.execute('INSERT INTO student (first_name, last_name, email, is_ill) VALUES (%s, %s, %s, FALSE)',
                    (first_name, last_name, email))
     conn.commit()
 
@@ -45,9 +45,9 @@ def create_admin(conn, first_name: str, last_name: str, email: str):
     conn.commit()
 
 
-def __tuple_to_student(row: Tuple[int, str, str, str]) -> Student:
-    id, first_name, last_name, email = row
-    return Student(id=id, first_name=first_name, last_name=last_name, email=email)
+def __tuple_to_student(row: Tuple[int, str, str, str, bool]) -> Student:
+    id, first_name, last_name, email, is_ill = row
+    return Student(id=id, first_name=first_name, last_name=last_name, email=email, is_ill=is_ill)
 
 
 def __tuple_to_trainer(row: Tuple[int, str, str, str]) -> Trainer:
@@ -67,7 +67,7 @@ def get_students(conn) -> List[Student]:
     @return list of all students
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM student')
+    cursor.execute('SELECT id, first_name, last_name, email, is_ill FROM student')
     return list(map(__tuple_to_student, cursor.fetchall()))
 
 
@@ -100,7 +100,7 @@ def get_student(conn, student_id: int) -> Student:
     @param student_id: int - searched student id
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM student WHERE id=%s',
+    cursor.execute('SELECT id, first_name, last_name, email, is_ill FROM student WHERE id=%s',
                    (student_id,))
     row = cursor.fetchone()
     return __tuple_to_student(row) if row is not None else None
@@ -139,7 +139,7 @@ def find_student(conn, email: str) -> Student:
     @param email: str - searched student email
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, first_name, last_name, email FROM student WHERE email=%s',
+    cursor.execute('SELECT id, first_name, last_name, email, is_ill FROM student WHERE email=%s',
                    (email,))
     row = cursor.fetchone()
     return __tuple_to_student(row) if row is not None else None
