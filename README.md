@@ -4,6 +4,25 @@
 * Python3
 * Docker
 
+## Environment Variables
+The project require a file `compose/.env` to contain 
+following environment variables:
+
+* `POSTGRES_USER`- Username for the db
+* `POSTGRES_PASSWORD`- database password 
+* `POSTGRES_DB` - database name
+* `POSTGRES_SERVER` - database hostname (`db` - by default)
+* `SECRET_KEY` - a secret key for token verifications
+* `PROJECT_NAME`- project title
+* `DEBUG`- boolean flag for DEBUG mode ( `true` enables fake login and Django debug)
+* `oauth_appID` - application ID for oauth
+* `oauth_shared_secret` - application secret for ouath
+* `oauth_authorization_baseURL`- an URL for user auth
+* `oauth_get_infoURL`- tokeninfo URL
+* `oauth_tokenURL`- an URL to obtain token 
+* `oauth_end_session_endpoint`- end oauth session endpoint
+
+
 ## How to start coding
 1. Clone the repository
 1. Go to repo folder
