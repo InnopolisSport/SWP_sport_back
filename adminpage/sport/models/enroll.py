@@ -11,4 +11,4 @@ class Enroll(models.Model):
         unique_together = (("student", "group"),)
 
     def __str__(self):
-        return f"{self.group.name}: {self.student.email}"
+        return f"{self.student} -> {self.group}"

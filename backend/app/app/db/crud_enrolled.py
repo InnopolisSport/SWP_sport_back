@@ -1,7 +1,7 @@
 import logging
 from typing import List
 
-from .crud_users import UserTableName, __tuple_to_student
+from .crud_users import __tuple_to_student
 from ..models.user import Student
 
 logger = logging.getLogger(__name__)
@@ -16,9 +16,9 @@ def get_enrolled_students(conn, group_id: int) -> List[Student]:
     @return list of all enrolled students in a group
     """
     cursor = conn.cursor()
-    cursor.execute(f'SELECT s.id, s.first_name, s.last_name, s.email '
-                   f'FROM enroll e, {UserTableName.STUDENT.value} s '
-                   f'WHERE s.id = e.student_id AND e.group_id = %s', (group_id,))
+    cursor.execute('SELECT s.id, s.first_name, s.last_name, s.email '
+                   'FROM enroll e, student s '
+                   'WHERE s.id = e.student_id AND e.group_id = %s', (group_id,))
     rows = cursor.fetchall()
     return list(map(__tuple_to_student, rows))
 
@@ -57,9 +57,9 @@ def is_enrolled_anywhere(conn, email: str) -> bool:
     @return list of all enrolled students in a group
     """
     cursor = conn.cursor()
-    cursor.execute(f'SELECT count(*) '
-                   f'FROM enroll e, {UserTableName.STUDENT.value} s '
-                   f'WHERE s.email = %s AND e.student_id = s.id', (email,))
+    cursor.execute('SELECT count(*) '
+                   'FROM enroll e, student s '
+                   'WHERE s.email = %s AND e.student_id = s.id', (email,))
 
     cnt = cursor.fetchone()[0]
     return cnt > 0
