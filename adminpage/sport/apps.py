@@ -5,4 +5,4 @@ class SportConfig(AppConfig):
     name = 'sport'
 
     def ready(self) -> None:
-        pass
+        import sport.signals  # noqa
