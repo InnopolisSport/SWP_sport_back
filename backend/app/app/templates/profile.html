@@ -15,49 +15,80 @@
 
 <body class="profile">
 
-<div class="card text-center">
-    <div class="card-header">
-        Profile
-    </div>
-    <div class="card-body">
-        <h1 class="card-title">{{ user["first_name"] }} {{ user["last_name"] }}</h1>
-        <h4 class="card-title">{{ user["role"] }}</h4>
-        {% if user.is_student %}
-            <meta id="illness-data" data-ill="{{ student.is_ill }}">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <!--
+            Profile section
+        -->
+        <div class="col-sm-8">
+            <div class="card text-center">
+                <div class="card-header">
+                    Profile
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title">{{ user["first_name"] }} {{ user["last_name"] }}</h1>
+                    <h4 class="card-title">{{ user["role"] }}</h4>
+                    {% if user.is_student %}
+                        <meta id="illness-data" data-ill="{{ student.is_ill }}">
 
-            <!--
-                TODO: add reference to the DB
-                Probably something like this:
-                <p>You have <b>{{ user["hours"] }}</b> hour(s)</p>
-            -->
-            <p>You have <b>0</b> hour(s)</p>
-            {% if student["sport_group"] %}
-                <p>
-                    Your sport group for semester <b>{{ common["semester_name"] }}</b>
-                    is: {{ student["sport_group"] }}
-                </p>
-            {% endif %}
-
-
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-sm-3">
-                        {% if student.is_ill %}
-                            <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
-                            </button>
-                        {% else %}
-                            <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
-                            </button>
+                        <!--
+                            TODO: add reference to the DB
+                            Probably something like this:
+                            <p>You have <b>{{ user["hours"] }}</b> hour(s)</p>
+                        -->
+                        <p>You have <b>0</b> hour(s)</p>
+                        {% if student["sport_group"] %}
+                            <p>
+                                Your sport group for semester <b>{{ common["semester_name"] }}</b>
+                                is: {{ student["sport_group"] }}
+                            </p>
                         {% endif %}
-                    </div>
-                    <div class="col-sm-3">
-                        <a href="/survey/category"
-                           class="btn btn-primary {% if not common["enroll_open"] %}disabled{% endif %}">Choose sport
-                            group</a>
-                    </div>
+
+                        <!--
+                            TODO: adjust distance between buttons (e.g. col-sm-6 instead col-sm-3 and add proper css)
+                        -->
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-sm-3">
+                                    {% if student.is_ill %}
+                                        <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
+                                        </button>
+                                    {% endif %}
+                                </div>
+                                <div class="col-sm-3">
+                                    <a href="/survey/category"
+                                       class="btn btn-primary {% if not common["enroll_open"] %}disabled{% endif %}">Choose sport
+                                        group</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
-        {% endif %}
+        </div>
+        <!--
+            Sport schedule section
+        -->
+        <div class="col-sm-2">
+            {% if student["sport_group"] %}
+            <div class="card text-center">
+                <div class="card-header">
+                        {{ student["sport_group"] }}
+                    header
+                </div>
+                <div class="card-body">
+                    <!--
+                        TODO: Add card body for the sport schedule
+                    -->
+                    body
+                </div>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 </body>
