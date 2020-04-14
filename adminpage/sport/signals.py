@@ -1,17 +1,12 @@
-import logging
-
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .models import Semester, Group, Sport, Trainer
 
-logger = logging.getLogger(__name__)
-
 
 @receiver(post_save, sender=Semester)
 def special_groups_create(sender, instance, created, **kwargs):
-    logger.debug("Entered receiver")
     if created:
         # get_or_create returns (object: Model, created: bool)
         other_sport, _ = Sport.objects.get_or_create(name="Other", special=True)
