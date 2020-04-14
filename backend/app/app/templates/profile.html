@@ -25,13 +25,13 @@
         {% if user.is_student %}
             <meta id="illness-data" data-ill="{{ student.is_ill }}">
 
-            {% if student["sport_group"] %}
-                <!--
+            <!--
                 TODO: add reference to the DB
                 Probably something like this:
-                <p>You have <b>{{ user["hours"] }}</b> hour(s)}</p>
-                -->
-                <p>You have <b>0</b> hour(s)}</p>
+                <p>You have <b>{{ user["hours"] }}</b> hour(s)</p>
+            -->
+            <p>You have <b>0</b> hour(s)</p>
+            {% if student["sport_group"] %}
                 <p>
                     Your sport group for semester <b>{{ common["semester_name"] }}</b>
                     is: {{ student["sport_group"] }}
