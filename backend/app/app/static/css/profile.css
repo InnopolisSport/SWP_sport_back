@@ -31,19 +31,116 @@ a:hover {
     color: #ffffff;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 576px) and (max-width: 768px) {
+    .landscape {
+        display: none;
+    }
+
+    .portrait {
+        display: block;
+    }
+
+    .card {
+        margin: 1%;
+    }
+
+    .row {
+        margin-top:1%;
+    }
+}
+
+@media only screen and (min-width: 577px) and (max-width: 768px) {
+    .landscape {
+        display: none;
+    }
+
+    .portrait {
+        display: block;
+    }
+
     .card {
         margin-top: 1%;
         margin-left: 10%;
         margin-right: 10%;
+        margin-bottom: 1%;
+    }
+
+    .row {
+        margin-top:1%;
     }
 }
 
-@media only screen and (min-width: 801px) {
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+    .landscape {
+        display: block;
+    }
+
+    .portrait {
+        display: none;
+    }
+
+    .card {
+        margin-top: 1%;
+        margin-left: 10%;
+        margin-right: 10%;
+        margin-bottom: 1%;
+    }
+
+    .col-md-6.col-left {
+        text-align: right;
+    }
+
+    .col-md-6.col-right {
+        text-align: left;
+    }
+}
+
+@media only screen and (min-width: 993px) and (max-width: 1200px) {
+    .landscape {
+        display: block;
+    }
+
+    .portrait {
+        display: none;
+    }
+
+    .card {
+        margin-top: 1%;
+        margin-left: 10%;
+        margin-right: 10%;
+        margin-bottom: 1%;
+    }
+
+    .col-lg-6.col-left {
+        text-align: right;
+    }
+
+    .col-lg-6.col-right {
+        text-align: left;
+    }
+}
+
+@media only screen and (min-width: 1201px) {
+    .landscape {
+        display: block;
+    }
+
+    .portrait {
+        display: none;
+    }
+
     .card {
         margin-top: 1%;
         margin-left: 20%;
         margin-right: 20%;
+    }
+
+    .col-xl-6.col-left {
+        text-align: right;
+    }
+
+    .col-xl-6.col-right {
+        text-align: left;
     }
 }
 
