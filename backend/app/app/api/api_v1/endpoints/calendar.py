@@ -5,6 +5,7 @@ from typing import Tuple
 from fastapi import APIRouter, Depends, Path
 
 from app.api.utils.db import get_db
+from app.api.utils.tz import convert_from_utc
 from app.db.crud_groups import get_current_load
 from app.db.crud_training import get_trainings_in_time
 
@@ -18,8 +19,8 @@ def convert_training(db, t: Tuple[str, datetime, datetime, int, int]) -> dict:
     title, start, end, capacity, group_id = t
     return {
         "title": title,
-        "start": start,
-        "end": end,
+        "start": convert_from_utc(start),
+        "end": convert_from_utc(end),
         "extendedProps": {
             "capacity": capacity,
             # TODO: n+1 problem?
