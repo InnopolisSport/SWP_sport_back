@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.dispatch.dispatcher import receiver
 
-from .models import Semester, Group, Sport, Trainer
+from sport.models import Semester, Sport, Trainer, Group
 
 
 @receiver(post_save, sender=Semester)

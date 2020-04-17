@@ -1,19 +1,22 @@
-from functools import partial
-from datetime import timedelta
+from datetime import timedelta, date
 
-from django.utils import timezone
 from django.db import models
+from django.utils import timezone
 
 
 def now_offset(offset=0):
     return timezone.now() + timedelta(seconds=offset)
 
 
+def today() -> date:
+    return timezone.now().date()
+
+
 class Semester(models.Model):
     name = models.CharField(max_length=50, null=False, unique=True)
-    start = models.DateTimeField(null=False, default=partial(now_offset, 0))
-    end = models.DateTimeField(null=False, default=partial(now_offset, 2))
-    choice_deadline = models.DateTimeField(null=False, default=partial(now_offset, 1))
+    start = models.DateField(null=False, default=today)
+    end = models.DateField(null=False, default=today)
+    choice_deadline = models.DateField(null=False, default=today)
 
     class Meta:
         db_table = "semester"
