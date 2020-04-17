@@ -38,6 +38,8 @@ ALTER TABLE training
     DROP CONSTRAINT IF EXISTS same_date;
 ALTER TABLE semester
     DROP CONSTRAINT IF EXISTS start_before_end;
+ALTER TABLE attendance
+    DROP CONSTRAINT IF EXISTS positive_hours;
 
 ALTER TABLE schedule
     ADD CONSTRAINT start_before_end CHECK (start < "end");
@@ -47,3 +49,5 @@ ALTER TABLE training
     ADD CONSTRAINT same_date CHECK (date(start) = date("end"));
 ALTER TABLE semester
     ADD CONSTRAINT start_before_end CHECK (start <= choice_deadline AND choice_deadline <= "end");
+ALTER TABLE attendance
+    ADD CONSTRAINT positive_hours CHECK (hours > 0);
