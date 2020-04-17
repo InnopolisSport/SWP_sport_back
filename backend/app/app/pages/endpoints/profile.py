@@ -25,7 +25,7 @@ def login_page(request: Request,
             return logout('/profile')
         student_id = student.id
         group = get_student_main_group(db, student_id)
-        sport_id = group.id if group is not None else None
+        group_id = group.id if group is not None else None
         sport_group = group.qualified_name if group is not None else None
         semester = get_ongoing_semester(db)
 
@@ -40,7 +40,7 @@ def login_page(request: Request,
                 "enroll_open": semester.is_enroll_open,
             },
             "student": {
-                "sport_id": sport_id,
+                "group_id": group_id,
                 "sport_group": sport_group,
                 "hours": hours,
                 **(student.dict())

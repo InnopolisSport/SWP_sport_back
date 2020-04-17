@@ -44,9 +44,9 @@
             <meta id="illness-data" data-ill="{{ student.is_ill }}">
 
             {% if student["hours"] %}
-                <p>You have <b>{{ student["hours"] }} </b> hour(s)</p>
+                <p>You have <strong>{{ student["hours"] }} </strong> hour(s)</p>
             {% else %}
-                <p>You have <b>0</b> hour(s)</p>
+                <p>You have <strong>0</strong> hour(s)</p>
             {% endif %}
             {% if student["sport_group"] %}
             <p>
@@ -99,8 +99,8 @@
             <!--
                  Sport schedule section
             -->
-            {% if student["sport_id"] %}
-            <div id='calendar' data-sport={{ student["sport_id"] }}>
+            {% if student["group_id"] %}
+            <div id='calendar' data-trainings={{ student["group_id"] }}>
             {% endif %}
         </div>
     </div>
