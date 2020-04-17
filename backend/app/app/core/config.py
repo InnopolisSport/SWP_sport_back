@@ -1,5 +1,7 @@
 import os
 
+import pytz
+
 
 def getenv_boolean(var_name, default_value=False):
     result = default_value
@@ -11,6 +13,7 @@ def getenv_boolean(var_name, default_value=False):
 
 SC_TRAINERS_GROUP_NAME = "SC trainers"
 BACHELOR_PREFIX = "B"
+TIMEZONE = pytz.timezone("Europe/Moscow")
 
 DEBUG = FAKE_LOGIN = getenv_boolean("DEBUG", False)
 
