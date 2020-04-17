@@ -1,8 +1,8 @@
 import logging
 from datetime import datetime
-from typing import Tuple
+from typing import Tuple, Optional
 
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Query
 
 from app.api.utils.db import get_db
 from app.api.utils.tz import convert_from_utc
@@ -31,6 +31,7 @@ def convert_training(db, t: Tuple[str, datetime, datetime, int, int]) -> dict:
 
 
 @router.get("/{sport_id}/schedule")
-def get_schedule(db=Depends(get_db), *, sport_id: int = Path(..., gt=0), start: datetime, end: datetime):
+def get_schedule(db=Depends(get_db), *, sport_id: int = Path(..., gt=0), start: datetime, end: datetime,
+                 timezone: Optional[str] = Query(None, alias="timeZone")):
     trainings = get_trainings_in_time(db, sport_id, start, end)
     return list(map(lambda training: convert_training(db, training), trainings))
