@@ -3,7 +3,6 @@ import logging
 from fastapi import FastAPI, status, responses
 from fastapi.exception_handlers import http_exception_handler as default_http_exception_handler
 from fastapi.exceptions import HTTPException
-from fastapi.staticfiles import StaticFiles
 from starlette.requests import Request
 
 from app.api.api_v1.api import api_router
@@ -16,7 +15,6 @@ logger.setLevel(logging.DEBUG)
 
 app = FastAPI(title=config.PROJECT_NAME)
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 app.include_router(pages_router)
 app.include_router(api_router, prefix=config.API_V1_STR)
@@ -42,7 +40,3 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     else:
         return await default_http_exception_handler(request, exc)
 
-
-@app.get("/favicon.ico")
-def get_favicon():
-    return responses.FileResponse("/app/app/static/images/icons/favicon.ico")
