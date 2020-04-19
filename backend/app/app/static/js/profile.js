@@ -153,9 +153,14 @@ async function save_hours() {
     btn.removeClass('disabled')
 }
 
+function round(num, decimal_places) {
+    const decimal = Math.pow(10, decimal_places);
+    return Math.round((num + Number.EPSILON) * decimal) / decimal;
+}
+
 function make_grades_table(grades, duration_milliseconds) {
     // duration_academic_hours = (duration_milliseconds / 3_600_000) * (60 / 45) = duration_milliseconds / 2_700_000
-    const duration_academic_hours = Math.min(10, duration_milliseconds / 2_700_000) // TODO: hardcoded max = 10 (DB issue)
+    let duration_academic_hours = Math.min(10, round(duration_milliseconds / 2_700_000, 2)) // TODO: hardcoded max = 10 (DB issue)
     const table = $('<table class="table table-hover">');
     table.append('<thead>')
         .children('thead')
