@@ -28,6 +28,9 @@ def login_page(request: Request,
         sport_group = group.qualified_name if group is not None else None
         semester = get_ongoing_semester(db)
 
+        student_hours = get_brief_hours(db, student_id)
+        [hours] = [sem.hours for sem in student_hours if sem.semester_id == semester.id]
+
         return templates.TemplateResponse("profile.html", {
             "request": request,
             "user": current_user,
@@ -36,7 +39,9 @@ def login_page(request: Request,
                 "enroll_open": semester.is_enroll_open,
             },
             "student": {
+                "student_id": student_id,
                 "sport_group": sport_group,
+                "hours": hours,
                 **(student.dict())
             },
             "semesters": get_brief_hours(db, student_id)
