@@ -1,10 +1,11 @@
 import logging
 from datetime import datetime
-from typing import List, Tuple, Optional
+from math import floor
+from typing import List, Tuple, Optional, Iterable
 
-from ..models.user import Student
 from .crud_users import __tuple_to_student
 from ..models.attendance import AttendanceSemester, AttendanceTraining
+from ..models.user import Student
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -66,19 +67,31 @@ def get_detailed_hours(conn, student_id: int, semester_id: Optional[int] = None)
     return list(map(__tuple_to_training_attendance, rows))
 
 
-def mark_hours(conn, student_id: int, training_id: id, hours: float):
+def mark_hours(conn, training_id: id, student_hours: Iterable[Tuple[int, float]]):
     """
-    Puts hours for one training session to one student
+    Puts hours for one training session to one student. If hours for session were already put, updates it
+
     @param conn - Database connection
-    @param student_id - searched student id
     @param training_id - searched training id
-    @param hours - marked hours
+    @param student_hours: iterable with items (<student_id:int>, <student_hours:float>)
     """
-    if hours <= 0:
-        raise ValueError('Amount of hours should be positive')
+    for student_id, student_mark in student_hours:
+        if student_id <= 0 or student_mark <= 0.0:
+            raise ValueError(f"All students id and marks must be positive, got {(student_id, student_mark)}")
+        # Currently hours field is numeric(3,2), so
+        # A field with precision 3, scale 2 must round to an absolute value less than 10^1.
+        floor_max = 10
+        if floor(student_mark) >= floor_max:
+            raise ValueError(f"All students marks must floor to less than {floor_max}, "
+                             f"got {student_mark} -> {floor(student_mark)} >= {floor_max}")
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO attendance (student_id, training_id, hours) VALUES (%s, %s, %s)',
-                   (student_id, training_id, hours))
+    args_str = b",".join(
+        cursor.mogrify("(%s, %s, %s)", (student_id, training_id, student_mark))
+        for student_id, student_mark in student_hours
+    )
+    cursor.execute(f'INSERT INTO attendance (student_id, training_id, hours) VALUES {args_str.decode()} '
+                   f'ON CONFLICT ON CONSTRAINT unique_attendance '
+                   f'DO UPDATE set hours=excluded.hours')
     conn.commit()
 
 

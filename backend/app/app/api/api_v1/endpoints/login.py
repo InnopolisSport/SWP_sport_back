@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-@router.post("/login/test-token", tags=["login"], response_model=TokenUser)
+@router.get("/login/test-token", tags=["login"], response_model=TokenUser)
 def test_token(current_user: dict = Depends(get_current_user)):
     """
     Test access token

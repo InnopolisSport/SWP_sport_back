@@ -71,6 +71,19 @@ def get_students(conn) -> List[Student]:
     return list(map(__tuple_to_student, cursor.fetchall()))
 
 
+def clean_students_id(conn, ids: Tuple[int, ...]) -> List[Student]:
+    """
+    Discard ids of non-existing students
+
+    :param conn: Database connection
+    :param ids: List of student's id to verify
+    :return: List of ids of existing users from ids
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, first_name, last_name, email, is_ill FROM student where id in %s', (ids,))
+    return list(map(__tuple_to_student, cursor.fetchall()))
+
+
 def get_trainers(conn) -> List[Trainer]:
     """
     Retrieves registered trainers

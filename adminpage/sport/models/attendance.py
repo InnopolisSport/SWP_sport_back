@@ -15,6 +15,9 @@ class Attendance(models.Model):
     class Meta:
         db_table = "attendance"
         verbose_name_plural = "attendance"
+        constraints = [
+            models.UniqueConstraint(fields=["training", "student"], name="unique_attendance")
+        ]
 
     def __str__(self):
         return f"{self.student} -> {self.training}, {self.hours} hours"
