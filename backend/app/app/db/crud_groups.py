@@ -91,9 +91,9 @@ def get_current_load(conn, group_id: int) -> int:
     return count
 
 
-def get_student_main_group(conn, student_id) -> Group:
+def get_student_groups(conn, student_id) -> List[Group]:
     """
-    Retrieves current primary group, where student is enrolled
+    Retrieves groups, where student is enrolled
     @param conn - Database connection
     @param student_id - id of searched user
     @return number of enrolled students
@@ -106,8 +106,8 @@ def get_student_main_group(conn, student_id) -> Group:
                    'AND semester_id = s.id '
                    'AND e.group_id = g.id '
                    'AND e.student_id = %s', (student_id,))
-    row = cursor.fetchone()
-    return __tuple_to_group(row) if row is not None else None
+    rows = cursor.fetchall()
+    return list(map(__tuple_to_group, rows))
 
 
 def get_sc_training_group(conn) -> Group:

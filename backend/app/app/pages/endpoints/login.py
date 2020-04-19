@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Request, Depends, responses, status
+from fastapi import APIRouter, Request, Depends, responses
 
-from app.api.utils.security import get_current_user_optional
-from app.pages.utils.jinja import templates
+from app.utils.jinja import templates
+from app.utils.security import get_current_user_optional
 
 router = APIRouter()
 

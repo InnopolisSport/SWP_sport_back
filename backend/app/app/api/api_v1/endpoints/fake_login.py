@@ -4,12 +4,12 @@ from fastapi import APIRouter, HTTPException, Depends
 from starlette.responses import JSONResponse, HTMLResponse
 from starlette.status import HTTP_403_FORBIDDEN
 
-from app.api.utils.db import get_db
 from app.core.config import FAKE_LOGIN
 from app.core.jwt import create_access_token
 from app.db.crud_users import find_student, create_student
 from app.models.token import Token
 from app.models.user import TokenUser
+from app.utils.db import get_db
 
 router = APIRouter()
 
