@@ -25,7 +25,7 @@ def login_page(request: Request,
             return logout('/profile')
         student_id = student.id
         groups = get_student_groups(db, student_id)
-        sport_groups = list(map(lambda group:group.qualified_name, groups))
+        sport_groups = list(map(lambda group: group.qualified_name, groups))
         semester = get_ongoing_semester(db)
 
         return templates.TemplateResponse("profile.html", {

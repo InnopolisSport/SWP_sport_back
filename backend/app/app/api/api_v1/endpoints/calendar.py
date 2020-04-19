@@ -77,4 +77,4 @@ def get_student_trainings(db=Depends(get_db),
     if trainer is not None:
         trainer_trainings = get_trainings_for_trainer(db, trainer.id, start, end)
 
-    return list(map(convert_training_profile, student_trainings + trainer_trainings))
+    return list(map(convert_training_profile, set(trainer_trainings + student_trainings)))
