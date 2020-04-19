@@ -5,6 +5,7 @@ from fastapi.params import Path
 
 from app.api.utils.db import get_db
 from app.api.utils.security import get_current_user
+from app.api.utils.tz import convert_from_utc
 from app.db import toggle_illness, find_student, get_detailed_hours
 from app.models.user import TokenUser
 
@@ -42,7 +43,7 @@ def history_semester(db=Depends(get_db),
         return responses.JSONResponse(status_code=200, content={
             "trainings": list(map(lambda x: {
                 "group": x.group,
-                "timestamp": str(x.timestamp),
+                "timestamp": str(convert_from_utc(x.timestamp)),
                 "hours": x.hours
             }, trainings))
         })
