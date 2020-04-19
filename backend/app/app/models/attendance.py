@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import Dict
 
 from pydantic import PositiveInt, PositiveFloat
@@ -15,6 +15,8 @@ class AttendanceTraining(Base):
 class AttendanceSemester(Base):
     semester_id: int
     semester_name: str
+    semester_start: date
+    semester_end: date
     hours: float
 
 

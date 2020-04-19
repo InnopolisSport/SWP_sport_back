@@ -4,7 +4,7 @@ from fastapi import APIRouter, Request, Depends, responses
 
 from app.api.utils.db import get_db
 from app.api.utils.security import get_current_user_optional
-from app.db import get_student_main_group, find_student, get_ongoing_semester
+from app.db import get_student_main_group, find_student, get_ongoing_semester, get_brief_hours
 from app.models.user import TokenUser
 from app.pages.utils.auth import logout
 from app.pages.utils.jinja import templates
@@ -38,7 +38,8 @@ def login_page(request: Request,
             "student": {
                 "sport_group": sport_group,
                 **(student.dict())
-            }
+            },
+            "semesters": get_brief_hours(db, student_id)
         })
 
     return responses.RedirectResponse(url='/login')

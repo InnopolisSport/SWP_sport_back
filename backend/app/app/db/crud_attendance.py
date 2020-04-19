@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, date
 from math import floor
 from typing import List, Tuple, Optional, Iterable
 
@@ -11,9 +11,15 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def __tuple_to_attendance(row: Tuple[int, str, float]) -> AttendanceSemester:
-    semester_id, semester_name, hours = row
-    return AttendanceSemester(semester_id=semester_id, semester_name=semester_name, hours=hours)
+def __tuple_to_attendance(row: Tuple[int, str, date, date, float]) -> AttendanceSemester:
+    semester_id, semester_name, start, end, hours = row
+    return AttendanceSemester(
+        semester_id=semester_id,
+        semester_name=semester_name,
+        semester_start=start,
+        semester_end=end,
+        hours=hours
+    )
 
 
 def __tuple_to_training_attendance(row: Tuple[str, datetime, float]) -> AttendanceTraining:
@@ -29,11 +35,12 @@ def get_brief_hours(conn, student_id: int) -> List[AttendanceSemester]:
     @return list of tuples (semester, hours)
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT s.id, s.name, sum(a.hours) '
+    cursor.execute('SELECT s.id, s.name, s.start, s.end, sum(a.hours) '
                    'FROM semester s, training t, "group" g, attendance a '
                    'WHERE a.student_id = %s '
                    'AND a.training_id = t.id '
                    'AND t.group_id = g.id '
+                   'AND g.semester_id = s.id '
                    'GROUP BY s.id', (student_id,))
     rows = cursor.fetchall()
     return list(map(__tuple_to_attendance, rows))
@@ -50,12 +57,11 @@ def get_detailed_hours(conn, student_id: int, semester_id: Optional[int] = None)
     cursor = conn.cursor()
     if semester_id is None:
         cursor.execute('SELECT g.name, t.start, a.hours '
-                       'FROM semester s, training t, "group" g, attendance a '
+                       'FROM training t, "group" g, attendance a '
                        'WHERE a.student_id = %s '
                        'AND a.training_id = t.id '
                        'AND t.group_id = g.id '
-                       'AND g.semester_id = s.id '
-                       'AND s.start = (SELECT max(start) FROM semester)', (student_id,))
+                       'AND g.semester_id = current_semester() ', (student_id,))
     else:
         cursor.execute('SELECT g.name, t.start, a.hours '
                        'FROM training t, "group" g, attendance a '
@@ -121,5 +127,5 @@ def toggle_illness(conn, student_id: int):
     @param student_id - Searched student id
     """
     cursor = conn.cursor()
-    cursor.execute('UPDATE student SET is_ill = not is_ill WHERE id = %s', (student_id,))
+    cursor.execute('UPDATE student SET is_ill = NOT is_ill WHERE id = %s', (student_id,))
     conn.commit()
