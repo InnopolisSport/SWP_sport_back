@@ -62,7 +62,7 @@ def get_student_trainings(db=Depends(get_db),
         return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
             "ok": False,
             "error": {
-                "description": "Not a student account",
+                "description": "Neither a student account nor a trainer.",
                 "code": 3,
             }
         })
