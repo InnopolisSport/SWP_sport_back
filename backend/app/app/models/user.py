@@ -23,6 +23,9 @@ class TokenUser(Base):
     def is_student(self) -> bool:
         return self.in_group("Students") and self.role.startswith(BACHELOR_PREFIX)
 
+    def is_trainer(self) -> bool:
+        return self.in_group("Школа физической активности для здоровья")
+
     def is_admin(self) -> bool:
         # TODO: clarify admin tag
         return self.in_group("Student Affairs and Development Office")

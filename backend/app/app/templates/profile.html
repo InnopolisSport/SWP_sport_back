@@ -31,6 +31,9 @@
         .fc-event {
             font-size: 1em;
         }
+        .fc-event .fc-content {
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -116,7 +119,7 @@
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-6 col-right">
                         <a href="/survey/category"
-                           class="btn btn-primary {% if not common[" enroll_open"] %}disabled{% endif %}">
+                           class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
                         Choose sport group
                         </a>
                     </div>
@@ -144,7 +147,7 @@
             </div>
             {% endif %}
             {% if student["sport_group"] %}
-            <div id='calendar' data-trainings="{{ student['student_id'] }}">
+            <div id='calendar'>
             {% endif %}
         </div>
     </div>

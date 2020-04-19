@@ -113,7 +113,18 @@ function render(info) {
 
     let props = event.extendedProps;
     element.style.fontSize = "99";
-    element.style.backgroundColor = get_color(props.id)
+    element.style.backgroundColor = get_color(props.id);
+    if (props.can_grade) {
+        element.style.cursor = 'pointer';
+        element.style.backgroundImage = 'url("static/images/categories/sc_trainer.png")';
+        element.style.backgroundPosition = 'right bottom';
+        element.style.backgroundRepeat = 'no-repeat';
+        element.style.backgroundSize = '40%';
+    }
+}
+
+function open_trainer_modal() {
+
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -137,9 +148,10 @@ document.addEventListener('DOMContentLoaded', function () {
         maxTime: '21:00:00',
         defaultTimedEventDuration: '01:30',
         eventRender: render,
+        eventClick: open_trainer_modal,
         // Event format: yyyy-mm-dd
         // TODO: at backend use a loop of 10 standard colors as matplotlib do ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
-        events: '/api/calendar/trainings/' + calendarEl.getAttribute('data-trainings')
+        events: '/api/calendar/trainings'
     });
 
     calendar.render();

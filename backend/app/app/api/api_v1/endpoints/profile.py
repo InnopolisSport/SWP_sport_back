@@ -39,8 +39,6 @@ def toggle_sick(db=Depends(get_db),
     if user.is_student():
         student = find_student(db, user.email)
         trainings = get_detailed_hours(db, student.id, semester_id)
-        logger.info(trainings)
-        logger.info(trainings[0].json())
         return responses.JSONResponse(status_code=200, content={
             "trainings": list(map(lambda x: {
                 "group": x.group,

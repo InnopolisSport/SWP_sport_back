@@ -4,22 +4,66 @@ from typing import List, Tuple
 from ..models.training import Training
 
 
-def __tuple_to_training(row: Tuple[int, datetime, datetime, int]) -> Training:
-    id, start, end, group_id = row
-    return Training(id=id, start=start, end=end, group_id=group_id)
+def __tuple_to_training(row: Tuple[int, datetime, datetime, str]) -> Training:
+    id, start, end, group_name = row
+    return Training(
+        id=id,
+        start=start,
+        end=end,
+        group_name=group_name
+    )
 
 
-def get_trainings(conn, group_id: int) -> List[Training]:
+def __tuple_to_training_for_trainer(row: Tuple[int, datetime, datetime, str]) -> Training:
+    id, start, end, group_name = row
+    return Training(
+        id=id,
+        start=start,
+        end=end,
+        group_name=group_name,
+        can_grade=True
+    )
+
+
+def get_trainings_for_student(conn, student_id: int, start: datetime, end: datetime) -> List[Training]:
     """
-    Retrieves existing training for given group
+    Retrieves existing trainings in the given range for given student
     @param conn - Database connection
-    @param group_id - searched group id
-    @return list of all sport types
+    @param student_id - searched student id
+    @param start - range start date
+    @param end - range end date
+    @return list of trainings for student
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT id, "start", "end", group_id FROM training WHERE group_id = %s', (group_id,))
+    cursor.execute('SELECT t.id, t.start, t."end", g.name '
+                   'FROM training t, enroll e, "group" g '
+                   'WHERE t.start > %s AND t."end" < %s '
+                   'AND t.group_id = g.id '
+                   'AND e.group_id = g.id '
+                   'AND e.student_id = %s '
+                   'AND g.semester_id = current_semester()', (start, end, student_id))
     rows = cursor.fetchall()
     return list(map(__tuple_to_training, rows))
+
+
+def get_trainings_for_trainer(conn, trainer_id: int, start: datetime, end: datetime) -> List[Training]:
+    """
+    Retrieves existing trainings in the given range for given student
+    @param conn - Database connection
+    @param trainer_id - searched trainer id
+    @param start - range start date
+    @param end - range end date
+    @return list of trainings for student
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT t.id, t.start, t."end", g.name '
+                   'FROM training t, "group" g '
+                   'WHERE t.start > %s AND t."end" < %s '
+                   'AND t.group_id = g.id '
+                   'AND g.trainer_id = %s '
+                   'AND g.semester_id = current_semester()', (start, end, trainer_id))
+    rows = cursor.fetchall()
+    return list(map(__tuple_to_training_for_trainer, rows))
 
 
 def get_trainings_in_time(conn, sport_id: int, start: datetime, end: datetime) \
