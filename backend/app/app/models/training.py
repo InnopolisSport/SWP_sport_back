@@ -17,7 +17,8 @@ class Training(Base):
 
     def __eq__(self, other):
         """
-        Equality here ignores can_grade param
+        WARNING!!!
+        Equality here ignores can_grade param!
 
         :param other:
         :return:

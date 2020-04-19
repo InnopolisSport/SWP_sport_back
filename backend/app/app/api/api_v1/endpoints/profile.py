@@ -33,9 +33,9 @@ def toggle_sick(db=Depends(get_db), user: TokenUser = Depends(get_current_user))
 
 
 @router.get("/history/{semester_id}")
-def toggle_sick(db=Depends(get_db),
-                user: TokenUser = Depends(get_current_user),
-                semester_id: int = Path(..., gt=0)):
+def history_semester(db=Depends(get_db),
+                     user: TokenUser = Depends(get_current_user),
+                     semester_id: int = Path(..., gt=0)):
     if user.is_student():
         student = find_student(db, user.email)
         trainings = get_detailed_hours(db, student.id, semester_id)

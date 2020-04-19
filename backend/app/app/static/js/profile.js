@@ -153,7 +153,9 @@ async function save_hours() {
     btn.removeClass('disabled')
 }
 
-function make_grades_table(grades) {
+function make_grades_table(grades, duration_milliseconds) {
+    // duration_academic_hours = (duration_milliseconds / 3_600_000) * (60 / 45) = duration_milliseconds / 2_700_000
+    const duration_academic_hours = Math.min(10, duration_milliseconds / 2_700_000) // TODO: hardcoded max = 10 (DB issue)
     const table = $('<table class="table table-hover">');
     table.append('<thead>')
         .children('thead')
@@ -162,11 +164,12 @@ function make_grades_table(grades) {
         .append('<th scope="col">Student</th><th scope="col">Email</th><th scope="col">Hours</th>');
     const tbody = table.append('<tbody>').children('tbody');
     grades.forEach(({student_id, full_name, email, hours}) => {
+        if (hours === null || hours === 0) hours = duration_academic_hours;
         tbody.append($(`<tr>
                             <td>${full_name}</td>
                             <td>${email}</td>
                             <td style="cursor: pointer"><form onsubmit="return false">
-                            <input type="number" min="0" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="0.01"/>
+                            <input type="number" min="0" max="${duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="0.01"/>
                             </form></td>
                         </tr>`))
     });
@@ -188,7 +191,8 @@ async function open_trainer_modal({event}) {
     modal.empty();
     $('#grading-group-name').text(group_name)
     $('#grading-date').text(start.split('T')[0])
-    modal.append(make_grades_table(grades));
+    const duration = event.end - event.start;
+    modal.append(make_grades_table(grades, duration));
 }
 
 document.addEventListener('DOMContentLoaded', function () {
