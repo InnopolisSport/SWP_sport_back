@@ -78,8 +78,12 @@ const colors = [
 
 const color_limit = colors.length;
 var color_ptr = 0;
-
 var group_colors = {};
+
+function clearColors(info) {
+    group_colors.clear;
+    color_ptr = 0;
+}
 
 function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -124,6 +128,7 @@ function render(info) {
 }
 
 let local_hours_changes = {}
+
 function local_save_hours(e, student_id) {
     $(e).parent().parent().parent().addClass('table-warning')
     local_hours_changes[student_id] = parseFloat(e.value)
@@ -195,8 +200,8 @@ document.addEventListener('DOMContentLoaded', function () {
         header: {
             left: '',
             center: '',
-            right: ''
-            // right: 'today, prev, next'
+            // right: '',
+            right: 'today, prev, next',
         },
         height: 'auto',
         timeZone: 'Europe/Moscow',
@@ -207,9 +212,9 @@ document.addEventListener('DOMContentLoaded', function () {
         maxTime: '21:00:00',
         defaultTimedEventDuration: '01:30',
         eventRender: render,
+        datesRender: clearColors,
         eventClick: open_trainer_modal,
         // Event format: yyyy-mm-dd
-        // TODO: at backend use a loop of 10 standard colors as matplotlib do ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
         events: '/api/calendar/trainings'
     });
 

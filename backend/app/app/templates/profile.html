@@ -50,110 +50,113 @@
             <h1 class="card-title">{{ user["first_name"] }} {{ user["last_name"] }}</h1>
             <h4 class="card-title">{{ user["role"] }}</h4>
             {% if user.is_student %}
-            <meta id="illness-data" data-ill="{{ student.is_ill }}">
+                <meta id="illness-data" data-ill="{{ student.is_ill }}">
 
-            {% if student["sport_groups"]|length > 1 %}
-            <p>
-                Your sport groups for semester <b>{{ common["semester_name"] }}</b>
-                are: {% for group in student["sport_groups"] %} {{ group }}{{ "," if not loop.last }} {% endfor %}
-            </p>
-            {% elif student["sport_groups"]|length == 1 %}
-            <p>
-                Your sport group for semester <b>{{ common["semester_name"] }}</b>
-                is: {{ student["sport_groups"][0] }}
-            </p>
-            {% endif %}
+                {% if student["sport_groups"]|length > 1 %}
+                    <p>
+                        Your sport groups for semester <b>{{ common["semester_name"] }}</b>
+                        are: {% for group in student["sport_groups"] %}
+                        {{ group }}{{ "," if not loop.last }} {% endfor %}
+                    </p>
+                {% elif student["sport_groups"]|length == 1 %}
+                    <p>
+                        Your sport group for semester <b>{{ common["semester_name"] }}</b>
+                        is: {{ student["sport_groups"][0] }}
+                    </p>
+                {% endif %}
 
-            <div class="container">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">Semester</th>
-                        <th scope="col">Start</th>
-                        <th scope="col">End</th>
-                        <th scope="col">Total hours</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for sem in semesters %}
-                    <tr style="cursor: pointer" data-semester-id="{{sem.semester_id}}"
-                        onclick="fetch_detailed_hours(this)" data-toggle="modal"
-                        data-target="#hours-modal-{{sem.semester_id}}">
-                        <th scope="row">{{ sem.semester_name }}</th>
-                        <td>{{ sem.semester_start }}</td>
-                        <td>{{ sem.semester_end }}</td>
-                        <td>{{ sem.hours }}</td>
-                    </tr>
-                    <!-- Modal -->
-                    <div class="modal fade" id="hours-modal-{{sem.semester_id}}" tabindex="-1" role="dialog"
-                         aria-labelledby="hours-modal-{{sem.semester_id}}"
-                         aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="hours-modal-{{sem.semester_id}}-title">Detailed
-                                        statistics for
-                                        {{ sem.semester_name }} </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="spinner-border" role="status"></div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                <div class="container">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Semester</th>
+                            <th scope="col">Start</th>
+                            <th scope="col">End</th>
+                            <th scope="col">Total hours</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for sem in semesters %}
+                            <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
+                                onclick="fetch_detailed_hours(this)" data-toggle="modal"
+                                data-target="#hours-modal-{{ sem.semester_id }}">
+                                <th scope="row">{{ sem.semester_name }}</th>
+                                <td>{{ sem.semester_start }}</td>
+                                <td>{{ sem.semester_end }}</td>
+                                <td>{{ sem.hours }}</td>
+                            </tr>
+                            <!-- Modal -->
+                            <div class="modal fade" id="hours-modal-{{ sem.semester_id }}" tabindex="-1" role="dialog"
+                                 aria-labelledby="hours-modal-{{ sem.semester_id }}"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="hours-modal-{{ sem.semester_id }}-title">
+                                                Detailed
+                                                statistics for
+                                                {{ sem.semester_name }} </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="spinner-border" role="status"></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Ok
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="container landscape">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-6 col-xl-6 col-left">
+                            {% if student.is_ill %}
+                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-xl-6 col-right">
+                            <a href="/survey/category"
+                               class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
+                                Choose sport group
+                            </a>
                         </div>
                     </div>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                </div>
 
-            <div class="container landscape">
-                <div class="row justify-content-center">
-                    <div class="col-md-6 col-lg-6 col-xl-6 col-left">
-                        {% if student.is_ill %}
-                        <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
-                        </button>
-                        {% else %}
-                        <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
-                        </button>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-xl-6 col-right">
-                        <a href="/survey/category"
-                           class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
-                            Choose sport group
-                        </a>
+                <div class="container portrait">
+                    <div class="col">
+                        <div class="row justify-content-center">
+                            {% if student.is_ill %}
+                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div class="row justify-content-center">
+                            <a href="/survey/category"
+                               class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
+                                Choose sport group
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="container portrait">
-                <div class="col">
-                    <div class="row justify-content-center">
-                        {% if student.is_ill %}
-                        <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
-                        </button>
-                        {% else %}
-                        <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
-                        </button>
-                        {% endif %}
-                    </div>
-                    <div class="row justify-content-center">
-                        <a href="/survey/category"
-                           class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
-                            Choose sport group
-                        </a>
-                    </div>
-                </div>
-            </div>
             {% endif %}
-            {% if student["sport_groups"]|length > 1 %}
-            <div id='calendar'></div>
+            {% if student["sport_groups"]|length > 0 %}
+                <div id='calendar'></div>
             {% endif %}
 
             <div class="modal fade" id="grading-modal" tabindex="-1" role="dialog"
@@ -174,7 +177,9 @@
                         </div>
                         <div class="modal-body"></div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="save-hours-btn" onclick="save_hours()">Save</button>
+                            <button type="button" class="btn btn-primary" id="save-hours-btn" data-dismiss="modal"
+                                    onclick="save_hours()">Save
+                            </button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
