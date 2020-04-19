@@ -29,7 +29,7 @@ services:
       - db
     volumes:
       - ../backend/app:/app
-      - fastapi-static:/app/static
+      - fastapi-static:/static
 
   adminpanel:
     build:

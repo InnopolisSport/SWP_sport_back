@@ -4,4 +4,4 @@
 python /app/app/backend_pre_start.py
 
 # Copy statics to Nginx
-cp /app/app/static /app/ -r
+cp /app/app/static / -r
