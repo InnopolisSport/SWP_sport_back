@@ -123,8 +123,67 @@ function render(info) {
     }
 }
 
-function open_trainer_modal() {
+let local_hours_changes = {}
+function local_save_hours(e, student_id) {
+    $(e).parent().parent().parent().addClass('table-warning')
+    local_hours_changes[student_id] = parseFloat(e.value)
+}
 
+async function save_hours() {
+    if (Object.keys(local_hours_changes).length === 0) return;
+    const btn = $('#save-hours-btn')
+    btn.addClass('disabled')
+    const training_id = btn.attr('data-training-id')
+
+    await fetch(`/api/attendance/mark`, {
+        method: 'POST',
+        body: JSON.stringify({
+            training_id,
+            students_hours: local_hours_changes
+        })
+    });
+
+    $('#grading-modal tr').removeClass('table-warning')
+    local_hours_changes = {}
+    btn.removeClass('disabled')
+}
+
+function make_grades_table(grades) {
+    const table = $('<table class="table table-hover">');
+    table.append('<thead>')
+        .children('thead')
+        .append('<tr />')
+        .children('tr')
+        .append('<th scope="col">Student</th><th scope="col">Email</th><th scope="col">Hours</th>');
+    const tbody = table.append('<tbody>').children('tbody');
+    grades.forEach(({student_id, full_name, email, hours}) => {
+        tbody.append($(`<tr>
+                            <td>${full_name}</td>
+                            <td>${email}</td>
+                            <td style="cursor: pointer"><form onsubmit="return false">
+                            <input type="number" min="0" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="0.01"/>
+                            </form></td>
+                        </tr>`))
+    });
+    return table;
+}
+
+async function open_trainer_modal({event}) {
+    if (!event.extendedProps.can_grade) return
+
+    const modal = $('#grading-modal .modal-body');
+    modal.empty();
+    modal.append($('<div class="spinner-border" role="status"></div>'));
+    $('#grading-modal').modal('show');
+    const response = await fetch(`/api/attendance/${event.extendedProps.id}/grades`, {
+        method: 'GET'
+    });
+    $('#save-hours-btn').attr('data-training-id', event.extendedProps.id)
+    const {group_name, start, grades} = await response.json();
+    modal.empty();
+    $('#grading-group-name').text(group_name)
+    $('#grading-date').text(start.split('T')[0])
+    modal.append(make_grades_table(grades));
 }
 
 document.addEventListener('DOMContentLoaded', function () {

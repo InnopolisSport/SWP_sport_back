@@ -3,9 +3,7 @@ from datetime import datetime, date
 from math import floor
 from typing import List, Tuple, Optional, Iterable
 
-from .crud_users import __tuple_to_student
 from ..models.attendance import AttendanceSemester, AttendanceTraining
-from ..models.user import Student
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -99,25 +97,6 @@ def mark_hours(conn, training_id: id, student_hours: Iterable[Tuple[int, float]]
                    f'ON CONFLICT ON CONSTRAINT unique_attendance '
                    f'DO UPDATE set hours=excluded.hours')
     conn.commit()
-
-
-def get_training_participants(conn, training_id: int) -> List[Student]:
-    """
-    Retrieves all students, who should come to the training
-    @param conn - Database connection
-    @param training_id - Searched training id
-    @return list of students
-    """
-    cursor = conn.cursor()
-    cursor.execute('SELECT s.id, s.first_name, s.last_name, s.email '
-                   'FROM training t, "group" g, enroll e, student s '
-                   'WHERE t.id = %s '
-                   'AND s.is_ill = FALSE '
-                   'AND g.id = t.group_id '
-                   'AND e.student_id = s.id '
-                   'AND e.group_id = g.id', (training_id,))
-    rows = cursor.fetchall()
-    return list(map(__tuple_to_student, rows))
 
 
 def toggle_illness(conn, student_id: int):
