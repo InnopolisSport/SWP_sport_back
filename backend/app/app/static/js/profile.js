@@ -117,7 +117,7 @@ function render(info) {
 
     let props = event.extendedProps;
     element.style.fontSize = "99";
-    element.style.backgroundColor = get_color(props.id);
+    element.style.backgroundColor = get_color(event.title);
     if (props.can_grade) {
         element.style.cursor = 'pointer';
         element.style.backgroundImage = 'url("static/images/categories/sc_trainer.png")';
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
         maxTime: '21:00:00',
         defaultTimedEventDuration: '01:30',
         eventRender: render,
-        datesRender: clearColors,
+        // datesRender: clearColors,
         eventClick: open_trainer_modal,
         // Event format: yyyy-mm-dd
         events: '/api/calendar/trainings'
