@@ -31,6 +31,7 @@
         .fc-event {
             font-size: 1em;
         }
+
         .fc-event .fc-content {
             color: #fff;
         }
@@ -40,7 +41,6 @@
 {% include "header.html" %}
 
 <body class="profile">
-
 <div class="container-fluid">
     <div class="card text-center">
         <div class="card-header">
@@ -52,10 +52,15 @@
             {% if user.is_student %}
             <meta id="illness-data" data-ill="{{ student.is_ill }}">
 
-            {% if student["sport_group"] %}
+            {% if student["sport_groups"]|length > 1 %}
+            <p>
+                Your sport groups for semester <b>{{ common["semester_name"] }}</b>
+                are: {% for group in student["sport_groups"] %} {{ group }}{{ "," if not loop.last }} {% endfor %}
+            </p>
+            {% elif student["sport_groups"]|length == 1 %}
             <p>
                 Your sport group for semester <b>{{ common["semester_name"] }}</b>
-                is: {{ student["sport_group"] }}
+                is: {{ student["sport_groups"][0] }}
             </p>
             {% endif %}
 
@@ -120,7 +125,7 @@
                     <div class="col-md-6 col-lg-6 col-xl-6 col-right">
                         <a href="/survey/category"
                            class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
-                        Choose sport group
+                            Choose sport group
                         </a>
                     </div>
                 </div>
@@ -146,8 +151,8 @@
                 </div>
             </div>
             {% endif %}
-            {% if student["sport_group"] %}
-            <div id='calendar'>
+            {% if student["sport_groups"]|length > 1 %}
+            <div id='calendar'></div>
             {% endif %}
         </div>
     </div>
