@@ -3,11 +3,11 @@ import logging
 from fastapi import APIRouter, Depends, responses
 from fastapi.params import Path
 
-from app.api.utils.db import get_db
-from app.api.utils.security import get_current_user
-from app.api.utils.tz import convert_from_utc
 from app.db import toggle_illness, find_student, get_detailed_hours
 from app.models.user import TokenUser
+from app.utils.db import get_db
+from app.utils.security import get_current_user
+from app.utils.tz import convert_from_utc
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

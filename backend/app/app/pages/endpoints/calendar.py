@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Request, Depends, HTTPException, Path
 
-from app.api.utils.security import get_current_user
 from app.db.crud_groups import get_sport_by_id
-from app.pages.utils.db import get_db
-from app.pages.utils.jinja import templates
+from app.utils.db import get_db
+from app.utils.jinja import templates
+from app.utils.security import get_current_user
 
 router = APIRouter()
 

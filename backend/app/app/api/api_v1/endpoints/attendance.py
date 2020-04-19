@@ -3,11 +3,11 @@ import logging
 from fastapi import APIRouter, Depends, responses
 from fastapi.params import Path
 
-from app.api.utils.db import get_db
-from app.api.utils.security import get_current_user
 from app.db import mark_hours, clean_students_id, find_trainer, get_training_info, get_students_grades
 from app.models.attendance import MarkAttendanceRequest
 from app.models.user import TokenUser
+from app.utils.db import get_db
+from app.utils.security import get_current_user
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

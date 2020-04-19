@@ -3,13 +3,13 @@ import logging
 import psycopg2.errors
 from fastapi import APIRouter, Depends, responses, status
 
-from app.api.utils.db import get_db
-from app.api.utils.security import get_current_user
 from app.db import get_ongoing_semester
 from app.db.crud_enrolled import reenroll_student
 from app.db.crud_users import find_student
 from app.models.group import EnrollRequest
 from app.models.user import TokenUser
+from app.utils.db import get_db
+from app.utils.security import get_current_user
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

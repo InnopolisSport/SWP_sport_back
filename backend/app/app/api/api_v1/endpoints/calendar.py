@@ -4,13 +4,13 @@ from typing import Tuple, Optional
 
 from fastapi import APIRouter, Depends, Path, Query, responses, status
 
-from app.api.utils.db import get_db
-from app.api.utils.security import get_current_user
-from app.api.utils.tz import convert_from_utc
 from app.db import find_student, find_trainer, Training
 from app.db.crud_groups import get_current_load
 from app.db.crud_training import get_trainings_in_time, get_trainings_for_student, get_trainings_for_trainer
 from app.models.user import TokenUser
+from app.utils.db import get_db
+from app.utils.security import get_current_user
+from app.utils.tz import convert_from_utc
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
