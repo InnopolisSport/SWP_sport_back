@@ -169,7 +169,7 @@ function make_grades_table(grades, duration_academic_hours) {
                             <td>${full_name}</td>
                             <td>${email}</td>
                             <td style="cursor: pointer"><form onsubmit="return false">
-                            <input type="number" min="0" max="${duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"/>
+                            <input style="width: 50px" type="number" min="0" max="${duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"/>
                             </form></td>
                         </tr>`))
     });
