@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: open_trainer_modal,
         windowResize: function (view) {
             // change view on scree rotation
-            if (screen.width < tabletWidth) {
+            if (document.body.clientWidth < tabletWidth) {
                 calendar.changeView('timeGridThreeDay');
             } else {
                 calendar.changeView('timeGridWeek');
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
         events: '/api/calendar/trainings'
     };
 
-    if (screen.width < tabletWidth) {
+    if (document.body.clientWidth < tabletWidth) {
         calendar_setting.defaultView = 'timeGridThreeDay';
         calendar_setting.views.timeGridThreeDay = {
             type: 'timeGrid',
