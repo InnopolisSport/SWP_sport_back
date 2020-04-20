@@ -56,8 +56,6 @@ function toggle_ill(elem) {
                 alert(data.error.description);
             }
         })
-
-
 }
 
 /*
@@ -158,9 +156,7 @@ function round(num, decimal_places) {
     return Math.round((num + Number.EPSILON) * decimal) / decimal;
 }
 
-function make_grades_table(grades, duration_milliseconds) {
-    // duration_academic_hours = (duration_milliseconds / 3_600_000) * (60 / 45) = duration_milliseconds / 2_700_000
-    let duration_academic_hours = Math.min(10, round(duration_milliseconds / 2_700_000, 2)) // TODO: hardcoded max = 10 (DB issue)
+function make_grades_table(grades, duration_academic_hours) {
     const table = $('<table class="table table-hover">');
     table.append('<thead>')
         .children('thead')
@@ -169,16 +165,22 @@ function make_grades_table(grades, duration_milliseconds) {
         .append('<th scope="col">Student</th><th scope="col">Email</th><th scope="col">Hours</th>');
     const tbody = table.append('<tbody>').children('tbody');
     grades.forEach(({student_id, full_name, email, hours}) => {
-        if (hours === null || hours === 0) hours = duration_academic_hours;
         tbody.append($(`<tr>
                             <td>${full_name}</td>
                             <td>${email}</td>
                             <td style="cursor: pointer"><form onsubmit="return false">
-                            <input type="number" min="0" max="${duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="0.01"/>
+                            <input type="number" min="0" max="${duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"/>
                             </form></td>
                         </tr>`))
     });
     return table;
+}
+
+function mark_all(el) {
+    const duration_academic_hours = parseFloat($(el).attr('data-hours'))
+    $('#grading-modal .modal-body input[type=number]').filter(function () {
+        return $(this).val() === "0"
+    }).val(duration_academic_hours).change();
 }
 
 async function open_trainer_modal({event}) {
@@ -197,7 +199,11 @@ async function open_trainer_modal({event}) {
     $('#grading-group-name').text(group_name)
     $('#grading-date').text(start.split('T')[0])
     const duration = event.end - event.start;
-    modal.append(make_grades_table(grades, duration));
+    // duration_academic_hours = (duration / 3_600_000) * (60 / 45) = duration / 2_700_000
+    const duration_academic_hours = Math.min(10, round(duration / 2_700_000, 2)) // TODO: hardcoded max = 10 (DB issue)
+    $('#put-default-hours-btn').attr('data-hours', duration_academic_hours)
+    $('#mark-all-hours-value').text(duration_academic_hours)
+    modal.append(make_grades_table(grades, duration_academic_hours));
 }
 
 document.addEventListener('DOMContentLoaded', function () {

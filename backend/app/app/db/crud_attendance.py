@@ -80,8 +80,8 @@ def mark_hours(conn, training_id: id, student_hours: Iterable[Tuple[int, float]]
     @param student_hours: iterable with items (<student_id:int>, <student_hours:float>)
     """
     for student_id, student_mark in student_hours:
-        if student_id <= 0 or student_mark <= 0.0:
-            raise ValueError(f"All students id and marks must be positive, got {(student_id, student_mark)}")
+        if student_id <= 0 or student_mark < 0.0:
+            raise ValueError(f"All students id and marks must be non-negative, got {(student_id, student_mark)}")
         # Currently hours field is numeric(3,2), so
         # A field with precision 3, scale 2 must round to an absolute value less than 10^1.
         floor_max = 10
@@ -89,13 +89,21 @@ def mark_hours(conn, training_id: id, student_hours: Iterable[Tuple[int, float]]
             raise ValueError(f"All students marks must floor to less than {floor_max}, "
                              f"got {student_mark} -> {floor(student_mark)} >= {floor_max}")
     cursor = conn.cursor()
-    args_str = b",".join(
+    args_add_str = b",".join(
         cursor.mogrify("(%s, %s, %s)", (student_id, training_id, student_mark))
-        for student_id, student_mark in student_hours
+        for student_id, student_mark in student_hours if student_mark > 0
     )
-    cursor.execute(f'INSERT INTO attendance (student_id, training_id, hours) VALUES {args_str.decode()} '
-                   f'ON CONFLICT ON CONSTRAINT unique_attendance '
-                   f'DO UPDATE set hours=excluded.hours')
+    args_del_str = b",".join(
+        cursor.mogrify("(%s, %s)", (student_id, training_id))
+        for student_id, student_mark in student_hours if student_mark == 0
+    )
+    if len(args_add_str) > 0:
+        cursor.execute(f'INSERT INTO attendance (student_id, training_id, hours) VALUES {args_add_str.decode()} '
+                       f'ON CONFLICT ON CONSTRAINT unique_attendance '
+                       f'DO UPDATE set hours=excluded.hours')
+    if len(args_del_str) > 0:
+        cursor.execute(f'DELETE FROM attendance '
+                       f'WHERE  (student_id, training_id) IN ({args_del_str.decode()})')
     conn.commit()
 
 

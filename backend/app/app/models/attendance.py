@@ -1,7 +1,7 @@
 from datetime import datetime, date
 from typing import Dict
 
-from pydantic import PositiveInt, PositiveFloat
+from pydantic import PositiveInt, confloat
 
 from .base import Base
 
@@ -22,7 +22,7 @@ class AttendanceSemester(Base):
 
 class MarkAttendanceRequest(Base):
     training_id: PositiveInt
-    students_hours: Dict[PositiveInt, PositiveFloat]
+    students_hours: Dict[PositiveInt, confloat(ge=0.0)]
 
     class Config:
         schema_extra = {
