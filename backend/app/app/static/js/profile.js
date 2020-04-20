@@ -206,10 +206,12 @@ async function open_trainer_modal({event}) {
     modal.append(make_grades_table(grades, duration_academic_hours));
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    let calendarEl = document.getElementById('calendar');
 
-    let calendar = new FullCalendar.Calendar(calendarEl, {
+document.addEventListener('DOMContentLoaded', function () {
+    const tabletWidth = 768; // if width is less than this, then week view renders poorly.
+    let calendarEl = document.getElementById('calendar');
+    let calendar;
+    let calendar_setting = {
         plugins: ['timeGrid'],
         defaultView: 'timeGridWeek',
         header: {
@@ -217,6 +219,15 @@ document.addEventListener('DOMContentLoaded', function () {
             center: '',
             // right: '',
             right: 'today, prev, next',
+        },
+        views: {
+            timeGridThreeDay: {
+                type: 'timeGrid',
+                duration: {
+                    days: 3
+                },
+                buttonText: '3 day',
+            }
         },
         height: 'auto',
         timeZone: 'Europe/Moscow',
@@ -227,11 +238,28 @@ document.addEventListener('DOMContentLoaded', function () {
         maxTime: '21:00:00',
         defaultTimedEventDuration: '01:30',
         eventRender: render,
-        // datesRender: clearColors,
         eventClick: open_trainer_modal,
+        windowResize: function (view) {
+            // change view on scree rotation
+            if (document.body.clientWidth < tabletWidth) {
+                calendar.changeView('timeGridThreeDay');
+            } else {
+                calendar.changeView('timeGridWeek');
+            }
+        },
         // Event format: yyyy-mm-dd
         events: '/api/calendar/trainings'
-    });
+    };
 
+    if (document.body.clientWidth < tabletWidth) {
+        calendar_setting.defaultView = 'timeGridThreeDay';
+        calendar_setting.views.timeGridThreeDay = {
+            type: 'timeGrid',
+            duration: {days: 3},
+            buttonText: '3 day'
+        };
+    }
+
+    calendar = new FullCalendar.Calendar(calendarEl, calendar_setting);
     calendar.render();
 });
