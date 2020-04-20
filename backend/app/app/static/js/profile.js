@@ -157,7 +157,7 @@ function round(num, decimal_places) {
 }
 
 function make_grades_table(grades, duration_academic_hours) {
-    const table = $('<table class="table table-hover table-responsive">');
+    const table = $('<table class="table table-hover table-responsive-md">');
     table.append('<thead>')
         .children('thead')
         .append('<tr />')
