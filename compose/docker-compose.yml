@@ -13,6 +13,8 @@ services:
     volumes:
       - ../nginx/logs:/var/log/nginx
       - ../nginx/access.d:/etc/nginx/access.d
+      - django-static:/static/admin
+      - fastapi-static:/static
 
   backend:
     build:
@@ -27,8 +29,7 @@ services:
       - db
     volumes:
       - ../backend/app:/app
-    environment:
-      FAKE_LOGIN: ${SWP_FAKE_LOGIN}
+      - fastapi-static:/static
 
   adminpanel:
     build:
@@ -39,6 +40,7 @@ services:
     restart: always
     volumes:
       - ../adminpage:/src
+      - django-static:/static/admin
     ports:
       - "8000:8000"
     depends_on:
@@ -73,3 +75,5 @@ services:
 
 volumes:
   db-data:
+  django-static:
+  fastapi-static:

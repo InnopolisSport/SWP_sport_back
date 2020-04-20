@@ -1,5 +1,7 @@
 from typing import Optional
 
+from pydantic import Field
+
 from .base import Base
 
 
@@ -16,3 +18,7 @@ class Group(Base):
     @property
     def qualified_name(self):
         return f'{self.name} ({self.sport_name})'
+
+
+class EnrollRequest(Base):
+    group_id: int = Field(..., gt=0)

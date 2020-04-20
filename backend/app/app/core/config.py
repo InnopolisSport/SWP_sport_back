@@ -1,5 +1,7 @@
 import os
 
+import pytz
+
 
 def getenv_boolean(var_name, default_value=False):
     result = default_value
@@ -10,6 +12,10 @@ def getenv_boolean(var_name, default_value=False):
 
 
 SC_TRAINERS_GROUP_NAME = "SC trainers"
+BACHELOR_PREFIX = "B"
+TIMEZONE = pytz.timezone("Europe/Moscow")
+
+DEBUG = FAKE_LOGIN = getenv_boolean("DEBUG", False)
 
 API_V1_STR = "/api"
 DOCS_STR = "/docs"
@@ -19,10 +25,6 @@ BASE_LOCAL_URL = 'http://188.130.155.115'
 API_BASE_URL = BASE_URL + API_V1_STR
 DOCS_BASE_URL = BASE_URL + DOCS_STR
 REDOC_BASE_URL = BASE_URL + REDOC_STR
-
-PRIORITY_COUNT = 5
-
-FAKE_LOGIN = getenv_boolean("FAKE_LOGIN", False)
 
 SECRET_KEY = os.getenvb(b"SECRET_KEY")
 if not SECRET_KEY:
@@ -36,14 +38,6 @@ POSTGRES_SERVER = os.getenv("POSTGRES_SERVER")
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 POSTGRES_DB = os.getenv("POSTGRES_DB")
-SQLALCHEMY_DATABASE_URI = (
-    f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
-)
-
-FIRST_SUPERUSER = os.getenv("FIRST_SUPERUSER")
-FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD")
-
-USERS_OPEN_REGISTRATION = getenv_boolean("USERS_OPEN_REGISTRATION")
 
 # oAuth credentials
 OAUTH_APP_ID = os.getenv("oauth_appID")

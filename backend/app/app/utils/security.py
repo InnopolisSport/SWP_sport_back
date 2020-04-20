@@ -3,11 +3,11 @@ from typing import Optional
 
 import jwt
 from fastapi import HTTPException, Security, Cookie
+from fastapi.openapi.models import OAuthFlowImplicit
 from fastapi.security.oauth2 import OAuthFlowsModel
 from jwt import PyJWTError
 from starlette.status import HTTP_401_UNAUTHORIZED
 
-from app import crud
 from app.core import config
 from app.core.jwt import ALGORITHM
 from app.core.security import CookieAuth
@@ -18,9 +18,9 @@ logger.setLevel(logging.DEBUG)
 
 reusable_oauth2 = CookieAuth(
     flows=OAuthFlowsModel(
-        implicit={
-            "authorizationUrl": f"{config.API_BASE_URL}/login"
-        }
+        implicit=OAuthFlowImplicit(
+            authorizationUrl=f"{config.API_BASE_URL}/login"
+        )
     ),
     auto_error=False
 )
@@ -65,16 +65,3 @@ def get_current_user_optional(
         return None
     return process_token(token)
 
-
-def get_current_active_user(current_user=Security(get_current_user)):
-    if not crud.user.is_active(current_user):
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
-
-
-def get_current_active_superuser(current_user=Security(get_current_user)):
-    if not crud.user.is_superuser(current_user):
-        raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
-        )
-    return current_user
