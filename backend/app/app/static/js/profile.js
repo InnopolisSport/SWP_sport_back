@@ -220,7 +220,15 @@ document.addEventListener('DOMContentLoaded', function () {
             // right: '',
             right: 'today, prev, next',
         },
-        views: {},
+        views: {
+            timeGridThreeDay: {
+                type: 'timeGrid',
+                duration: {
+                    days: 3
+                },
+                buttonText: '3 day',
+            }
+        },
         height: 'auto',
         timeZone: 'Europe/Moscow',
         firstDay: 1,
