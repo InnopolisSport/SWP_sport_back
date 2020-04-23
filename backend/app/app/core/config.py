@@ -15,7 +15,8 @@ SC_TRAINERS_GROUP_NAME = "SC trainers"
 BACHELOR_PREFIX = "B"
 TIMEZONE = pytz.timezone("Europe/Moscow")
 
-DEBUG = FAKE_LOGIN = getenv_boolean("DEBUG", False)
+DEBUG = getenv_boolean("DEBUG", False)
+FAKE_LOGIN = DEBUG
 
 API_V1_STR = "/api"
 DOCS_STR = "/docs"

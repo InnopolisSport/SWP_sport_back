@@ -15,9 +15,13 @@ logger.setLevel(logging.DEBUG)
 
 app = FastAPI(title=config.PROJECT_NAME)
 
-
 app.include_router(pages_router)
 app.include_router(api_router, prefix=config.API_V1_STR)
+
+if config.DEBUG:
+    from fastapi.staticfiles import StaticFiles
+
+    app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
 @app.middleware("http")
@@ -39,4 +43,3 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
     else:
         return await default_http_exception_handler(request, exc)
-
