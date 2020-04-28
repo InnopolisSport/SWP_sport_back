@@ -1,7 +1,7 @@
 from typing import List, Tuple, Optional
 
 from ..core.config import SC_TRAINERS_GROUP_NAME
-from ..models.group import Group
+from ..models.group import Group, EnrolledGroup
 from ..models.sport import Sport
 
 
@@ -21,6 +21,23 @@ def __tuple_to_group(row: Tuple[int, str, str, str, int, Optional[str], Optional
         description=description,
         trainer_id=trainer_id,
         is_club=is_club
+    )
+
+
+def __tuple_to_enrolled_group(
+        row: Tuple[int, str, str, str, int, Optional[str], Optional[int], bool, bool]
+) -> EnrolledGroup:
+    id, name, sport_name, semester, capacity, description, trainer_id, is_club, is_primary = row
+    return EnrolledGroup(
+        id=id,
+        name=name,
+        sport_name=sport_name,
+        semester=semester,
+        capacity=capacity,
+        description=description,
+        trainer_id=trainer_id,
+        is_club=is_club,
+        is_primary=is_primary
     )
 
 
@@ -91,7 +108,7 @@ def get_current_load(conn, group_id: int) -> int:
     return count
 
 
-def get_student_groups(conn, student_id) -> List[Group]:
+def get_student_groups(conn, student_id) -> List[EnrolledGroup]:
     """
     Retrieves groups, where student is enrolled
     @param conn - Database connection
@@ -99,15 +116,16 @@ def get_student_groups(conn, student_id) -> List[Group]:
     @return number of enrolled students
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club '
+    cursor.execute('SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club, e.is_primary '
                    'FROM enroll e, "group" g, sport, semester s '
                    'WHERE s.id = current_semester() '
                    'AND sport_id = sport.id '
                    'AND semester_id = s.id '
                    'AND e.group_id = g.id '
-                   'AND e.student_id = %s', (student_id,))
+                   'AND e.student_id = %s '
+                   'ORDER BY e.is_primary DESC', (student_id,))
     rows = cursor.fetchall()
-    return list(map(__tuple_to_group, rows))
+    return list(map(__tuple_to_enrolled_group, rows))
 
 
 def get_sc_training_group(conn) -> Group:

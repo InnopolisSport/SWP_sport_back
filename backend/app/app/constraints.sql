@@ -6,14 +6,27 @@ BEGIN
        (SELECT capacity FROM "group" WHERE id = new.group_id) THEN
         RAISE EXCEPTION 'exceed group capacity';
     END IF;
+    IF (SELECT count(*)
+        FROM enroll e,
+             "group" g1
+        WHERE e.student_id = new.student_id
+          AND e.group_id = g1.id
+          AND e.is_primary = new.is_primary
+          AND g1.semester_id = (
+            SELECT semester_id
+            FROM "group" g2
+            WHERE g2.id = new.group_id
+        )) > (CASE WHEN new.is_primary THEN 1 ELSE 2 END) THEN
+        RAISE EXCEPTION 'too much groups';
+    END IF;
     RETURN NULL;
-END;
+END ;
 $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS check_group_capacity_trigger
     ON enroll;
 CREATE CONSTRAINT TRIGGER check_group_capacity_trigger
-    AFTER INSERT
+    AFTER INSERT OR UPDATE
     ON enroll
     FOR EACH ROW
 EXECUTE FUNCTION check_group_capacity();
