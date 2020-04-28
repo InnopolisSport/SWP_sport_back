@@ -2,7 +2,6 @@ from .admin import *
 from .attendance import *
 from .enroll import *
 from .group import *
-from .group_request import *
 from .schedule import *
 from .semester import *
 from .sport import *
