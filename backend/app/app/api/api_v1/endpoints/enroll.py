@@ -46,14 +46,14 @@ def enroll(enroll_req: EnrollRequest, db=Depends(get_db),
         try:
             enroll_student_to_secondary_group(db, group_id, student_id)
         except psycopg2.errors.RaiseException as e:
-            logger.info(e)
-            return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
-                "ok": False,
-                "error": {
-                    "description": "Group you have chosen already full",
-                    "code": 2,
-                }
-            })
+            if 'too much groups' not in str(e):
+                return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
+                    "ok": False,
+                    "error": {
+                        "description": "Group you have chosen already full",
+                        "code": 2,
+                    }
+                })
             return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
                 "ok": False,
                 "error": {
