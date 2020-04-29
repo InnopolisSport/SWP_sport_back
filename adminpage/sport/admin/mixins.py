@@ -19,6 +19,8 @@ class EnrollExportCsvMixin:
 
         writer.writerow(field_names)
         for obj in queryset:
+            if not obj.is_primary:
+                continue
             group = obj.group
             sport = group.sport
             sport_name = "Personal Trainer" if sport.special and not group.is_club else sport.name
@@ -30,4 +32,4 @@ class EnrollExportCsvMixin:
 
         return response
 
-    export_as_csv.short_description = "Export Selected"
+    export_as_csv.short_description = "Export primary sport groups"

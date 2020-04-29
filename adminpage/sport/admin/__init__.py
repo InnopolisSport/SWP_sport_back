@@ -10,7 +10,6 @@ admin.site.register(models.Enroll, EnrollAdmin)
 admin.site.register(models.Group, admin_with_filters_fabric(
     semester_filter_fabric("semester__id")
 ))
-admin.site.register(models.GroupRequest)
 admin.site.register(models.Schedule, admin_with_filters_fabric(
     semester_filter_fabric("group__semester__id")
 ))

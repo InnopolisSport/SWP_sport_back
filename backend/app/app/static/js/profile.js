@@ -10,6 +10,17 @@ function goto_profile() {
     window.location.href = "/profile";
 }
 
+async function leave_group(elem, group_id) {
+    if (confirm('Are you sure you want to leave this group?')) {
+        const response = await sendResults(`/api/unenroll`, {group_id});
+        if (response.ok) {
+            goto_profile()
+        } else {
+            alert('unenroll failed')
+        }
+    }
+}
+
 function make_hours_table(trainings) {
     const table = $('<table class="table table-hover">');
     table.append('<thead>')

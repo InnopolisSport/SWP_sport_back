@@ -20,5 +20,9 @@ class Group(Base):
         return f'{self.name} ({self.sport_name})'
 
 
+class EnrolledGroup(Group):
+    is_primary: bool
+
+
 class EnrollRequest(Base):
     group_id: int = Field(..., gt=0)
