@@ -1,14 +1,10 @@
 import logging
-from typing import List
-
-from .crud_users import __tuple_to_student
-from ..models.user import Student
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def enroll_student_to_primary_group(conn, group_id: int, student_id: int):
+def enroll_student_to_primary_group(conn, group_id: int, student_id: int) -> None:
     """
     Enrolls given student in a primary group, removes all previous primary enrollments
     @param conn - Database connection
@@ -28,7 +24,7 @@ def enroll_student_to_primary_group(conn, group_id: int, student_id: int):
     conn.commit()
 
 
-def enroll_student_to_secondary_group(conn, group_id: int, student_id: int):
+def enroll_student_to_secondary_group(conn, group_id: int, student_id: int) -> None:
     """
     Enrolls given student to a secondary group
     @param conn - Database connection
@@ -41,7 +37,7 @@ def enroll_student_to_secondary_group(conn, group_id: int, student_id: int):
     conn.commit()
 
 
-def unenroll_student(conn, group_id: int, student_id: int):
+def unenroll_student(conn, group_id: int, student_id: int) -> None:
     """
     Unenrolls given student from a secondary group
     @param conn - Database connection
