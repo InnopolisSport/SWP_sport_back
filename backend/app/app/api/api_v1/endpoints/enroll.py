@@ -4,7 +4,7 @@ import psycopg2.errors
 from fastapi import APIRouter, Depends, responses, status
 
 from app.db import get_ongoing_semester
-from app.db.crud_enrolled import reenroll_student, enroll_student_to_secondary_group, unenroll_student
+from app.db.crud_enrolled import enroll_student_to_primary_group, enroll_student_to_secondary_group, unenroll_student
 from app.db.crud_users import find_student
 from app.models.group import EnrollRequest
 from app.models.user import TokenUser
@@ -33,7 +33,7 @@ def enroll(enroll_req: EnrollRequest, db=Depends(get_db),
     student_id = find_student(db, user.email).id
     if get_ongoing_semester(db).is_enroll_open:
         try:
-            reenroll_student(db, group_id, student_id)
+            enroll_student_to_primary_group(db, group_id, student_id)
         except psycopg2.errors.RaiseException as e:
             return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
                 "ok": False,
@@ -68,7 +68,7 @@ def enroll(enroll_req: EnrollRequest, db=Depends(get_db),
 
 @router.post("/unenroll")
 def unenroll(enroll_req: EnrollRequest, db=Depends(get_db),
-           user: TokenUser = Depends(get_current_user)):
+             user: TokenUser = Depends(get_current_user)):
     group_id = enroll_req.group_id
     if not user.is_student():
         return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
