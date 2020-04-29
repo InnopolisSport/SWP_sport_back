@@ -2,7 +2,8 @@ import logging
 
 from fastapi import APIRouter, Request, Depends, responses
 
-from app.db import get_student_groups, find_student, get_ongoing_semester, get_brief_hours
+from app.db import get_student_groups, find_student, get_ongoing_semester, get_brief_hours, find_trainer, \
+    get_training_groups
 from app.models.user import TokenUser
 from app.utils.auth import logout
 from app.utils.db import get_db
@@ -21,6 +22,7 @@ def login_page(request: Request,
                current_user: TokenUser = Depends(get_current_user_optional)):
     if current_user is not None:
         student = find_student(db, current_user.email)
+        trainer = find_trainer(db, current_user.email)
         if student is None:
             return logout('/profile')
         student_id = student.id
@@ -32,6 +34,8 @@ def login_page(request: Request,
         }, groups))
         semester = get_ongoing_semester(db)
 
+        training_groups = get_training_groups(db, trainer.id) if trainer is not None else None
+
         return templates.TemplateResponse("profile.html", {
             "request": request,
             "user": current_user,
@@ -42,9 +46,13 @@ def login_page(request: Request,
             "student": {
                 "student_id": student_id,
                 "sport_groups": sport_groups,
+                "semesters": get_brief_hours(db, student_id),
                 **(student.dict())
             },
-            "semesters": get_brief_hours(db, student_id)
+            "trainer": {
+                "sport_groups": training_groups,
+                **(trainer.dict() if trainer is not None else {})
+            }
         })
 
     return responses.RedirectResponse(url='/login')

@@ -36,6 +36,10 @@ a:hover {
     background-color: #dc3545;
 }
 
+.badge-training {
+    background-color: #ffa500;
+}
+
 @media only screen and (max-width: 576px) and (max-width: 768px) {
     .landscape {
         display: none;

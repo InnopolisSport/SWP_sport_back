@@ -49,17 +49,34 @@
         <div class="card-body">
             <h1 class="card-title">{{ user["first_name"] }} {{ user["last_name"] }}</h1>
             <h4 class="card-title">{{ user["role"] }}</h4>
+
+            {% if user.is_trainer or user.is_student %}
+                {% if trainer["sport_groups"] %}
+                    <p>
+                        In semester <b>{{ common["semester_name"] }}</b> you train the following groups:
+                        {% for group in trainer["sport_groups"] %}
+                            <span class="badge badge-pill badge-training">{{ group.qualified_name }}</span>
+                        {% endfor %}
+                    </p>
+                {% else %}
+                    <p>
+                        You are not training in the semester <b>{{ common["semester_name"] }}</b>
+                    </p>
+                {% endif %}
+            {% endif %}
+
             {% if user.is_student %}
                 <meta id="illness-data" data-ill="{{ student.is_ill }}">
-
                 {% if student["sport_groups"]|length > 0 %}
                     <p>
                         Your sport groups for semester <b>{{ common["semester_name"] }}</b>
-                        are: {% for group in student["sport_groups"] %}
+                        are:
+                        {% for group in student["sport_groups"] %}
                             {% if group.is_primary %}
                                 <span class="badge badge-pill badge-success">{{ group.name }}</span>
                             {% else %}
-                                <span class="badge badge-pill badge-secondary cursor-pointer" onclick="leave_group(this, {{ group.id }})">{{ group.name }}</span>
+                                <span class="badge badge-pill badge-secondary cursor-pointer"
+                                      onclick="leave_group(this, {{ group.id }})">{{ group.name }}</span>
                             {% endif %}
                         {% endfor %}
                     </p>
@@ -68,6 +85,8 @@
                         You have no groups selected for semester <b>{{ common["semester_name"] }}</b>
                     </p>
                 {% endif %}
+
+
 
                 <div class="container">
                     <table class="table table-hover">
@@ -80,7 +99,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for sem in semesters %}
+                        {% for sem in student["semesters"] %}
                             <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
                                 onclick="fetch_detailed_hours(this)" data-toggle="modal"
                                 data-target="#hours-modal-{{ sem.semester_id }}">
@@ -168,7 +187,7 @@
                     </div>
                 </div>
             {% endif %}
-            {% if student["sport_groups"]|length > 0 %}
+            {% if student["sport_groups"]|length > 0 or trainer["sport_groups"] %}
                 <div id='calendar'></div>
             {% endif %}
 
@@ -195,7 +214,8 @@
                                     <div>
                                         <button type="button" class="btn btn-success float-left"
                                                 id="put-default-hours-btn"
-                                                onclick="mark_all(this)">Mark all (<span id="mark-all-hours-value"></span> h.)
+                                                onclick="mark_all(this)">Mark all (<span
+                                                id="mark-all-hours-value"></span> h.)
                                         </button>
                                     </div>
                                     <div>

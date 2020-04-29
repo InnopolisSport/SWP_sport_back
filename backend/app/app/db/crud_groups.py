@@ -128,6 +128,35 @@ def get_student_groups(conn, student_id) -> List[EnrolledGroup]:
     return list(map(__tuple_to_enrolled_group, rows))
 
 
+def get_training_groups(conn, trainer_id) -> List[Group]:
+    """
+    For a given trainer return all groups he/she is training in current semester
+
+    :param conn: Database connection
+    :param trainer_id: id of a trainer
+    :return: list of group trainer is trainings in current semester
+    """
+    cursor = conn.cursor()
+    cursor.execute(
+        "select g.id, "
+        "       g.name, "
+        "       sp.name, "
+        "       sem.name, "
+        "       g.capacity, "
+        "       g.description, "
+        "       trainer_id, "
+        "       is_club "
+        'from "group" g '
+        "         join sport sp on g.sport_id = sp.id "
+        "         join semester sem on g.semester_id = sem.id "
+        "where "
+        "       sem.id = current_semester() "
+        "       AND g.trainer_id = %s", (trainer_id,)
+    )
+    rows = cursor.fetchall()
+    return list(map(__tuple_to_group, rows))
+
+
 def get_sc_training_group(conn) -> Group:
     cursor = conn.cursor()
     cursor.execute('SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club '
