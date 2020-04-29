@@ -45,22 +45,31 @@ def enroll(enroll_req: EnrollRequest, db=Depends(get_db),
     else:
         try:
             enroll_student_to_secondary_group(db, group_id, student_id)
+        except psycopg2.errors.UniqueViolation:
+            return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
+                "ok": False,
+                "error": {
+                    "description": "You can't enroll to a group you have already enrolled to",
+                    "code": 4,
+                }
+            })
         except psycopg2.errors.RaiseException as e:
-            if 'too much groups' not in str(e):
+            if 'too much groups' in str(e):
                 return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
                     "ok": False,
                     "error": {
-                        "description": "Group you have chosen already full",
-                        "code": 2,
+                        "description": "Too much secondary groups",
+                        "code": 3,
                     }
                 })
             return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
                 "ok": False,
                 "error": {
-                    "description": "Too much secondary groups",
-                    "code": 3,
+                    "description": "Group you have chosen already full",
+                    "code": 2,
                 }
             })
+
     return responses.JSONResponse(status_code=status.HTTP_200_OK, content={
         "ok": True
     })
