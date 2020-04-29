@@ -8,15 +8,21 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def reenroll_student(conn, group_id: int, student_id: int):
+def enroll_student_to_primary_group(conn, group_id: int, student_id: int):
     """
-    Enrolls given student in a group, removes all previous enrollments
+    Enrolls given student in a primary group, removes all previous primary enrollments
     @param conn - Database connection
     @param group_id - new enrolled group id
     @param student_id - enrolled student id
     """
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM enroll WHERE student_id = %s', (student_id,))
+    cursor.execute(
+        'DELETE FROM enroll '
+        'WHERE student_id = %s '
+        'AND is_primary = TRUE '
+        'AND group_id IN '
+        '(SELECT id FROM "group" WHERE semester_id = (SELECT semester_id FROM "group" WHERE id = %s))',
+        (student_id, group_id))
     cursor.execute('INSERT INTO enroll (student_id, group_id, is_primary) VALUES (%s, %s, TRUE)',
                    (student_id, group_id))
     conn.commit()
