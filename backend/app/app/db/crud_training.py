@@ -116,12 +116,18 @@ def get_trainings_in_time(conn, sport_id: int, start: datetime, end: datetime) \
 def get_students_grades(conn, training_id: int) -> List[TrainingGrade]:
     cursor = conn.cursor()
     cursor.execute('SELECT s.id, s.first_name, s.last_name, s.email, a.hours '
-                   'FROM "group" g, training t, enroll e, student s '
+                   'FROM training t, student s, attendance a '
+                   'WHERE a.student_id = s.id '
+                   'AND a.training_id = %s '
+                   'AND s.is_ill = FALSE '
+                   'AND t.id = %s '
+                   'UNION DISTINCT '
+                   'SELECT s.id, s.first_name, s.last_name, s.email, a.hours '
+                   'FROM training t, enroll e, student s '
                    'LEFT JOIN attendance a ON a.student_id = s.id AND a.training_id = %s '
                    'WHERE s.id = e.student_id '
                    'AND s.is_ill = FALSE '
                    'AND t.id = %s '
-                   'AND t.group_id = g.id '
-                   'AND g.id = e.group_id ', (training_id, training_id))
+                   'AND t.group_id = e.group_id ', (training_id, training_id, training_id, training_id))
     rows = cursor.fetchall()
     return list(map(__tuple_to_training_grade, rows))
