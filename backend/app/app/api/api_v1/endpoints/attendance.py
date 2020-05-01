@@ -1,13 +1,14 @@
 import logging
 
 from fastapi import APIRouter, Depends, responses
-from fastapi.params import Path
+from fastapi.params import Path, Query
 
-from app.db import mark_hours, clean_students_id, find_trainer, get_training_info, get_students_grades
+from app.db import mark_hours, clean_students_id, find_trainer, get_training_info, get_students_grades, Optional, \
+    get_email_name_like_students
 from app.models.attendance import MarkAttendanceRequest
 from app.models.user import TokenUser
 from app.utils.db import get_db
-from app.utils.security import get_current_user
+from app.utils.security import get_current_user, get_current_user_optional
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -56,3 +57,15 @@ def mark_attendance(data: MarkAttendanceRequest,
     hours_to_mark = [(s.id, data.students_hours[s.id]) for s in cleaned_students]
     mark_hours(db, data.training_id, hours_to_mark)
     return hours_to_mark
+
+
+@router.get("/suggest_student")
+def suggest_students(input_term: str = Query(..., alias="term"),
+                     current_user: Optional[TokenUser] = Depends(get_current_user),
+                     db=Depends(get_db)):
+    if find_trainer(db, current_user.email) is not None:
+        suggested_students = get_email_name_like_students(db, input_term)
+        return [{"value": student.email, "label": f"{student.full_name} ({student.email})"} for student in
+                suggested_students]
+    # return ["i.ivanov@innopolis.university", "v.vasilev@innopolis.university", "s.stepanovich@innopolis.ru",
+    #         "v.topalov@innopolis.university", "r.mishin@innopolis.ru"]

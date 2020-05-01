@@ -20,6 +20,7 @@ router = APIRouter()
 def login_page(request: Request,
                db=Depends(get_db),
                current_user: TokenUser = Depends(get_current_user_optional)):
+    logger.debug(f"\n\n{request.url.components}\n\n")
     if current_user is not None:
         student = find_student(db, current_user.email)
         trainer = find_trainer(db, current_user.email)
