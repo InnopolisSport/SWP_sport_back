@@ -169,7 +169,7 @@ function round(num, decimal_places) {
 
 let student_hours_tbody = null;
 let current_duration_academic_hours = 0;
-let students_in_table = {}; // <student_id: row in the table>
+let students_in_table = {}; // <student_id: jquery selector of a row in the table>
 
 function add_student_row(student_id, full_name, email, hours) {
     const row =$(`<tr id="student_${student_id}">
@@ -180,7 +180,7 @@ function add_student_row(student_id, full_name, email, hours) {
                           </form></td>
                 </tr>`);
     student_hours_tbody.append(row);
-    students_in_table[student_id] = row[0];
+    students_in_table[student_id] = row;
 }
 
 function make_grades_table(grades) {
@@ -297,7 +297,8 @@ function autocomplete_select(event, ui) {
     if (student_row == null) { // check if current student is in the table
         add_student_row(student_id, full_name, email, hours); // add if student isn't present
     }else{
-        student_row.scrollIntoView(); // scroll to the row with student
+        student_row[0].scrollIntoView(); // scroll to the row with student
+        student_row.delay(100).fadeOut().fadeIn('slow').fadeOut().fadeIn('slow');
     }
 
 }
