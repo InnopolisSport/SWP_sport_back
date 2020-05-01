@@ -19,6 +19,10 @@ a:hover {
     color: #ffffff;
 }
 
+.studentHourField{
+    width: 50px;
+}
+
 .navbar-inverse {
     background: #00802b;
 }

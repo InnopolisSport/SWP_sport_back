@@ -172,12 +172,15 @@ let current_duration_academic_hours = 0;
 let students_in_table = {}; // <student_id: jquery selector of a row in the table>
 
 function add_student_row(student_id, full_name, email, hours) {
-    const row =$(`<tr id="student_${student_id}">
+    const row = $(`<tr id="student_${student_id}">
                     <td>${full_name}</td>
                     <td>${email}</td>
-                    <td style="cursor: pointer"><form onsubmit="return false">
-                    <input style="width: 50px" type="number" min="0" max="${current_duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"/>
-                          </form></td>
+                    <td style="cursor: pointer">
+                        <form onsubmit="return false">
+                            <input class="studentHourField" type="number" min="0" max="${current_duration_academic_hours}" 
+                            onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"
+                            />
+                     </form></td>
                 </tr>`);
     student_hours_tbody.prepend(row);
     students_in_table[student_id] = row;
@@ -296,9 +299,9 @@ function autocomplete_select(event, ui) {
     const student_row = students_in_table[student_id];
     if (student_row == null) { // check if current student is in the table
         add_student_row(student_id, full_name, email, hours); // add if student isn't present
-    }else{
+    } else {
         student_row[0].scrollIntoView(); // scroll to the row with student
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
-
 }
+
