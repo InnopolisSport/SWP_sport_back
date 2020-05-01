@@ -8,7 +8,7 @@ from app.db import mark_hours, clean_students_id, find_trainer, get_training_inf
 from app.models.attendance import MarkAttendanceRequest
 from app.models.user import TokenUser
 from app.utils.db import get_db
-from app.utils.security import get_current_user, get_current_user_optional
+from app.utils.security import get_current_user
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -53,8 +53,10 @@ def mark_attendance(data: MarkAttendanceRequest,
                 "description": "You are not a trainer for this group",
             }
         })
+    training_info = get_training_info(db, data.training_id)
+    max_hours = training_info.academic_duration
     cleaned_students = clean_students_id(db, tuple(data.students_hours.keys()))
-    hours_to_mark = [(s.id, data.students_hours[s.id]) for s in cleaned_students]
+    hours_to_mark = [(s.id, min(max_hours, data.students_hours[s.id])) for s in cleaned_students]
     mark_hours(db, data.training_id, hours_to_mark)
     return hours_to_mark
 
