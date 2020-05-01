@@ -298,7 +298,7 @@ function autocomplete_select(event, ui) {
         add_student_row(student_id, full_name, email, hours); // add if student isn't present
     }else{
         student_row[0].scrollIntoView(); // scroll to the row with student
-        student_row.delay(100).fadeOut().fadeIn('slow').fadeOut().fadeIn('slow');
+        student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
 
 }
