@@ -198,7 +198,8 @@ def get_email_name_like_students(conn, pattern: str, limit: int = 5) -> List[Stu
                    'FROM student '
                    'WHERE '
                    'email LIKE %(pattern)s or '
-                   'lower(concat(first_name, %(space_str)s, last_name)) LIKE %(pattern)s '
+                   'lower(concat(first_name, %(space_str)s, last_name)) LIKE %(pattern)s or '
+                   'lower(last_name) LIKE %(pattern)s '
                    'LIMIT %(limit)s',
                    {"pattern": f"{pattern.lower()}%", "limit": limit, "space_str": " "}
                    )
