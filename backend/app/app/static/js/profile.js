@@ -179,12 +179,12 @@ function add_student_row(student_id, full_name, email, hours) {
                     <input style="width: 50px" type="number" min="0" max="${current_duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"/>
                           </form></td>
                 </tr>`);
-    student_hours_tbody.append(row);
+    student_hours_tbody.prepend(row);
     students_in_table[student_id] = row;
 }
 
 function make_grades_table(grades) {
-    students_in_table.clear;
+    students_in_table = {};
     const table = $('<table class="table table-hover table-responsive-md">');
     table.append('<thead>')
         .children('thead')

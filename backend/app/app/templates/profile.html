@@ -46,9 +46,7 @@
     <script>
         $(function () {
             $("#student_emails").autocomplete({
-                {#TODO: return baseurl from request#}
-                {#source: "{{ request.base_url}}api/attendance/suggest_student",#}
-                source: "http://localhost:81/api/attendance/suggest_student",
+                source: "/api/attendance/suggest_student",
                 select: autocomplete_select
             });
             $("#student_emails").autocomplete("option", "appendTo", ".student_email_suggestor");
