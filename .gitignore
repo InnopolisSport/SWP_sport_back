@@ -5,3 +5,5 @@ __pycache__/
 /nginx/logs/error.log
 /nginx/logs/access.log
 /compose/.env
+
+.vscode/

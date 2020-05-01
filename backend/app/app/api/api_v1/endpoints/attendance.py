@@ -65,7 +65,14 @@ def suggest_students(input_term: str = Query(..., alias="term"),
                      db=Depends(get_db)):
     if find_trainer(db, current_user.email) is not None:
         suggested_students = get_email_name_like_students(db, input_term)
-        return [{"value": student.email, "label": f"{student.full_name} ({student.email})"} for student in
-                suggested_students]
-    # return ["i.ivanov@innopolis.university", "v.vasilev@innopolis.university", "s.stepanovich@innopolis.ru",
-    #         "v.topalov@innopolis.university", "r.mishin@innopolis.ru"]
+
+        return [
+            {
+                "value": f"{student.id}_{student.full_name}_{student.email}",
+                "label": f"{student.full_name} ({student.email})"
+            }
+            for student in
+            suggested_students]
+
+        # return [{"value": student.email, "label": f"{student.full_name} ({student.email})"} for student in
+        #         suggested_students]

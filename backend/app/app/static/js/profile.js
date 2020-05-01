@@ -167,22 +167,33 @@ function round(num, decimal_places) {
     return Math.round((num + Number.EPSILON) * decimal) / decimal;
 }
 
-function make_grades_table(grades, duration_academic_hours) {
+let student_hours_tbody = null;
+let current_duration_academic_hours = 0;
+let students_in_table = {}; // <student_id: row in the table>
+
+function add_student_row(student_id, full_name, email, hours) {
+    const row =$(`<tr id="student_${student_id}">
+                    <td>${full_name}</td>
+                    <td>${email}</td>
+                    <td style="cursor: pointer"><form onsubmit="return false">
+                    <input style="width: 50px" type="number" min="0" max="${current_duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"/>
+                          </form></td>
+                </tr>`);
+    student_hours_tbody.append(row);
+    students_in_table[student_id] = row[0];
+}
+
+function make_grades_table(grades) {
+    students_in_table.clear;
     const table = $('<table class="table table-hover table-responsive-md">');
     table.append('<thead>')
         .children('thead')
         .append('<tr />')
         .children('tr')
         .append('<th scope="col">Student</th><th scope="col">Email</th><th scope="col">Hours</th>');
-    const tbody = table.append('<tbody>').children('tbody');
+    student_hours_tbody = table.append('<tbody>').children('tbody');
     grades.forEach(({student_id, full_name, email, hours}) => {
-        tbody.append($(`<tr>
-                            <td>${full_name}</td>
-                            <td>${email}</td>
-                            <td style="cursor: pointer"><form onsubmit="return false">
-                            <input style="width: 50px" type="number" min="0" max="${duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"/>
-                            </form></td>
-                        </tr>`))
+        add_student_row(student_id, full_name, email, hours);
     });
     return table;
 }
@@ -211,10 +222,10 @@ async function open_trainer_modal({event}) {
     $('#grading-date').text(start.split('T')[0])
     const duration = event.end - event.start;
     // duration_academic_hours = (duration / 3_600_000) * (60 / 45) = duration / 2_700_000
-    const duration_academic_hours = Math.min(10, round(duration / 2_700_000, 2)) // TODO: hardcoded max = 10 (DB issue)
-    $('#put-default-hours-btn').attr('data-hours', duration_academic_hours)
-    $('#mark-all-hours-value').text(duration_academic_hours)
-    modal.append(make_grades_table(grades, duration_academic_hours));
+    current_duration_academic_hours = Math.min(10, round(duration / 2_700_000, 2)) // TODO: hardcoded max = 10 (DB issue)
+    $('#put-default-hours-btn').attr('data-hours', current_duration_academic_hours)
+    $('#mark-all-hours-value').text(current_duration_academic_hours)
+    modal.append(make_grades_table(grades));
 }
 
 
@@ -274,3 +285,19 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar = new FullCalendar.Calendar(calendarEl, calendar_setting);
     calendar.render();
 });
+
+
+function autocomplete_select(event, ui) {
+    event.preventDefault(); // prevent adding the value into the text field
+    event.stopPropagation(); // stop other handlers from execution
+    $(this).val(""); // clear the input field
+    const [student_id, full_name, email] = ui.item.value.split("_");
+    const hours = 0;
+    const student_row = students_in_table[student_id];
+    if (student_row == null) { // check if current student is in the table
+        add_student_row(student_id, full_name, email, hours); // add if student isn't present
+    }else{
+        student_row.scrollIntoView(); // scroll to the row with student
+    }
+
+}

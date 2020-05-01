@@ -47,8 +47,9 @@
         $(function () {
             $("#student_emails").autocomplete({
                 {#TODO: return baseurl from request#}
-                {#source: "{{ request.base_url}}api/attendance/suggest_student"#}
-                source: "http://localhost:81/api/attendance/suggest_student"
+                {#source: "{{ request.base_url}}api/attendance/suggest_student",#}
+                source: "http://localhost:81/api/attendance/suggest_student",
+                select: autocomplete_select
             });
             $("#student_emails").autocomplete("option", "appendTo", ".student_email_suggestor");
         });
@@ -224,7 +225,7 @@
                                 </button>
                             </div>
                             <div class="ui-widget d-flex flex-row mt-1 ml-1">
-                                <form class="student_email_suggestor" action="#" method="POST>">
+                                <form class="student_email_suggestor" onsubmit="alert('submitted')">
                                     <span class="align-text-top"><label for="student_emails"><b>Name or email:</b> </label>
                                         <input id="student_emails" class="stundet_email_pick" size="30">
                                     </span>
