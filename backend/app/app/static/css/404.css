@@ -48,6 +48,11 @@ body {
         bottom: 0;
     }
 
+    p {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
     .header {
         display: flex;
         position: absolute;
@@ -64,16 +69,10 @@ body {
     .body {
         display: flex;
         position: absolute;
-        top: 25%; bottom: 25%;
+        top: 25%;
+        bottom: 25%;
         width: 100%;
         align-items: center;
-    }
-
-    .footer {
-        position:   absolute;
-        bottom:     0;
-        height:     25%;
-        width:      100%;
     }
 
     .landscape {
