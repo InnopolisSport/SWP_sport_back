@@ -15,6 +15,7 @@ class Schedule(models.Model):
     weekday = models.IntegerField(choices=Weekday.choices, null=False)
     start = models.TimeField(auto_now=False, auto_now_add=False, null=False)
     end = models.TimeField(auto_now=False, auto_now_add=False, null=False)
+    training_class = models.ForeignKey("TrainingClass", on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         db_table = "schedule"
@@ -22,4 +23,5 @@ class Schedule(models.Model):
         verbose_name_plural = "schedule timeslots"
 
     def __str__(self):
-        return f"{self.group} {self.get_weekday_display()} {self.start}-{self.end}"
+        return f"{self.group} {self.get_weekday_display()} {self.start}-{self.end}" \
+               f"{'' if self.training_class is None else f' in {self.training_class}'}"

@@ -7,6 +7,7 @@ class Training(models.Model):
     schedule = models.ForeignKey("Schedule", on_delete=models.SET_NULL, null=True, blank=True)
     start = models.DateTimeField(null=False)
     end = models.DateTimeField(null=False)
+    training_class = models.ForeignKey("TrainingClass", on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         db_table = "training"
@@ -18,4 +19,5 @@ class Training(models.Model):
     def __str__(self):
         return f"{self.group} at {to_current_timezone(self.start).date()} " \
                f"{to_current_timezone(self.start).time().strftime('%H:%M')}-"\
-               f"{to_current_timezone(self.end).time().strftime('%H:%M')}"
+               f"{to_current_timezone(self.end).time().strftime('%H:%M')}" \
+               f"{'' if self.training_class is None else f' in {self.training_class}'}"
