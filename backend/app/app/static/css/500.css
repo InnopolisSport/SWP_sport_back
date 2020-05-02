@@ -1,3 +1,7 @@
+body {
+    overflow: hidden;
+}
+
 details {
     text-align: center;
 }
@@ -7,10 +11,6 @@ summary {
 }
 
 @media only screen and (max-width: 992px) {
-    body {
-        overflow: hidden;
-    }
-
     img {
         display: block;
         align: center;
@@ -30,10 +30,6 @@ summary {
 @media only screen and (min-width: 993px) {
     html, body, .container-fluid {
         height: 100%;
-    }
-
-    body {
-        overflow: hidden;
     }
 
     .container-fluid {
