@@ -56,9 +56,31 @@ def mark_attendance(data: MarkAttendanceRequest,
     training_info = get_training_info(db, data.training_id)
     max_hours = training_info.academic_duration
     cleaned_students = clean_students_id(db, tuple(data.students_hours.keys()))
-    hours_to_mark = [(s.id, min(max_hours, data.students_hours[s.id])) for s in cleaned_students]
-    mark_hours(db, data.training_id, hours_to_mark)
-    return hours_to_mark
+    # hours_to_mark = [(s.id, min(max_hours, data.students_hours[s.id])) for s in cleaned_students]
+    hours_to_mark = []
+    negative_mark = []
+    over_mark = []
+    for student in cleaned_students:
+        hours_put = data.students_hours[student.id]
+        if hours_put < 0:
+            negative_mark.append((student.email, hours_put))
+        elif hours_put > max_hours:
+            over_mark.append((student.email, hours_put))
+        else:
+            hours_to_mark.append((student.id, hours_put))
+    if negative_mark or over_mark:
+        return responses.JSONResponse(status_code=200, content={
+            "ok": False,
+            "error": {
+                "code": 2,
+                "description": "Some students obtained negative marks over overflowed maximum",
+                "negative_marks": negative_mark,
+                "overflow_mark": over_mark,
+            },
+        })
+    else:
+        mark_hours(db, data.training_id, hours_to_mark)
+        return hours_to_mark
 
 
 @router.get("/suggest_student")
