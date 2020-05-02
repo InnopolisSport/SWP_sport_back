@@ -48,7 +48,7 @@ async function fetch_detailed_hours(e) {
         method: 'GET'
     });
     const history = await response.json();
-    const table = $(`#hours-modal-${semester_id} .modal-body`);
+    const table = $(`#hours-modal-${semester_id} .modal-body-table`);
     table.empty();
     table.append(make_hours_table(history.trainings));
     loaded_hours[semester_id] = true;
@@ -250,7 +250,7 @@ function make_grades_table(grades) {
 
 function mark_all(el) {
     const duration_academic_hours = parseFloat($(el).attr('data-hours'))
-    $('#grading-modal .modal-body input[type=number]').filter(function () {
+    $('#grading-modal .modal-body-table input[type=number]').filter(function () {
         return $(this).val() === "0"
     }).val(duration_academic_hours).change();
 }
@@ -258,7 +258,7 @@ function mark_all(el) {
 async function open_trainer_modal({event}) {
     if (!event.extendedProps.can_grade) return
 
-    const modal = $('#grading-modal .modal-body');
+    const modal = $('#grading-modal .modal-body-table');
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#grading-modal').modal('show');

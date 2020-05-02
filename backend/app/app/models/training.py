@@ -13,7 +13,7 @@ class Training(Base):
 
     @property
     def academic_duration(self) -> float:
-        return (self.end - self.start).total_seconds() / 2700
+        return round((self.end - self.start).total_seconds() / 2700, 2)
 
     def __hash__(self):
         fields = [self.id, self.start, self.end, self.group_name]
@@ -43,7 +43,7 @@ class TrainingInfo(Base):
 
     @property
     def academic_duration(self) -> float:
-        return (self.end - self.start).total_seconds() / 2700
+        return round((self.end - self.start).total_seconds() / 2700, 2)
 
 
 class TrainingGrade(Base):
