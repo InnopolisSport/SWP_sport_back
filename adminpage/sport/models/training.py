@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms.utils import to_current_timezone
 
 
 class Training(models.Model):
@@ -15,5 +16,6 @@ class Training(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.group} at {self.start.date()} " \
-               f"{self.start.time().strftime('%H:%M')}-{self.end.time().strftime('%H:%M')}"
+        return f"{self.group} at {to_current_timezone(self.start).date()} " \
+               f"{to_current_timezone(self.start).time().strftime('%H:%M')}-"\
+               f"{to_current_timezone(self.end).time().strftime('%H:%M')}"
