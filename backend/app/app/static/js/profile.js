@@ -176,7 +176,7 @@ let current_duration_academic_hours = 0;
 let students_in_table = {}; // <student_id: jquery selector of a row in the table>
 
 function add_student_row(student_id, full_name, email, hours) {
-    const row =$(`<tr id="student_${student_id}">
+    const row = $(`<tr id="student_${student_id}">
                     <td>${full_name}</td>
                     <td>${email}</td>
                     <td style="cursor: pointer"><form onsubmit="return false">
@@ -209,9 +209,37 @@ function mark_all(el) {
     }).val(duration_academic_hours).change();
 }
 
-async function open_trainer_modal({event}) {
-    if (!event.extendedProps.can_grade) return
+async function unenroll(elem) {
+    const group_id = parseInt($(elem).attr('data-group-id'))
+    const response = await sendResults(`/api/unenroll`, {group_id});
+    if (response.ok) {
+        goto_profile()
+    } else {
+        alert('unenroll failed')
+    }
+}
 
+async function open_modal(info) {
+    if (info.event.extendedProps.can_grade) {
+        return await open_trainer_modal(info)
+    }
+    return await open_info_modal(info)
+}
+
+async function open_info_modal({event}) {
+    const modal = $('#training-info-modal .modal-body');
+    modal.empty();
+    $('#unenroll-btn').attr('data-group-id', event.extendedProps.group_id);
+    $('#info-group-name').text(event.title);
+    modal.append($(`<div>Training date: <strong>${event.start.toJSON().split('T')[0]}</strong></div>`))
+    modal.append($(`<div>Training time: <strong>${event.start.toJSON().slice(11, 16)}-${event.end.toJSON().slice(11, 16)}</strong></div>`))
+    if (event.extendedProps.training_class) {
+        modal.append($(`<div>Training class: <strong>${event.extendedProps.training_class}</strong></div>`))
+    }
+    $('#training-info-modal').modal('show');
+}
+
+async function open_trainer_modal({event}) {
     const modal = $('#grading-modal .modal-body');
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
@@ -264,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
         maxTime: '21:00:00',
         defaultTimedEventDuration: '01:30',
         eventRender: render,
-        eventClick: open_trainer_modal,
+        eventClick: open_modal,
         windowResize: function (view) {
             // change view on scree rotation
             if (document.body.clientWidth < tabletWidth) {
@@ -300,7 +328,7 @@ function autocomplete_select(event, ui) {
     const student_row = students_in_table[student_id];
     if (student_row == null) { // check if current student is in the table
         add_student_row(student_id, full_name, email, hours); // add if student isn't present
-    }else{
+    } else {
         student_row[0].scrollIntoView(); // scroll to the row with student
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }

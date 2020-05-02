@@ -4,10 +4,11 @@ from typing import List, Tuple
 from ..models.training import Training, TrainingGrade, TrainingInfo
 
 
-def __tuple_to_training(row: Tuple[int, datetime, datetime, str, str]) -> Training:
-    id, start, end, group_name, training_class = row
+def __tuple_to_training(row: Tuple[int, datetime, datetime, int, str, str]) -> Training:
+    id, start, end, group_id, group_name, training_class = row
     return Training(
         id=id,
+        group_id=group_id,
         start=start,
         end=end,
         group_name=group_name,
@@ -15,10 +16,11 @@ def __tuple_to_training(row: Tuple[int, datetime, datetime, str, str]) -> Traini
     )
 
 
-def __tuple_to_training_for_trainer(row: Tuple[int, datetime, datetime, str, str]) -> Training:
-    id, start, end, group_name, training_class = row
+def __tuple_to_training_for_trainer(row: Tuple[int, datetime, datetime, int, str, str]) -> Training:
+    id, start, end, group_id, group_name, training_class = row
     return Training(
         id=id,
+        group_id=group_id,
         start=start,
         end=end,
         group_name=group_name,
@@ -83,7 +85,7 @@ def get_trainings_for_student(conn, student_id: int, start: datetime, end: datet
     @return list of trainings for student
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT t.id, t.start, t."end", g.name, tc.name '
+    cursor.execute('SELECT t.id, t.start, t."end", g.id, g.name, tc.name '
                    'FROM enroll e, "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                    'WHERE t.start > %s AND t."end" < %s '
                    'AND t.group_id = g.id '
@@ -104,7 +106,7 @@ def get_trainings_for_trainer(conn, trainer_id: int, start: datetime, end: datet
     @return list of trainings for student
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT t.id, t.start, t."end", g.name, tc.name '
+    cursor.execute('SELECT t.id, t.start, t."end", g.id, g.name, tc.name '
                    'FROM "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                    'WHERE t.start > %s AND t."end" < %s '
                    'AND t.group_id = g.id '
@@ -118,7 +120,7 @@ def get_trainings_in_time(conn, sport_id: int, start: datetime, end: datetime) \
         -> List[Training]:
     cursor = conn.cursor()
     cursor.execute('SELECT g.id, t.start, t."end", g.name, tc.name, g.capacity, count(*) '
-                   'FROM sport sp, "group" g, enroll e, training t '
+                   'FROM sport sp, "group" g, training t '
                    'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                    'WHERE g.sport_id = sp.id '
                    'AND g.semester_id = current_semester() '
@@ -126,7 +128,6 @@ def get_trainings_in_time(conn, sport_id: int, start: datetime, end: datetime) \
                    'AND sp.id = %s '
                    'AND t.start >= %s '
                    'AND t.end <= %s '
-                   'AND e.group_id = g.id '
                    'GROUP BY g.id, t.id, tc.id', (sport_id, start, end))
     rows = cursor.fetchall()
     return list(map(__tuple_to_training_extended, rows))

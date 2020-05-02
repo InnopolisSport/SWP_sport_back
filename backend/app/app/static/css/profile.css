@@ -44,6 +44,14 @@ a:hover {
     font-weight: bold;
 }
 
+.fc-event .fc-content {
+    color: #fff;
+}
+
+.fc-time {
+    font-size: 0.78em;
+}
+
 @media only screen and (max-width: 576px) and (max-width: 768px) {
     .landscape {
         display: none;
