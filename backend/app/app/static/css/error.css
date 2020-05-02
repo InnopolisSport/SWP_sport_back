@@ -2,6 +2,13 @@ body {
     overflow: hidden;
 }
 
+div.traceback {
+    border: none;
+    padding: 5px;
+    height: 40vh;
+    overflow: scroll;
+}
+
 details {
     text-align: center;
 }
@@ -72,17 +79,12 @@ summary {
     .body {
         display: flex;
         position: absolute;
-        top: 25%; bottom: 25%;
+        top: 25%;
+        bottom: 25%;
         width: 100%;
         align-items: center;
     }
 
-    .footer {
-        position:   absolute;
-        bottom:     0;
-        height:     25%;
-        width:      100%;
-    }
 
     .landscape {
         display: block;

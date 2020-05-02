@@ -26,6 +26,11 @@ if config.DEBUG:
     app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
+@app.get("/error_trigger")
+def test():
+    return 1 / 0
+
+
 @app.middleware("http")
 async def recover_middleware(request: Request, call_next):
     try:
@@ -37,7 +42,8 @@ async def recover_middleware(request: Request, call_next):
         return templates.TemplateResponse("error.html", {
             "request": request,
             "error_code": 500,
-            "data": exception_traceback,
+            "data": exception_traceback.split("\n"),
+
         })
 
 
