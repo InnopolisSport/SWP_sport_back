@@ -44,6 +44,10 @@ a:hover {
     background-color: #ffa500;
 }
 
+/*.alert{
+    height: 38px;
+}*/
+
 @media only screen and (max-width: 576px) and (max-width: 768px) {
     .landscape {
         display: none;

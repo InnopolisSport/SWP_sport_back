@@ -204,6 +204,11 @@ async function save_hours() {
     $('#grading-modal').modal("hide")
 }
 
+$(document).on('hidden.bs.modal', '#grading-modal', function() {
+    var hrs_alert = document.getElementById("hours-alert");
+    hrs_alert.style.visibility = 'hidden';
+});
+
 function round(num, decimal_places) {
     const decimal = Math.pow(10, decimal_places);
     return Math.round((num + Number.EPSILON) * decimal) / decimal;
