@@ -149,6 +149,45 @@ async function save_hours() {
     btn.addClass('disabled')
     const training_id = btn.attr('data-training-id')
 
+    var hrs_alert = document.getElementById("hours-alert")
+    var flag = true; // Check for validity of hours
+    var n_invalid_rows = 0;
+    var first_invalid_row = null;
+    for (var key in local_hours_changes) {
+        if (local_hours_changes[key] < 0 || local_hours_changes[key] > current_duration_academic_hours) {
+            hrs_alert.style.visibility = 'visible' // make alert visible
+            flag = false;
+
+            var invalid_id = "student_" + key.toString();
+            var invalid_row = document.getElementById(invalid_id) // get row
+            if (invalid_row.className.match(/(?:^|\s)table-warning(?!\S)/)) {
+                invalid_row.classList.remove("table-warning");
+                invalid_row.classList.add("table-danger");
+            }
+            if (first_invalid_row == null) {
+                first_invalid_row = invalid_row;
+            }
+            n_invalid_rows += 1;
+        }
+    }
+    // Continue setting if hours are invalid
+    if (!flag) {
+        // Reset styles
+        for (var key in local_hours_changes) {
+            if (local_hours_changes[key] >= 0 && local_hours_changes[key] <= current_duration_academic_hours) {
+                var invalid_id = "student_" + key.toString();
+                var invalid_row = document.getElementById(invalid_id)
+                if (invalid_row.className.match(/(?:^|\s)table-danger(?!\S)/)) {
+                    invalid_row.classList.remove("table-danger");
+                    invalid_row.classList.add("table-warning");
+                }
+            }
+        }
+        first_invalid_row.scrollIntoView()
+        var hrs_alert = document.getElementById("hours-alert")
+        hrs_alert.textContent = "Invalid value of hours in " + n_invalid_rows.toString() + " row(s)!"
+        return;
+    }
     await fetch(`/api/attendance/mark`, {
         method: 'POST',
         body: JSON.stringify({
@@ -160,6 +199,9 @@ async function save_hours() {
     $('#grading-modal tr').removeClass('table-warning')
     local_hours_changes = {}
     btn.removeClass('disabled')
+
+    hrs_alert.style.visibility = "hidden" // Reset alert visibility
+    $('#grading-modal').modal("hide")
 }
 
 function round(num, decimal_places) {
