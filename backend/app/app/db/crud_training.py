@@ -4,24 +4,39 @@ from typing import List, Tuple
 from ..models.training import Training, TrainingGrade, TrainingInfo
 
 
-def __tuple_to_training(row: Tuple[int, datetime, datetime, str]) -> Training:
-    id, start, end, group_name = row
-    return Training(
-        id=id,
-        start=start,
-        end=end,
-        group_name=group_name
-    )
-
-
-def __tuple_to_training_for_trainer(row: Tuple[int, datetime, datetime, str]) -> Training:
-    id, start, end, group_name = row
+def __tuple_to_training(row: Tuple[int, datetime, datetime, str, str]) -> Training:
+    id, start, end, group_name, training_class = row
     return Training(
         id=id,
         start=start,
         end=end,
         group_name=group_name,
+        training_class=training_class
+    )
+
+
+def __tuple_to_training_for_trainer(row: Tuple[int, datetime, datetime, str, str]) -> Training:
+    id, start, end, group_name, training_class = row
+    return Training(
+        id=id,
+        start=start,
+        end=end,
+        group_name=group_name,
+        training_class=training_class,
         can_grade=True
+    )
+
+
+def __tuple_to_training_extended(row: Tuple[int, datetime, datetime, str, str, int, int]) -> Training:
+    group_id, start, end, group_name, training_class, capacity, current_load = row
+    return Training(
+        group_id=group_id,
+        start=start,
+        end=end,
+        group_name=group_name,
+        training_class=training_class,
+        capacity=capacity,
+        current_load=current_load
     )
 
 
@@ -68,8 +83,8 @@ def get_trainings_for_student(conn, student_id: int, start: datetime, end: datet
     @return list of trainings for student
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT t.id, t.start, t."end", g.name '
-                   'FROM training t, enroll e, "group" g '
+    cursor.execute('SELECT t.id, t.start, t."end", g.name, tc.name '
+                   'FROM enroll e, "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                    'WHERE t.start > %s AND t."end" < %s '
                    'AND t.group_id = g.id '
                    'AND e.group_id = g.id '
@@ -89,8 +104,8 @@ def get_trainings_for_trainer(conn, trainer_id: int, start: datetime, end: datet
     @return list of trainings for student
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT t.id, t.start, t."end", g.name '
-                   'FROM training t, "group" g '
+    cursor.execute('SELECT t.id, t.start, t."end", g.name, tc.name '
+                   'FROM "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                    'WHERE t.start > %s AND t."end" < %s '
                    'AND t.group_id = g.id '
                    'AND g.trainer_id = %s '
@@ -100,17 +115,21 @@ def get_trainings_for_trainer(conn, trainer_id: int, start: datetime, end: datet
 
 
 def get_trainings_in_time(conn, sport_id: int, start: datetime, end: datetime) \
-        -> List[Tuple[str, datetime, datetime, int, int]]:
+        -> List[Training]:
     cursor = conn.cursor()
-    cursor.execute('SELECT g.name, t.start, t."end", g.capacity, g.id '
-                   'FROM sport sp '
-                   'JOIN "group" g ON g.sport_id = sp.id AND g.semester_id = current_semester() '
-                   'JOIN training t ON t.group_id = g.id '
+    cursor.execute('SELECT g.id, t.start, t."end", g.name, tc.name, g.capacity, count(*) '
+                   'FROM sport sp, "group" g, enroll e, training t '
+                   'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
+                   'WHERE g.sport_id = sp.id '
+                   'AND g.semester_id = current_semester() '
+                   'AND t.group_id = g.id '
                    'AND sp.id = %s '
                    'AND t.start >= %s '
-                   'AND t.end <= %s', (sport_id, start, end))
+                   'AND t.end <= %s '
+                   'AND e.group_id = g.id '
+                   'GROUP BY g.id, t.id, tc.id', (sport_id, start, end))
     rows = cursor.fetchall()
-    return rows
+    return list(map(__tuple_to_training_extended, rows))
 
 
 def get_students_grades(conn, training_id: int) -> List[TrainingGrade]:

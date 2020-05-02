@@ -1,15 +1,20 @@
 from datetime import datetime
 from operator import eq
+from typing import Optional
 
 from .base import Base
 
 
 class Training(Base):
-    id: int
+    id: Optional[int] = None
     start: datetime
     end: datetime
     group_name: str
     can_grade: bool = False
+    training_class: Optional[str] = None
+    current_load: Optional[int] = None
+    capacity: Optional[int] = None
+    group_id: Optional[int] = None
 
     def __hash__(self):
         fields = [self.id, self.start, self.end, self.group_name]

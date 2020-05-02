@@ -102,6 +102,10 @@ function render(info) {
     } else {
         element.style.backgroundColor = get_color(props.id)
     }
+
+    if (props.training_class) {
+        $(element).children(".fc-content").append($(`<div>${props.training_class}</div>`))
+    }
 }
 
 function showCapacity(mouseEnterInfo) {

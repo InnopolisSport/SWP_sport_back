@@ -18,17 +18,16 @@ logger.setLevel(logging.DEBUG)
 router = APIRouter()
 
 
-def convert_training(db, t: Tuple[str, datetime, datetime, int, int]) -> dict:
-    title, start, end, capacity, group_id = t
+def convert_training(t: Training) -> dict:
     return {
-        "title": title,
-        "start": convert_from_utc(start),
-        "end": convert_from_utc(end),
+        "title": t.group_name,
+        "start": convert_from_utc(t.start),
+        "end": convert_from_utc(t.end),
         "extendedProps": {
-            "capacity": capacity,
-            # TODO: n+1 problem?
-            "currentLoad": get_current_load(db, group_id),
-            "id": group_id
+            "capacity": t.capacity,
+            "currentLoad": t.current_load,
+            "id": t.group_id,
+            "training_class": t.training_class
         }
     }
 
@@ -40,7 +39,8 @@ def convert_training_profile(t: Training) -> dict:
         "end": convert_from_utc(t.end),
         "extendedProps": {
             "id": t.id,
-            "can_grade": t.can_grade
+            "can_grade": t.can_grade,
+            "training_class": t.training_class
         }
     }
 
@@ -49,7 +49,7 @@ def convert_training_profile(t: Training) -> dict:
 def get_schedule(db=Depends(get_db), *, sport_id: int = Path(..., gt=0), start: datetime, end: datetime,
                  timezone: Optional[str] = Query(None, alias="timeZone")):
     trainings = get_trainings_in_time(db, sport_id, start, end)
-    return list(map(lambda training: convert_training(db, training), trainings))
+    return list(map(convert_training, trainings))
 
 
 @router.get("/trainings")

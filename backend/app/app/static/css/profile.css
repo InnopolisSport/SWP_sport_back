@@ -40,6 +40,10 @@ a:hover {
     background-color: #ffa500;
 }
 
+.fc-title {
+    font-weight: bold;
+}
+
 @media only screen and (max-width: 576px) and (max-width: 768px) {
     .landscape {
         display: none;
