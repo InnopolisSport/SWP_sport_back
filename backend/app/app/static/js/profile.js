@@ -16,7 +16,7 @@ async function leave_group(elem, group_id) {
         if (response.ok) {
             goto_profile()
         } else {
-            alert('unenroll failed')
+            toastr.error('unenroll failed');
         }
     }
 }
@@ -60,11 +60,7 @@ function toggle_ill(elem) {
             if (data.ok) {
                 goto_profile();
             } else {
-                switch (data.error.code) {
-                    case 1:
-                        break;
-                }
-                alert(data.error.description);
+                toastr.error(data.error.description);
             }
         })
 }

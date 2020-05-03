@@ -71,19 +71,14 @@ function enroll(eventClickInfo) {
                 if (data.ok) {
                     goto_profile();
                 } else {
-                    switch (data.error.code) {
-                        // Not a student account
-                        case 3:
-                        // Deadline passed
-                        case 4:
-                            goto_profile();
-                            break;
-                        //The group is full
-                        case 2:
-                            eventClickInfo.el.style.backgroundColor = '#ff0000';
-                            break;
+                    // code == 2: Group is full
+                    // code == 3: Not a student account
+                    // code == 4: Repetitive enroll
+                    // code == 5: Too much secondary groups
+                    if (data.error.code === 2) {
+                        eventClickInfo.el.style.backgroundColor = '#ff0000';
                     }
-                    alert(data.error.description);
+                    toastr.error(data.error.description);
                 }
             });
     }

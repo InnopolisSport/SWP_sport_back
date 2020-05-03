@@ -59,7 +59,7 @@ def enroll(enroll_req: EnrollRequest, db=Depends(get_db),
                     "ok": False,
                     "error": {
                         "description": "Too much secondary groups",
-                        "code": 3,
+                        "code": 5,
                     }
                 })
             return responses.JSONResponse(status_code=status.HTTP_200_OK, content={

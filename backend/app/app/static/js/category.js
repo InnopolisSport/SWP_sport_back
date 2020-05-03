@@ -2,9 +2,6 @@ async function sendResults(url, data) {
     let response = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(data),
-        // headers: {
-        //     // 'Content-Type': 'application/json'
-        // }
     });
     return await response.json();
 }
@@ -42,7 +39,7 @@ function enroll_club(club_id, club_name) {
                             [...document.getElementsByClassName("club-dropdown")].map(n => n && check_empty(n));
                             break;
                     }
-                    alert(data.error.description);
+                    toastr.error(data.error.description);
                 }
             });
     }
@@ -56,7 +53,7 @@ function enroll_sc(group_id) {
                 if (data.ok) {
                     goto_profile();
                 } else {
-                    alert(data.error.description);
+                    toastr.error(data.error.description);
                 }
             })
     }
