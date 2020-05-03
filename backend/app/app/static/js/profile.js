@@ -185,7 +185,7 @@ async function save_hours() {
         }
         first_invalid_row.scrollIntoView()
         var hrs_alert = document.getElementById("hours-alert")
-        hrs_alert.textContent = "Invalid value of hours in " + n_invalid_rows.toString() + " row(s)!"
+        hrs_alert.textContent = "Invalid value of hours in " + n_invalid_rows.toString() + " row(s)"
         return;
     }
     await fetch(`/api/attendance/mark`, {
