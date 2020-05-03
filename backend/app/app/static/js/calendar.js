@@ -61,32 +61,62 @@ function goto_profile() {
     window.location.href = "/profile";
 }
 
-function enroll(eventClickInfo) {
-
-    let group_id = eventClickInfo.event.extendedProps.id;
-    let ans = confirm("Are you sure you want to enroll to group " + eventClickInfo.event.title + "?");
-    if (ans) {
-        sendResults("/api/enroll", {group_id: group_id})
-            .then(data => {
-                if (data.ok) {
-                    goto_profile();
-                } else {
-                    switch (data.error.code) {
-                        // Not a student account
-                        case 3:
-                        // Deadline passed
-                        case 4:
-                            goto_profile();
-                            break;
-                        //The group is full
-                        case 2:
-                            eventClickInfo.el.style.backgroundColor = '#ff0000';
-                            break;
-                    }
-                    alert(data.error.description);
-                }
-            });
+async function open_modal(eventClickInfo) {
+    const {event} = eventClickInfo
+    const modal = $('#training-info-modal .modal-body');
+    modal.empty();
+    modal.append($('<div class="spinner-border" role="status"></div>'));
+    $('#training-info-modal').modal('show');
+    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
+        method: 'GET'
+    });
+    const {group_description, trainer_first_name, trainer_last_name, trainer_email, is_enrolled} = await response.json();
+    $('#enroll-unenroll-btn')
+        .attr('data-group-id', event.extendedProps.group_id)
+        .attr('data-action', is_enrolled ? 'unenroll' : 'enroll')
+        .text(is_enrolled ? "Unenroll" : "Enroll")
+        .addClass(is_enrolled ? "btn-danger" : "btn-success")
+        .removeClass(is_enrolled ? "btn-success" : "btn-danger");
+    $('#info-group-name').text(event.title);
+    modal.empty();
+    if (group_description) {
+        modal.append(`<p>${group_description}</p>`)
     }
+    const p = modal.append('<p>').children('p:last-child')
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    p.append(`<div>Weekday and time: <strong>${days[event.start.getDay()]}, ${event.start.toJSON().slice(11, 16)}-${event.end.toJSON().slice(11, 16)}</strong></div>`)
+    p.append(`<div>Available places: <strong>${event.extendedProps.capacity - event.extendedProps.currentLoad}/${event.extendedProps.capacity}</strong></div>`)
+    if (event.extendedProps.training_class) {
+        p.append(`<div>Class: <strong>${event.extendedProps.training_class}</strong></div>`)
+    }
+    if (trainer_first_name || trainer_last_name || trainer_email) {
+        modal.append(`<p>Trainer: <strong>${trainer_first_name} ${trainer_last_name}</strong> <a href="mailto:${trainer_email}">${trainer_email}</a></p>`)
+    }
+}
+
+function enroll(elem) {
+    const group_id = parseInt($(elem).attr('data-group-id'));
+    const action = $(elem).attr('data-action');
+    sendResults(`/api/${action}`, {group_id: group_id})
+        .then(data => {
+            if (data.ok) {
+                goto_profile();
+            } else {
+                switch (data.error.code) {
+                    // Not a student account
+                    case 3:
+                    // Deadline passed
+                    case 4:
+                        goto_profile();
+                        break;
+                    //The group is full
+                    case 2:
+                        eventClickInfo.el.style.backgroundColor = '#ff0000';
+                        break;
+                }
+                alert(data.error.description);
+            }
+        });
 }
 
 
@@ -100,7 +130,7 @@ function render(info) {
     if (available <= 0) {
         element.style.backgroundColor = "#ff0000"
     } else {
-        element.style.backgroundColor = get_color(props.id)
+        element.style.backgroundColor = get_color(props.group_id)
     }
 
     if (props.training_class) {
@@ -133,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
         minTime: '08:00:00',
         maxTime: '21:00:00',
         defaultTimedEventDuration: '01:30',
-        eventClick: enroll,
+        eventClick: open_modal,
         eventMouseEnter: showCapacity,
         eventRender: render,
         // Event format: yyyy-mm-dd

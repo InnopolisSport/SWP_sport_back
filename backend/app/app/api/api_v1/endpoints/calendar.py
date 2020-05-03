@@ -23,9 +23,10 @@ def convert_training(t: Training) -> dict:
         "start": convert_from_utc(t.start),
         "end": convert_from_utc(t.end),
         "extendedProps": {
+            "id": t.id,
             "capacity": t.capacity,
             "currentLoad": t.current_load,
-            "id": t.group_id,
+            "group_id": t.group_id,
             "training_class": t.training_class,
             "hours": t.hours
         }

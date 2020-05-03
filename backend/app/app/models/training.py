@@ -49,6 +49,7 @@ class AttendedTrainingInfo(Base):
     trainer_last_name: Optional[str] = None
     trainer_email: Optional[str] = None
     hours: float
+    is_enrolled: bool
 
 
 class TrainingGrade(Base):

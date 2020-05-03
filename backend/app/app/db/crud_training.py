@@ -30,9 +30,10 @@ def __tuple_to_training_for_trainer(row: Tuple[int, datetime, datetime, int, str
     )
 
 
-def __tuple_to_training_extended(row: Tuple[int, datetime, datetime, str, str, int, int]) -> Training:
-    group_id, start, end, group_name, training_class, capacity, current_load = row
+def __tuple_to_training_extended(row: Tuple[int, int, datetime, datetime, str, str, int, int]) -> Training:
+    id, group_id, start, end, group_name, training_class, capacity, current_load = row
     return Training(
+        id=id,
         group_id=group_id,
         start=start,
         end=end,
@@ -52,14 +53,15 @@ def __tuple_to_training_info(row: Tuple[str, datetime, int]) -> TrainingInfo:
     )
 
 
-def __tuple_to_attended_training_info(row: Tuple[str, str, str, str, float]) -> AttendedTrainingInfo:
-    group_description, trainer_first_name, trainer_last_name, trainer_email, hours = row
+def __tuple_to_attended_training_info(row: Tuple[str, str, str, str, float, bool]) -> AttendedTrainingInfo:
+    group_description, trainer_first_name, trainer_last_name, trainer_email, hours, is_enrolled = row
     return AttendedTrainingInfo(
         group_description=group_description if group_description is not None else '',
         trainer_first_name=trainer_first_name,
         trainer_last_name=trainer_last_name,
         trainer_email=trainer_email,
-        hours=hours if hours is not None else 0
+        hours=hours if hours is not None else 0,
+        is_enrolled=is_enrolled
     )
 
 
@@ -96,11 +98,13 @@ def get_attended_training_info(conn, training_id: int, student_id: int) -> Atten
     @return found training
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT g.description, t.first_name, t.last_name, t.email, a.hours '
-                   'FROM training tr, "group" g '
-                   'LEFT JOIN trainer t ON t.id = g.trainer_id '
-                   'LEFT JOIN attendance a ON a.training_id = %s AND a.student_id = %s '
-                   'WHERE tr.group_id = g.id', (training_id, student_id))
+    cursor.execute(
+        'SELECT g.description, t.first_name, t.last_name, t.email, a.hours, '
+        'exists(SELECT 1 FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s) '
+        'FROM training tr, "group" g '
+        'LEFT JOIN trainer t ON t.id = g.trainer_id '
+        'LEFT JOIN attendance a ON a.training_id = %s AND a.student_id = %s '
+        'WHERE tr.group_id = g.id AND tr.id = %s', (student_id, training_id, student_id, training_id))
     return __tuple_to_attended_training_info(cursor.fetchone())
 
 
@@ -150,8 +154,8 @@ def get_trainings_for_trainer(conn, trainer_id: int, start: datetime, end: datet
 def get_trainings_in_time(conn, sport_id: int, start: datetime, end: datetime) \
         -> List[Training]:
     cursor = conn.cursor()
-    cursor.execute('SELECT g.id, t.start, t."end", g.name, tc.name, g.capacity, count(*) '
-                   'FROM sport sp, "group" g, training t '
+    cursor.execute('SELECT t.id, g.id, t.start, t."end", g.name, tc.name, g.capacity, count(*) '
+                   'FROM sport sp, "group" g, enroll e, training t '
                    'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                    'WHERE g.sport_id = sp.id '
                    'AND g.semester_id = current_semester() '
@@ -159,6 +163,7 @@ def get_trainings_in_time(conn, sport_id: int, start: datetime, end: datetime) \
                    'AND sp.id = %s '
                    'AND t.start >= %s '
                    'AND t.end <= %s '
+                   'AND e.group_id = g.id '
                    'GROUP BY g.id, t.id, tc.id', (sport_id, start, end))
     rows = cursor.fetchall()
     return list(map(__tuple_to_training_extended, rows))
