@@ -48,7 +48,7 @@ async function fetch_detailed_hours(e) {
         method: 'GET'
     });
     const history = await response.json();
-    const table = $(`#hours-modal-${semester_id} .modal-body`);
+    const table = $(`#hours-modal-${semester_id} .modal-body-table`);
     table.empty();
     table.append(make_hours_table(history.trainings));
     loaded_hours[semester_id] = true;
@@ -139,8 +139,21 @@ function render(info) {
 let local_hours_changes = {}
 
 function local_save_hours(e, student_id) {
+    e.parentNode.parentNode.parentNode.className = "";
     $(e).parent().parent().parent().addClass('table-warning')
     local_hours_changes[student_id] = parseFloat(e.value)
+}
+
+function show_alert(alert_id, text = "") {
+    const alert_elem = document.getElementById(alert_id);
+    alert_elem.textContent = text;
+    alert_elem.style.visibility = 'visible';
+}
+
+function hide_alert(alert_id) {
+    const alert_elem = document.getElementById(alert_id);
+    alert_elem.textContent = "";
+    alert_elem.style.visibility = 'hide';
 }
 
 async function save_hours() {
@@ -149,6 +162,34 @@ async function save_hours() {
     btn.addClass('disabled')
     const training_id = btn.attr('data-training-id')
 
+    let hours_valid = true; // Check for validity of hours
+    let invalid_row_count = 0;
+    let first_invalid_row = null;
+    for (const key in local_hours_changes) {
+        if (local_hours_changes[key] < 0 || local_hours_changes[key] > current_duration_academic_hours) {
+            hours_valid = false;
+
+            const invalid_row_id = "student_" + key.toString();
+            const invalid_row = document.getElementById(invalid_row_id); // get row
+            if (invalid_row.className.match(/(?:^|\s)table-warning(?!\S)/)) {
+                invalid_row.classList.remove("table-warning");
+                invalid_row.classList.add("table-danger");
+            }
+            if (first_invalid_row == null) {
+                first_invalid_row = invalid_row;
+            }
+            invalid_row_count += 1;
+        }
+    }
+
+    if (!hours_valid) {
+        first_invalid_row.scrollIntoView();
+        show_alert(
+            "hours-alert",
+            "Invalid value of hours in " + invalid_row_count.toString() + " row(s)",
+        );
+        return;
+    }
     await fetch(`/api/attendance/mark`, {
         method: 'POST',
         body: JSON.stringify({
@@ -160,7 +201,15 @@ async function save_hours() {
     $('#grading-modal tr').removeClass('table-warning')
     local_hours_changes = {}
     btn.removeClass('disabled')
+
+    hide_alert("hours-alert");
+    $('#grading-modal').modal("hide")
 }
+
+$(document).on('hidden.bs.modal', '#grading-modal', function () {
+    var hrs_alert = document.getElementById("hours-alert");
+    hrs_alert.style.visibility = 'hidden';
+});
 
 function round(num, decimal_places) {
     const decimal = Math.pow(10, decimal_places);
@@ -172,12 +221,15 @@ let current_duration_academic_hours = 0;
 let students_in_table = {}; // <student_id: jquery selector of a row in the table>
 
 function add_student_row(student_id, full_name, email, hours) {
-    const row =$(`<tr id="student_${student_id}">
+    const row = $(`<tr id="student_${student_id}">
                     <td>${full_name}</td>
                     <td>${email}</td>
-                    <td style="cursor: pointer"><form onsubmit="return false">
-                    <input style="width: 50px" type="number" min="0" max="${current_duration_academic_hours}" onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"/>
-                          </form></td>
+                    <td style="cursor: pointer">
+                        <form onsubmit="return false">
+                            <input class="studentHourField" type="number" min="0" max="${current_duration_academic_hours}" 
+                            onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"
+                            />
+                     </form></td>
                 </tr>`);
     student_hours_tbody.prepend(row);
     students_in_table[student_id] = row;
@@ -200,7 +252,7 @@ function make_grades_table(grades) {
 
 function mark_all(el) {
     const duration_academic_hours = parseFloat($(el).attr('data-hours'))
-    $('#grading-modal .modal-body input[type=number]').filter(function () {
+    $('#grading-modal .modal-body-table input[type=number]').filter(function () {
         return $(this).val() === "0"
     }).val(duration_academic_hours).change();
 }
@@ -208,7 +260,7 @@ function mark_all(el) {
 async function open_trainer_modal({event}) {
     if (!event.extendedProps.can_grade) return
 
-    const modal = $('#grading-modal .modal-body');
+    const modal = $('#grading-modal .modal-body-table');
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#grading-modal').modal('show');
@@ -296,9 +348,9 @@ function autocomplete_select(event, ui) {
     const student_row = students_in_table[student_id];
     if (student_row == null) { // check if current student is in the table
         add_student_row(student_id, full_name, email, hours); // add if student isn't present
-    }else{
+    } else {
         student_row[0].scrollIntoView(); // scroll to the row with student
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
-
 }
+

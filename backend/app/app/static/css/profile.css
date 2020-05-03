@@ -19,6 +19,10 @@ a:hover {
     color: #ffffff;
 }
 
+.studentHourField{
+    width: 50px;
+}
+
 .navbar-inverse {
     background: #00802b;
 }
@@ -38,6 +42,11 @@ a:hover {
 
 .badge-training {
     background-color: #ffa500;
+}
+
+.alert {
+    padding: 6px 12px; /* The same padding as buttons has */
+
 }
 
 @media only screen and (max-width: 576px) and (max-width: 768px) {
