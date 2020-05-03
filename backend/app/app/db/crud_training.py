@@ -1,18 +1,19 @@
 from datetime import datetime
 from typing import List, Tuple
 
-from ..models.training import Training, TrainingGrade, TrainingInfo
+from ..models.training import Training, TrainingGrade, TrainingInfo, AttendedTrainingInfo
 
 
-def __tuple_to_training(row: Tuple[int, datetime, datetime, int, str, str]) -> Training:
-    id, start, end, group_id, group_name, training_class = row
+def __tuple_to_training(row: Tuple[int, datetime, datetime, int, str, str, float]) -> Training:
+    id, start, end, group_id, group_name, training_class, hours = row
     return Training(
         id=id,
         group_id=group_id,
         start=start,
         end=end,
         group_name=group_name,
-        training_class=training_class
+        training_class=training_class,
+        hours=hours
     )
 
 
@@ -51,6 +52,17 @@ def __tuple_to_training_info(row: Tuple[str, datetime, int]) -> TrainingInfo:
     )
 
 
+def __tuple_to_attended_training_info(row: Tuple[str, str, str, str, float]) -> AttendedTrainingInfo:
+    group_description, trainer_first_name, trainer_last_name, trainer_email, hours = row
+    return AttendedTrainingInfo(
+        group_description=group_description if group_description is not None else '',
+        trainer_first_name=trainer_first_name,
+        trainer_last_name=trainer_last_name,
+        trainer_email=trainer_email,
+        hours=hours if hours is not None else 0
+    )
+
+
 def __tuple_to_training_grade(row: Tuple[int, str, str, str, float]) -> TrainingGrade:
     student_id, first_name, last_name, email, hours = row
     return TrainingGrade(
@@ -75,6 +87,23 @@ def get_training_info(conn, training_id: int) -> TrainingInfo:
     return __tuple_to_training_info(cursor.fetchone())
 
 
+def get_attended_training_info(conn, training_id: int, student_id: int) -> AttendedTrainingInfo:
+    """
+    Retrieves more detailed training info by its id
+    @param conn - Database connection
+    @param training_id - graded training id
+    @param student_id - request sender student id
+    @return found training
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT g.description, t.first_name, t.last_name, t.email, a.hours '
+                   'FROM training tr, "group" g '
+                   'LEFT JOIN trainer t ON t.id = g.trainer_id '
+                   'LEFT JOIN attendance a ON a.training_id = %s AND a.student_id = %s '
+                   'WHERE tr.group_id = g.id', (training_id, student_id))
+    return __tuple_to_attended_training_info(cursor.fetchone())
+
+
 def get_trainings_for_student(conn, student_id: int, start: datetime, end: datetime) -> List[Training]:
     """
     Retrieves existing trainings in the given range for given student
@@ -85,13 +114,15 @@ def get_trainings_for_student(conn, student_id: int, start: datetime, end: datet
     @return list of trainings for student
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT t.id, t.start, t."end", g.id, g.name, tc.name '
-                   'FROM enroll e, "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
+    cursor.execute('SELECT t.id, t.start, t."end", g.id, g.name, tc.name, a.hours '
+                   'FROM enroll e, "group" g, training t '
+                   'LEFT JOIN attendance a ON a.student_id = %s AND a.training_id = t.id '
+                   'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                    'WHERE t.start > %s AND t."end" < %s '
                    'AND t.group_id = g.id '
                    'AND e.group_id = g.id '
                    'AND e.student_id = %s '
-                   'AND g.semester_id = current_semester()', (start, end, student_id))
+                   'AND g.semester_id = current_semester()', (student_id, start, end, student_id))
     rows = cursor.fetchall()
     return list(map(__tuple_to_training, rows))
 

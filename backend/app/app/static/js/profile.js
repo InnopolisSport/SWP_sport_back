@@ -229,14 +229,27 @@ async function open_modal(info) {
 async function open_info_modal({event}) {
     const modal = $('#training-info-modal .modal-body');
     modal.empty();
+    modal.append($('<div class="spinner-border" role="status"></div>'));
+    $('#training-info-modal').modal('show');
+    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
+        method: 'GET'
+    });
+    const {group_description, trainer_first_name, trainer_last_name, trainer_email, hours} = await response.json();
     $('#unenroll-btn').attr('data-group-id', event.extendedProps.group_id);
     $('#info-group-name').text(event.title);
-    modal.append($(`<div>Training date: <strong>${event.start.toJSON().split('T')[0]}</strong></div>`))
-    modal.append($(`<div>Training time: <strong>${event.start.toJSON().slice(11, 16)}-${event.end.toJSON().slice(11, 16)}</strong></div>`))
-    if (event.extendedProps.training_class) {
-        modal.append($(`<div>Training class: <strong>${event.extendedProps.training_class}</strong></div>`))
+    modal.empty();
+    if (group_description) {
+        modal.append(`<p>${group_description}</p>`)
     }
-    $('#training-info-modal').modal('show');
+    const p = modal.append('<p>').children('p:last-child')
+    p.append(`<div>Date and time: <strong>${event.start.toJSON().split('T')[0]}, ${event.start.toJSON().slice(11, 16)}-${event.end.toJSON().slice(11, 16)}</strong></div>`)
+    if (event.extendedProps.training_class) {
+        p.append(`<div>Class: <strong>${event.extendedProps.training_class}</strong></div>`)
+    }
+    if (trainer_first_name || trainer_last_name || trainer_email) {
+        modal.append(`<p>Trainer: <strong>${trainer_first_name} ${trainer_last_name}</strong> <a href="mailto:${trainer_email}">${trainer_email}</a></p>`)
+    }
+    modal.append(`<p>Marked hours: <strong>${hours}</strong></p>`)
 }
 
 async function open_trainer_modal({event}) {

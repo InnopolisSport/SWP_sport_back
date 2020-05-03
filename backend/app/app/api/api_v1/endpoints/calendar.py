@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import Tuple, Optional
+from typing import Optional
 
 from fastapi import APIRouter, Depends, Path, Query, responses, status
 
@@ -26,7 +26,8 @@ def convert_training(t: Training) -> dict:
             "capacity": t.capacity,
             "currentLoad": t.current_load,
             "id": t.group_id,
-            "training_class": t.training_class
+            "training_class": t.training_class,
+            "hours": t.hours
         }
     }
 
