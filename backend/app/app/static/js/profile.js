@@ -116,8 +116,8 @@ function render(info) {
     let props = event.extendedProps;
     element.style.fontSize = "99";
     element.style.backgroundColor = get_color(event.title);
+    element.style.cursor = 'pointer';
     if (props.can_grade) {
-        element.style.cursor = 'pointer';
         element.style.backgroundImage = 'url("static/images/categories/sc_trainer.png")';
         element.style.backgroundPosition = 'right bottom';
         element.style.backgroundRepeat = 'no-repeat';
