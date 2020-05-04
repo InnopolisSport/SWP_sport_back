@@ -35,8 +35,11 @@ a:hover {
     color: #ffffff;
 }
 
-.badge-secondary:hover {
+.badge:hover {
     cursor: pointer;
+}
+
+.badge-secondary:hover {
     background-color: #dc3545;
 }
 

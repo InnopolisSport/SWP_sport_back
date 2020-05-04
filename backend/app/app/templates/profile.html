@@ -63,7 +63,8 @@
                     <p>
                         In semester <b>{{ common["semester_name"] }}</b> you train the following groups:
                         {% for group in trainer["sport_groups"] %}
-                            <span class="badge badge-pill badge-training">{{ group.qualified_name }}</span>
+                            <span class="badge badge-pill badge-training"
+                                  onclick="open_info_modal_for_leave({{ group.id }}, true)">{{ group.qualified_name }}</span>
                         {% endfor %}
                     </p>
                 {% else %}
@@ -80,12 +81,8 @@
                         Your sport groups for semester <b>{{ common["semester_name"] }}</b>
                         are:
                         {% for group in student["sport_groups"] %}
-                            {% if group.is_primary %}
-                                <span class="badge badge-pill badge-success">{{ group.name }}</span>
-                            {% else %}
-                                <span class="badge badge-pill badge-secondary cursor-pointer"
-                                      onclick="leave_group(this, {{ group.id }})">{{ group.name }}</span>
-                            {% endif %}
+                            <span class="badge badge-pill {{ 'badge-success' if group.is_primary else 'badge-secondary' }}"
+                                  onclick="open_info_modal_for_leave({{ group.id }}, false)">{{ group.name }}</span>
                         {% endfor %}
                     </p>
                 {% else %}
@@ -246,8 +243,6 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="training-info-modal-title">
-                                <span id="info-group-name"></span>
-                                training
                             </h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>

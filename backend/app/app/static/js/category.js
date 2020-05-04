@@ -60,7 +60,7 @@ async function open_modal(id) {
         .removeClass(is_enrolled ? "btn-success" : "btn-danger")
         .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
         .attr('disabled', is_enrolled ? is_primary : current_load === capacity);
-    $('#info-group-name').text(group_name);
+    $('#training-info-modal-title').text(`${group_name} group`);
     modal.empty();
     if (group_description) {
         modal.append(`<p>${group_description}</p>`)

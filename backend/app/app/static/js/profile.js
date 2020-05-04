@@ -10,17 +10,6 @@ function goto_profile() {
     window.location.href = "/profile";
 }
 
-async function leave_group(elem, group_id) {
-    if (confirm('Are you sure you want to leave this group?')) {
-        const response = await sendResults(`/api/unenroll`, {group_id});
-        if (response.ok) {
-            goto_profile()
-        } else {
-            alert('unenroll failed')
-        }
-    }
-}
-
 function make_hours_table(trainings) {
     const table = $('<table class="table table-hover">');
     table.append('<thead>')
@@ -278,6 +267,49 @@ async function open_modal(info) {
     return await open_info_modal(info)
 }
 
+async function open_info_modal_for_leave(group_id, hide_button) {
+    const modal = $('#training-info-modal .modal-body');
+    modal.empty();
+    modal.append($('<div class="spinner-border" role="status"></div>'));
+    $('#training-info-modal').modal('show');
+    const response = await fetch(`/api/group/${group_id}`, {
+        method: 'GET'
+    });
+    const {
+        group_name,
+        group_description,
+        trainer_first_name,
+        trainer_last_name,
+        trainer_email,
+        is_enrolled,
+        capacity,
+        current_load,
+        training_class,
+        is_primary
+    } = await response.json();
+    $('#training-info-modal-title').text(`${group_name} group`);
+    $('#enroll-unenroll-btn')
+        .text(is_enrolled ? "Unenroll" : "Enroll")
+        .addClass(is_enrolled ? "btn-danger" : "btn-success")
+        .removeClass(is_enrolled ? "btn-success" : "btn-danger")
+        .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
+        .attr('hidden', hide_button)
+        .attr('disabled', is_enrolled ? is_primary : current_load === capacity);
+    modal.empty();
+
+    if (group_description) {
+        modal.append(`<p>${group_description}</p>`)
+    }
+
+    if (training_class) {
+        const p = modal.append('<p>').children('p:last-child')
+        p.append(`<div>Class: <strong>${training_class}</strong></div>`)
+    }
+    if (trainer_first_name || trainer_last_name || trainer_email) {
+        modal.append(`<p>Trainer: <strong>${trainer_first_name} ${trainer_last_name}</strong> <a href="mailto:${trainer_email}">${trainer_email}</a></p>`)
+    }
+}
+
 async function open_info_modal({event}) {
     const modal = $('#training-info-modal .modal-body');
     modal.empty();
@@ -300,7 +332,7 @@ async function open_info_modal({event}) {
         is_primary,
         hours
     } = await response.json();
-    $('#info-group-name').text(group_name);
+    $('#training-info-modal-title').text(`${group_name} training`);
     $('#enroll-unenroll-btn')
         .text(is_enrolled ? "Unenroll" : "Enroll")
         .addClass(is_enrolled ? "btn-danger" : "btn-success")
