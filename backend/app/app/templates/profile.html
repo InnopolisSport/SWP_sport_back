@@ -147,9 +147,9 @@
                     </div>
                 {% endif %}
 
-                <div class="container landscape">
+                <div class="container">
                     <div class="row justify-content-center">
-                        <div class="col-md-6 col-lg-6 col-xl-6 col-left">
+                        <div class="col-md-6 col-sm-12 col-left mb-1">
                             {% if student.is_ill %}
                                 <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
                                 </button>
@@ -158,40 +158,24 @@
                                 </button>
                             {% endif %}
                         </div>
-                        <div class="col-md-6 col-lg-6 col-xl-6 col-right">
+                        <div class="col-md-6 col-sm-12 col-right mb-1">
                             {% if common['enroll_open'] %}
                                 <a href="/survey/category" class="btn btn-primary">
                                     Choose primary sport group
                                 </a>
-                            {% elif student['sport_groups']|length < 3 %}
+                            {% elif student['sport_groups']|length < 2 %}
                                 <a href="/survey/category" class="btn btn-primary">
-                                    Choose up to {{ 3 - student['sport_groups']|length }} secondary groups
+                                    {{ 3 - student['sport_groups']|length }} secondary choices left
+                                </a>
+                            {% elif 2 == student['sport_groups']|length %}
+                                <a href="/survey/category" class="btn btn-primary">
+                                    1 secondary choice left
                                 </a>
                             {% else %}
                                 <a href="/survey/category" class="btn btn-primary disabled">
-                                    No more secondary groups available
+                                    No group choices left
                                 </a>
                             {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container portrait">
-                    <div class="col">
-                        <div class="row justify-content-center">
-                            {% if student.is_ill %}
-                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
-                                </button>
-                            {% else %}
-                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
-                                </button>
-                            {% endif %}
-                        </div>
-                        <div class="row justify-content-center">
-                            <a href="/survey/category"
-                               class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
-                                Choose sport group
-                            </a>
                         </div>
                     </div>
                 </div>
