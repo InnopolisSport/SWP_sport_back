@@ -8,10 +8,6 @@ body {
     margin-right: 10%;
 }
 
-.btn.disabled, .btn:disabled {
-    cursor: default;
-}
-
 /*
     Properties for different screen sizes
 */

@@ -1,10 +1,11 @@
 import logging
 from datetime import datetime
-from typing import Optional
+from typing import Tuple, Optional
 
 from fastapi import APIRouter, Depends, Path, Query, responses, status
 
 from app.db import find_student, find_trainer, Training
+from app.db.crud_groups import get_current_load
 from app.db.crud_training import get_trainings_in_time, get_trainings_for_student, get_trainings_for_trainer
 from app.models.user import TokenUser
 from app.utils.db import get_db
@@ -17,15 +18,17 @@ logger.setLevel(logging.DEBUG)
 router = APIRouter()
 
 
-def convert_training(t: Training) -> dict:
+def convert_training(db, t: Tuple[str, datetime, datetime, int, int]) -> dict:
+    title, start, end, capacity, group_id = t
     return {
-        "title": t.group_name,
-        "start": convert_from_utc(t.start),
-        "end": convert_from_utc(t.end),
+        "title": title,
+        "start": convert_from_utc(start),
+        "end": convert_from_utc(end),
         "extendedProps": {
-            "id": t.id,
-            "group_id": t.group_id,
-            "training_class": t.training_class
+            "capacity": capacity,
+            # TODO: n+1 problem?
+            "currentLoad": get_current_load(db, group_id),
+            "id": group_id
         }
     }
 
@@ -37,9 +40,7 @@ def convert_training_profile(t: Training) -> dict:
         "end": convert_from_utc(t.end),
         "extendedProps": {
             "id": t.id,
-            "group_id": t.group_id,
-            "can_grade": t.can_grade,
-            "training_class": t.training_class
+            "can_grade": t.can_grade
         }
     }
 
@@ -48,7 +49,7 @@ def convert_training_profile(t: Training) -> dict:
 def get_schedule(db=Depends(get_db), *, sport_id: int = Path(..., gt=0), start: datetime, end: datetime,
                  timezone: Optional[str] = Query(None, alias="timeZone")):
     trainings = get_trainings_in_time(db, sport_id, start, end)
-    return list(map(convert_training, trainings))
+    return list(map(lambda training: convert_training(db, training), trainings))
 
 
 @router.get("/trainings")
