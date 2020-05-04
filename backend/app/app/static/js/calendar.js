@@ -61,31 +61,60 @@ function goto_profile() {
     window.location.href = "/profile";
 }
 
-function enroll(eventClickInfo) {
+async function open_modal(eventClickInfo) {
+    const {event} = eventClickInfo
+    const modal = $('#training-info-modal .modal-body');
+    modal.empty();
+    modal.append($('<div class="spinner-border" role="status"></div>'));
+    $('#training-info-modal').modal('show');
+    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
+        method: 'GET'
+    });
+    const {
+        group_id,
+        group_name,
+        group_description,
+        trainer_first_name,
+        trainer_last_name,
+        trainer_email,
+        is_enrolled,
+        capacity,
+        current_load,
+        training_class,
+        is_primary
+    } = await response.json();
+    $('#enroll-unenroll-btn')
+        .text(is_enrolled ? "Unenroll" : "Enroll")
+        .addClass(is_enrolled ? "btn-danger" : "btn-success")
+        .removeClass(is_enrolled ? "btn-success" : "btn-danger")
+        .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
+        .attr('disabled', is_enrolled ? is_primary : current_load === capacity);
+    $('#training-info-modal-title').text(`${group_name} training`);
+    modal.empty();
+    if (group_description) {
+        modal.append(`<p>${group_description}</p>`)
+    }
 
-    let group_id = eventClickInfo.event.extendedProps.id;
-    let ans = confirm("Are you sure you want to enroll to group " + eventClickInfo.event.title + "?");
-    if (ans) {
-        sendResults("/api/enroll", {group_id: group_id})
-            .then(data => {
-                if (data.ok) {
-                    goto_profile();
-                } else {
-                    switch (data.error.code) {
-                        // Not a student account
-                        case 3:
-                        // Deadline passed
-                        case 4:
-                            goto_profile();
-                            break;
-                        //The group is full
-                        case 2:
-                            eventClickInfo.el.style.backgroundColor = '#ff0000';
-                            break;
-                    }
-                    alert(data.error.description);
-                }
-            });
+    const p = modal.append('<p>').children('p:last-child')
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    p.append(`<div>Weekday and time: <strong>${days[event.start.getDay()]}, ${event.start.toJSON().slice(11, 16)}-${event.end.toJSON().slice(11, 16)}</strong></div>`)
+    p.append(`<div>Available places: <strong>${capacity - current_load}/${capacity}</strong></div>`)
+    if (training_class) {
+        p.append(`<div>Class: <strong>${training_class}</strong></div>`)
+    }
+
+    if (trainer_first_name || trainer_last_name || trainer_email) {
+        modal.append(`<p>Trainer: <strong>${trainer_first_name} ${trainer_last_name}</strong> <a href="mailto:${trainer_email}">${trainer_email}</a></p>`)
+    }
+}
+
+async function enroll(group_id, action) {
+    const result = await sendResults(`/api/${action}`, {group_id: group_id})
+    if (result.ok) {
+        goto_profile();
+    } else {
+        goto_profile();
+        alert(result.error.description);
     }
 }
 
@@ -95,18 +124,13 @@ function render(info) {
     let event = info.event;
 
     let props = event.extendedProps;
-    let available = props.capacity - props.currentLoad;
     element.style.fontSize = "99";
-    if (available <= 0) {
-        element.style.backgroundColor = "#ff0000"
-    } else {
-        element.style.backgroundColor = get_color(props.id)
-    }
-}
+    element.style.backgroundColor = get_color(props.group_id)
+    element.style.cursor = 'pointer';
 
-function showCapacity(mouseEnterInfo) {
-    let props = mouseEnterInfo.event.extendedProps;
-    mouseEnterInfo.el.title = "Available: " + (props.capacity - props.currentLoad) + " / " + props.capacity;
+    if (props.training_class) {
+        $(element).children(".fc-content").append($(`<div>${props.training_class}</div>`))
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -129,8 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
         minTime: '08:00:00',
         maxTime: '21:00:00',
         defaultTimedEventDuration: '01:30',
-        eventClick: enroll,
-        eventMouseEnter: showCapacity,
+        eventClick: open_modal,
         eventRender: render,
         // Event format: yyyy-mm-dd
         // TODO: at backend use a loop of 10 standard colors as matplotlib do ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
