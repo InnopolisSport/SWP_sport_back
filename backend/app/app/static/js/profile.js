@@ -285,14 +285,11 @@ async function open_trainer_modal({event}) {
     modal.append(make_grades_table(grades));
 
     const editable_inputs = $(".trainer-editable");
-    save_btn.prop('disabled', false);
-    mark_all_btn.prop('disabled', false);
-    editable_inputs.prop('disabled', false);
+    save_btn.prop('disabled', !event.extendedProps.can_edit);
+    mark_all_btn.prop('disabled', !event.extendedProps.can_edit);
+    editable_inputs.prop('disabled', !event.extendedProps.can_edit);
 
     if (!event.extendedProps.can_edit) {
-        save_btn.prop('disabled', true);
-        mark_all_btn.prop('disabled', true);
-        editable_inputs.prop('disabled', true);
         show_alert(
             "hours-alert",
             "warning",
