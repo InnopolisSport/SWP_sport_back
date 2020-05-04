@@ -87,10 +87,11 @@ async function open_modal(eventClickInfo) {
         .text(is_enrolled ? "Unenroll" : "Enroll")
         .addClass(is_enrolled ? "btn-danger" : "btn-success")
         .removeClass(is_enrolled ? "btn-success" : "btn-danger")
-        .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
-        .attr('disabled', is_enrolled ? is_primary : current_load === capacity);
+        .click(() => enroll(event, is_enrolled ? "unenroll" : "enroll"))
+        .attr('disabled', is_enrolled ? is_primary : current_load >= capacity);
     $('#training-info-modal-title').text(`${group_name} training`);
     modal.empty();
+    update_rendered_events_load(group_id, current_load);
     if (group_description) {
         modal.append(`<p>${group_description}</p>`)
     }
@@ -108,14 +109,20 @@ async function open_modal(eventClickInfo) {
     }
 }
 
-async function enroll(group_id, action) {
-    const result = await sendResults(`/api/${action}`, {group_id: group_id})
+async function enroll(event, action) {
+    const result = await sendResults(`/api/${action}`, {group_id: event.extendedProps.group_id})
     if (result.ok) {
         goto_profile();
     } else {
-        goto_profile();
+        update_rendered_events_load(event.extendedProps.group_id, event.extendedProps.capacity);
         alert(result.error.description);
     }
+}
+
+function update_rendered_events_load(group_id, load) {
+    calendar.getEvents().filter(event => event.extendedProps.group_id === group_id).forEach(
+        event => event.setExtendedProp('current_load', load)
+    );
 }
 
 
@@ -125,7 +132,7 @@ function render(info) {
 
     let props = event.extendedProps;
     element.style.fontSize = "99";
-    element.style.backgroundColor = get_color(props.group_id)
+    element.style.backgroundColor = (props.current_load >= props.capacity) ? '#f00' : get_color(props.group_id)
     element.style.cursor = 'pointer';
 
     if (props.training_class) {
@@ -133,10 +140,11 @@ function render(info) {
     }
 }
 
+let calendar
 document.addEventListener('DOMContentLoaded', function () {
     let calendarEl = document.getElementById('calendar');
 
-    let calendar = new FullCalendar.Calendar(calendarEl, {
+    calendar = new FullCalendar.Calendar(calendarEl, {
         plugins: ['timeGrid'],
         defaultView: 'timeGridWeek',
         header: {

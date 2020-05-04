@@ -48,9 +48,11 @@
                     <div class="dropdown-content club-dropdown">
                         {% if clubs %}
                             {% for club in clubs %}
-                                <a class="{{ club["id"] }}"
+                                <a id="club-{{ club["id"] }}"
                                    href="#"
-                                   onclick="open_modal({{ club["id"] }})">{{ club["name"] }}</a>
+                                   onclick="open_modal({{ club["id"] }})">{{ club["name"] }}
+                                    (<span>{{ club["capacity"] - club["current_load"] }}</span>/{{ club["capacity"] }}
+                                    free)</a>
                             {% endfor %}
                         {% else %}
                             <!-- If change this, don't forget to change the same string in category.js -->
@@ -100,9 +102,11 @@
                     <div class="dropdown-content club-dropdown">
                         {% if clubs %}
                             {% for club in clubs %}
-                                <a class="{{ club["id"] }}"
+                                <a id="club-{{ club["id"] }}"
                                    href="#"
-                                   onclick="open_modal({{ club["id"] }})">{{ club["name"] }}</a>
+                                   onclick="open_modal({{ club["id"] }})">{{ club["name"] }}
+                                    (<span>{{ club["capacity"] - club["current_load"] }}</span>/{{ club["capacity"] }}
+                                    free)</a>
                             {% endfor %}
                         {% else %}
                             <!-- If change this, don't forget to change the same string in category.js -->

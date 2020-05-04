@@ -255,7 +255,6 @@ async function enroll(group_id, action) {
     if (result.ok) {
         goto_profile();
     } else {
-        goto_profile();
         alert(result.error.description);
     }
 }
@@ -294,7 +293,7 @@ async function open_info_modal_for_leave(group_id, hide_button) {
         .removeClass(is_enrolled ? "btn-success" : "btn-danger")
         .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
         .attr('hidden', hide_button)
-        .attr('disabled', is_enrolled ? is_primary : current_load === capacity);
+        .attr('disabled', is_enrolled ? is_primary : current_load >= capacity);
     modal.empty();
 
     if (group_description) {
@@ -338,7 +337,7 @@ async function open_info_modal({event}) {
         .addClass(is_enrolled ? "btn-danger" : "btn-success")
         .removeClass(is_enrolled ? "btn-success" : "btn-danger")
         .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
-        .attr('disabled', is_enrolled ? is_primary : current_load === capacity);
+        .attr('disabled', is_enrolled ? is_primary : current_load >= capacity);
     modal.empty();
 
     if (group_description) {

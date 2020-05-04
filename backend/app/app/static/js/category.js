@@ -13,23 +13,26 @@ function goto_profile() {
     window.location.href = "/profile";
 }
 
+function mark_club_as_full(club_id) {
+    $(`#club-${club_id}`).remove().insertAfter($(".club-dropdown a:last-child")).children('a span').text('0');
+}
+
+function mark_club_as_free(club_id, free_places) {
+    const elem = $(`#club-${club_id}`)
+    if (elem.children('a span').text() === '0') {
+        elem.remove().insertBefore($(".club-dropdown a:first-child")).children('a span').text(free_places.toString());
+    }
+}
+
 async function enroll(group_id, action) {
     const result = await sendResults(`/api/${action}`, {group_id: group_id})
     if (result.ok) {
         goto_profile();
     } else {
-        goto_profile();
+        if (result.error.code === 2) { // full group
+            mark_club_as_full(group_id)
+        }
         alert(result.error.description);
-    }
-}
-
-
-function check_empty(list) {
-    if (list.childElementCount === 0) {
-        const empty_text_node = document.createElement("a");
-        empty_text_node.text = "No clubs are available";
-        // empty_text_node.href = "#";
-        list.appendChild(empty_text_node);
     }
 }
 
@@ -54,6 +57,11 @@ async function open_modal(id) {
         training_class,
         is_primary
     } = await response.json();
+    if (current_load >= capacity) {
+        mark_club_as_full(group_id)
+    } else {
+        mark_club_as_free(group_id, capacity - current_load)
+    }
     $('#enroll-unenroll-btn')
         .text(is_enrolled ? "Unenroll" : "Enroll")
         .addClass(is_enrolled ? "btn-danger" : "btn-success")

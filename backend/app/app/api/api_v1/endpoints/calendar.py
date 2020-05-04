@@ -25,7 +25,9 @@ def convert_training(t: Training) -> dict:
         "extendedProps": {
             "id": t.id,
             "group_id": t.group_id,
-            "training_class": t.training_class
+            "training_class": t.training_class,
+            "current_load": t.current_load,
+            "capacity": t.capacity
         }
     }
 

@@ -13,6 +13,8 @@ class Training(Base):
     can_grade: bool = False
     training_class: Optional[str] = None
     group_id: Optional[int] = None
+    current_load: Optional[int] = None
+    capacity: Optional[int] = None
 
     @property
     def academic_duration(self) -> float:
