@@ -42,12 +42,13 @@ def __tuple_to_training_extended(row: Tuple[int, str, int, datetime, datetime, s
     )
 
 
-def __tuple_to_training_info(row: Tuple[str, datetime, int]) -> TrainingInfo:
-    group_name, start, trainer_id = row
+def __tuple_to_training_info(row: Tuple[str, datetime, datetime, int]) -> TrainingInfo:
+    group_name, start, end, trainer_id = row
     return TrainingInfo(
         group_name=group_name,
         start=start,
-        trainer_id=trainer_id
+        end=end,
+        trainer_id=trainer_id,
     )
 
 
@@ -103,7 +104,7 @@ def get_training_info(conn, training_id: int) -> TrainingInfo:
     @return found training
     """
     cursor = conn.cursor()
-    cursor.execute('SELECT g.name, t.start, g.trainer_id '
+    cursor.execute('SELECT g.name, t.start, t."end", g.trainer_id  '
                    'FROM training t, "group" g '
                    'WHERE t.group_id = g.id AND t.id = %s', (training_id,))
     return __tuple_to_training_info(cursor.fetchone())

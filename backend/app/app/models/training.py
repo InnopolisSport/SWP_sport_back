@@ -14,6 +14,10 @@ class Training(Base):
     training_class: Optional[str] = None
     group_id: Optional[int] = None
 
+    @property
+    def academic_duration(self) -> float:
+        return round((self.end - self.start).total_seconds() / 2700, 2)
+
     def __hash__(self):
         fields = [self.id, self.start, self.end, self.group_name]
         return sum(map(hash, fields))
@@ -37,7 +41,12 @@ class Training(Base):
 class TrainingInfo(Base):
     group_name: str
     start: datetime
+    end: datetime
     trainer_id: int
+
+    @property
+    def academic_duration(self) -> float:
+        return round((self.end - self.start).total_seconds() / 2700, 2)
 
 
 class GroupInfo(Base):
