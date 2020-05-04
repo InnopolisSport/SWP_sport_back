@@ -31,6 +31,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.js"></script>
+    <style>
+        .fc-event .fc-content {
+            color: #fff;
+        }
+
+        .fc-time {
+            font-size: 0.78em;
+        }
+    </style>
     <script src="../static/js/profile.js"></script>
     <link rel="stylesheet" href="../static/css/profile.css">
 
@@ -63,8 +72,7 @@
                     <p>
                         In semester <b>{{ common["semester_name"] }}</b> you train the following groups:
                         {% for group in trainer["sport_groups"] %}
-                            <span class="badge badge-pill badge-training"
-                                  onclick="open_info_modal_for_leave({{ group.id }}, true)">{{ group.qualified_name }}</span>
+                            <span class="badge badge-pill badge-training">{{ group.qualified_name }}</span>
                         {% endfor %}
                     </p>
                 {% else %}
@@ -81,8 +89,12 @@
                         Your sport groups for semester <b>{{ common["semester_name"] }}</b>
                         are:
                         {% for group in student["sport_groups"] %}
-                            <span class="badge badge-pill {{ 'badge-success' if group.is_primary else 'badge-secondary' }}"
-                                  onclick="open_info_modal_for_leave({{ group.id }}, false)">{{ group.name }}</span>
+                            {% if group.is_primary %}
+                                <span class="badge badge-pill badge-success">{{ group.name }}</span>
+                            {% else %}
+                                <span class="badge badge-pill badge-secondary cursor-pointer"
+                                      onclick="leave_group(this, {{ group.id }})">{{ group.name }}</span>
+                            {% endif %}
                         {% endfor %}
                     </p>
                 {% else %}
@@ -90,6 +102,7 @@
                         You have no groups selected for semester <b>{{ common["semester_name"] }}</b>
                     </p>
                 {% endif %}
+
 
                 {% if student["semesters"]|length > 0 %}
                     <div class="container">
@@ -144,9 +157,9 @@
                     </div>
                 {% endif %}
 
-                <div class="container">
+                <div class="container landscape">
                     <div class="row justify-content-center">
-                        <div class="col-md-6 col-sm-12 col-left mb-1">
+                        <div class="col-md-6 col-lg-6 col-xl-6 col-left">
                             {% if student.is_ill %}
                                 <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
                                 </button>
@@ -155,24 +168,40 @@
                                 </button>
                             {% endif %}
                         </div>
-                        <div class="col-md-6 col-sm-12 col-right mb-1">
+                        <div class="col-md-6 col-lg-6 col-xl-6 col-right">
                             {% if common['enroll_open'] %}
                                 <a href="/survey/category" class="btn btn-primary">
                                     Choose primary sport group
                                 </a>
-                            {% elif student['sport_groups']|length < 2 %}
+                            {% elif student['sport_groups']|length < 3 %}
                                 <a href="/survey/category" class="btn btn-primary">
-                                    {{ 3 - student['sport_groups']|length }} secondary choices left
-                                </a>
-                            {% elif 2 == student['sport_groups']|length %}
-                                <a href="/survey/category" class="btn btn-primary">
-                                    1 secondary choice left
+                                    Choose up to {{ 3 - student['sport_groups']|length }} secondary groups
                                 </a>
                             {% else %}
                                 <a href="/survey/category" class="btn btn-primary disabled">
-                                    No group choices left
+                                    No more secondary groups available
                                 </a>
                             {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container portrait">
+                    <div class="col">
+                        <div class="row justify-content-center">
+                            {% if student.is_ill %}
+                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div class="row justify-content-center">
+                            <a href="/survey/category"
+                               class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
+                                Choose sport group
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -218,7 +247,6 @@
                                                 id="mark-all-hours-value"></span> h.)
                                         </button>
                                     </div>
-
                                     <div class="alert alert-danger" id="hours-alert" role="alert"
                                          style="visibility: hidden">
                                     </div>
@@ -230,32 +258,6 @@
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="training-info-modal" tabindex="-1" role="dialog"
-                 aria-labelledby="training-info-modal"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-md" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="training-info-modal-title">
-                            </h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body text-left"></div>
-                        <div class="modal-footer">
-                            <div>
-                                <button type="button" class="btn btn-danger" id="enroll-unenroll-btn"
-                                        data-dismiss="modal">
-                                </button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
-                                </button>
                             </div>
                         </div>
                     </div>

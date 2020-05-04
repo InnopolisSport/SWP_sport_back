@@ -4,6 +4,7 @@ import sport.models as models
 from .enrollAdmin import EnrollAdmin
 from .fabrics import admin_with_filters_fabric, semester_filter_fabric
 
+admin.site.register(models.Admin)
 admin.site.register(models.Attendance)
 admin.site.register(models.Enroll, EnrollAdmin)
 admin.site.register(models.Group, admin_with_filters_fabric(
@@ -19,4 +20,3 @@ admin.site.register(models.Trainer)
 admin.site.register(models.Training, admin_with_filters_fabric(
     semester_filter_fabric("group__semester__id")
 ))
-admin.site.register(models.TrainingClass)
