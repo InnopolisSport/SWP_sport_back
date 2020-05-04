@@ -144,22 +144,25 @@ function local_save_hours(e, student_id) {
     local_hours_changes[student_id] = parseFloat(e.value)
 }
 
-function show_alert(alert_id, text = "") {
+function show_alert(alert_id, level, text = "") {
     const alert_elem = document.getElementById(alert_id);
+    alert_elem.className = 'alert alert-' + level;
     alert_elem.textContent = text;
     alert_elem.style.visibility = 'visible';
 }
 
 function hide_alert(alert_id) {
     const alert_elem = document.getElementById(alert_id);
-    alert_elem.textContent = "";
-    alert_elem.style.visibility = 'hide';
+    if (alert_elem) {
+        alert_elem.textContent = "";
+        alert_elem.style.visibility = 'hidden';
+    }
 }
 
 async function save_hours() {
     if (Object.keys(local_hours_changes).length === 0) return;
     const btn = $('#save-hours-btn')
-    btn.addClass('disabled')
+    btn.prop('disabled', true);
     const training_id = btn.attr('data-training-id')
 
     let hours_valid = true; // Check for validity of hours
@@ -186,6 +189,7 @@ async function save_hours() {
         first_invalid_row.scrollIntoView();
         show_alert(
             "hours-alert",
+            "danger",
             "Invalid value of hours in " + invalid_row_count.toString() + " row(s)",
         );
         return;
@@ -200,15 +204,14 @@ async function save_hours() {
 
     $('#grading-modal tr').removeClass('table-warning')
     local_hours_changes = {}
-    btn.removeClass('disabled')
+    btn.prop('disabled', false);
 
     hide_alert("hours-alert");
     $('#grading-modal').modal("hide")
 }
 
 $(document).on('hidden.bs.modal', '#grading-modal', function () {
-    var hrs_alert = document.getElementById("hours-alert");
-    hrs_alert.style.visibility = 'hidden';
+    hide_alert("hours-alert");
 });
 
 function round(num, decimal_places) {
@@ -226,7 +229,7 @@ function add_student_row(student_id, full_name, email, hours) {
                     <td>${email}</td>
                     <td style="cursor: pointer">
                         <form onsubmit="return false">
-                            <input class="studentHourField" type="number" min="0" max="${current_duration_academic_hours}" 
+                            <input class="studentHourField trainer-editable" type="number" min="0" max="${current_duration_academic_hours}" 
                             onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"
                             />
                      </form></td>
@@ -267,7 +270,8 @@ async function open_trainer_modal({event}) {
     const response = await fetch(`/api/attendance/${event.extendedProps.id}/grades`, {
         method: 'GET'
     });
-    $('#save-hours-btn').attr('data-training-id', event.extendedProps.id)
+    const save_btn = $('#save-hours-btn');
+    save_btn.attr('data-training-id', event.extendedProps.id);
     const {group_name, start, grades} = await response.json();
     modal.empty();
     $('#grading-group-name').text(group_name)
@@ -275,9 +279,23 @@ async function open_trainer_modal({event}) {
     const duration = event.end - event.start;
     // duration_academic_hours = (duration / 3_600_000) * (60 / 45) = duration / 2_700_000
     current_duration_academic_hours = Math.min(10, round(duration / 2_700_000, 2)) // TODO: hardcoded max = 10 (DB issue)
-    $('#put-default-hours-btn').attr('data-hours', current_duration_academic_hours)
+    const mark_all_btn = $('#put-default-hours-btn');
+    mark_all_btn.attr('data-hours', current_duration_academic_hours)
     $('#mark-all-hours-value').text(current_duration_academic_hours)
     modal.append(make_grades_table(grades));
+
+    const editable_inputs = $(".trainer-editable");
+    save_btn.prop('disabled', !event.extendedProps.can_edit);
+    mark_all_btn.prop('disabled', !event.extendedProps.can_edit);
+    editable_inputs.prop('disabled', !event.extendedProps.can_edit);
+
+    if (!event.extendedProps.can_edit) {
+        show_alert(
+            "hours-alert",
+            "warning",
+            "You can't change this training",
+        );
+    }
 }
 
 
