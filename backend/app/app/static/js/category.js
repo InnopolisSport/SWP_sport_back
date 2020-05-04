@@ -13,6 +13,16 @@ function goto_profile() {
     window.location.href = "/profile";
 }
 
+async function enroll(group_id, action) {
+    const result = await sendResults(`/api/${action}`, {group_id: group_id})
+    if (result.ok) {
+        goto_profile();
+    } else {
+        goto_profile();
+        alert(result.error.description);
+    }
+}
+
 
 function check_empty(list) {
     if (list.childElementCount === 0) {
@@ -23,41 +33,46 @@ function check_empty(list) {
     }
 }
 
-function enroll_club(club_id, club_name) {
-    const ans = confirm('Are you sure you want to enroll to club ' + club_name + ' ?');
-    if (ans) {
-        sendResults("/api/enroll", {"group_id": club_id})
-            .then(data => {
-                if (data.ok) {
-                    goto_profile();
-                } else {
-                    switch (data.error.code) {
-                        // Have already been enrolled
-                        case 1:
-                            goto_profile();
-                            break;
-                        //The group is full
-                        case 2:
-                            [...document.getElementsByClassName(club_id)].map(n => n && n.remove());
-                            [...document.getElementsByClassName("club-dropdown")].map(n => n && check_empty(n));
-                            break;
-                    }
-                    alert(data.error.description);
-                }
-            });
+async function open_modal(id) {
+    const modal = $('#training-info-modal .modal-body');
+    modal.empty();
+    modal.append($('<div class="spinner-border" role="status"></div>'));
+    $('#training-info-modal').modal('show');
+    const response = await fetch(`/api/group/${id}`, {
+        method: 'GET'
+    });
+    const {
+        group_id,
+        group_name,
+        group_description,
+        trainer_first_name,
+        trainer_last_name,
+        trainer_email,
+        is_enrolled,
+        capacity,
+        current_load,
+        training_class,
+        is_primary
+    } = await response.json();
+    $('#enroll-unenroll-btn')
+        .text(is_enrolled ? "Unenroll" : "Enroll")
+        .addClass(is_enrolled ? "btn-danger" : "btn-success")
+        .removeClass(is_enrolled ? "btn-success" : "btn-danger")
+        .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
+        .attr('disabled', is_enrolled ? is_primary : current_load === capacity);
+    $('#info-group-name').text(group_name);
+    modal.empty();
+    if (group_description) {
+        modal.append(`<p>${group_description}</p>`)
     }
-}
 
-function enroll_sc(group_id) {
-    const ans = confirm('Are you sure you want to enroll to trainings with SC trainers ?');
-    if (ans) {
-        sendResults("/api/enroll", {"group_id": group_id})
-            .then(data => {
-                if (data.ok) {
-                    goto_profile();
-                } else {
-                    alert(data.error.description);
-                }
-            })
+    const p = modal.append('<p>').children('p:last-child')
+    p.append(`<div>Available places: <strong>${capacity - current_load}/${capacity}</strong></div>`)
+    if (training_class) {
+        p.append(`<div>Class: <strong>${training_class}</strong></div>`)
+    }
+
+    if (trainer_first_name || trainer_last_name || trainer_email) {
+        modal.append(`<p>Trainer: <strong>${trainer_first_name} ${trainer_last_name}</strong> <a href="mailto:${trainer_email}">${trainer_email}</a></p>`)
     }
 }

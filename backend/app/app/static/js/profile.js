@@ -209,13 +209,13 @@ function mark_all(el) {
     }).val(duration_academic_hours).change();
 }
 
-async function unenroll(elem) {
-    const group_id = parseInt($(elem).attr('data-group-id'))
-    const response = await sendResults(`/api/unenroll`, {group_id});
-    if (response.ok) {
-        goto_profile()
+async function enroll(group_id, action) {
+    const result = await sendResults(`/api/${action}`, {group_id: group_id})
+    if (result.ok) {
+        goto_profile();
     } else {
-        alert('unenroll failed')
+        goto_profile();
+        alert(result.error.description);
     }
 }
 
@@ -234,17 +234,37 @@ async function open_info_modal({event}) {
     const response = await fetch(`/api/training/${event.extendedProps.id}`, {
         method: 'GET'
     });
-    const {group_description, trainer_first_name, trainer_last_name, trainer_email, hours} = await response.json();
-    $('#unenroll-btn').attr('data-group-id', event.extendedProps.group_id);
-    $('#info-group-name').text(event.title);
+    const {
+        group_id,
+        group_name,
+        group_description,
+        trainer_first_name,
+        trainer_last_name,
+        trainer_email,
+        is_enrolled,
+        capacity,
+        current_load,
+        training_class,
+        is_primary,
+        hours
+    } = await response.json();
+    $('#info-group-name').text(group_name);
+    $('#enroll-unenroll-btn')
+        .text(is_enrolled ? "Unenroll" : "Enroll")
+        .addClass(is_enrolled ? "btn-danger" : "btn-success")
+        .removeClass(is_enrolled ? "btn-success" : "btn-danger")
+        .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
+        .attr('disabled', is_enrolled ? is_primary : current_load === capacity);
     modal.empty();
+
     if (group_description) {
         modal.append(`<p>${group_description}</p>`)
     }
+
     const p = modal.append('<p>').children('p:last-child')
     p.append(`<div>Date and time: <strong>${event.start.toJSON().split('T')[0]}, ${event.start.toJSON().slice(11, 16)}-${event.end.toJSON().slice(11, 16)}</strong></div>`)
-    if (event.extendedProps.training_class) {
-        p.append(`<div>Class: <strong>${event.extendedProps.training_class}</strong></div>`)
+    if (training_class) {
+        p.append(`<div>Class: <strong>${training_class}</strong></div>`)
     }
     if (trainer_first_name || trainer_last_name || trainer_email) {
         modal.append(`<p>Trainer: <strong>${trainer_first_name} ${trainer_last_name}</strong> <a href="mailto:${trainer_email}">${trainer_email}</a></p>`)

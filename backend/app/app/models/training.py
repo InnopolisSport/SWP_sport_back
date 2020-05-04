@@ -12,10 +12,7 @@ class Training(Base):
     group_name: str
     can_grade: bool = False
     training_class: Optional[str] = None
-    current_load: Optional[int] = None
-    capacity: Optional[int] = None
     group_id: Optional[int] = None
-    hours: Optional[int] = None
 
     def __hash__(self):
         fields = [self.id, self.start, self.end, self.group_name]
@@ -43,13 +40,21 @@ class TrainingInfo(Base):
     trainer_id: int
 
 
-class AttendedTrainingInfo(Base):
+class GroupInfo(Base):
+    group_id: int
+    group_name: str
     group_description: str = ''
     trainer_first_name: Optional[str] = None
     trainer_last_name: Optional[str] = None
     trainer_email: Optional[str] = None
-    hours: float
     is_enrolled: bool
+    capacity: int
+    current_load: int
+    is_primary: bool
+
+
+class AttendedTrainingInfo(GroupInfo):
+    hours: float
 
 
 class TrainingGrade(Base):
