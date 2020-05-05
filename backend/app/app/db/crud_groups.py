@@ -11,6 +11,10 @@ def __tuple_to_sport(row: Tuple[int, str, bool]) -> Sport:
 
 
 def __tuple_to_group(row: Tuple[int, str, str, str, int, Optional[str], Optional[int], bool]) -> Group:
+    """
+    @param row - either 8 or 9 elements tuple, last element current_load is optional
+    @return Group instance
+    """
     id, name, sport_name, semester, capacity, description, trainer_id, is_club = row[:8]
     return Group(
         id=id,
