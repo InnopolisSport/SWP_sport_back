@@ -1,9 +1,11 @@
 import logging
-from datetime import datetime
+
+from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Path, Query, responses, status
 
+from app.core.config import TRAINING_EDITABLE_DAYS
 from app.db import find_student, find_trainer, Training
 from app.db.crud_training import get_trainings_in_time, get_trainings_for_student, get_trainings_for_trainer
 from app.models.user import TokenUser
@@ -39,9 +41,12 @@ def convert_training_profile(t: Training) -> dict:
         "end": convert_from_utc(t.end),
         "extendedProps": {
             "id": t.id,
+            "can_edit":
+                convert_from_utc(datetime.utcnow()) -
+                convert_from_utc(t.start) <= timedelta(days=TRAINING_EDITABLE_DAYS),
             "group_id": t.group_id,
             "can_grade": t.can_grade,
-            "training_class": t.training_class
+            "training_class": t.training_class,
         }
     }
 

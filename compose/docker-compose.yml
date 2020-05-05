@@ -44,6 +44,7 @@ services:
       - oauth_get_infoURL
       - oauth_tokenURL
       - oauth_end_session_endpoint
+      - TRAINING_EDITABLE_DAYS
 
   adminpanel:
     build:

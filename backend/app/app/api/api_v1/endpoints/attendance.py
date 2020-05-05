@@ -1,14 +1,17 @@
 import logging
+from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, responses
 from fastapi.params import Path, Query
 
+from app.core.config import TRAINING_EDITABLE_DAYS
 from app.db import mark_hours, clean_students_id, find_trainer, get_training_info, get_students_grades, Optional, \
     get_email_name_like_students
 from app.models.attendance import MarkAttendanceRequest
 from app.models.user import TokenUser
 from app.utils.db import get_db
 from app.utils.security import get_current_user
+from app.utils.tz import convert_from_utc
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -54,6 +57,18 @@ def mark_attendance(data: MarkAttendanceRequest,
             }
         })
     training_info = get_training_info(db, data.training_id)
+    if convert_from_utc(datetime.utcnow()) - \
+            convert_from_utc(training_info.start) \
+            > timedelta(days=TRAINING_EDITABLE_DAYS):
+        return responses.JSONResponse(status_code=200, content={
+            "ok": False,
+            "error": {
+                "code": 2,
+                "description": "The training is not editable "
+                               f"after {TRAINING_EDITABLE_DAYS} from start",
+                "training_editable_days": TRAINING_EDITABLE_DAYS,
+            },
+        })
     max_hours = training_info.academic_duration
     cleaned_students = clean_students_id(db, tuple(data.students_hours.keys()))
     # hours_to_mark = [(s.id, min(max_hours, data.students_hours[s.id])) for s in cleaned_students]
