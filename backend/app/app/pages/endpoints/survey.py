@@ -11,8 +11,8 @@ router = APIRouter()
 @router.get("/survey/category")
 def survey_type(request: Request, user=Depends(get_current_user), db=Depends(get_db)):
     sports = get_sports(db)
-    # TODO: n+1 problem?
-    clubs = [club for club in get_groups(db, clubs=True) if get_current_load(db, club.id) < club.capacity]
+    clubs = sorted([club for club in get_groups(db, clubs=True)],
+                   key=lambda group: (group.current_load >= group.capacity, group.name))
     sc_training_group_id = get_sc_training_group(db).id
     return templates.TemplateResponse("category.html",
                                       {

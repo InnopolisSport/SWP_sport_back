@@ -45,7 +45,7 @@ def create_trainings_current_semester(sender, instance: Schedule, created, **kwa
                 )
                 training_end = datetime.combine(
                     date=training_date,
-                    time=instance.end
+                    time=instance.end,
                 )
 
                 Training.objects.create(
@@ -53,6 +53,7 @@ def create_trainings_current_semester(sender, instance: Schedule, created, **kwa
                     schedule=instance,
                     start=training_start,
                     end=training_end,
+                    training_class=instance.training_class,
                 )
 
 

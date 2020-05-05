@@ -1,4 +1,3 @@
-from .admin import *
 from .attendance import *
 from .enroll import *
 from .group import *
@@ -8,3 +7,4 @@ from .sport import *
 from .student import *
 from .trainer import *
 from .training import *
+from .training_class import *
