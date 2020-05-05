@@ -11,12 +11,17 @@ def __tuple_to_sport(row: Tuple[int, str, bool]) -> Sport:
 
 
 def __tuple_to_group(row: Tuple[int, str, str, str, int, Optional[str], Optional[int], bool]) -> Group:
-    id, name, sport_name, semester, capacity, description, trainer_id, is_club = row
+    """
+    @param row - either 8 or 9 elements tuple, last element current_load is optional
+    @return Group instance
+    """
+    id, name, sport_name, semester, capacity, description, trainer_id, is_club = row[:8]
     return Group(
         id=id,
         name=name,
         sport_name=sport_name,
         semester=semester,
+        current_load=row[8] if len(row) == 9 else None,
         capacity=capacity,
         description=description,
         trainer_id=trainer_id,
@@ -79,18 +84,24 @@ def get_groups(conn, clubs: Optional[bool] = None) -> List[Group]:
     """
     cursor = conn.cursor()
     if clubs is None:
-        cursor.execute('SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club '
-                       'FROM "group" g, sport, semester s '
-                       'WHERE s.id = current_semester() '
-                       'AND sport_id = sport.id '
-                       'AND semester_id = s.id ')
+        cursor.execute(
+            'SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club, count(e.id) '
+            'FROM sport, semester s, "group" g '
+            'LEFT JOIN enroll e ON e.group_id = g.id '
+            'WHERE s.id = current_semester() '
+            'AND sport_id = sport.id '
+            'AND semester_id = s.id '
+            'GROUP BY g.id, sport.id, s.id')
     else:
-        cursor.execute('SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club '
-                       'FROM "group" g, sport, semester s '
-                       'WHERE s.id = current_semester() '
-                       'AND sport_id = sport.id '
-                       'AND semester_id = s.id '
-                       'AND is_club = %s', (clubs,))
+        cursor.execute(
+            'SELECT g.id, g.name, sport.name, s.name, capacity, description, trainer_id, is_club, count(e.id) '
+            'FROM sport, semester s, "group" g '
+            'LEFT JOIN enroll e ON e.group_id = g.id '
+            'WHERE s.id = current_semester() '
+            'AND sport_id = sport.id '
+            'AND semester_id = s.id '
+            'AND is_club = %s '
+            'GROUP BY g.id, sport.id, s.id', (clubs,))
     rows = cursor.fetchall()
     return list(map(__tuple_to_group, rows))
 

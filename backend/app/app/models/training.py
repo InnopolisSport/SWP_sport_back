@@ -1,15 +1,20 @@
 from datetime import datetime
 from operator import eq
+from typing import Optional
 
 from .base import Base
 
 
 class Training(Base):
-    id: int
+    id: Optional[int] = None
     start: datetime
     end: datetime
     group_name: str
     can_grade: bool = False
+    training_class: Optional[str] = None
+    group_id: Optional[int] = None
+    current_load: Optional[int] = None
+    capacity: Optional[int] = None
 
     @property
     def academic_duration(self) -> float:
@@ -44,6 +49,23 @@ class TrainingInfo(Base):
     @property
     def academic_duration(self) -> float:
         return round((self.end - self.start).total_seconds() / 2700, 2)
+
+
+class GroupInfo(Base):
+    group_id: int
+    group_name: str
+    group_description: str = ''
+    trainer_first_name: Optional[str] = None
+    trainer_last_name: Optional[str] = None
+    trainer_email: Optional[str] = None
+    is_enrolled: bool
+    capacity: int
+    current_load: int
+    is_primary: bool
+
+
+class AttendedTrainingInfo(GroupInfo):
+    hours: float
 
 
 class TrainingGrade(Base):
