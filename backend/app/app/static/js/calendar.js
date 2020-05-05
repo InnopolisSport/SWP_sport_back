@@ -87,6 +87,7 @@ async function open_modal(eventClickInfo) {
         .text(is_enrolled ? "Unenroll" : "Enroll")
         .addClass(is_enrolled ? "btn-danger" : "btn-success")
         .removeClass(is_enrolled ? "btn-success" : "btn-danger")
+        .off('click')
         .click(() => enroll(event, is_enrolled ? "unenroll" : "enroll"))
         .attr('disabled', is_enrolled ? is_primary : current_load >= capacity);
     $('#training-info-modal-title').text(`${group_name} training`);

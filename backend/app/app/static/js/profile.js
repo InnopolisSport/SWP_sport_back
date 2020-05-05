@@ -294,6 +294,7 @@ async function open_info_modal_for_leave(group_id, hide_button) {
         .text(is_enrolled ? "Unenroll" : "Enroll")
         .addClass(is_enrolled ? "btn-danger" : "btn-success")
         .removeClass(is_enrolled ? "btn-success" : "btn-danger")
+        .off('click')
         .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
         .attr('hidden', hide_button)
         .attr('disabled', is_enrolled ? is_primary : current_load >= capacity);
@@ -339,6 +340,7 @@ async function open_info_modal({event}) {
         .text(is_enrolled ? "Unenroll" : "Enroll")
         .addClass(is_enrolled ? "btn-danger" : "btn-success")
         .removeClass(is_enrolled ? "btn-success" : "btn-danger")
+        .off('click')
         .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
         .attr('disabled', is_enrolled ? is_primary : current_load >= capacity);
     modal.empty();
