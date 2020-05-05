@@ -32,7 +32,7 @@ async function enroll(group_id, action) {
         if (result.error.code === 2) { // full group
             mark_club_as_full(group_id)
         }
-        alert(result.error.description);
+        toastr.error(result.error.description);
     }
 }
 

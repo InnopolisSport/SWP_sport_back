@@ -116,7 +116,7 @@ async function enroll(event, action) {
         goto_profile();
     } else {
         update_rendered_events_load(event.extendedProps.group_id, event.extendedProps.capacity);
-        alert(result.error.description);
+        toastr.error(result.error.description);
     }
 }
 
