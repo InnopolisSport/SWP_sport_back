@@ -53,7 +53,7 @@ function toggle_ill(elem) {
                     case 1:
                         break;
                 }
-                alert(data.error.description);
+                toastr.error(data.error.description);
             }
         })
 }
@@ -258,7 +258,7 @@ async function enroll(group_id, action) {
     if (result.ok) {
         goto_profile();
     } else {
-        alert(result.error.description);
+        toastr.error(result.error.description);
     }
 }
 
