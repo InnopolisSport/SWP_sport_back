@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
     <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -53,6 +53,83 @@
         });
     </script>
 
+
+      <script>
+
+          var app = angular.module("app", ["myDirectives"]);
+          var myDirectives = angular.module("myDirectives", []);
+          var boolCheck = 0;
+          app.controller("UploadController", function ($log) {
+            this.upload = function () {
+              $log.info("Uploading:", this.file || "no file selected!");
+            }
+          })
+
+
+          myDirectives.directive("myFileUpload", function ($compile) {
+            return {
+              restrict: "AE",
+              require: "ngModel",
+              scope: true,
+              link: link
+          };
+
+          function link (scope, element, attrs, ngModel) {
+          var input = angular.element("<input type=\"file\" style=\"display: none;\">");
+
+          input.bind("browse", function () {
+            this.click();
+          });
+
+          input.bind("change", function (changed) {
+            const file = this.files[0];
+            const  fileType = file['type'];
+            const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
+            if (!validImageTypes.includes(fileType)) {
+                return window.alert("Wrong format")
+            }
+            if (changed.target.files.length < 1) {
+              return;
+            }
+
+          var fileName = changed.target.files[0].name;
+          var reader = new FileReader();
+
+          reader.onload = function (loaded) {
+            scope.fileName = fileName;
+            ngModel.$setViewValue(loaded.target.result);
+            boolCheck = 1;
+          };
+
+          reader.readAsDataURL(changed.target.files[0]);
+          });
+
+          $compile(input)(scope);
+          element.append(input);
+
+          scope.browse = function () {
+          input.triggerHandler("browse");
+          };
+
+          scope.reset = function () {
+            scope.fileName = null;
+            ngModel.$setViewValue(null);
+            boolCheck = 0;
+          };
+          scope.check = function () {
+            if(boolCheck == 0){
+              if(ngModel.$viewValue != 1){
+                  ngModel.$setViewValue(1);
+              }
+              else{
+                ngModel.$setViewValue(0);
+              }
+            }
+          };
+        }
+        });
+
+      </script>
 </head>
 
 {% include "header.html" %}
@@ -161,8 +238,57 @@
                     <div class="row justify-content-center">
                         <div class="col-md-6 col-lg-6 col-xl-6 col-left">
                             {% if student.is_ill %}
-                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
-                                </button>
+                                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                                        Recovered  &#x1F601
+                                      </button>
+
+                                      <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLongTitle">Attach your reference here.</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body text-left">
+                                            Hello, Name Surname!
+                                          </div>
+
+                                          <div>
+                                              <div ng-app="app">
+                                                <div ng-controller="UploadController as vm">
+                                                  <div class="container">
+                                                    <form ng-model="vm.file" my-file-upload>
+                                                      <div class="form-group text-left">
+                                                        <label for="fileName">Select a file</label>
+                                                        <div class="input-group">
+                                                          <input type="text" id="fileName" class="form-control" readonly ng-model="fileName" ng-click="browse()">
+                                                          <span class="input-group-btn">
+                                                            <button type="button" class="btn btn-secondary" ng-click="browse()">Browse</button>
+                                                            <button type="reset" class="btn btn-light" ng-click="reset()">Reset</button>
+                                                          </span>
+                                                        </div>
+                                                      </div>
+                                                      <div class="container text-left">
+                                                          <div class="custom-control custom-checkbox">
+                                                              <input type="checkbox" ng-click="check()" class="custom-control-input" id="defaultUnchecked">
+                                                              <label class="custom-control-label" for="defaultUnchecked">I don't have reference</label>
+                                                          </div>
+                                                      </div>
+                                                    </form>
+                                                    <div class="modal-footer input-group input-file">
+                                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                     <button type="button" class="btn btn-primary" ng-click="vm.upload()" ng-disabled="!vm.file" onclick="toggle_ill(this)">Upload</button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                </div>
+                                          </div>
+
+                                        </div>
+                                        </div>
+                                        </div>
                             {% else %}
                                 <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
                                 </button>
@@ -188,15 +314,80 @@
 
                 <div class="container portrait">
                     <div class="col">
-                        <div class="row justify-content-center">
+                      <div class="row justify-content-center">
+                          <div class="col-md-6 col-lg-6 col-xl-6 col-left">
+
                             {% if student.is_ill %}
-                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
-                                </button>
-                            {% else %}
-                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
-                                </button>
-                            {% endif %}
+                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                           Recovered  &#x1F601
+                          </button>
+
+                          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                           <div class="modal-dialog" role="document">
+                             <div class="modal-content">
+                               <div class="modal-header">
+                                 <h5 class="modal-title" id="exampleModalLongTitle">Attach your reference here.</h5>
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                   <span aria-hidden="true">&times;</span>
+                                 </button>
+                               </div>
+                               <div class="modal-body text-left">
+                                 Hello, Name Surname!
+                               </div>
+                               <div>
+                                   <div ng-app="app">
+                                     <div ng-controller="UploadController as vm">
+                                       <div class="container">
+                                         <form ng-model="vm.file" my-file-upload>
+                                           <div class="form-group text-left">
+                                             <label for="fileName">Select a file</label>
+                                             <div class="input-group">
+                                               <input type="text" id="fileName" class="form-control" readonly ng-model="fileName" ng-click="browse()">
+                                               <span class="input-group-btn">
+                                                 <button type="button" class="btn btn-secondary" ng-click="browse()">Browse</button>
+                                                 <button type="reset" class="btn btn-light" ng-click="reset()">Reset</button>
+                                               </span>
+                                             </div>
+                                           </div>
+                                           <div class="container text-left">
+                                               <div class="custom-control custom-checkbox">
+                                                   <input type="checkbox" ng-click="check()" class="custom-control-input" id="defaultUnchecked">
+                                                   <label class="custom-control-label" for="defaultUnchecked">I don't have reference</label>
+                                               </div>
+                                           </div>
+                                         </form>
+                                       </div>
+                                     </div>
+                                     </div>
+                               </div>
+                               <div class="modal-footer">
+                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                 <button type="button" class="btn btn-primary">Save changes</button>
+                               </div>
+                             </div>
+                           </div>
+                          </div>
+                         {% else %}
+                             <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
+                             </button>
+                         {% endif %}
                         </div>
+                          <div class="col-md-6 col-lg-6 col-xl-6 col-right">
+                              {% if common['enroll_open'] %}
+                                  <a href="/survey/category" class="btn btn-primary">
+                                      Choose primary sport group
+                                  </a>
+                              {% elif student['sport_groups']|length < 3 %}
+                                  <a href="/survey/category" class="btn btn-primary">
+                                      Choose up to {{ 3 - student['sport_groups']|length }} secondary groups
+                                  </a>
+                              {% else %}
+                                  <a href="/survey/category" class="btn btn-primary disabled">
+                                      No more secondary groups available
+                                  </a>
+                              {% endif %}
+                          </div>
+                      </div>
                         <div class="row justify-content-center">
                             <a href="/survey/category"
                                class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
