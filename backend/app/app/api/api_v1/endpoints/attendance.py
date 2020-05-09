@@ -57,9 +57,10 @@ def mark_attendance(data: MarkAttendanceRequest,
             }
         })
     training_info = get_training_info(db, data.training_id)
-    if convert_from_utc(datetime.utcnow()) - \
-            convert_from_utc(training_info.start) \
-            > timedelta(days=TRAINING_EDITABLE_DAYS):
+    now_time = convert_from_utc(datetime.utcnow())
+    start_time = convert_from_utc(training_info.start)
+    editing_interval = timedelta(days=TRAINING_EDITABLE_DAYS)
+    if not start_time <= now_time <= start_time + editing_interval:
         return responses.JSONResponse(status_code=200, content={
             "ok": False,
             "error": {
