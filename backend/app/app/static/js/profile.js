@@ -372,3 +372,85 @@ function autocomplete_select(event, ui) {
     }
 }
 
+
+var app = angular.module("app", ["myDirectives"]);
+var myDirectives = angular.module("myDirectives", []);
+var boolCheck = 0;
+app.controller("UploadController", function ($log) {
+this.upload = function () {
+  $log.info("Uploading:", this.file || "no file selected!");
+}
+})
+
+
+myDirectives.directive("myFileUpload", function ($compile) {
+return {
+  restrict: "AE",
+  require: "ngModel",
+  scope: true,
+  link: link
+};
+
+function link (scope, element, attrs, ngModel) {
+var input = angular.element("<input type=\"file\" style=\"display: none;\">");
+
+input.bind("browse", function () {
+this.click();
+});
+
+input.bind("change", function (changed) {
+const file = this.files[0];
+const  fileType = file['type'];
+const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
+if (!validImageTypes.includes(fileType)) {
+    return window.alert("Wrong format")
+}
+if (changed.target.files.length < 1) {
+  return;
+}
+
+var fileName = changed.target.files[0].name;
+var reader = new FileReader();
+
+reader.onload = function (loaded) {
+scope.fileName = fileName;
+ngModel.$setViewValue(loaded.target.result);
+boolCheck = 1;
+};
+
+reader.readAsDataURL(changed.target.files[0]);
+});
+
+$compile(input)(scope);
+element.append(input);
+
+scope.browse = function () {
+input.triggerHandler("browse");
+};
+
+scope.reset = function () {
+scope.fileName = null;
+ngModel.$setViewValue(null);
+boolCheck = 0;
+};
+scope.check = function () {
+if(boolCheck == 0){
+  if(ngModel.$viewValue != 1){
+      ngModel.$setViewValue(1);
+  }
+  else{
+    ngModel.$setViewValue(0);
+  }
+}
+};
+}
+});
+
+
+$(function () {
+    $("#student_emails").autocomplete({
+        source: "/api/attendance/suggest_student",
+        select: autocomplete_select
+    });
+    $("#student_emails").autocomplete("option", "appendTo", ".student_email_suggestor");
+});
