@@ -35,6 +35,9 @@ def convert_training(t: Training) -> dict:
 
 
 def convert_training_profile(t: Training) -> dict:
+    start_time = convert_from_utc(t.start)
+    now_time = convert_from_utc(datetime.utcnow())
+    editing_interval = timedelta(days=TRAINING_EDITABLE_DAYS)
     return {
         "title": t.group_name,
         "start": convert_from_utc(t.start),
@@ -42,8 +45,7 @@ def convert_training_profile(t: Training) -> dict:
         "extendedProps": {
             "id": t.id,
             "can_edit":
-                convert_from_utc(datetime.utcnow()) -
-                convert_from_utc(t.start) <= timedelta(days=TRAINING_EDITABLE_DAYS),
+                start_time <= now_time <= start_time + editing_interval,
             "group_id": t.group_id,
             "can_grade": t.can_grade,
             "training_class": t.training_class,
