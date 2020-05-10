@@ -14,10 +14,15 @@ class Group(Base):
     description: Optional[str] = ''
     trainer_id: Optional[int] = None
     is_club: bool
+    current_load: Optional[int] = None
 
     @property
     def qualified_name(self):
         return f'{self.name} ({self.sport_name})'
+
+
+class EnrolledGroup(Group):
+    is_primary: bool
 
 
 class EnrollRequest(Base):

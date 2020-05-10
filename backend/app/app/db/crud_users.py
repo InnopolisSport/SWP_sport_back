@@ -182,3 +182,25 @@ def find_admin(conn, email: str) -> Admin:
                    (email,))
     row = cursor.fetchone()
     return __tuple_to_admin(row) if row is not None else None
+
+
+def get_email_name_like_students(conn, pattern: str, limit: int = 5) -> List[Student]:
+    """
+    Retrieve at most <limit students> which emails start with <email_pattern>
+
+    :param conn: - Database connection
+    :param pattern: - beginning of student email
+    :param limit: - how many student will be retrieved maximum
+    :return:
+    """
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, first_name, last_name, email, is_ill '
+                   'FROM student '
+                   'WHERE '
+                   'email LIKE %(pattern)s or '
+                   'lower(concat(first_name, %(space_str)s, last_name)) LIKE %(pattern)s or '
+                   'lower(last_name) LIKE %(pattern)s '
+                   'LIMIT %(limit)s',
+                   {"pattern": f"{pattern.lower()}%", "limit": limit, "space_str": " "}
+                   )
+    return list(map(__tuple_to_student, cursor.fetchall()))

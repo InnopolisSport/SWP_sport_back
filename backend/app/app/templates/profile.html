@@ -1,41 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Profile</title>
 
-    <link rel="stylesheet" href="../static/css/profile.css">
-    <script src="../static/js/profile.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-            crossorigin="anonymous"></script>
-
-    <!--
-        Calendar
-    -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+    <link rel="stylesheet" href="../static/css/profile.css">
+
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.js"></script>
-    <style>
-        .fc-event .fc-content {
-            color: #fff;
-        }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
-        .fc-time {
-            font-size: 0.78em;
-        }
-    </style>
+    <script src="../static/js/profile.js"></script>
+    <script>
+        $(function () {
+            $("#student_emails")
+                .autocomplete({
+                    source: "/api/attendance/suggest_student",
+                    select: autocomplete_select
+                })
+                .autocomplete("option", "appendTo", ".student_email_suggestor");
+        });
+    </script>
+
 </head>
 
 {% include "header.html" %}
@@ -49,95 +48,96 @@
         <div class="card-body">
             <h1 class="card-title">{{ user["first_name"] }} {{ user["last_name"] }}</h1>
             <h4 class="card-title">{{ user["role"] }}</h4>
+
+            {% if trainer["sport_groups"] %}
+                {% if trainer["sport_groups"]|length > 0 %}
+                    <p>
+                        In semester <b>{{ common["semester_name"] }}</b> you train the following groups:
+                        {% for group in trainer["sport_groups"] %}
+                            <span class="badge badge-pill badge-training"
+                                  onclick="open_info_modal_for_leave({{ group.id }}, true)">{{ group.qualified_name }}</span>
+                        {% endfor %}
+                    </p>
+                {% else %}
+                    <p>
+                        You are not training in the semester <b>{{ common["semester_name"] }}</b>
+                    </p>
+                {% endif %}
+            {% endif %}
+
             {% if user.is_student %}
                 <meta id="illness-data" data-ill="{{ student.is_ill }}">
-
-                {% if student["sport_groups"]|length > 1 %}
+                {% if student["sport_groups"]|length > 0 %}
                     <p>
                         Your sport groups for semester <b>{{ common["semester_name"] }}</b>
-                        are: {% for group in student["sport_groups"] %}
-                        {{ group }}{{ "," if not loop.last }} {% endfor %}
+                        are:
+                        {% for group in student["sport_groups"] %}
+                            <span class="badge badge-pill {{ 'badge-success' if group.is_primary else 'badge-secondary' }}"
+                                  onclick="open_info_modal_for_leave({{ group.id }}, false)">{{ group.name }}</span>
+                        {% endfor %}
                     </p>
-                {% elif student["sport_groups"]|length == 1 %}
+                {% else %}
                     <p>
-                        Your sport group for semester <b>{{ common["semester_name"] }}</b>
-                        is: {{ student["sport_groups"][0] }}
+                        You have no groups selected for semester <b>{{ common["semester_name"] }}</b>
                     </p>
                 {% endif %}
 
-                <div class="container">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">Semester</th>
-                            <th scope="col">Start</th>
-                            <th scope="col">End</th>
-                            <th scope="col">Total hours</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for sem in semesters %}
-                            <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
-                                onclick="fetch_detailed_hours(this)" data-toggle="modal"
-                                data-target="#hours-modal-{{ sem.semester_id }}">
-                                <th scope="row">{{ sem.semester_name }}</th>
-                                <td>{{ sem.semester_start }}</td>
-                                <td>{{ sem.semester_end }}</td>
-                                <td>{{ sem.hours }}</td>
+                {% if student["semesters"]|length > 0 %}
+                    <div class="container">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Semester</th>
+                                <th scope="col">Start</th>
+                                <th scope="col">End</th>
+                                <th scope="col">Hours</th>
                             </tr>
-                            <!-- Modal -->
-                            <div class="modal fade" id="hours-modal-{{ sem.semester_id }}" tabindex="-1" role="dialog"
-                                 aria-labelledby="hours-modal-{{ sem.semester_id }}"
-                                 aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="hours-modal-{{ sem.semester_id }}-title">
-                                                Detailed
-                                                statistics for
-                                                {{ sem.semester_name }} </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="spinner-border" role="status"></div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Ok
-                                            </button>
+                            </thead>
+                            <tbody>
+                            {% for sem in student["semesters"] %}
+                                <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
+                                    onclick="fetch_detailed_hours(this)" data-toggle="modal"
+                                    data-target="#hours-modal-{{ sem.semester_id }}">
+                                    <th scope="row">{{ sem.semester_name }}</th>
+                                    <td>{{ sem.semester_start }}</td>
+                                    <td>{{ sem.semester_end }}</td>
+                                    <td>{{ sem.hours }}</td>
+                                </tr>
+                                <!-- Modal -->
+                                <div class="modal fade" id="hours-modal-{{ sem.semester_id }}" tabindex="-1"
+                                     role="dialog"
+                                     aria-labelledby="hours-modal-{{ sem.semester_id }}" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="hours-modal-{{ sem.semester_id }}-title">
+                                                    Detailed
+                                                    statistics for
+                                                    {{ sem.semester_name }} </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="spinner-border" role="status"></div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="container landscape">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 col-lg-6 col-xl-6 col-left">
-                            {% if student.is_ill %}
-                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
-                                </button>
-                            {% else %}
-                                <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick &#x1F912
-                                </button>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-6 col-right">
-                            <a href="/survey/category"
-                               class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
-                                Choose sport group
-                            </a>
-                        </div>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                </div>
+                {% endif %}
 
-                <div class="container portrait">
-                    <div class="col">
-                        <div class="row justify-content-center">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-sm-12 col-left mb-1">
                             {% if student.is_ill %}
                                 <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered &#x1F601
                                 </button>
@@ -146,21 +146,33 @@
                                 </button>
                             {% endif %}
                         </div>
-                        <div class="row justify-content-center">
-                            <a href="/survey/category"
-                               class="btn btn-primary {% if not common['enroll_open'] %}disabled{% endif %}">
-                                Choose sport group
-                            </a>
+                        <div class="col-md-6 col-sm-12 col-right mb-1">
+                            {% if common['enroll_open'] %}
+                                <a href="/survey/category" class="btn btn-primary">
+                                    Choose primary sport group
+                                </a>
+                            {% elif student['sport_groups']|length < 2 %}
+                                <a href="/survey/category" class="btn btn-primary">
+                                    {{ 3 - student['sport_groups']|length }} secondary choices left
+                                </a>
+                            {% elif 2 == student['sport_groups']|length %}
+                                <a href="/survey/category" class="btn btn-primary">
+                                    1 secondary choice left
+                                </a>
+                            {% else %}
+                                <a href="/survey/category" class="btn btn-primary disabled">
+                                    No group choices left
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             {% endif %}
-            {% if student["sport_groups"]|length > 0 %}
+            {% if student["sport_groups"]|length > 0 or trainer["sport_groups"] %}
                 <div id='calendar'></div>
             {% endif %}
 
-            <div class="modal fade" id="grading-modal" tabindex="-1" role="dialog"
-                 aria-labelledby="grading-modal"
+            <div class="modal fade" id="grading-modal" tabindex="-1" role="dialog" aria-labelledby="grading-modal"
                  aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
@@ -175,21 +187,69 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body"></div>
+                        <div class="modal-body">
+                            <div class="ui-widget d-flex flex-row my-1">
+                                <form class="student_email_suggestor" onsubmit="alert('submitted')">
+                                        <span class="align-text-top"><label
+                                                for="student_emails"><b>Name or email:</b> </label>
+                                            <input id="student_emails" class="stundet_email_pick trainer-editable"
+                                                   size="30">
+                                        </span>
+                                </form>
+                            </div>
+                            <div class="modal-body-table">
+
+                            </div>
+                        </div>
                         <div class="modal-footer">
                             <div class="container">
                                 <div class="row justify-content-between">
                                     <div>
                                         <button type="button" class="btn btn-success float-left"
-                                                id="put-default-hours-btn"
-                                                onclick="mark_all(this)">Mark all (<span id="mark-all-hours-value"></span> h.)
+                                                id="put-default-hours-btn" onclick="mark_all(this)">Mark all (<span
+                                                id="mark-all-hours-value"></span> h.)
+                                        </button>
+                                    </div>
+
+                                    <div class="alert alert-danger" id="hours-alert" role="alert"
+                                         style="visibility: hidden">
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary" id="save-hours-btn" onclick="save_hours()"
+                                                type="button">Save
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="training-info-modal" tabindex="-1" role="dialog"
+                 aria-labelledby="training-info-modal"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="training-info-modal-title">
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-left"></div>
+                        <div class="modal-footer">
+                            <div class="container">
+                                <div class="row justify-content-between">
+                                    <div>
+                                        <button type="button" class="btn btn-danger" id="enroll-unenroll-btn"
+                                                data-dismiss="modal">
                                         </button>
                                     </div>
                                     <div>
-                                        <button type="button" class="btn btn-primary" id="save-hours-btn"
-                                                data-dismiss="modal"
-                                                onclick="save_hours()">Save
-                                        </button>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
                                         </button>
                                     </div>
@@ -203,4 +263,5 @@
     </div>
 </div>
 </body>
+
 </html>

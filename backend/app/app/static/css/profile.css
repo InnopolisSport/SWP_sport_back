@@ -19,6 +19,10 @@ a:hover {
     color: #ffffff;
 }
 
+.studentHourField {
+    width: 50px;
+}
+
 .navbar-inverse {
     background: #00802b;
 }
@@ -31,115 +35,96 @@ a:hover {
     color: #ffffff;
 }
 
+.badge:hover {
+    cursor: pointer;
+}
+
+.badge-secondary:hover {
+    background-color: #dc3545;
+}
+
+.badge-training {
+    background-color: #ffa500;
+}
+
+.fc-title {
+    font-weight: bold;
+}
+
+.fc-event .fc-content {
+    color: #fff;
+}
+
+.fc-time {
+    font-size: 0.78em;
+}
+
+.alert {
+    padding: 6px 12px; /* The same padding as buttons has */
+}
+
+.btn.disabled, .btn:disabled {
+    cursor: default;
+}
+
 @media only screen and (max-width: 576px) and (max-width: 768px) {
-    .landscape {
-        display: none;
-    }
-
-    .portrait {
-        display: block;
-    }
-
     .card {
         margin: 1%;
     }
 
     .row {
-        margin-top:1%;
+        margin-top: 1%;
     }
 }
 
 @media only screen and (min-width: 577px) and (max-width: 768px) {
-    .landscape {
-        display: none;
-    }
-
-    .portrait {
-        display: block;
-    }
-
     .card {
-        margin-top: 1%;
-        margin-left: 10%;
-        margin-right: 10%;
-        margin-bottom: 1%;
+        margin: 1% 10%;
     }
 
     .row {
-        margin-top:1%;
+        margin-top: 1%;
     }
 }
 
 @media only screen and (min-width: 769px) and (max-width: 992px) {
-    .landscape {
-        display: block;
-    }
-
-    .portrait {
-        display: none;
-    }
-
     .card {
-        margin-top: 1%;
-        margin-left: 10%;
-        margin-right: 10%;
-        margin-bottom: 1%;
+        margin: 1% 10%;
     }
 
-    .col-md-6.col-left {
+    .col-left {
         text-align: right;
     }
 
-    .col-md-6.col-right {
+    .col-right {
         text-align: left;
     }
 }
 
 @media only screen and (min-width: 993px) and (max-width: 1200px) {
-    .landscape {
-        display: block;
-    }
-
-    .portrait {
-        display: none;
-    }
-
     .card {
-        margin-top: 1%;
-        margin-left: 10%;
-        margin-right: 10%;
-        margin-bottom: 1%;
+        margin: 1% 10%;
     }
 
-    .col-lg-6.col-left {
+    .col-left {
         text-align: right;
     }
 
-    .col-lg-6.col-right {
+    .col-right {
         text-align: left;
     }
 }
 
 @media only screen and (min-width: 1201px) {
-    .landscape {
-        display: block;
-    }
-
-    .portrait {
-        display: none;
-    }
-
     .card {
-        margin-top: 1%;
-        margin-left: 20%;
-        margin-right: 20%;
+        margin: 1% 20%;
     }
 
-    .col-xl-6.col-left {
+    .col-left {
         text-align: right;
     }
 
-    .col-xl-6.col-right {
+    .col-right {
         text-align: left;
     }
 }

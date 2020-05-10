@@ -14,8 +14,10 @@ def getenv_boolean(var_name, default_value=False):
 SC_TRAINERS_GROUP_NAME = "SC trainers"
 BACHELOR_PREFIX = "B"
 TIMEZONE = pytz.timezone("Europe/Moscow")
+TRAINING_EDITABLE_DAYS = int(os.getenv('TRAINING_EDITABLE_DAYS', 7))
 
-DEBUG = FAKE_LOGIN = getenv_boolean("DEBUG", False)
+DEBUG = getenv_boolean("DEBUG", False)
+FAKE_LOGIN = DEBUG
 
 API_V1_STR = "/api"
 DOCS_STR = "/docs"

@@ -4,6 +4,8 @@ services:
     restart: always
     build:
       context: ../nginx
+      args:
+        - DEBUG
     ports:
       - "81:80"
     depends_on:
@@ -23,19 +25,32 @@ services:
     ports:
       - "8082:80"
     restart: always
-    env_file:
-      - .env
     depends_on:
       - db
     volumes:
       - ../backend/app:/app
       - fastapi-static:/static
+    environment:
+      - DEBUG
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_SERVER
+      - PROJECT_NAME
+      - SECRET_KEY
+      - oauth_appID
+      - oauth_shared_secret
+      - oauth_authorization_baseURL
+      - oauth_get_infoURL
+      - oauth_tokenURL
+      - oauth_end_session_endpoint
+      - TRAINING_EDITABLE_DAYS
 
   adminpanel:
     build:
       context: ../adminpage
       dockerfile: Dockerfile
-#   Wait for postgres to startup before running server
+    #   Wait for postgres to startup before running server
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
     restart: always
     volumes:
@@ -45,10 +60,14 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    env_file:
-      - .env
     environment:
-      DOCKER: 1
+      - DEBUG
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_SERVER
+      - SECRET_KEY
+      - PROJECT_NAME
 
   db:
     image: db
@@ -60,8 +79,11 @@ services:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-    env_file:
-      - .env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_SERVER
 
 
   adminer:

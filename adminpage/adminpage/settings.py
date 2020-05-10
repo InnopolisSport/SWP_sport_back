@@ -33,9 +33,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = getenv_boolean("DEBUG", default_value=False)
+DEBUG = getenv_boolean("DEBUG", False)
 
-ALLOWED_HOSTS = ['188.130.155.115', 'helpdesk.innopolis.university', 'localhost']
+ALLOWED_HOSTS = ['188.130.155.115', 'helpdesk.innopolis.university']
+
+if DEBUG:
+    ALLOWED_HOSTS.append('localhost')
 
 # Application definition
 
@@ -84,10 +87,6 @@ WSGI_APPLICATION = 'adminpage.wsgi.application'
 
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
     'default': {
         "ENGINE": 'django.db.backends.postgresql',
         'NAME': os.getenv("POSTGRES_DB"),
