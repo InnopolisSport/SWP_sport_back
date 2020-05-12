@@ -55,12 +55,13 @@ def __tuple_to_training_info(row: Tuple[str, datetime, datetime, int]) -> Traini
 
 
 def __tuple_to_attended_training_info(
-        row: Tuple[int, str, str, int, int, str, str, str, float, bool, bool]) -> AttendedTrainingInfo:
-    group_id, group_name, group_description, capacity, current_load, trainer_first_name, trainer_last_name, trainer_email, hours, is_enrolled, is_primary = row
+        row: Tuple[int, str, str, str, int, int, str, str, str, float, bool, bool]) -> AttendedTrainingInfo:
+    group_id, group_name, group_description, training_class, capacity, current_load, trainer_first_name, trainer_last_name, trainer_email, hours, is_enrolled, is_primary = row
     return AttendedTrainingInfo(
         group_id=group_id,
         group_name=group_name,
         group_description=group_description if group_description is not None else '',
+        training_class=training_class,
         trainer_first_name=trainer_first_name,
         trainer_last_name=trainer_last_name,
         trainer_email=trainer_email,
@@ -72,7 +73,7 @@ def __tuple_to_attended_training_info(
     )
 
 
-def __tuple_to_group_info(row: Tuple[int, str, str, int, int, str, str, str, bool, bool]) -> GroupInfo:
+def __tuple_to_group_info(row: Tuple[int, str, str, str, int, int, str, str, str, bool, bool]) -> GroupInfo:
     group_id, group_name, group_description, capacity, current_load, trainer_first_name, trainer_last_name, trainer_email, is_enrolled, is_primary = row
     return GroupInfo(
         group_id=group_id,
@@ -122,16 +123,17 @@ def get_attended_training_info(conn, training_id: int, student_id: int) -> Atten
     """
     cursor = conn.cursor()
     cursor.execute(
-        'SELECT g.id, g.name, g.description, g.capacity, count(e.id), t.first_name, t.last_name, t.email, a.hours, '
+        'SELECT g.id, g.name, g.description, tc.name, g.capacity, count(e.id), t.first_name, t.last_name, t.email, a.hours, '
         'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s), '
         'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s AND is_primary = true) '
-        'FROM training tr, "group" g '
+        'FROM training tr '
+        'LEFT JOIN training_class tc ON tr.training_class_id = tc.id, "group" g '
         'LEFT JOIN enroll e ON e.group_id = g.id '
         'LEFT JOIN trainer t ON t.id = g.trainer_id '
         'LEFT JOIN attendance a ON a.training_id = %s AND a.student_id = %s '
         'WHERE tr.group_id = g.id '
         'AND tr.id = %s '
-        'GROUP BY g.id, t.id, a.id', (student_id, student_id, training_id, student_id, training_id))
+        'GROUP BY g.id, t.id, a.id, tc.id', (student_id, student_id, training_id, student_id, training_id))
     return __tuple_to_attended_training_info(cursor.fetchone())
 
 
