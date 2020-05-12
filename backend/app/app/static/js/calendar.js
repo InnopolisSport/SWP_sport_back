@@ -135,10 +135,6 @@ function render(info) {
     element.style.fontSize = "99";
     element.style.backgroundColor = (props.current_load >= props.capacity) ? '#f00' : get_color(props.group_id)
     element.style.cursor = 'pointer';
-
-    if (props.training_class) {
-        $(element).children(".fc-content").append($(`<div>${props.training_class}</div>`))
-    }
 }
 
 let calendar
