@@ -135,10 +135,6 @@ function render(info) {
     element.style.fontSize = "99";
     element.style.backgroundColor = (props.current_load >= props.capacity) ? '#f00' : get_color(props.group_id)
     element.style.cursor = 'pointer';
-
-    if (props.training_class) {
-        $(element).children(".fc-content").append($(`<div>${props.training_class}</div>`))
-    }
 }
 
 let calendar
@@ -159,8 +155,8 @@ document.addEventListener('DOMContentLoaded', function () {
         firstDay: 1,
         allDaySlot: false,
         slotDuration: '00:30:00',
-        minTime: '08:00:00',
-        maxTime: '21:00:00',
+        minTime: '07:00:00',
+        maxTime: '23:00:00',
         defaultTimedEventDuration: '01:30',
         eventClick: open_modal,
         eventRender: render,

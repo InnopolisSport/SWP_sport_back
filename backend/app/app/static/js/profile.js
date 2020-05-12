@@ -123,10 +123,6 @@ function render(info) {
         element.style.backgroundRepeat = 'no-repeat';
         element.style.backgroundSize = '40%';
     }
-
-    if (props.training_class) {
-        $(element).children(".fc-content").append($(`<div>${props.training_class}</div>`))
-    }
 }
 
 let local_hours_changes = {}
@@ -424,8 +420,8 @@ document.addEventListener('DOMContentLoaded', function () {
         firstDay: 1,
         allDaySlot: false,
         slotDuration: '00:30:00',
-        minTime: '08:00:00',
-        maxTime: '21:00:00',
+        minTime: '07:00:00',
+        maxTime: '23:00:00',
         defaultTimedEventDuration: '01:30',
         eventRender: render,
         eventClick: open_modal,

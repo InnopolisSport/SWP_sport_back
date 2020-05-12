@@ -65,6 +65,7 @@ class GroupInfo(Base):
 
 
 class AttendedTrainingInfo(GroupInfo):
+    training_class: Optional[str] = None
     hours: float
 
 
