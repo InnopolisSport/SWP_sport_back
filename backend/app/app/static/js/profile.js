@@ -173,7 +173,6 @@ async function save_hours() {
             invalid_row_count += 1;
         }
     }
-
     if (!hours_valid) {
         first_invalid_row.scrollIntoView();
         show_alert(
@@ -181,22 +180,24 @@ async function save_hours() {
             "danger",
             "Invalid value of hours in " + invalid_row_count.toString() + " row(s)",
         );
-        return;
+    } else {
+        await fetch(`/api/attendance/mark`, {
+            method: 'POST',
+            body: JSON.stringify({
+                training_id,
+                students_hours: local_hours_changes
+            })
+        });
+    
+        $('#grading-modal tr').removeClass('table-warning')
+        local_hours_changes = {}
+        
+    
+        hide_alert("hours-alert");
+        $('#grading-modal').modal("hide")
     }
-    await fetch(`/api/attendance/mark`, {
-        method: 'POST',
-        body: JSON.stringify({
-            training_id,
-            students_hours: local_hours_changes
-        })
-    });
-
-    $('#grading-modal tr').removeClass('table-warning')
-    local_hours_changes = {}
     btn.prop('disabled', false);
-
-    hide_alert("hours-alert");
-    $('#grading-modal').modal("hide")
+    
 }
 
 $(document).on('hidden.bs.modal', '#grading-modal', function () {
