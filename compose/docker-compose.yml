@@ -15,7 +15,8 @@ services:
     volumes:
       - ../nginx/logs:/var/log/nginx
       - ../nginx/access.d:/etc/nginx/access.d
-      - django-static:/static/admin
+      - django-static-admin:/static/admin
+      - django-static-sport:/static/sport
       - fastapi-static:/static
 
   backend:
@@ -55,7 +56,8 @@ services:
     restart: always
     volumes:
       - ../adminpage:/src
-      - django-static:/static/admin
+      - django-static-admin:/static/admin
+      - django-static-sport:/static/sport
     ports:
       - "8000:8000"
     depends_on:
@@ -97,5 +99,6 @@ services:
 
 volumes:
   db-data:
-  django-static:
+  django-static-admin:
+  django-static-sport:
   fastapi-static:
