@@ -5,7 +5,6 @@ from .enrollAdmin import EnrollAdmin
 from .fabrics import admin_with_filters_fabric, semester_filter_fabric
 
 admin.site.register(models.Attendance)
-admin.site.register(models.Enroll, EnrollAdmin)
 admin.site.register(models.Group, admin_with_filters_fabric(
     semester_filter_fabric("semester__id")
 ))
