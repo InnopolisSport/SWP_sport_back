@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_auth_adfs',
     'sport.apps.SportConfig'
 ]
 
@@ -81,6 +82,37 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'adminpage.wsgi.application'
+
+# Authentication
+
+OAUTH_CLIENT_ID = os.getenv('oauth_appID')
+OAUTH_CLIENT_SECRET = os.getenv("oauth_shared_secret")
+OAUTH_AUTHORIZATION_BASEURL = os.getenv("oauth_authorization_baseURL")
+OAUTH_GET_INFO_URL  = os.getenv("oauth_get_infoURL")
+OAUTH_TOKEN_URL = os.getenv("oauth_tokenURL")
+OAUTH_END_SESSION_URL = os.getenv("oauth_end_session_endpoint")
+
+AUTHENTICATION_BACKENDS = (
+     'django_auth_adfs.backend.AdfsAuthCodeBackend',
+)
+
+AUTH_ADFS = {
+    "SERVER": "sso.university.innopolis.ru",
+    "CLIENT_ID": OAUTH_CLIENT_ID,
+    "CLIENT_SECRET": OAUTH_CLIENT_SECRET,
+    "RELYING_PARTY_ID": OAUTH_CLIENT_ID,
+    # Make sure to read the documentation about the AUDIENCE setting
+    # when you configured the identifier as a URL!
+    "AUDIENCE": f"microsoft:identityserver:{OAUTH_CLIENT_ID}",
+    "CA_BUNDLE": True,
+    "USERNAME_CLAIM": "upn",
+    "CLAIM_MAPPING": {"first_name": "given_name",
+                      "last_name": "family_name",
+                      "email": "email"},
+}
+
+LOGIN_URL = "django_auth_adfs:login"
+LOGIN_REDIRECT_URL = "/"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

@@ -68,6 +68,12 @@ services:
       - POSTGRES_SERVER
       - SECRET_KEY
       - PROJECT_NAME
+      - oauth_appID
+      - oauth_shared_secret
+      - oauth_authorization_baseURL
+      - oauth_get_infoURL
+      - oauth_tokenURL
+      - oauth_end_session_endpoint
 
   db:
     image: db
