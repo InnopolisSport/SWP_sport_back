@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from sport.models import Student
+from .inlines import AttendanceInline
 
 
 @admin.register(Student)
@@ -17,4 +18,8 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "is_ill",
+    )
+
+    inlines = (
+        AttendanceInline,
     )

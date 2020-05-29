@@ -1,3 +1,7 @@
+from django.contrib import admin
+# add save button on top for all admins
+admin.ModelAdmin.save_on_top = True
+
 from .enrollAdmin import EnrollAdmin
 from .trainerAdmin import TrainerAdmin
 from .sportAdmin import SportAdmin

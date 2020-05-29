@@ -5,6 +5,7 @@ from sport.models import Sport
 
 @admin.register(Sport)
 class SportAdmin(admin.ModelAdmin):
+    save_on_top = True
     search_fields = (
         "name",
     )
@@ -17,3 +18,7 @@ class SportAdmin(admin.ModelAdmin):
     list_filter = (
         "special",
     )
+    # maybe it will be inconvenient
+    # inlines = (
+    #     GroupInline,
+    # )

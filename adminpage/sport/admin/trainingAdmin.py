@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from sport.models import Training
+from .inlines import AttendanceInline
 
 
 @admin.register(Training)
@@ -32,4 +33,8 @@ class TrainingAdmin(admin.ModelAdmin):
         "start",
         "end",
         "training_class",
+    )
+
+    inlines = (
+        AttendanceInline,
     )
