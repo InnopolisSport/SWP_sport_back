@@ -4,9 +4,20 @@ from django.http import HttpRequest
 from sport import models
 from .utils import get_inline
 
-AttendanceInline = get_inline(models.Attendance, extra=1,)
-ScheduleInline = get_inline(models.Schedule, extra=1,)
-EnrollInline = get_inline(models.Enroll, extra=1,)
+AttendanceInline = get_inline(
+    models.Attendance,
+    extra=1,
+    autocomplete_fields=("training", "student"),
+)
+ScheduleInline = get_inline(
+    models.Schedule,
+    extra=1,
+)
+EnrollInline = get_inline(
+    models.Enroll,
+    extra=1,
+    autocomplete_fields=("student",),
+)
 GroupInline = get_inline(models.Group,
                          extra=0,
                          )
@@ -15,6 +26,7 @@ GroupInline = get_inline(models.Group,
 class TrainingInline(admin.TabularInline):
     model = models.Training
     exclude = ("group",)
+    autocomplete_fields = ("training_class",)
     extra = 0
 
     def has_add_permission(
