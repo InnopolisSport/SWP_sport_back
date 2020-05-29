@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from sport.models import Enroll
 
-from .fabrics import semester_filter_fabric
 from .mixins import EnrollExportXlsxMixin
 from .utils import custom_titled_filter
 
@@ -26,3 +25,8 @@ class EnrollAdmin(admin.ModelAdmin, EnrollExportXlsxMixin):
     actions = (
         "export_as_csv",
     )
+
+    class Media:
+        js = (
+            "sport/js/list_filter_collapse.js",
+        )

@@ -1,21 +1,12 @@
-from django.contrib import admin
-
-import sport.models as models
 from .enrollAdmin import EnrollAdmin
-from .fabrics import admin_with_filters_fabric, semester_filter_fabric
+from .trainerAdmin import TrainerAdmin
+from .sportAdmin import SportAdmin
+from .trainingAdmin import TrainingAdmin
+from .groupAdmin import GroupAdmin
+from .attendanceAdmin import AttendanceAdmin
+from .scheduleAdmin import ScheduleAdmin
+from .semesterAdmin import SemesterAdmin
+from .studentAdmin import StudentAdmin
+from .trainingClassAdmin import TrainingClassAdmin
 
-admin.site.register(models.Attendance)
-admin.site.register(models.Group, admin_with_filters_fabric(
-    semester_filter_fabric("semester__id")
-))
-admin.site.register(models.Schedule, admin_with_filters_fabric(
-    semester_filter_fabric("group__semester__id")
-))
-admin.site.register(models.Semester)
-admin.site.register(models.Sport)
-admin.site.register(models.Student)
-admin.site.register(models.Trainer)
-admin.site.register(models.Training, admin_with_filters_fabric(
-    semester_filter_fabric("group__semester__id")
-))
-admin.site.register(models.TrainingClass)
+# from .fabrics import admin_with_filters_fabric, semester_filter_fabric
