@@ -5,6 +5,15 @@ from sport.models import Group
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
+    search_fields = (
+        "name",
+    )
+
+    autocomplete_fields = (
+        "sport",
+        "trainer",
+    )
+
     list_filter = (
         "name",
         "semester",

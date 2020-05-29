@@ -5,6 +5,20 @@ from sport.models import Training
 
 @admin.register(Training)
 class TrainingAdmin(admin.ModelAdmin):
+    search_fields = (
+        "group__name",
+    )
+
+    autocomplete_fields = (
+        "group",
+        "schedule",
+        "training_class",
+    )
+
+    ordering = (
+        'start',
+    )
+
     list_filter = (
         "group__semester",
         ("group", admin.RelatedOnlyFieldListFilter),

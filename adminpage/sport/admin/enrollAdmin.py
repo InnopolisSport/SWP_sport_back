@@ -8,6 +8,11 @@ from .utils import custom_titled_filter
 
 @admin.register(Enroll)
 class EnrollAdmin(admin.ModelAdmin, EnrollExportXlsxMixin):
+    autocomplete_fields = (
+        "student",
+        "group",
+    )
+
     list_filter = (
         "group__semester",
         ("group", admin.RelatedOnlyFieldListFilter),

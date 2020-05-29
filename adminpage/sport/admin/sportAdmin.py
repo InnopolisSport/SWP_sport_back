@@ -5,6 +5,10 @@ from sport.models import Sport
 
 @admin.register(Sport)
 class SportAdmin(admin.ModelAdmin):
+    search_fields = (
+        "name",
+    )
+
     list_display = (
         "name",
         "special",

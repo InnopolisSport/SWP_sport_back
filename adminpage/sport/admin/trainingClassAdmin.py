@@ -5,4 +5,6 @@ from sport.models import TrainingClass
 
 @admin.register(TrainingClass)
 class TrainingClassAdmin(admin.ModelAdmin):
-    pass
+    search_fields = (
+        "name",
+    )
