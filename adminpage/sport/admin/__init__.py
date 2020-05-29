@@ -12,5 +12,3 @@ from .scheduleAdmin import ScheduleAdmin
 from .semesterAdmin import SemesterAdmin
 from .studentAdmin import StudentAdmin
 from .trainingClassAdmin import TrainingClassAdmin
-
-# from .fabrics import admin_with_filters_fabric, semester_filter_fabric
