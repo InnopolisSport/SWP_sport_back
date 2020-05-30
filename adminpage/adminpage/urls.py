@@ -21,7 +21,21 @@ from django_auth_adfs import views
 
 app_name = "django_auth_adfs"
 
+
+from django.http import JsonResponse, HttpResponse
+def show(request):
+    data =  dict(
+                [
+                    (key, str(value)) for key, value in request.META.items()
+                ]
+            )
+    data.update({
+                "scheme": str(request.scheme),
+                })
+    return JsonResponse(data)
+
 urlpatterns = [
+    path('admin/test', show),
     path('admin/', admin.site.urls),
     path('oauth2/', include('django_auth_adfs.urls')),
 ]
