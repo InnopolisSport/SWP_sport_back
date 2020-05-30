@@ -5,5 +5,6 @@
             const $filterList = $filterEl.next('ul').hide();
             $filterEl.click($filterList.slideToggle.bind($filterList));
         });
+        $('#changelist-filter li:not(:first-child).selected').parent().show()
     });
 })(django.jQuery);
