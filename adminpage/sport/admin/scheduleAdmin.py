@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from sport.models import Schedule
-from .inlines import TrainingInline
+from .inlines import ViewTrainingInline
+
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
@@ -35,7 +36,7 @@ class ScheduleAdmin(admin.ModelAdmin):
     )
 
     inlines = (
-        TrainingInline,
+        ViewTrainingInline,
     )
 
     class Media:

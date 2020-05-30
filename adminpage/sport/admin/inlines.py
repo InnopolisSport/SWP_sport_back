@@ -25,8 +25,12 @@ GroupInline = get_inline(models.Group,
 
 class TrainingInline(admin.TabularInline):
     model = models.Training
-    exclude = ("group",)
     autocomplete_fields = ("training_class",)
+    extra = 1
+
+
+class ViewTrainingInline(TrainingInline):
+    exclude = ("group",)
     extra = 0
 
     def has_add_permission(

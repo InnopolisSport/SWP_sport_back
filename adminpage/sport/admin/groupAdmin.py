@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from sport.models import Group
-from .inlines import ScheduleInline, EnrollInline
+from .inlines import ScheduleInline, EnrollInline, TrainingInline
 
 
 @admin.register(Group)
@@ -32,6 +32,7 @@ class GroupAdmin(admin.ModelAdmin):
 
     inlines = (
         ScheduleInline,
+        TrainingInline,
         EnrollInline,
     )
 
