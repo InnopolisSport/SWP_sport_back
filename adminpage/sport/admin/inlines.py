@@ -2,30 +2,32 @@ from django.contrib import admin
 from django.http import HttpRequest
 
 from sport import models
-from .utils import get_inline
 
-AttendanceInline = get_inline(
-    models.Attendance,
-    extra=1,
-    autocomplete_fields=("training", "student"),
-    ordering=("training__start", "student__first_name", "student__last_name"),
-)
-ScheduleInline = get_inline(
-    models.Schedule,
-    extra=1,
-    ordering=("weekday", "start"),
-)
-EnrollInline = get_inline(
-    models.Enroll,
-    extra=1,
-    autocomplete_fields=("student",),
-    ordering=("student__first_name", "student__last_name"),
-)
-GroupInline = get_inline(
-    models.Group,
-    extra=0,
-    ordering=("semester", "name"),
-)
+
+class AttendanceInline(admin.TabularInline):
+    model = models.Attendance
+    extra = 1
+    autocomplete_fields = ("training", "student")
+    ordering = ("training__start", "student__first_name", "student__last_name")
+
+
+class ScheduleInline(admin.TabularInline):
+    model = models.Schedule
+    extra = 1
+    ordering = ("weekday", "start")
+
+
+class EnrollInline(admin.TabularInline):
+    model = models.Enroll
+    extra = 1
+    autocomplete_fields = ("student",)
+    ordering = ("student__first_name", "student__last_name")
+
+
+class GroupInline(admin.TabularInline):
+    model = models.Group
+    extra = 0
+    ordering = ("semester", "name")
 
 
 class TrainingInline(admin.TabularInline):
