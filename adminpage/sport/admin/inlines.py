@@ -8,25 +8,31 @@ AttendanceInline = get_inline(
     models.Attendance,
     extra=1,
     autocomplete_fields=("training", "student"),
+    ordering=("training__start", "student__first_name", "student__last_name"),
 )
 ScheduleInline = get_inline(
     models.Schedule,
     extra=1,
+    ordering=("weekday", "start"),
 )
 EnrollInline = get_inline(
     models.Enroll,
     extra=1,
     autocomplete_fields=("student",),
+    ordering=("student__first_name", "student__last_name"),
 )
-GroupInline = get_inline(models.Group,
-                         extra=0,
-                         )
+GroupInline = get_inline(
+    models.Group,
+    extra=0,
+    ordering=("semester", "name"),
+)
 
 
 class TrainingInline(admin.TabularInline):
     model = models.Training
     autocomplete_fields = ("training_class",)
     extra = 1
+    ordering = ("start",)
 
 
 class ViewTrainingInline(TrainingInline):
