@@ -1,27 +1,9 @@
 (function ($) {
-
-    let ListFilterCollapsePrototype = {
-        bindToggle: function () {
-            var that = this;
-            this.$filterEl.click(function () {
-                that.$filterList.slideToggle();
-            });
-        },
-        init: function (filterEl) {
-            this.$filterEl = $(filterEl).css('cursor', 'pointer');
-            this.$filterList = this.$filterEl.next('ul').hide();
-            this.bindToggle();
-        }
-    }
-
-    function ListFilterCollapse(filterEl) {
-        this.init(filterEl);
-    }
-
-    ListFilterCollapse.prototype = ListFilterCollapsePrototype;
     $(document).ready(function () {
         $('#changelist-filter').children('h3').each(function () {
-            var collapser = new ListFilterCollapse(this);
+            const $filterEl = $(this).css('cursor', 'pointer');
+            const $filterList = $filterEl.next('ul').hide();
+            $filterEl.click($filterList.slideToggle.bind($filterList));
         });
     });
 })(django.jQuery);
