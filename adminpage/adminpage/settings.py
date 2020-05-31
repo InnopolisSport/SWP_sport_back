@@ -33,9 +33,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
-# make django think it is using https
-# WARNING: make sure, only trusted connections are possible
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_boolean("DEBUG")
@@ -44,7 +42,10 @@ ALLOWED_HOSTS = ['188.130.155.115', 'helpdesk.innopolis.university']
 
 if DEBUG:
     ALLOWED_HOSTS.append('localhost')
-
+else:
+    # make django think it is using https
+    # WARNING: make sure, only trusted connections are possible
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Application definition
 
 INSTALLED_APPS = [
