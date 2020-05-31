@@ -98,6 +98,7 @@ OAUTH_TOKEN_URL = os.getenv("oauth_tokenURL")
 OAUTH_END_SESSION_URL = os.getenv("oauth_end_session_endpoint")
 
 AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
     'django_auth_adfs.backend.AdfsAuthCodeBackend',
 )
 
