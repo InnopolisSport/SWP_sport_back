@@ -34,7 +34,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_boolean("DEBUG", False)
-
+PROJECT_ROOT = "/src/"
 ALLOWED_HOSTS = ['188.130.155.115', 'helpdesk.innopolis.university']
 
 if DEBUG:
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'admin_auto_filters',
     'sport.apps.SportConfig'
 ]
 
@@ -67,7 +68,9 @@ ROOT_URLCONF = 'adminpage.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(PROJECT_ROOT, "templates/"),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,6 +136,7 @@ USE_TZ = True
 
 if DEBUG:
     STATIC_URL = '/admin/static/'
+    STATIC_ROOT = '/static'
 else:
     STATIC_URL = '/static/'
-    STATIC_ROOT = '/static/'
+    STATIC_ROOT = '/static'
