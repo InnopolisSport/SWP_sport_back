@@ -6,6 +6,6 @@
             $filterEl.click($filterList.slideToggle.bind($filterList));
         });
         $('#changelist-filter li:not(:first-child).selected').parent().show();
-        $('#changelist-filter li.text-selected').parent().show();
+        $($('#changelist-filter li select option[selected]').parents()[2]).show();
     });
 })(django.jQuery);
