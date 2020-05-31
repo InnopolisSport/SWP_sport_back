@@ -16,14 +16,23 @@ class StudentFilter(InputFilter):
                 return queryset
             if len(search) == 1:
                 return queryset.filter(
-                    Q(student__first_name=search[0]) |
-                    Q(student__last_name=search[0]) |
-                    Q(student__email=search[0])
+                    Q(student__first_name__icontains=search[0]) |
+                    Q(student__last_name__icontains=search[0]) |
+                    Q(student__email__icontains=search[0])
+                )
+            if len(search) == 2:
+                return queryset.filter(
+                    Q(student__first_name__icontains=search[0]) &
+                    Q(student__last_name__icontains=search[1]) |
+                    Q(student__first_name__icontains=search[1]) &
+                    Q(student__last_name__icontains=search[0]) |
+                    Q(student__email__icontains=search[0]) |
+                    Q(student__email__icontains=search[1])
                 )
             return queryset.filter(
                 Q(student__first_name__in=search) &
                 Q(student__last_name__in=search) |
-                Q(student__email=search[0])
+                Q(student__email__in=search)
             )
 
 
