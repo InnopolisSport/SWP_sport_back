@@ -50,12 +50,15 @@ services:
     build:
       context: ../adminpage
       dockerfile: Dockerfile
+      args:
+        - PYTHON_VERSION
     #   Wait for postgres to startup before running server
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
     restart: always
     volumes:
       - ../adminpage:/src
       - django-static:/static/admin
+      - django-auth-preserve:/usr/local/lib/python${PYTHON_VERSION}/site-packages/django/contrib/auth/migrations/
     ports:
       - "8000:8000"
     depends_on:
@@ -105,3 +108,7 @@ volumes:
   db-data:
   django-static:
   fastapi-static:
+  # required to preserve change to django.contrib.auth.models.Group class
+  # since Innopolis adfs provides groupsid as universal identifier
+  # (group - can be either in Russian or English)
+  django-auth-preserve:

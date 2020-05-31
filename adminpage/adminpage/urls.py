@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
+from django.contrib.auth.views import LoginView
 
 from django_auth_adfs import views
 
@@ -35,7 +36,13 @@ def show(request):
     return JsonResponse(data)
 
 urlpatterns = [
-    path('admin/test', show),
-    path('admin/', admin.site.urls),
     path('oauth2/', include('django_auth_adfs.urls')),
+    path('django/', include([
+        path('admin/test', show),
+        path('admin/', admin.site.urls),
+        path('oauth2/', include('django_auth_adfs.urls')),
+        path('raw_login/', LoginView.as_view()),
+    ]))
 ]
+
+

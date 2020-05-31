@@ -22,6 +22,8 @@ def getenv_boolean(var_name, default_value=False):
 
 
 SPORT_DEPARTMENT_EMAIL = "sport@innopolis.university"
+STUDENT_GROUP_VERBOSE_NAME = "Students"
+TRAINER_GROUP_VERBOSE_NAME = "Trainers"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -108,13 +110,18 @@ AUTH_ADFS = {
     "AUDIENCE": f"microsoft:identityserver:{OAUTH_CLIENT_ID}",
     "CA_BUNDLE": True,
     "USERNAME_CLAIM": "upn",
-    "CLAIM_MAPPING": {"first_name": "given_name",
-                      "last_name": "family_name",
-                      "email": "email"},
+      # use group ids instead of name, because names are written in different languages
+    "GROUPS_CLAIM": "groupsid",
+    "MIRROR_GROUPS": True,  # change when get info about all groups
+    "CLAIM_MAPPING": {
+        "first_name": "given_name",
+        "last_name": "family_name",
+        "email": "email"
+        },
 }
 
 LOGIN_URL = "django_auth_adfs:login"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/django/admin"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -165,8 +172,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATIC_ROOT = '/static/'
+
 if DEBUG:
-    STATIC_URL = '/admin/static/'
+    STATIC_URL = '/django/static/'
 else:
     STATIC_URL = '/static/'
-    STATIC_ROOT = '/static/'

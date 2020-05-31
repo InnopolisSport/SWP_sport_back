@@ -3,6 +3,7 @@ from django.contrib import admin
 import sport.models as models
 from .enrollAdmin import EnrollAdmin
 from .fabrics import admin_with_filters_fabric, semester_filter_fabric
+from .djangoGroupAdmin import DjangoGroupAdmin
 
 admin.site.register(models.Attendance)
 admin.site.register(models.Enroll, EnrollAdmin)

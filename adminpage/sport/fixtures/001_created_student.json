@@ -1,0 +1,43 @@
+[
+    {
+        "model": "auth.group",
+        "pk": 4,
+        "fields": {
+            "name": "S-1-5-21-721043115-644155662-3522934251-2285",
+            "verbose_name": "Students",
+            "permissions": []
+        }
+    },
+
+    {
+        "model": "auth.user",
+        "pk": 6,
+        "fields": {
+            "password": "!laUU7XtLjc6AMju9I0uAVhOnaGg3ntgIIYkftcwh",
+            "last_login": "2020-05-30T16:36:40Z",
+            "is_superuser": false,
+            "username": "a.grishchenko@innopolis.university",
+            "first_name": "Alexandr",
+            "last_name": "Grichshenko",
+            "email": "a.grishchenko@innopolis.university",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2020-05-30T16:36:40Z",
+            "groups": [
+                4
+            ],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "sport.student",
+        "pk": 24,
+        "fields": {
+            "first_name": null,
+            "last_name": null,
+            "email": null,
+            "user": 6,
+            "is_ill": false
+        }
+    }
+]
