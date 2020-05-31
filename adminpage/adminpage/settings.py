@@ -113,7 +113,7 @@ AUTH_ADFS = {
     "USERNAME_CLAIM": "upn",
     # use group ids instead of name, because names are written in different languages
     "GROUPS_CLAIM": "groupsid",
-    "MIRROR_GROUPS": True,  # change when get info about all groups
+    "MIRROR_GROUPS": True,  # TODO: change when get info about all groups
     "CLAIM_MAPPING": {
         "first_name": "given_name",
         "last_name": "family_name",
