@@ -4,7 +4,7 @@ from django.contrib import admin
 from sport.models import Attendance
 
 
-class StudentTestFilter(AutocompleteFilter):
+class StudentTextFilter(AutocompleteFilter):
     title = "student"
     field_name = "student"
 
@@ -27,7 +27,7 @@ class AttendanceAdmin(admin.ModelAdmin):
     list_filter = (
         "training__group__semester",
         ("training__group", admin.RelatedOnlyFieldListFilter),
-        StudentTestFilter,
+        StudentTextFilter,
         "training__start",
     )
 
