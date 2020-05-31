@@ -9,6 +9,7 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = (
         "first_name",
         "last_name",
+        "email",
     )
 
     list_filter = (
