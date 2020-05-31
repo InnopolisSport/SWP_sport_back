@@ -1,8 +1,6 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch.dispatcher import receiver
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.db import models
 
 
 class Trainer(models.Model):
@@ -15,9 +13,9 @@ class Trainer(models.Model):
 
     user = models.OneToOneField(
         User, on_delete=models.CASCADE,
-        null=True, # for back compatibility. Make False in future
+        null=True,  # for back compatibility. Make False in future
         limit_choices_to={'groups__verbose_name': settings.TRAINER_GROUP_VERBOSE_NAME}
-        )
+    )
 
     class Meta:
         db_table = "trainer"
@@ -25,4 +23,3 @@ class Trainer(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-

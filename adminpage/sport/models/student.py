@@ -1,8 +1,8 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save, m2m_changed
-from django.dispatch.dispatcher import receiver
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch.dispatcher import receiver
 
 
 class Student(models.Model):
@@ -15,9 +15,9 @@ class Student(models.Model):
 
     user = models.OneToOneField(
         User, on_delete=models.CASCADE,
-        null=True, # for back compatibility. Make False in future
+        null=True,  # for back compatibility. Make False in future
         limit_choices_to={'groups__verbose_name': settings.STUDENT_GROUP_VERBOSE_NAME}
-        )
+    )
 
     is_ill = models.BooleanField(default=False, null=False)
 

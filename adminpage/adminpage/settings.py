@@ -33,10 +33,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
+# make django think it is using https
+# WARNING: make sure, only trusted connections are possible
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = getenv_boolean("DEBUG", False)
+DEBUG = getenv_boolean("DEBUG")
 
 ALLOWED_HOSTS = ['188.130.155.115', 'helpdesk.innopolis.university']
 
@@ -55,7 +57,6 @@ INSTALLED_APPS = [
     'django_auth_adfs',
     'sport.apps.SportConfig'
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -92,12 +93,12 @@ WSGI_APPLICATION = 'adminpage.wsgi.application'
 OAUTH_CLIENT_ID = os.getenv('oauth_appID')
 OAUTH_CLIENT_SECRET = os.getenv("oauth_shared_secret")
 OAUTH_AUTHORIZATION_BASEURL = os.getenv("oauth_authorization_baseURL")
-OAUTH_GET_INFO_URL  = os.getenv("oauth_get_infoURL")
+OAUTH_GET_INFO_URL = os.getenv("oauth_get_infoURL")
 OAUTH_TOKEN_URL = os.getenv("oauth_tokenURL")
 OAUTH_END_SESSION_URL = os.getenv("oauth_end_session_endpoint")
 
 AUTHENTICATION_BACKENDS = (
-     'django_auth_adfs.backend.AdfsAuthCodeBackend',
+    'django_auth_adfs.backend.AdfsAuthCodeBackend',
 )
 
 AUTH_ADFS = {
@@ -110,14 +111,14 @@ AUTH_ADFS = {
     "AUDIENCE": f"microsoft:identityserver:{OAUTH_CLIENT_ID}",
     "CA_BUNDLE": True,
     "USERNAME_CLAIM": "upn",
-      # use group ids instead of name, because names are written in different languages
+    # use group ids instead of name, because names are written in different languages
     "GROUPS_CLAIM": "groupsid",
     "MIRROR_GROUPS": True,  # change when get info about all groups
     "CLAIM_MAPPING": {
         "first_name": "given_name",
         "last_name": "family_name",
         "email": "email"
-        },
+    },
 }
 
 LOGIN_URL = "django_auth_adfs:login"

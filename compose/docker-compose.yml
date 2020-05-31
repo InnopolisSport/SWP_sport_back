@@ -108,7 +108,8 @@ volumes:
   db-data:
   django-static:
   fastapi-static:
-  # required to preserve change to django.contrib.auth.models.Group class
+  # required to preserve change to django.contrib.auth.models.Group class.
+  # (verbose_name added)
   # since Innopolis adfs provides groupsid as universal identifier
   # (group - can be either in Russian or English)
   django-auth-preserve:
