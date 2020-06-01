@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = "django_auth_adfs"
 
@@ -34,12 +36,14 @@ app_name = "django_auth_adfs"
 
 
 urlpatterns = [
-    # IT dep didn't add another allowed redirect_uri
-    path('oauth2/', include('django_auth_adfs.urls')),
-    path('django/', include([
-        # path('admin/test', show),
-        path('admin/', admin.site.urls),
-        path('oauth2/', include('django_auth_adfs.urls')),
-        path('raw_login/', LoginView.as_view()),
-    ]))
-]
+                  # IT dep didn't add another allowed redirect_uri
+                  path('oauth2/', include('django_auth_adfs.urls')),
+                  path('django/', include([
+                      # path('admin/test', show),
+                      path('admin/', admin.site.urls),
+                      path('oauth2/', include('django_auth_adfs.urls')),
+                      path('raw_login/', LoginView.as_view()),
+                  ]))
+              ] + static(settings.STATIC_URL,
+                         document_root=settings.STATIC_ROOT,
+                         )

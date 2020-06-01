@@ -15,7 +15,8 @@ services:
     volumes:
       - ../nginx/logs:/var/log/nginx
       - ../nginx/access.d:/etc/nginx/access.d
-      - django-static:/static/admin
+      - django-static-admin:/static/admin
+      - django-static-sport:/static/sport
       - fastapi-static:/static
 
   backend:
@@ -57,8 +58,9 @@ services:
     restart: always
     volumes:
       - ../adminpage:/src
-      - django-static:/static/admin
       - django-auth-preserve:/usr/local/lib/python${PYTHON_VERSION}/site-packages/django/contrib/auth/migrations/
+      - django-static-admin:/static/admin
+      - django-static-sport:/static/sport
     ports:
       - "8000:8000"
     depends_on:
@@ -106,7 +108,8 @@ services:
 
 volumes:
   db-data:
-  django-static:
+  django-static-admin:
+  django-static-sport:
   fastapi-static:
   # required to preserve change to django.contrib.auth.models.Group class.
   # (verbose_name added)

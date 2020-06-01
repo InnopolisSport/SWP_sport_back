@@ -15,4 +15,4 @@ class Group(models.Model):
         verbose_name_plural = "groups"
 
     def __str__(self):
-        return f"{self.semester}-{self.name} ({self.sport})"
+        return f"[{self.semester}] {self.name}"
