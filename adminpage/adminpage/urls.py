@@ -36,8 +36,6 @@ app_name = "django_auth_adfs"
 
 
 urlpatterns = [
-                  # IT dep didn't add another allowed redirect_uri
-                  path('oauth2/', include('django_auth_adfs.urls')),
                   path('django/', include([
                       # path('admin/test', show),
                       path('admin/', admin.site.urls),
