@@ -31,45 +31,8 @@ def week_generator(start: date, end: date) -> Iterator[date]:
         start += timedelta(weeks=1)
 
 
-@receiver(post_save, sender=Schedule)
-def create_trainings_current_semester(sender, instance: Schedule, created, **kwargs):
-    if created:
-        semester = instance.group.semester
-        today = get_today()
-        for week_start in week_generator(max(get_current_monday(), semester.start), semester.end):
-            training_date = week_start + timedelta(days=instance.weekday)
-            if today <= training_date <= semester.end:
-                training_start = datetime.combine(
-                    date=training_date,
-                    time=instance.start,
-                )
-                training_end = datetime.combine(
-                    date=training_date,
-                    time=instance.end,
-                )
-
-                Training.objects.create(
-                    group=instance.group,
-                    schedule=instance,
-                    start=training_start,
-                    end=training_end,
-                    training_class=instance.training_class,
-                )
-
-
-django_week_day_map = {
-    Schedule.Weekday.SUNDAY: 1,
-    Schedule.Weekday.MONDAY: 2,
-    Schedule.Weekday.TUESDAY: 3,
-    Schedule.Weekday.WEDNESDAY: 4,
-    Schedule.Weekday.THURSDAY: 5,
-    Schedule.Weekday.FRIDAY: 6,
-    Schedule.Weekday.SATURDAY: 7,
-}
-
-
 @receiver(pre_delete, sender=Schedule)
-def remove_trainings_from_schedule(sender, instance: Schedule, using, **kwargs):
+def remove_future_trainings_from_schedule(instance: Schedule, **kwargs):
     """
     Remove future trainings related to the schedule
     """
@@ -82,3 +45,36 @@ def remove_trainings_from_schedule(sender, instance: Schedule, using, **kwargs):
                             start__gte=timezone.now(),  # end__lte=semester_end_datetime,  # are within semester
                             schedule=instance,  # and
                             ).delete()
+
+
+# TODO: add tests for signals after merging with git:django-auth
+@receiver(post_save, sender=Schedule)
+def create_trainings_current_semester(instance: Schedule, created, **kwargs):
+    # if schedule was changed - then time or date changed,
+    # so we recreate all future trainings
+    if not created:
+        remove_future_trainings_from_schedule(instance, **kwargs)
+
+    semester = instance.group.semester
+    today = get_today()
+    for week_start in week_generator(max(get_current_monday(), semester.start), semester.end):
+        training_date = week_start + timedelta(days=instance.weekday)
+        if today <= training_date <= semester.end:
+            # using naive time here intended, since instance.{start, end}
+            # contain aware time (at least by values)
+            training_start = datetime.combine(
+                date=training_date,
+                time=instance.start,
+            )
+            training_end = datetime.combine(
+                date=training_date,
+                time=instance.end,
+            )
+
+            Training.objects.create(
+                group=instance.group,
+                schedule=instance,
+                start=training_start,
+                end=training_end,
+                training_class=instance.training_class,
+            )

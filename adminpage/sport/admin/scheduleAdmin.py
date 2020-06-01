@@ -39,6 +39,14 @@ class ScheduleAdmin(admin.ModelAdmin):
         ViewTrainingInline,
     )
 
+    def get_readonly_fields(self, request, obj=None):
+        """
+        Make some-fields immutable once set
+        """
+        if obj is not None:
+            return self.readonly_fields + ('group',)
+        return self.readonly_fields
+
     class Media:
         js = (
             "sport/js/list_filter_collapse.js",

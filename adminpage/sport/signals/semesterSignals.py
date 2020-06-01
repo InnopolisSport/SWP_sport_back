@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 
-from sport.models import Semester, Sport, Trainer, Group
+from sport.models import Semester, Sport, Trainer, Group, Schedule
 
 
 @receiver(post_save, sender=Semester)
@@ -22,3 +22,8 @@ def special_groups_create(sender, instance, created, **kwargs):
                                   semester=instance,
                                   trainer=sport_dep)
         sport_event_group.save()
+    else:
+        # if semester changed, recalculate all future related schedules
+        semester_schedules = Schedule.objects.filter(group__semester=instance.pk)
+        for schedule in semester_schedules:
+            post_save.send(sender=Schedule, instance=schedule, created=False)
