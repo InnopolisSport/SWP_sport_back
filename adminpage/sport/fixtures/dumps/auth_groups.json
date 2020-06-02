@@ -1,0 +1,121 @@
+[
+    {
+        "model": "auth.group",
+        "pk": 4,
+        "fields": {
+            "name": "S-1-5-21-721043115-644155662-3522934251-2285",
+            "verbose_name": "Students",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 5,
+        "fields": {
+            "name": "S-1-5-21-721043115-644155662-3522934251-513",
+            "verbose_name": "DomainUsers",
+            "permissions": [
+                24
+            ]
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 6,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-10003",
+            "verbose_name": "AzureADsyncUsers",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 7,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-9424",
+            "verbose_name": "Student Affairs and Development Office",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 8,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-6082",
+            "verbose_name": "Education Programs Management Office",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 9,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-2141",
+            "verbose_name": "Academic Affairs Department",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 10,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-5822",
+            "verbose_name": "RDGateTier5",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 11,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-6162",
+            "verbose_name": "AcrobatPRO",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 12,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-1674",
+            "verbose_name": "All Staff",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 13,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-5821",
+            "verbose_name": "RDGateTier1",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 14,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-5998",
+            "verbose_name": "Canon8500_ColorHP",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 15,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-513",
+            "verbose_name": "\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u0438 \u0434\u043e\u043c\u0435\u043d\u0430",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 16,
+        "fields": {
+            "name": "S-1-5-21-2948122937-1530199265-1034249961-9635",
+            "verbose_name": "School Physical Activity for Health",
+            "permissions": []
+        }
+    }
+]
