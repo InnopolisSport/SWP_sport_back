@@ -14,12 +14,34 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.contrib.auth.views import LoginView
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name = "django_auth_adfs"
+
+# TODO: remove when not needed
+# from django.http import JsonResponse
+# def show(request):
+#     data = dict(
+#         [
+#             (key, str(value)) for key, value in request.META.items()
+#         ]
+#     )
+#     data.update({
+#         "scheme": str(request.scheme),
+#     })
+#     return JsonResponse(data)
+
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-] + static(settings.STATIC_URL,
-           document_root=settings.STATIC_ROOT,
-           )
+                  path('django/', include([
+                      # path('admin/test', show),
+                      path('admin/', admin.site.urls),
+                      path('oauth2/', include('django_auth_adfs.urls')),
+                      path('raw_login/', LoginView.as_view()),
+                  ]))
+              ] + static(settings.STATIC_URL,
+                         document_root=settings.STATIC_ROOT,
+                         )

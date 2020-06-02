@@ -12,3 +12,4 @@ from .scheduleAdmin import ScheduleAdmin
 from .semesterAdmin import SemesterAdmin
 from .studentAdmin import StudentAdmin
 from .trainingClassAdmin import TrainingClassAdmin
+from .djangoGroupAdmin import DjangoGroupAdmin
