@@ -1,9 +1,11 @@
 from datetime import date, timedelta, datetime
 from typing import Iterator
+from pytz import timezone as pytz_timezone
 
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
+from django.conf import settings
 
 from sport.models import Schedule, Training
 
@@ -42,12 +44,11 @@ def remove_future_trainings_from_schedule(instance: Schedule, **kwargs):
     #                                          time=timezone.make_aware(time(23, 59, 59))
     #                                          )
     Training.objects.filter(group=instance.group,  # trainings belong to group
-                            start__gte=timezone.now(),  # end__lte=semester_end_datetime,  # are within semester
+                            start__gt=timezone.now(),  # end__lte=semester_end_datetime,  # are within semester
                             schedule=instance,  # and
                             ).delete()
 
 
-# TODO: add tests for signals after merging with git:django-auth
 @receiver(post_save, sender=Schedule)
 def create_trainings_current_semester(instance: Schedule, created, **kwargs):
     # if schedule was changed - then time or date changed,
@@ -57,6 +58,8 @@ def create_trainings_current_semester(instance: Schedule, created, **kwargs):
 
     semester = instance.group.semester
     today = get_today()
+    server_timezone = timezone.get_default_timezone()
+    server_time = timezone.make_naive(datetime.now(server_timezone))
     for week_start in week_generator(max(get_current_monday(), semester.start), semester.end):
         training_date = week_start + timedelta(days=instance.weekday)
         if today <= training_date <= semester.end:
@@ -66,15 +69,16 @@ def create_trainings_current_semester(instance: Schedule, created, **kwargs):
                 date=training_date,
                 time=instance.start,
             )
-            training_end = datetime.combine(
-                date=training_date,
-                time=instance.end,
-            )
+            if server_time < training_start:
+                training_end = datetime.combine(
+                    date=training_date,
+                    time=instance.end,
+                )
 
-            Training.objects.create(
-                group=instance.group,
-                schedule=instance,
-                start=training_start,
-                end=training_end,
-                training_class=instance.training_class,
-            )
+                Training.objects.create(
+                    group=instance.group,
+                    schedule=instance,
+                    start=training_start,
+                    end=training_end,
+                    training_class=instance.training_class,
+                )
