@@ -1,7 +1,7 @@
 import pytest
 from django.utils import timezone
 
-from sport.crud.crud_attendance import *
+from sport.crud import get_detailed_hours, get_brief_hours, mark_hours, toggle_illness
 from sport.models import Student, Attendance, Semester, Group, Training, Sport
 
 
