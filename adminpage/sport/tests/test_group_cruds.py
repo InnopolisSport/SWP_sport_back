@@ -10,8 +10,7 @@ from sport.models import Student, Enroll, Trainer, Group
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-20 10:03')
 def test_enroll(student_factory, sport_factory, semester_factory, group_factory, enroll_factory):
-    student_factory("A")
-    student = Student.objects.get()
+    student = student_factory("A").student
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
     s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24), choice_deadline=date(2020, 1, 20))
@@ -72,10 +71,8 @@ def test_enroll(student_factory, sport_factory, semester_factory, group_factory,
 @pytest.mark.freeze_time('2020-01-20 10:03')
 def test_get_student_trainer_groups(student_factory, trainer_factory, sport_factory, semester_factory, group_factory,
                                     enroll_factory):
-    student_factory("A")
-    trainer_factory("B")
-    student = Student.objects.get()
-    trainer = Trainer.objects.get()
+    student = student_factory("A").student
+    trainer = trainer_factory("B").trainer
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
     s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24), choice_deadline=date(2020, 1, 20))

@@ -21,9 +21,9 @@ def get_attended_training_info(training_id: int, student: Student):
             'tc.name AS training_class, '
             'g.capacity AS capacity, '
             'count(e.id) AS current_load, '
-            't.first_name AS trainer_first_name, '
-            't.last_name AS trainer_last_name, '
-            't.email AS trainer_email, '
+            'd.first_name AS trainer_first_name, '
+            'd.last_name AS trainer_last_name, '
+            'd.email AS trainer_email, '
             'a.hours AS hours, '
             'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s) AS is_enrolled, '
             'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s AND is_primary = TRUE) AS is_primary '
@@ -31,10 +31,11 @@ def get_attended_training_info(training_id: int, student: Student):
             'LEFT JOIN training_class tc ON tr.training_class_id = tc.id, "group" g '
             'LEFT JOIN enroll e ON e.group_id = g.id '
             'LEFT JOIN trainer t ON t.id = g.trainer_id '
+            'LEFT JOIN auth_user d ON t.user_id = d.id '
             'LEFT JOIN attendance a ON a.training_id = %s AND a.student_id = %s '
             'WHERE tr.group_id = g.id '
             'AND tr.id = %s '
-            'GROUP BY g.id, t.id, a.id, tc.id', (student.pk, student.pk, training_id, student.pk, training_id))
+            'GROUP BY g.id, d.id, t.id, a.id, tc.id', (student.pk, student.pk, training_id, student.pk, training_id))
         return dictfetchone(cursor)
 
 
@@ -53,16 +54,17 @@ def get_group_info(group_id: int, student: Student):
             'g.description AS group_description, '
             'g.capacity AS capacity, '
             'count(e.id) AS current_load, '
-            't.first_name AS trainer_first_name, '
-            't.last_name AS trainer_last_name, '
-            't.email AS trainer_email, '
+            'd.first_name AS trainer_first_name, '
+            'd.last_name AS trainer_last_name, '
+            'd.email AS trainer_email, '
             'exists(SELECT true FROM enroll e WHERE e.group_id = %s AND e.student_id = %s) AS is_enrolled, '
             'exists(SELECT true FROM enroll e WHERE e.group_id = %s AND e.student_id = %s AND is_primary = TRUE) AS is_primary '
             'FROM "group" g '
             'LEFT JOIN enroll e ON e.group_id = %s '
             'LEFT JOIN trainer t ON t.id = g.trainer_id '
+            'LEFT JOIN auth_user d ON t.user_id = d.id '
             'WHERE g.id = %s '
-            'GROUP BY g.id, t.id', (group_id, student.pk, group_id, student.pk, group_id, group_id))
+            'GROUP BY g.id, t.id, d.id', (group_id, student.pk, group_id, student.pk, group_id, group_id))
         return dictfetchone(cursor)
 
 
@@ -157,20 +159,27 @@ def get_students_grades(training_id: int):
     with connection.cursor() as cursor:
         cursor.execute('SELECT '
                        's.id AS student_id, '
-                       's.first_name AS first_name, '
-                       's.last_name AS last_name, '
-                       's.email AS email, '
+                       'd.first_name AS first_name, '
+                       'd.last_name AS last_name, '
+                       'd.email AS email, '
                        'a.hours AS hours '
-                       'FROM training t, student s, attendance a '
+                       'FROM training t, student s, attendance a, auth_user d '
                        'WHERE a.student_id = s.id '
+                       'AND s.user_id = d.id '
                        'AND a.training_id = %s '
                        'AND s.is_ill = FALSE '
                        'AND t.id = %s '
                        'UNION DISTINCT '
-                       'SELECT s.id, s.first_name, s.last_name, s.email, a.hours '
-                       'FROM training t, enroll e, student s '
+                       'SELECT '
+                       's.id AS student_id, '
+                       'd.first_name AS first_name, '
+                       'd.last_name AS last_name, '
+                       'd.email AS email, '
+                       'a.hours AS hours '
+                       'FROM training t, enroll e, auth_user d, student s '
                        'LEFT JOIN attendance a ON a.student_id = s.id AND a.training_id = %s '
                        'WHERE s.id = e.student_id '
+                       'AND s.user_id = d.id '
                        'AND s.is_ill = FALSE '
                        'AND t.id = %s '
                        'AND t.group_id = e.group_id ', (training_id, training_id, training_id, training_id))

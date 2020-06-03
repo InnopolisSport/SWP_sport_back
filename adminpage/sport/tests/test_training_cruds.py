@@ -12,11 +12,9 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
                           group_factory,
                           schedule_factory,
                           attendance_factory):
-    student_factory("A1")
-    student_factory("A2")
-    student, other_student = Student.objects.all()[:2]
-    trainer_factory("B")
-    trainer = Trainer.objects.get()
+    student = student_factory("A1").student
+    other_student = student_factory("A2").student
+    trainer = trainer_factory("B").trainer
     sport = sport_factory(name="Sport")
     semester = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 30),
                                 choice_deadline=date(2020, 1, 15))
@@ -38,9 +36,9 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
         "training_class": training_class.name,
         "capacity": group.capacity,
         "current_load": 0,
-        "trainer_first_name": trainer.first_name,
-        "trainer_last_name": trainer.last_name,
-        "trainer_email": trainer.email,
+        "trainer_first_name": trainer.user.first_name,
+        "trainer_last_name": trainer.user.last_name,
+        "trainer_email": trainer.user.email,
         "hours": a1.hours,
         "is_enrolled": False,
         "is_primary": False
@@ -51,13 +49,12 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
         "group_description": group.description,
         "capacity": group.capacity,
         "current_load": 0,
-        "trainer_first_name": trainer.first_name,
-        "trainer_last_name": trainer.last_name,
-        "trainer_email": trainer.email,
+        "trainer_first_name": trainer.user.first_name,
+        "trainer_last_name": trainer.user.last_name,
+        "trainer_email": trainer.user.email,
         "is_enrolled": False,
         "is_primary": False
     }
-    print(get_trainings_for_trainer(trainer=trainer, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)))
     assert get_trainings_for_trainer(trainer=trainer, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)) == [
         {
             "id": t1.pk,
@@ -155,16 +152,16 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
 
     assert get_students_grades(t1.pk) == [{
         "student_id": student.pk,
-        "first_name": student.first_name,
-        "last_name": student.last_name,
-        "email": student.email,
+        "first_name": student.user.first_name,
+        "last_name": student.user.last_name,
+        "email": student.user.email,
         "hours": a1.hours
     }]
     assert get_students_grades(t2.pk) == [{
         "student_id": student.pk,
-        "first_name": student.first_name,
-        "last_name": student.last_name,
-        "email": student.email,
+        "first_name": student.user.first_name,
+        "last_name": student.user.last_name,
+        "email": student.user.email,
         "hours": None
     }]
 
@@ -173,16 +170,16 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
     assert get_students_grades(t1.pk) == [
         {
             "student_id": student.pk,
-            "first_name": student.first_name,
-            "last_name": student.last_name,
-            "email": student.email,
+            "first_name": student.user.first_name,
+            "last_name": student.user.last_name,
+            "email": student.user.email,
             "hours": a1.hours
         },
         {
             "student_id": other_student.pk,
-            "first_name": other_student.first_name,
-            "last_name": other_student.last_name,
-            "email": other_student.email,
+            "first_name": other_student.user.first_name,
+            "last_name": other_student.user.last_name,
+            "email": other_student.user.email,
             "hours": None
         }
     ]

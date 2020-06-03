@@ -24,12 +24,12 @@ def test_student_delete(student_factory):
 
 @pytest.mark.django_db
 def test_get_email_name_like_students(student_factory):
-    student = student_factory(username="a", first_name="Kirill", last_name="Fedoseev", email="k.fedoseev@innopolis.university")
+    user = student_factory(username="a", first_name="Kirill", last_name="Fedoseev", email="k.fedoseev@innopolis.university")
     assert get_email_name_like_students("Kirill") == [{
-        "id": Student.objects.get().pk,
-        "first_name": student.first_name,
-        "last_name": student.last_name,
-        "email": student.email
+        "id": user.student.pk,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email
     }]
     assert len(get_email_name_like_students("Kir")) == 1
     assert len(get_email_name_like_students("Kirill Fed")) == 1
