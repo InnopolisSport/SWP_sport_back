@@ -45,7 +45,6 @@ Redoc documentation is at `localhost:<port>/redoc`
 │   │   ├── settings.py
 │   │   ├── urls.py
 │   │   └── wsgi.py
-│   ├── constraints.sql - Constraints that must be present at the db
 │   ├── Dockerfile
 │   ├── __init__.py
 │   ├── manage.py
