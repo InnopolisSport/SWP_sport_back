@@ -184,3 +184,5 @@ if DEBUG:
     STATIC_URL = '/django/static/'
 else:
     STATIC_URL = '/static/'
+
+SC_TRAINERS_GROUP_NAME = "SC trainers"

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q, F
 
 
 class Schedule(models.Model):
@@ -21,6 +22,9 @@ class Schedule(models.Model):
         db_table = "schedule"
         verbose_name = "schedule timeslot"
         verbose_name_plural = "schedule timeslots"
+        constraints = [
+            models.CheckConstraint(check=Q(start__lt=F('end')), name='schedule_start_before_end'),
+        ]
 
     def __str__(self):
         return f"{self.group} {self.get_weekday_display()} {self.start}-{self.end}" \

@@ -1,29 +1,31 @@
 import pytest
+from datetime import date
 from django.utils import timezone
 
 from sport.crud import get_detailed_hours, get_brief_hours, mark_hours, toggle_illness
-from sport.models import Student, Attendance, Semester, Group, Training, Sport
+from sport.models import Student, Attendance
 
+dummy_date = date(2020, 1, 1)
 
 @pytest.mark.django_db
-def test_hours_statistics(student_factory):
+def test_hours_statistics(student_factory, sport_factory, semester_factory, group_factory, training_factory, attendance_factory):
     student_factory("A")
     student_factory("B")
     student, other_student = list(Student.objects.all())
-    sport = Sport.objects.create(name="Sport")
-    s1 = Semester.objects.create(name="S19")
-    s2 = Semester.objects.create(name="S20")
-    g11 = Group.objects.create(name="G11", sport=sport, semester=s1)
-    g12 = Group.objects.create(name="G12", sport=sport, semester=s1)
-    g21 = Group.objects.create(name="G21", sport=sport, semester=s2)
-    g22 = Group.objects.create(name="G22", sport=sport, semester=s2)
+    sport = sport_factory(name="Sport")
+    s1 = semester_factory(name="S19", start=dummy_date, end=dummy_date, choice_deadline=dummy_date)
+    s2 = semester_factory(name="S20", start=dummy_date, end=dummy_date, choice_deadline=dummy_date)
+    g11 = group_factory(name="G11", sport=sport, semester=s1, capacity=20)
+    g12 = group_factory(name="G12", sport=sport, semester=s1, capacity=20)
+    g21 = group_factory(name="G21", sport=sport, semester=s2, capacity=20)
+    g22 = group_factory(name="G22", sport=sport, semester=s2, capacity=20)
 
     trainings = []
     for i, g in enumerate([g11, g12, g21, g22]):
-        t = Training.objects.create(group=g, start=timezone.now(), end=timezone.now())
+        t = training_factory(group=g, start=timezone.now(), end=timezone.now())
         trainings.append(t)
-        Attendance.objects.create(training=t, student=student, hours=i + 1)
-        Attendance.objects.create(training=t, student=other_student, hours=1)
+        attendance_factory(training=t, student=student, hours=i + 1)
+        attendance_factory(training=t, student=other_student, hours=1)
     brief = get_brief_hours(student)
     assert brief == [
         {
@@ -70,14 +72,14 @@ def test_hours_statistics(student_factory):
 
 
 @pytest.mark.django_db
-def test_mark_hours(student_factory):
+def test_mark_hours(student_factory, sport_factory, semester_factory, group_factory, training_factory):
     student_factory("A")
     student_factory("B")
     student1, student2 = list(Student.objects.all())
-    sport = Sport.objects.create(name="Sport")
-    semester = Semester.objects.create(name="S19")
-    group = Group.objects.create(name="G1", sport=sport, semester=semester)
-    training = Training.objects.create(group=group, start=timezone.now(), end=timezone.now())
+    sport = sport_factory(name="Sport")
+    semester = semester_factory(name="S19", start=dummy_date, end=dummy_date, choice_deadline=dummy_date)
+    group = group_factory(name="G1", sport=sport, semester=semester, capacity=20)
+    training = training_factory(group=group, start=timezone.now(), end=timezone.now())
     mark_hours(training, [
         (student1.pk, 1.5),
         (student2.pk, 2.5)

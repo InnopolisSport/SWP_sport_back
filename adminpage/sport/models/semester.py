@@ -1,6 +1,7 @@
 from datetime import timedelta, date
 
 from django.db import models
+from django.db.models import Q, F
 from django.utils import timezone
 
 
@@ -21,6 +22,10 @@ class Semester(models.Model):
     class Meta:
         db_table = "semester"
         verbose_name_plural = "semesters"
+        constraints = [
+            models.CheckConstraint(check=Q(start__lte=F('choice_deadline'), choice_deadline__lte=F('end')),
+                                   name='semester_start_before_end')
+        ]
 
     def __str__(self):
         return f"{self.name}"
