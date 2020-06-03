@@ -1,0 +1,127 @@
+body.profile {
+    font-family: sans-serif;
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+}
+
+/*img.profile {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;
+    width: 25%;
+    height: auto;
+}*/
+
+.studentHourField {
+    width: 50px;
+}
+
+.navbar-inverse {
+    background: #00802b;
+}
+
+.navbar-brand {
+    color: #ffffff;
+}
+
+.navbar-nav {
+    color: #ffffff;
+}
+
+.badge:hover {
+    cursor: pointer;
+}
+
+.badge-secondary:hover {
+    background-color: #dc3545;
+}
+
+.badge-training {
+    background-color: #ffa500;
+}
+
+.fc-title {
+    font-weight: bold;
+}
+
+.fc-event .fc-content {
+    color: #fff;
+}
+
+.fc-time {
+    font-size: 0.78em;
+}
+
+.alert {
+    padding: 6px 12px; /* The same padding as buttons has */
+}
+
+.btn.disabled, .btn:disabled {
+    cursor: default;
+}
+
+@media only screen and (max-width: 576px) and (max-width: 768px) {
+    .card {
+        margin: 1%;
+    }
+
+    .row {
+        margin-top: 1%;
+    }
+}
+
+@media only screen and (min-width: 577px) and (max-width: 768px) {
+    .card {
+        margin: 1% 10%;
+    }
+
+    .row {
+        margin-top: 1%;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+    .card {
+        margin: 1% 10%;
+    }
+
+    .col-left {
+        text-align: right;
+    }
+
+    .col-right {
+        text-align: left;
+    }
+}
+
+@media only screen and (min-width: 993px) and (max-width: 1200px) {
+    .card {
+        margin: 1% 10%;
+    }
+
+    .col-left {
+        text-align: right;
+    }
+
+    .col-right {
+        text-align: left;
+    }
+}
+
+@media only screen and (min-width: 1201px) {
+    .card {
+        margin: 1% 20%;
+    }
+
+    .col-left {
+        text-align: right;
+    }
+
+    .col-right {
+        text-align: left;
+    }
+}
+
