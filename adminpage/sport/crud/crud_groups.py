@@ -14,15 +14,6 @@ def get_sports(all=False):
     return Sport.objects.all().values() if all else Sport.objects.filter(special=False).values()
 
 
-def get_sport_by_id(sport_id: int):
-    """
-    Retrieves sport by id if any
-    @param sport_id - An id of sport you want to retrieve
-    @return Sport if sport with given id is present, None otherwise
-    """
-    return Sport.objects.filter(pk=sport_id).first().values()
-
-
 def get_clubs():
     """
     Retrieves existing clubs
