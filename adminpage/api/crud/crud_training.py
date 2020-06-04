@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import connection
 
-from sport.crud import dictfetchone, dictfetchall
+from api.crud import dictfetchone, dictfetchall
 from sport.models import Student, Trainer
 
 

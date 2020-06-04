@@ -1,7 +1,7 @@
 from django.db import connection
 
 from django.conf import settings
-from sport.crud.utils import dictfetchall, dictfetchone
+from api.crud.utils import dictfetchall, dictfetchone
 from sport.models import Sport, Student, Trainer
 
 

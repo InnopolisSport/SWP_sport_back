@@ -3,7 +3,7 @@ from typing import Iterable, Tuple
 
 from django.db import connection
 
-from sport.crud.utils import dictfetchall
+from api.crud.utils import dictfetchall
 from sport.models import Student, Semester, Training
 
 

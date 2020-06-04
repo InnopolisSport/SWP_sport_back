@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, date
 
-from sport.crud import get_ongoing_semester
+from api.crud import get_ongoing_semester
 from sport.models import Group
 
 
