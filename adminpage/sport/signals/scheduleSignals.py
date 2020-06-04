@@ -1,11 +1,9 @@
 from datetime import date, timedelta, datetime
 from typing import Iterator
-from pytz import timezone as pytz_timezone
 
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
-from django.conf import settings
 
 from sport.models import Schedule, Training
 
