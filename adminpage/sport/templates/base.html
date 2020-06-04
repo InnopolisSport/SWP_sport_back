@@ -11,27 +11,21 @@
 </head>
 <body>
 <header class="head">
-        <a class="head" href="/profile">
-            <img class="head" src="{% static "sport/images/Inno.png" %}" alt="IU logo">
-        </a>
-        <div>
-            {% if user.is_authenticated %}
-                <a class="head" href="/profile">{{ user.first_name}} {{ user.last_name }}</a>
-                <!--            <a class="head" id="logout-btn" href="#">Log out</a>-->
-            {% else %}
-                <a class="head" href="/api/loginform">Sign in</a>
-            {% endif %}
-        </div>
-    </header>
+    <a class="head" href="/profile">
+        <img class="head" src="{% static "sport/images/Inno.png" %}" alt="IU logo">
+    </a>
+    <div>
+        {% if user.is_authenticated %}
+            <a class="head" href="/profile">{{ user.first_name }} {{ user.last_name }}</a>
+            <a class="head" id="logout-btn" href="{% url 'django_auth_adfs:logout' %}">Log out</a>
+        {% else %}
+            <a class="head" href="{% url 'django_auth_adfs:login' %}">Log in</a>
+        {% endif %}
+    </div>
+</header>
 
 {% block content %}
 {% endblock %}
-<!--<div class="content container">-->
-<!--    <div class="row">-->
-<!--        <div class="col-md-8">-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 </body>
 
 </html>
