@@ -1,7 +1,7 @@
-from datetime import datetime
-
 import pytest
+from datetime import datetime, date
 
+from sport.crud import get_ongoing_semester
 from sport.models import Group
 
 
@@ -20,3 +20,17 @@ def test_special_groups_creation(
     )
     qs = Group.objects.filter(sport__special=True)
     assert qs.count() == 2
+
+
+@pytest.mark.django_db
+def test_get_ongoing_semester(semester_factory):
+    semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
+    s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24), choice_deadline=date(2020, 1, 20))
+
+    assert get_ongoing_semester() == {
+        "id": s2.pk,
+        "name": s2.name,
+        "start": s2.start,
+        "end": s2.end,
+        "choice_deadline": s2.choice_deadline
+    }

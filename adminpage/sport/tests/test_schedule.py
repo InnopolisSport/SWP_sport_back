@@ -15,7 +15,7 @@ def test_training_creation_on_schedule(
 ):
     start = date(2020, 1, 20)
     end = date(2020, 1, 27)
-    choice_deadline = datetime(2020, 2, 1)
+    choice_deadline = date(2020, 1, 27)
     sem = semester_factory(
         name="S20",
         start=start,

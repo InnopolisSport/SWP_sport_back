@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from django.conf import settings
 
 from sport.models import Semester, Sport, Trainer, Group, Schedule
 
@@ -12,7 +13,7 @@ def special_groups_create(sender, instance, created, **kwargs):
         other_sport, _ = Sport.objects.get_or_create(name="Other", special=True)
         sport_dep, _ = Trainer.objects.get_or_create(first_name="Sport", last_name="Department",
                                                      email=settings.SPORT_DEPARTMENT_EMAIL)
-        trainer_group = Group(name="SC trainers", capacity=9999,
+        trainer_group = Group(name=settings.SC_TRAINERS_GROUP_NAME, capacity=9999,
                               is_club=False, sport=other_sport,
                               semester=instance,
                               trainer=sport_dep)
