@@ -3,8 +3,8 @@ from datetime import date
 
 from django.conf import settings
 
-from sport.crud import get_clubs, get_student_groups, get_trainer_groups, get_sc_training_group
-from sport.models import Student, Enroll, Trainer, Group
+from api.crud import get_clubs, get_student_groups, get_trainer_groups, get_sc_training_group
+from sport.models import Enroll, Group
 
 
 @pytest.mark.django_db

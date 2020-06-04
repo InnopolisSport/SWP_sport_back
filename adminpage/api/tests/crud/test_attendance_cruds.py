@@ -2,8 +2,8 @@ import pytest
 from datetime import date
 from django.utils import timezone
 
-from sport.crud import get_detailed_hours, get_brief_hours, mark_hours, toggle_illness
-from sport.models import Student, Attendance
+from api.crud import get_detailed_hours, get_brief_hours, mark_hours, toggle_illness
+from sport.models import Attendance
 
 dummy_date = date(2020, 1, 1)
 

@@ -1,6 +1,6 @@
 from django.db import connection
 
-from sport.crud import dictfetchall
+from api.crud import dictfetchall
 
 
 def get_email_name_like_students(pattern: str, limit: int = 5):

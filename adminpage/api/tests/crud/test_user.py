@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.models import User
 
 from sport.models import Student
-from sport.crud import get_email_name_like_students
+from api.crud import get_email_name_like_students
 
 
 @pytest.mark.django_db

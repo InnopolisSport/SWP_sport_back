@@ -1,7 +1,6 @@
 from django.db import connection
 
-from sport.crud import dictfetchone
-from sport.models import Semester
+from api.crud import dictfetchone
 
 
 def get_ongoing_semester():

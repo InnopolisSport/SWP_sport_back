@@ -1,8 +1,8 @@
 import pytest
 from datetime import date
 
-from sport.crud import enroll_student_to_secondary_group, enroll_student_to_primary_group, unenroll_student
-from sport.models import Student, Enroll
+from api.crud import enroll_student_to_secondary_group, enroll_student_to_primary_group, unenroll_student
+from sport.models import Enroll
 
 dummy_date = date(2020, 1, 1)
 

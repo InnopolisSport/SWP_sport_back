@@ -1,9 +1,9 @@
 import pytest
 from datetime import date, time, datetime
 
-from sport.crud import get_attended_training_info, enroll_student_to_secondary_group, get_group_info, \
+from api.crud import get_attended_training_info, enroll_student_to_secondary_group, get_group_info, \
     get_trainings_for_student, get_trainings_for_trainer, get_trainings_in_time, get_students_grades
-from sport.models import Student, Training, Schedule, Trainer
+from sport.models import Training, Schedule
 
 
 @pytest.mark.django_db
