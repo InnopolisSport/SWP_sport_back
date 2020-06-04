@@ -26,7 +26,7 @@ STUDENT_GROUP_VERBOSE_NAME = "Students"
 TRAINER_GROUP_VERBOSE_NAME = "School Physical Activity for Health"
 SC_TRAINERS_GROUP_NAME = "SC trainers"
 
-
+BASE_URL = os.getenv("BASE_URL", "http://localhost:81/")
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -59,7 +59,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_auth_adfs',
     'admin_auto_filters',
+    'rest_framework',
+    'drf_yasg',
     'sport.apps.SportConfig',
+    'api',
 ]
 
 MIDDLEWARE = [
