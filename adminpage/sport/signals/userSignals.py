@@ -31,12 +31,12 @@ def create_student_profile(instance, action, reverse, pk_set, **kwargs):
         group_mapping = get_current_group_mapping()
         if group_mapping.get(settings.STUDENT_GROUP_VERBOSE_NAME, None) in pk_set:
             if action == "post_add":
-                Student.objects.create(user=instance)
+                Student.objects.get_or_create(user=instance)
             if action == "pre_remove":
                 Student.objects.filter(user=instance.pk).delete()
 
         if group_mapping.get(settings.TRAINER_GROUP_VERBOSE_NAME, None) in pk_set:
             if action == "post_add":
-                Trainer.objects.create(user=instance)
+                Trainer.objects.get_or_create(user=instance)
             elif action == "pre_remove":
                 Trainer.objects.filter(user=instance.pk).delete()
