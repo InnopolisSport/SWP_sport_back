@@ -3,10 +3,16 @@ from django.conf.urls import url
 from adminpage.swagger import schema_view
 from django.urls import path
 
-from .views import tmp
+from api.views import (
+    tmp,
+    profile,
+)
 
 urlpatterns = [
     path(r"test/", tmp.test),
+    # profile
+    path(r"profile/sick/toggle", profile.toggle_sick),
+    path(r"profile/history/<int:semester_id>", profile.get_history),
 ]
 
 urlpatterns.extend([
