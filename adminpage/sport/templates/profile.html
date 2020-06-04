@@ -20,11 +20,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 <script src="{% static "sport/js/profile.js" %}"></script>
+<!-- TODO: add source -->
 <script>
     $(function () {
         $("#student_emails")
             .autocomplete({
-                source: "/api/attendance/suggest_student",
+                source: "",
                 select: autocomplete_select
             })
             .autocomplete("option", "appendTo", ".student_email_suggestor");
