@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 
 
 def validate_hours(hours):
@@ -16,7 +17,8 @@ class Attendance(models.Model):
         db_table = "attendance"
         verbose_name_plural = "attendance"
         constraints = [
-            models.UniqueConstraint(fields=["training", "student"], name="unique_attendance")
+            models.UniqueConstraint(fields=["training", "student"], name="unique_attendance"),
+            models.CheckConstraint(check=Q(hours__gt=0), name='positive_hours')
         ]
 
     def __str__(self):

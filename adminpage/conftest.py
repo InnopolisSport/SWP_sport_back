@@ -4,4 +4,5 @@
 # with fixtures
 pytest_plugins = [
     "sport.fixtures.user_creation",
+    "sport.fixtures.model_creation",
 ]

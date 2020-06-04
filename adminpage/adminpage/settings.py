@@ -23,7 +23,9 @@ def getenv_boolean(var_name, default_value=False):
 
 SPORT_DEPARTMENT_EMAIL = "sport@innopolis.university"
 STUDENT_GROUP_VERBOSE_NAME = "Students"
-TRAINER_GROUP_VERBOSE_NAME = "Trainers"
+TRAINER_GROUP_VERBOSE_NAME = "School Physical Activity for Health"
+SC_TRAINERS_GROUP_NAME = "SC trainers"
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -184,3 +186,4 @@ if DEBUG:
     STATIC_URL = '/django/static/'
 else:
     STATIC_URL = '/static/'
+
