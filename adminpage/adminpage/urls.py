@@ -19,8 +19,6 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-app_name = "django_auth_adfs"
-
 # TODO: remove when not needed
 # from django.http import JsonResponse
 # def show(request):
@@ -40,7 +38,9 @@ urlpatterns = [
                       # path('admin/test', show),
                       path('admin/', admin.site.urls),
                       path('oauth2/', include('django_auth_adfs.urls')),
-                      path('raw_login/', LoginView.as_view()),
+                      path('login/', LoginView.as_view(
+                          redirect_authenticated_user=True,
+                      )),
                   ]))
               ] + static(settings.STATIC_URL,
                          document_root=settings.STATIC_ROOT,
