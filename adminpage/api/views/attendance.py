@@ -90,6 +90,9 @@ def get_grades(request, training_id, **kwargs):
 @api_view(["POST"])
 @permission_classes([IsTrainer])
 def mark_attendance(request, **kwargs):
+    print('mark_attendance')
+    print(request.data)
+    print('mark_attendance')
     serializer = AttendanceMarkSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     trainer = request.user.trainer

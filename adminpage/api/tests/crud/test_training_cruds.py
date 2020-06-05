@@ -62,7 +62,8 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
             "end": t1.end,
             "group_id": group.pk,
             "group_name": group.name,
-            "training_class": training_class.name
+            "training_class": training_class.name,
+            "can_grade": True
         },
         {
             "id": t2.pk,
@@ -70,7 +71,8 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
             "end": t2.end,
             "group_id": group.pk,
             "group_name": group.name,
-            "training_class": None
+            "training_class": None,
+            "can_grade": True
         }
     ]
 
@@ -111,7 +113,8 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
             "group_id": group.pk,
             "group_name": group.name,
             "training_class": training_class.name,
-            "hours": a1.hours
+            "hours": a1.hours,
+            "can_grade": False
         },
         {
             "id": t2.pk,
@@ -120,7 +123,8 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
             "group_id": group.pk,
             "group_name": group.name,
             "training_class": None,
-            "hours": None
+            "hours": None,
+            "can_grade": False
         }
     ]
 

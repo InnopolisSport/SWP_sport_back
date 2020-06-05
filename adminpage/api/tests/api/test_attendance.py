@@ -90,11 +90,11 @@ def test_attendance_before_training(setup):
 
     response = client.post(
         f"/{settings.PREFIX}api/attendance/mark",
-        data=data
+        data=data,
+        format='json'
     )
     print(data)
     print(response.data)
 
-    assert False
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    # assert response.data["code"] == AttendanceErrors.TRAINING_NOT_EDITABLE[0]
+    assert response.data["code"] == AttendanceErrors.TRAINING_NOT_EDITABLE[0]
