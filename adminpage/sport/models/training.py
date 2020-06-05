@@ -27,3 +27,7 @@ class Training(models.Model):
                f"{to_current_timezone(self.start).time().strftime('%H:%M')}-" \
                f"{to_current_timezone(self.end).time().strftime('%H:%M')}" \
                f"{'' if self.training_class is None else f' in {self.training_class}'}"
+
+    @property
+    def academic_duration(self) -> float:
+        return round((self.end - self.start).total_seconds() / 2700, 2)

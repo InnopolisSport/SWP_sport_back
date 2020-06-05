@@ -9,6 +9,7 @@ from api.views import (
     enroll,
     group,
     training,
+    attendance,
 )
 
 urlpatterns = [
@@ -26,6 +27,11 @@ urlpatterns = [
 
     # training
     path(r"training/<int:training_id>", training.training_info),
+
+    # attendance
+    path(r"attendance/suggest_student", attendance.suggest_student),
+    path(r"attendance/<int:training_id>/grades", attendance.get_grades),
+    path(r"attendance/mark", attendance.mark_attendance),
 ]
 
 urlpatterns.extend([

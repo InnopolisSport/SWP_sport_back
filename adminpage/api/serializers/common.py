@@ -13,6 +13,10 @@ class NotFoundSerializer(serializers.Serializer):
     detail = serializers.ReadOnlyField(default="Not found")
 
 
+class InbuiltErrorSerializer(serializers.Serializer):
+    detail = serializers.ReadOnlyField()
+
+
 class ErrorSerializer(serializers.Serializer):
     code = serializers.IntegerField()
     detail = serializers.CharField()

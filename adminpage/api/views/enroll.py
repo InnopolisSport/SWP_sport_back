@@ -42,7 +42,7 @@ class EnrollErrors:
 @api_view(["POST"])
 @permission_classes([IsStudent])
 @transaction.atomic
-def enroll(request):
+def enroll(request, **kwargs):
     """
     Enroll student
 
@@ -107,7 +107,7 @@ def enroll(request):
 @api_view(["POST"])
 @permission_classes([IsStudent])
 @transaction.atomic
-def unenroll(request):
+def unenroll(request, **kwargs):
     """
     Unenroll student
 

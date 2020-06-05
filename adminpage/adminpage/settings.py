@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 
 def getenv_boolean(var_name, default_value=False):
@@ -25,6 +26,10 @@ SPORT_DEPARTMENT_EMAIL = "sport@innopolis.university"
 STUDENT_GROUP_VERBOSE_NAME = "Students"
 TRAINER_GROUP_VERBOSE_NAME = "School Physical Activity for Health"
 SC_TRAINERS_GROUP_NAME = "SC trainers"
+
+TRAINING_EDITABLE_INTERVAL = timedelta(
+    days=int(os.getenv("TRAINING_EDITABLE_INTERVAL", 14))
+)
 
 BASE_URL = os.getenv("BASE_URL", "http://localhost:81/")
 PREFIX = "django/"
