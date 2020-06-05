@@ -7,6 +7,7 @@ from api.views import (
     tmp,
     profile,
     enroll,
+    group,
 )
 
 urlpatterns = [
@@ -15,9 +16,12 @@ urlpatterns = [
     path(r"profile/sick/toggle", profile.toggle_sick),
     path(r"profile/history/<int:semester_id>", profile.get_history),
 
-    #enroll
+    # enroll
     path(r"enrollment/enroll", enroll.enroll),
     path(r"enrollment/unenroll", enroll.unenroll),
+
+    # group
+    path(r"group/<int:group_id>", group.group_info),
 ]
 
 urlpatterns.extend([
