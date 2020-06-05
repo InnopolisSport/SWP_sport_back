@@ -10,6 +10,7 @@ from api.views import (
     group,
     training,
     attendance,
+    calendar,
 )
 
 urlpatterns = [
@@ -32,6 +33,10 @@ urlpatterns = [
     path(r"attendance/suggest_student", attendance.suggest_student),
     path(r"attendance/<int:training_id>/grades", attendance.get_grades),
     path(r"attendance/mark", attendance.mark_attendance),
+
+    # calendar
+    path(r"calendar/<int:sport_id>/schedule", calendar.get_schedule),
+    path(r"calendar/trainings", calendar.get_personal_schedule),
 ]
 
 urlpatterns.extend([

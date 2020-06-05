@@ -84,7 +84,8 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'g.id AS group_id, '
                        'g.name AS group_name, '
                        'tc.name AS training_class, '
-                       'a.hours AS hours '
+                       'a.hours AS hours, '
+                       'FALSE AS can_grade '
                        'FROM enroll e, "group" g, training t '
                        'LEFT JOIN attendance a ON a.student_id = %s AND a.training_id = t.id '
                        'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
@@ -102,7 +103,7 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
     @param trainer - searched trainer
     @param start - range start date
     @param end - range end date
-    @return list of trainings for student
+    @return list of trainings for trainer
     """
     with connection.cursor() as cursor:
         cursor.execute('SELECT '
@@ -111,7 +112,8 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
                        't."end" AS "end", '
                        'g.id AS group_id, '
                        'g.name AS group_name, '
-                       'tc.name AS training_class '
+                       'tc.name AS training_class, '
+                       'TRUE AS can_grade '
                        'FROM "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                        'WHERE t.start > %s AND t."end" < %s '
                        'AND t.group_id = g.id '
