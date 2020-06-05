@@ -8,6 +8,7 @@ from api.views import (
     profile,
     enroll,
     group,
+    training,
 )
 
 urlpatterns = [
@@ -22,6 +23,9 @@ urlpatterns = [
 
     # group
     path(r"group/<int:group_id>", group.group_info),
+
+    # training
+    path(r"training/<int:training_id>", training.training_info),
 ]
 
 urlpatterns.extend([
