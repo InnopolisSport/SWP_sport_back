@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import datetime, time, date
 from typing import Callable, Optional
 
 import pytest
@@ -22,9 +22,9 @@ from sport.models import (
 def semester_factory():
     def create_semester(
             name: str,
-            start: datetime,
-            end: datetime,
-            choice_deadline: datetime
+            start: date,
+            end: date,
+            choice_deadline: date
     ) -> Semester:
         obj, _ = Semester.objects.get_or_create(
             name=name,

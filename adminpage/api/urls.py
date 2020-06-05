@@ -6,6 +6,7 @@ from django.urls import path
 from api.views import (
     tmp,
     profile,
+    enroll,
 )
 
 urlpatterns = [
@@ -13,6 +14,10 @@ urlpatterns = [
     # profile
     path(r"profile/sick/toggle", profile.toggle_sick),
     path(r"profile/history/<int:semester_id>", profile.get_history),
+
+    #enroll
+    path(r"enrollment/enroll", enroll.enroll),
+    path(r"enrollment/unenroll", enroll.unenroll),
 ]
 
 urlpatterns.extend([

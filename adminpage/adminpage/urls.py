@@ -35,7 +35,7 @@ from django.urls import path, include
 
 
 urlpatterns = [
-                  path('django/', include([
+                  path(settings.PREFIX, include([
                       # path('admin/test', show),
                       path('admin/', admin.site.urls),
                       path('oauth2/', include('django_auth_adfs.urls')),

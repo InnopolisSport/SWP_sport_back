@@ -1,6 +1,8 @@
 from sport.models import Student, Enroll, Group
+from django.db import transaction
 
 
+@transaction.atomic
 def enroll_student_to_primary_group(group: Group, student: Student):
     """
     Enrolls given student in a primary group, removes all previous primary enrollments
@@ -16,8 +18,9 @@ def enroll_student_to_secondary_group(group: Group, student: Student):
     Enroll.objects.create(student=student, group=group, is_primary=False)
 
 
-def unenroll_student(group: Group, student: Student):
+def unenroll_student(group: Group, student: Student) -> int:
     """
     Unenrolls given student from a secondary group
     """
-    Enroll.objects.filter(student=student, group=group, is_primary=False).delete()
+    removed_count, _ = Enroll.objects.filter(student=student, group=group, is_primary=False).delete()
+    return removed_count

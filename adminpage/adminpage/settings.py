@@ -27,6 +27,7 @@ TRAINER_GROUP_VERBOSE_NAME = "School Physical Activity for Health"
 SC_TRAINERS_GROUP_NAME = "SC trainers"
 
 BASE_URL = os.getenv("BASE_URL", "http://localhost:81/")
+PREFIX = "django/"
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
