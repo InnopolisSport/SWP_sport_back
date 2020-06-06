@@ -1,4 +1,5 @@
 import pytest
+import unittest
 from datetime import date
 from django.utils import timezone
 
@@ -6,6 +7,8 @@ from api.crud import get_detailed_hours, get_brief_hours, mark_hours, toggle_ill
 from sport.models import Attendance
 
 dummy_date = date(2020, 1, 1)
+
+assertMembers = unittest.TestCase().assertCountEqual
 
 
 @pytest.mark.django_db
@@ -27,7 +30,7 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
         attendance_factory(training=t, student=student, hours=i + 1)
         attendance_factory(training=t, student=other_student, hours=1)
     brief = get_brief_hours(student)
-    assert brief == [
+    assertMembers(brief, [
         {
             "hours": 3,
             "semester_id": s1.pk,
@@ -42,10 +45,10 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
             "semester_start": s2.start,
             "semester_end": s2.end
         }
-    ]
+    ])
     stat1 = get_detailed_hours(student, s1)
     stat2 = get_detailed_hours(student, s2)
-    assert stat1 == [
+    assertMembers(stat1, [
         {
             "group": g12.name,
             "timestamp": trainings[1].start,
@@ -56,8 +59,8 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
             "timestamp": trainings[0].start,
             "hours": 1
         }
-    ]
-    assert stat2 == [
+    ])
+    assertMembers(stat2, [
         {
             "group": g22.name,
             "timestamp": trainings[3].start,
@@ -68,7 +71,7 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
             "timestamp": trainings[2].start,
             "hours": 3
         }
-    ]
+    ])
 
 
 @pytest.mark.django_db

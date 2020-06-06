@@ -6,6 +6,7 @@ from sport.models import Enroll
 
 dummy_date = date(2020, 1, 1)
 
+
 @pytest.mark.django_db
 def test_enroll(student_factory, sport_factory, semester_factory, group_factory):
     student = student_factory("A").student
