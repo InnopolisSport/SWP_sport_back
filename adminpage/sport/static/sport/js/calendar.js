@@ -67,7 +67,7 @@ async function open_modal(eventClickInfo) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
+    const response = await fetch(`#`, { // TODO: add reference
         method: 'GET'
     });
     const {
@@ -111,7 +111,7 @@ async function open_modal(eventClickInfo) {
 }
 
 async function enroll(event, action) {
-    const result = await sendResults(`/api/${action}`, {group_id: event.extendedProps.group_id})
+    const result = await sendResults(`#`, {group_id: event.extendedProps.group_id}) // TODO: add reference
     if (result.ok) {
         goto_profile();
     } else {
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventRender: render,
         // Event format: yyyy-mm-dd
         // TODO: at backend use a loop of 10 standard colors as matplotlib do ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
-        events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
+        events: '#' // TODO: add reference
 
     });
 

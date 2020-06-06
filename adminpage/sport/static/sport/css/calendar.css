@@ -1,0 +1,11 @@
+.fc-title {
+    font-weight: bold;
+}
+
+.fc-event {
+    font-size: 1em;
+}
+
+.fc-event .fc-content {
+    color: #fff;
+}
