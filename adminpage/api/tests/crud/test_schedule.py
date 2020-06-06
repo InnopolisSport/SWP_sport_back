@@ -1,8 +1,7 @@
-from datetime import datetime, time, date
-
 import pytest
+from datetime import time, date
 
-from sport.models import Group, Schedule, Training
+from sport.models import Schedule, Training
 
 
 @pytest.mark.django_db
@@ -46,3 +45,6 @@ def test_training_creation_on_schedule(
     )
 
     assert Training.objects.filter(schedule=schedule).count() == 2
+    training = Training.objects.first()
+    assert training.start.time() == time(11, 0, 0)  # in UTC, -3 hours from Europe/Moscow
+    assert training.end.time() == time(15, 30, 0)  # in UTC, -3 hours from Europe/Moscow
