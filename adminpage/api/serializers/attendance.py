@@ -43,4 +43,4 @@ class GradeSetSerializer(serializers.Serializer):
 
 class AttendanceMarkSerializer(serializers.Serializer):
     training_id = serializers.IntegerField()
-    student_hours = GradeSetSerializer(many=True)
+    students_hours = GradeSetSerializer(many=True)

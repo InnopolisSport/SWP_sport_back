@@ -130,4 +130,4 @@ def unenroll(request, **kwargs):
                 *EnrollErrors.PRIMARY_UNENROLL
             )
         )
-    return Response()
+    return Response({})

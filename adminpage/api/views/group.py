@@ -21,5 +21,5 @@ from sport.models import Group
 @permission_classes([IsStudent])
 def group_info(request, group_id, **kwargs):
     student = request.user.student
-    get_object_or_404(Group, group_id)
+    get_object_or_404(Group, pk=group_id)
     return Response(get_group_info(group_id, student))

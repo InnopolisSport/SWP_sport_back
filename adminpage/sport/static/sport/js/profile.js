@@ -1,13 +1,57 @@
+class ApiError extends Error {
+    constructor(message, code, status) {
+        super(message);
+        this.code = code;
+        this.status = status;
+    }
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+var csrf_token = getCookie('csrftoken');
+
 async function sendResults(url, data) {
+    function handleError(response) {
+        if (!response.ok) {
+            return response.json()
+                .then(data => {
+                    throw new ApiError(
+                        data.detail,
+                        data.code,
+                        response.status
+                    );
+                });
+
+        }
+        return response.json();
+    }
+
     let response = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(data),
-    });
-    return await response.json();
+        headers: {
+            'Content-Type': 'application/json',
+            "X-CSRFToken": csrf_token,
+        },
+    }).then(handleError);
 }
 
 function goto_profile() {
-    window.location.href = "/profile";
+    window.location.reload();
 }
 
 function make_hours_table(trainings) {
@@ -34,7 +78,8 @@ async function fetch_detailed_hours(e) {
     const semester_id = parseInt(e.getAttribute('data-semester-id'), 10);
     if (loaded_hours[semester_id]) return;
     const response = await fetch(`/django/api/profile/history/${semester_id}`, {
-        method: 'GET'
+        method: 'GET',
+        "X-CSRFToken": csrf_token,
     });
     const history = await response.json();
     const table = $(`#hours-modal-${semester_id} .modal-body`);
@@ -46,15 +91,10 @@ async function fetch_detailed_hours(e) {
 function toggle_ill(elem) {
     sendResults("/django/api/profile/sick/toggle", {})
         .then(data => {
-            if (data.ok) {
-                goto_profile();
-            } else {
-                switch (data.error.code) {
-                    case 1:
-                        break;
-                }
-                toastr.error(data.error.description);
-            }
+            goto_profile();
+        })
+        .catch(function (error) {
+            toastr.error(error.message);
         })
 }
 
@@ -118,7 +158,7 @@ function render(info) {
     element.style.backgroundColor = get_color(event.title);
     element.style.cursor = 'pointer';
     if (props.can_grade) {
-        element.style.backgroundImage = 'url("static/images/categories/sc_trainer.png")';
+        element.style.backgroundImage = 'url("../static/sport/images/categories/sc_trainer.png")';
         element.style.backgroundPosition = 'right bottom';
         element.style.backgroundRepeat = 'no-repeat';
         element.style.backgroundSize = '40%';
@@ -146,6 +186,17 @@ function hide_alert(alert_id) {
         alert_elem.textContent = "";
         alert_elem.style.visibility = 'hidden';
     }
+}
+
+function parse_local_storage() {
+    let parsed = [];
+    for (let [key, value] of Object.entries(local_hours_changes)) {
+        parsed.push({
+            "student_id": key,
+            "hours": value,
+        })
+    }
+    return parsed
 }
 
 async function save_hours() {
@@ -185,9 +236,22 @@ async function save_hours() {
             method: 'POST',
             body: JSON.stringify({
                 training_id,
-                students_hours: local_hours_changes
-            })
+                students_hours: parse_local_storage()
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                "X-CSRFToken": csrf_token,
+            },
         });
+
+        // $.post('/django/api/attendance/mark',
+        //     {
+        //         training_id,
+        //         students_hours: parse_local_storage()
+        //     },
+        //     function (data, jqXHR) {
+        //     }
+        // );
 
         $('#grading-modal tr').removeClass('table-warning')
         local_hours_changes = {}
@@ -251,12 +315,13 @@ function mark_all(el) {
 }
 
 async function enroll(group_id, action) {
-    const result = await sendResults(`/django/api/enrollment/${action}`, {group_id: group_id})
-    if (result.ok) {
-        goto_profile();
-    } else {
-        toastr.error(result.error.description);
-    }
+    sendResults(`/django/api/enrollment/${action}`, {group_id: group_id})
+        .then(data => {
+            goto_profile()
+        })
+        .catch(function (error) {
+            toastr.error(error.message);
+        })
 }
 
 async function open_modal(info) {
@@ -272,7 +337,8 @@ async function open_info_modal_for_leave(group_id, hide_button) {
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
     const response = await fetch(`/django/api/group/${group_id}`, {
-        method: 'GET'
+        method: 'GET',
+        "X-CSRFToken": csrf_token,
     });
     const {
         group_name,
@@ -316,7 +382,8 @@ async function open_info_modal({event}) {
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
     const response = await fetch(`/django/api/training/${event.extendedProps.id}`, {
-        method: 'GET'
+        method: 'GET',
+        "X-CSRFToken": csrf_token,
     });
     const {
         group_id,
@@ -363,7 +430,8 @@ async function open_trainer_modal({event}) {
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#grading-modal').modal('show');
     const response = await fetch(`/django/api/attendance/${event.extendedProps.id}/grades`, {
-        method: 'GET'
+        method: 'GET',
+        "X-CSRFToken": csrf_token,
     });
     const save_btn = $('#save-hours-btn');
     save_btn.attr('data-training-id', event.extendedProps.id);

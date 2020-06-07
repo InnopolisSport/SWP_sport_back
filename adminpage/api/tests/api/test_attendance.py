@@ -84,7 +84,7 @@ def test_attendance_before_training(setup):
 
     data = {
         "training_id": training.pk,
-        "student_hours": [
+        "students_hours": [
             {
                 "student_id": student_user.student.pk,
                 "hours": 1
@@ -111,7 +111,7 @@ def test_attendance_long_after_training(setup):
 
     data = {
         "training_id": training.pk,
-        "student_hours": [
+        "students_hours": [
             {
                 "student_id": student_user.student.pk,
                 "hours": 1
@@ -138,7 +138,7 @@ def test_attendance_during_training_success(setup):
     hours_put = 1
     data = {
         "training_id": training.pk,
-        "student_hours": [
+        "students_hours": [
             {
                 "student_id": student_user.student.pk,
                 "hours": hours_put
@@ -181,7 +181,7 @@ def test_attendance_during_training_outbound(setup, student_factory):
 
     data = {
         "training_id": training.pk,
-        "student_hours": [
+        "students_hours": [
             {
                 "student_id": student_user.student.pk,
                 "hours": hours_put

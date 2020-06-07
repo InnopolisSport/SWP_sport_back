@@ -51,9 +51,9 @@ def suggest_student(request, **kwargs):
     return Response([
         {
             "value": f"{student['id']}_"
-                     f"{student['first_name'] + ' ' + student['last_name']}_"
+                     f"{student['full_name']}_"
                      f"{student['email']}",
-            "label": f"{student['first_name'] + ' ' + student['last_name']} "
+            "label": f"{student['full_name']} "
                      f"({student['email']})",
         }
         for student in suggested_students
@@ -121,7 +121,7 @@ def mark_attendance(request, **kwargs):
 
     id_to_hours = dict([
         (item["student_id"], item["hours"])
-        for item in serializer.validated_data["student_hours"]
+        for item in serializer.validated_data["students_hours"]
     ])
 
     max_hours = training.academic_duration

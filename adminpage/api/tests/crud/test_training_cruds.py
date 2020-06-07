@@ -12,9 +12,9 @@ assertMembers = unittest.TestCase().assertCountEqual
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2019-12-31 10:00')
 def test_training_info(student_factory, trainer_factory, sport_factory, semester_factory, training_class_factory,
-                          group_factory,
-                          schedule_factory,
-                          attendance_factory):
+                       group_factory,
+                       schedule_factory,
+                       attendance_factory):
     student = student_factory("A1").student
     other_student = student_factory("A2").student
     trainer = trainer_factory("B").trainer
@@ -162,14 +162,17 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
         "first_name": student.user.first_name,
         "last_name": student.user.last_name,
         "email": student.user.email,
-        "hours": a1.hours
+        "hours": a1.hours,
+        "full_name": f"{student.user.first_name} {student.user.last_name}",
     }]
     assert get_students_grades(t2.pk) == [{
         "student_id": student.pk,
         "first_name": student.user.first_name,
         "last_name": student.user.last_name,
         "email": student.user.email,
-        "hours": None
+        "hours": 0,
+        "full_name": f"{student.user.first_name} {student.user.last_name}",
+
     }]
 
     enroll_student_to_secondary_group(group, other_student)
@@ -180,13 +183,15 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
             "first_name": student.user.first_name,
             "last_name": student.user.last_name,
             "email": student.user.email,
-            "hours": a1.hours
+            "hours": a1.hours,
+            "full_name": f"{student.user.first_name} {student.user.last_name}",
         },
         {
             "student_id": other_student.pk,
             "first_name": other_student.user.first_name,
             "last_name": other_student.user.last_name,
             "email": other_student.user.email,
-            "hours": None
+            "hours": 0,
+            "full_name": f"{student.user.first_name} {student.user.last_name}",
         }
     ])
