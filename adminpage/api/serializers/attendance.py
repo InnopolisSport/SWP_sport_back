@@ -6,10 +6,8 @@ class SuggestionQuerySerializer(serializers.Serializer):
 
 
 class SuggestionSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    email = serializers.EmailField()
+    value = serializers.CharField()
+    label = serializers.CharField()
 
 
 class GradeReportSerializer(serializers.Serializer):

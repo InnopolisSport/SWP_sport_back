@@ -14,7 +14,8 @@ from sport.models import Student
 
 
 class AttendanceErrors:
-    TRAINING_NOT_EDITABLE = (2, f"Training not editable before it or after {settings.TRAINING_EDITABLE_INTERVAL.days} days")
+    TRAINING_NOT_EDITABLE = (
+        2, f"Training not editable before it or after {settings.TRAINING_EDITABLE_INTERVAL.days} days")
     OUTBOUND_GRADES = (3, "Some students received negative marks or more than maximum")
 
 
@@ -47,7 +48,16 @@ def suggest_student(request, **kwargs):
     suggested_students = get_email_name_like_students(
         serializer.validated_data["term"]
     )
-    return Response(suggested_students)
+    return Response([
+        {
+            "value": f"{student['id']}_"
+                     f"{student['first_name'] + ' ' + student['last_name']}_"
+                     f"{student['email']}",
+            "label": f"{student['first_name'] + ' ' + student['last_name']} "
+                     f"({student['email']})",
+        }
+        for student in suggested_students
+    ])
 
 
 @swagger_auto_schema(
@@ -115,7 +125,7 @@ def mark_attendance(request, **kwargs):
     ])
 
     max_hours = training.academic_duration
-    students = Student.objects.select_related("user")\
+    students = Student.objects.select_related("user") \
         .filter(pk__in=id_to_hours.keys()).all()
 
     hours_to_mark = []
