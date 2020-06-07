@@ -24,7 +24,7 @@
     $(function () {
         $("#student_emails")
             .autocomplete({
-                source: "/api/attendance/suggest_student",
+                source: "/django/api/attendance/suggest_student",
                 select: autocomplete_select
             })
             .autocomplete("option", "appendTo", ".student_email_suggestor");

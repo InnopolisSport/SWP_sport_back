@@ -67,7 +67,7 @@ async function open_modal(eventClickInfo) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
+    const response = await fetch(`/django/api/training/${event.extendedProps.id}`, {
         method: 'GET'
     });
     const {
@@ -111,7 +111,7 @@ async function open_modal(eventClickInfo) {
 }
 
 async function enroll(event, action) {
-    const result = await sendResults(`/api/enrollment/${action}`, {group_id: event.extendedProps.group_id})
+    const result = await sendResults(`/django/api/enrollment/${action}`, {group_id: event.extendedProps.group_id})
     if (result.ok) {
         goto_profile();
     } else {
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: open_modal,
         eventRender: render,
         // Event format: yyyy-mm-dd
-        events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
+        events: '/django/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
 
     });
 

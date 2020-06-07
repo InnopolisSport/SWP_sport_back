@@ -33,7 +33,7 @@ const loaded_hours = {};
 async function fetch_detailed_hours(e) {
     const semester_id = parseInt(e.getAttribute('data-semester-id'), 10);
     if (loaded_hours[semester_id]) return;
-    const response = await fetch(`/api/profile/history/${semester_id}`, {
+    const response = await fetch(`/django/api/profile/history/${semester_id}`, {
         method: 'GET'
     });
     const history = await response.json();
@@ -44,7 +44,7 @@ async function fetch_detailed_hours(e) {
 }
 
 function toggle_ill(elem) {
-    sendResults("/api/profile/sick/toggle", {})
+    sendResults("/django/api/profile/sick/toggle", {})
         .then(data => {
             if (data.ok) {
                 goto_profile();
@@ -181,7 +181,7 @@ async function save_hours() {
             "Invalid value of hours in " + invalid_row_count.toString() + " row(s)",
         );
     } else {
-        await fetch(`/api/attendance/mark`, {
+        await fetch(`/django/api/attendance/mark`, {
             method: 'POST',
             body: JSON.stringify({
                 training_id,
@@ -251,7 +251,7 @@ function mark_all(el) {
 }
 
 async function enroll(group_id, action) {
-    const result = await sendResults(`/api/enrollment/${action}`, {group_id: group_id})
+    const result = await sendResults(`/django/api/enrollment/${action}`, {group_id: group_id})
     if (result.ok) {
         goto_profile();
     } else {
@@ -271,7 +271,7 @@ async function open_info_modal_for_leave(group_id, hide_button) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`/api/group/${group_id}`, {
+    const response = await fetch(`/django/api/group/${group_id}`, {
         method: 'GET'
     });
     const {
@@ -315,7 +315,7 @@ async function open_info_modal({event}) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
+    const response = await fetch(`/django/api/training/${event.extendedProps.id}`, {
         method: 'GET'
     });
     const {
@@ -362,7 +362,7 @@ async function open_trainer_modal({event}) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#grading-modal').modal('show');
-    const response = await fetch(`/api/attendance/${event.extendedProps.id}/grades`, {
+    const response = await fetch(`/django/api/attendance/${event.extendedProps.id}/grades`, {
         method: 'GET'
     });
     const save_btn = $('#save-hours-btn');
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         },
         // Event format: yyyy-mm-dd
-        events: '/api/calendar/trainings'
+        events: '/django/api/calendar/trainings'
     };
 
     if (document.body.clientWidth < tabletWidth) {

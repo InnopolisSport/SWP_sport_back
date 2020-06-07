@@ -25,7 +25,7 @@ function mark_club_as_free(club_id, free_places) {
 }
 
 async function enroll(group_id, action) {
-    const result = await sendResults(`/api/enrollment/${action}`, {group_id: group_id})
+    const result = await sendResults(`/django/api/enrollment/${action}`, {group_id: group_id})
     if (result.ok) {
         goto_profile();
     } else {
@@ -41,7 +41,7 @@ async function open_modal(id) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`/api/group/${id}`, {
+    const response = await fetch(`/django/api/group/${id}`, {
         method: 'GET'
     });
     const {
