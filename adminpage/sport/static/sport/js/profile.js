@@ -33,7 +33,7 @@ const loaded_hours = {};
 async function fetch_detailed_hours(e) {
     const semester_id = parseInt(e.getAttribute('data-semester-id'), 10);
     if (loaded_hours[semester_id]) return;
-    const response = await fetch(`#`, { // TODO: add reference
+    const response = await fetch(`/api/profile/history/${semester_id}`, {
         method: 'GET'
     });
     const history = await response.json();
@@ -44,7 +44,7 @@ async function fetch_detailed_hours(e) {
 }
 
 function toggle_ill(elem) {
-    sendResults("#", {}) // TODO: add reference
+    sendResults("/api/profile/sick/toggle", {})
         .then(data => {
             if (data.ok) {
                 goto_profile();
@@ -181,23 +181,23 @@ async function save_hours() {
             "Invalid value of hours in " + invalid_row_count.toString() + " row(s)",
         );
     } else {
-        await fetch(`#`, { // TODO: add reference
+        await fetch(`/api/attendance/mark`, {
             method: 'POST',
             body: JSON.stringify({
                 training_id,
                 students_hours: local_hours_changes
             })
         });
-    
+
         $('#grading-modal tr').removeClass('table-warning')
         local_hours_changes = {}
-        
-    
+
+
         hide_alert("hours-alert");
         $('#grading-modal').modal("hide")
     }
     btn.prop('disabled', false);
-    
+
 }
 
 $(document).on('hidden.bs.modal', '#grading-modal', function () {
@@ -251,7 +251,7 @@ function mark_all(el) {
 }
 
 async function enroll(group_id, action) {
-    const result = await sendResults(`#`, {group_id: group_id}) // TODO: add reference
+    const result = await sendResults(`/api/enrollment/${action}`, {group_id: group_id})
     if (result.ok) {
         goto_profile();
     } else {
@@ -271,7 +271,7 @@ async function open_info_modal_for_leave(group_id, hide_button) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`#`, { // TODO: add reference
+    const response = await fetch(`/api/group/${group_id}`, {
         method: 'GET'
     });
     const {
@@ -315,7 +315,7 @@ async function open_info_modal({event}) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`#`, { // TODO: add reference
+    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
         method: 'GET'
     });
     const {
@@ -362,7 +362,7 @@ async function open_trainer_modal({event}) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#grading-modal').modal('show');
-    const response = await fetch(`#`, { // TODO: add reference
+    const response = await fetch(`/api/attendance/${event.extendedProps.id}/grades`, {
         method: 'GET'
     });
     const save_btn = $('#save-hours-btn');
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         },
         // Event format: yyyy-mm-dd
-        events: '#' // TODO: add reference
+        events: '/api/calendar/trainings'
     };
 
     if (document.body.clientWidth < tabletWidth) {
