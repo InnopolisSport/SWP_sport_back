@@ -7,9 +7,9 @@ from .inlines import AttendanceInline
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     search_fields = (
-        "first_name",
-        "last_name",
-        "email",
+        "user__first_name",
+        "user__last_name",
+        "user__email",
     )
 
     list_filter = (
