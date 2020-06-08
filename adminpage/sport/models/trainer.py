@@ -4,16 +4,9 @@ from django.db import models
 
 
 class Trainer(models.Model):
-    # TODO: remove in future
-    # this 3 fields are used for back-compatibility. 
-    # In Django they are stored in user account
-    first_name = models.CharField(max_length=50, null=True)
-    last_name = models.CharField(max_length=50, null=True)
-    email = models.CharField(max_length=50, null=True, unique=True)
-
     user = models.OneToOneField(
         User, on_delete=models.CASCADE,
-        null=True,  # for back compatibility. Make False in future
+        null=False,
         limit_choices_to={'groups__verbose_name': settings.TRAINER_GROUP_VERBOSE_NAME}
     )
 
@@ -22,4 +15,4 @@ class Trainer(models.Model):
         verbose_name_plural = "trainers"
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
