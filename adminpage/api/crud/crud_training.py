@@ -24,7 +24,7 @@ def get_attended_training_info(training_id: int, student: Student):
             'd.first_name AS trainer_first_name, '
             'd.last_name AS trainer_last_name, '
             'd.email AS trainer_email, '
-            'a.hours AS hours, '
+            'COALESCE(a.hours, 0) AS hours, '
             'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s) AS is_enrolled, '
             'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s AND is_primary = TRUE) AS is_primary '
             'FROM training tr '
@@ -84,7 +84,8 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'g.id AS group_id, '
                        'g.name AS group_name, '
                        'tc.name AS training_class, '
-                       'a.hours AS hours '
+                       'COALESCE(a.hours, 0) AS hours, '
+                       'FALSE AS can_grade '
                        'FROM enroll e, "group" g, training t '
                        'LEFT JOIN attendance a ON a.student_id = %s AND a.training_id = t.id '
                        'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
@@ -102,7 +103,7 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
     @param trainer - searched trainer
     @param start - range start date
     @param end - range end date
-    @return list of trainings for student
+    @return list of trainings for trainer
     """
     with connection.cursor() as cursor:
         cursor.execute('SELECT '
@@ -111,7 +112,8 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
                        't."end" AS "end", '
                        'g.id AS group_id, '
                        'g.name AS group_name, '
-                       'tc.name AS training_class '
+                       'tc.name AS training_class, '
+                       'TRUE AS can_grade '
                        'FROM "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                        'WHERE t.start > %s AND t."end" < %s '
                        'AND t.group_id = g.id '
@@ -162,25 +164,27 @@ def get_students_grades(training_id: int):
                        'd.first_name AS first_name, '
                        'd.last_name AS last_name, '
                        'd.email AS email, '
-                       'a.hours AS hours '
+                       'COALESCE(a.hours, 0) AS hours, '
+                       'concat(d.first_name, \' \', d.last_name) as full_name '
                        'FROM training t, student s, attendance a, auth_user d '
                        'WHERE a.student_id = s.id '
                        'AND s.user_id = d.id '
-                       'AND a.training_id = %s '
+                       'AND a.training_id = %(training_id)s '
                        'AND s.is_ill = FALSE '
-                       'AND t.id = %s '
+                       'AND t.id = %(training_id)s '
                        'UNION DISTINCT '
                        'SELECT '
                        's.id AS student_id, '
                        'd.first_name AS first_name, '
                        'd.last_name AS last_name, '
                        'd.email AS email, '
-                       'a.hours AS hours '
+                       'COALESCE(a.hours, 0) AS hours, '
+                       'concat(d.first_name, \' \', d.last_name) as full_name '
                        'FROM training t, enroll e, auth_user d, student s '
-                       'LEFT JOIN attendance a ON a.student_id = s.id AND a.training_id = %s '
+                       'LEFT JOIN attendance a ON a.student_id = s.id AND a.training_id = %(training_id)s '
                        'WHERE s.id = e.student_id '
                        'AND s.user_id = d.id '
                        'AND s.is_ill = FALSE '
-                       'AND t.id = %s '
-                       'AND t.group_id = e.group_id ', (training_id, training_id, training_id, training_id))
+                       'AND t.id = %(training_id)s '
+                       'AND t.group_id = e.group_id ', {"training_id": training_id})
         return dictfetchall(cursor)

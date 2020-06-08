@@ -32,5 +32,5 @@ def test_get_ongoing_semester(semester_factory):
         "name": s2.name,
         "start": s2.start,
         "end": s2.end,
-        "choice_deadline": s2.choice_deadline
+        "choice_deadline": s2.choice_deadline,
     }

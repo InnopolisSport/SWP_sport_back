@@ -1,15 +1,3 @@
-async function sendResults(url, data) {
-    let response = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-    });
-    return await response.json();
-}
-
-function goto_profile() {
-    window.location.href = "/profile";
-}
-
 function make_hours_table(trainings) {
     const table = $('<table class="table table-hover">');
     table.append('<thead>')
@@ -34,7 +22,8 @@ async function fetch_detailed_hours(e) {
     const semester_id = parseInt(e.getAttribute('data-semester-id'), 10);
     if (loaded_hours[semester_id]) return;
     const response = await fetch(`/api/profile/history/${semester_id}`, {
-        method: 'GET'
+        method: 'GET',
+        "X-CSRFToken": csrf_token,
     });
     const history = await response.json();
     const table = $(`#hours-modal-${semester_id} .modal-body`);
@@ -46,67 +35,16 @@ async function fetch_detailed_hours(e) {
 function toggle_ill(elem) {
     sendResults("/api/profile/sick/toggle", {})
         .then(data => {
-            if (data.ok) {
-                goto_profile();
-            } else {
-                switch (data.error.code) {
-                    case 1:
-                        break;
-                }
-                toastr.error(data.error.description);
-            }
+            goto_profile();
+        })
+        .catch(function (error) {
+            toastr.error(error.message);
         })
 }
 
 /*
     Calendar
 */
-const colors = [
-    '#1f77b4',
-    '#ff7f0e',
-    '#2ca02c',
-    '#d62728',
-    '#9467bd',
-    '#8c564b',
-    '#b4005a',
-    '#7f7f7f',
-    '#7b7c1f',
-    '#157786',
-];
-
-const color_limit = colors.length;
-var color_ptr = 0;
-var group_colors = {};
-
-function clearColors(info) {
-    group_colors.clear;
-    color_ptr = 0;
-}
-
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-
-function get_color(group) {
-    if (group_colors.hasOwnProperty(group)) {
-        // Keep it to assign consistent colors
-    } else if (color_ptr < color_limit) {
-        // Start assigning colors from the list
-        group_colors[group] = colors[color_ptr];
-        color_ptr += 1;
-        return group_colors[group];
-    } else {
-        // If it happen that we finished the list - assign random colors
-        group_colors[group] = getRandomColor();
-    }
-    return group_colors[group];
-}
 
 
 function render(info) {
@@ -118,7 +56,7 @@ function render(info) {
     element.style.backgroundColor = get_color(event.title);
     element.style.cursor = 'pointer';
     if (props.can_grade) {
-        element.style.backgroundImage = 'url("static/images/categories/sc_trainer.png")';
+        element.style.backgroundImage = 'url("../static/sport/images/categories/sc_trainer.png")';
         element.style.backgroundPosition = 'right bottom';
         element.style.backgroundRepeat = 'no-repeat';
         element.style.backgroundSize = '40%';
@@ -146,6 +84,17 @@ function hide_alert(alert_id) {
         alert_elem.textContent = "";
         alert_elem.style.visibility = 'hidden';
     }
+}
+
+function parse_local_storage() {
+    let parsed = [];
+    for (let [key, value] of Object.entries(local_hours_changes)) {
+        parsed.push({
+            "student_id": key,
+            "hours": value,
+        })
+    }
+    return parsed
 }
 
 async function save_hours() {
@@ -185,19 +134,31 @@ async function save_hours() {
             method: 'POST',
             body: JSON.stringify({
                 training_id,
-                students_hours: local_hours_changes
-            })
+                students_hours: parse_local_storage()
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                "X-CSRFToken": csrf_token,
+            },
         });
-    
-        $('#grading-modal tr').removeClass('table-warning')
-        local_hours_changes = {}
-        
-    
-        hide_alert("hours-alert");
-        $('#grading-modal').modal("hide")
+
+        sendResults('/api/attendance/mark', {
+            training_id,
+            students_hours: parse_local_storage()
+        })
+            .then(data => {
+                $('#grading-modal tr').removeClass('table-warning')
+                local_hours_changes = {}
+
+
+                hide_alert("hours-alert");
+                $('#grading-modal').modal("hide")
+            })
+
+
     }
     btn.prop('disabled', false);
-    
+
 }
 
 $(document).on('hidden.bs.modal', '#grading-modal', function () {
@@ -250,14 +211,7 @@ function mark_all(el) {
     }).val(duration_academic_hours).change();
 }
 
-async function enroll(group_id, action) {
-    const result = await sendResults(`/api/${action}`, {group_id: group_id})
-    if (result.ok) {
-        goto_profile();
-    } else {
-        toastr.error(result.error.description);
-    }
-}
+
 
 async function open_modal(info) {
     if (info.event.extendedProps.can_grade) {
@@ -272,8 +226,11 @@ async function open_info_modal_for_leave(group_id, hide_button) {
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
     const response = await fetch(`/api/group/${group_id}`, {
-        method: 'GET'
+        method: 'GET',
+        "X-CSRFToken": csrf_token,
     });
+
+
     const {
         group_name,
         group_description,
@@ -316,7 +273,8 @@ async function open_info_modal({event}) {
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
     const response = await fetch(`/api/training/${event.extendedProps.id}`, {
-        method: 'GET'
+        method: 'GET',
+        "X-CSRFToken": csrf_token,
     });
     const {
         group_id,
@@ -363,7 +321,8 @@ async function open_trainer_modal({event}) {
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#grading-modal').modal('show');
     const response = await fetch(`/api/attendance/${event.extendedProps.id}/grades`, {
-        method: 'GET'
+        method: 'GET',
+        "X-CSRFToken": csrf_token,
     });
     const save_btn = $('#save-hours-btn');
     save_btn.attr('data-training-id', event.extendedProps.id);
@@ -466,3 +425,12 @@ function autocomplete_select(event, ui) {
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
 }
+
+$(function () {
+    $("#student_emails")
+        .autocomplete({
+            source: "/api/attendance/suggest_student",
+            select: autocomplete_select
+        })
+        .autocomplete("option", "appendTo", ".student_email_suggestor");
+});

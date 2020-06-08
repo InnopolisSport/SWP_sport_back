@@ -1,4 +1,5 @@
 import pytest
+import unittest
 from datetime import date
 
 from django.conf import settings
@@ -6,10 +7,12 @@ from django.conf import settings
 from api.crud import get_clubs, get_student_groups, get_trainer_groups, get_sc_training_group
 from sport.models import Enroll, Group
 
+assertMembers = unittest.TestCase().assertCountEqual
+
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-20 10:03')
-def test_enroll(student_factory, sport_factory, semester_factory, group_factory, enroll_factory):
+def test_get_clubs(student_factory, sport_factory, semester_factory, group_factory, enroll_factory):
     student = student_factory("A").student
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
@@ -89,7 +92,7 @@ def test_get_student_trainer_groups(student_factory, trainer_factory, sport_fact
     student_groups = get_student_groups(student)
     trainer_groups = get_trainer_groups(trainer)
 
-    assert student_groups == [
+    assertMembers(student_groups, [
         {
             "id": c2.pk,
             "name": c2.name,
@@ -102,7 +105,7 @@ def test_get_student_trainer_groups(student_factory, trainer_factory, sport_fact
             "sport_name": sport.name,
             "is_primary": False
         }
-    ]
+    ])
 
     assert trainer_groups == [{
         "id": g2.pk,

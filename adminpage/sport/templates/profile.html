@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+    <link rel="stylesheet" href="{% static "sport/css/profile.css" %}">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script src="{% static "sport/js/modules/networking.mjs" %}"></script>
+    <script src="{% static "sport/js/modules/enrollment.mjs" %}"></script>
+    <script src="{% static "sport/js/modules/calendar.mjs" %}"></script>
+    <script src="{% static "sport/js/profile.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1 class="card-title">{{ user.get_full_name }}</h1>
+                {#            <h4 class="card-title">{{ user.role }}</h4>#}
+
+                {% if trainer.sport_groups %}
+                    {% if trainer.sport_groups|length > 0 %}
+                        <p>
+                            In semester <b>{{ common.semester_name }}</b> you train the following groups:
+                            {% for group in trainer.sport_groups %}
+                                <span class="badge badge-pill badge-training"
+                                      onclick="open_info_modal_for_leave({{ group.id }}, true)">{{ group.qualified_name }}</span>
+                            {% endfor %}
+                        </p>
+                    {% else %}
+                        <p>
+                            You are not training in the semester <b>{{ common.semester_name }}</b>
+                        </p>
+                    {% endif %}
+                {% endif %}
+
+                {% if user.student %}
+                    <meta id="illness-data" data-ill="{{ student.is_ill }}">
+                    {% if student.sport_groups|length > 0 %}
+                        <p>
+                            Your sport groups for semester <b>{{ common.semester_name }}</b>
+                            are:
+                            {% for group in student.sport_groups %}
+                                {#<span class="badge badge-pill {{ 'badge-success' if group.is_primary else 'badge-secondary' }}"#}
+                                <span class="badge badge-pill
+                                        {{ group.is_primary|yesno:"badge-success, badge-secondary" }}"
+
+                                      onclick="open_info_modal_for_leave({{ group.id }}, false)">{{ group.name }}</span>
+                            {% endfor %}
+                        </p>
+                    {% else %}
+                        <p>
+                            You have no groups selected for semester <b>{{ common.semester_name }}</b>
+                        </p>
+                    {% endif %}
+
+                    {% if student.semesters|length > 0 %}
+                        <div class="container">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Semester</th>
+                                    <th scope="col">Start</th>
+                                    <th scope="col">End</th>
+                                    <th scope="col">Hours</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for sem in student.semesters %}
+                                    <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
+                                        onclick="fetch_detailed_hours(this)" data-toggle="modal"
+                                        data-target="#hours-modal-{{ sem.semester_id }}">
+                                        <th scope="row">{{ sem.semester_name }}</th>
+                                        <td>{{ sem.semester_start }}</td>
+                                        <td>{{ sem.semester_end }}</td>
+                                        <td>{{ sem.hours }}</td>
+                                    </tr>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="hours-modal-{{ sem.semester_id }}" tabindex="-1"
+                                         role="dialog"
+                                         aria-labelledby="hours-modal-{{ sem.semester_id }}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"
+                                                        id="hours-modal-{{ sem.semester_id }}-title">
+                                                        Detailed
+                                                        statistics for
+                                                        {{ sem.semester_name }} </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="spinner-border" role="status"></div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                                                        Ok
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-md-6 col-sm-12 col-left mb-1">
+                                {% if student.is_ill %}
+                                    <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered
+                                        &#x1F601
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick
+                                        &#x1F912
+                                    </button>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 col-sm-12 col-right mb-1">
+                                {% if common.enroll_open %}
+                                    <a href="{% url 'category' %}" class="btn btn-primary">
+                                        Choose primary sport group
+                                    </a>
+                                {% elif student.sport_groups|length < 2 %}
+                                    <a href="{% url 'category' %}" class="btn btn-primary">
+                                        {{ student.secondary_group_left }} secondary choices left
+                                    </a>
+                                {% elif 2 == student.sport_groups|length %}
+                                    <a href="{% url 'category' %}" class="btn btn-primary">
+                                        1 secondary choice left
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'category' %}" class="btn btn-primary disabled">
+                                        No group choices left
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if user.is_staff or user.is_superuser %}
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 col-sm-12  mb-1">
+                                <a href="{% url 'admin:index' %}" class="btn btn-info">
+                                    Admin panel
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if student.sport_groups|length > 0 or trainer.sport_groups %}
+                    <div id='calendar'></div>
+                {% endif %}
+
+                <div class="modal fade" id="grading-modal" tabindex="-1" role="dialog" aria-labelledby="grading-modal"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="grading-modal-title">
+                                    Marking hours for
+                                    <span id="grading-group-name"></span>
+                                    at
+                                    <span id="grading-date"></span>
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="ui-widget d-flex flex-row my-1">
+                                    <form class="student_email_suggestor" onsubmit="alert('submitted')">
+                                        <span class="align-text-top"><label
+                                                for="student_emails"><b>Name or email:</b> </label>
+                                            <input id="student_emails" class="stundet_email_pick trainer-editable"
+                                                   size="30">
+                                        </span>
+                                    </form>
+                                </div>
+                                <div class="modal-body-table">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="container">
+                                    <div class="row justify-content-between">
+                                        <div>
+                                            <button type="button" class="btn btn-success float-left"
+                                                    id="put-default-hours-btn" onclick="mark_all(this)">Mark all (<span
+                                                    id="mark-all-hours-value"></span> h.)
+                                            </button>
+                                        </div>
+
+                                        <div class="alert alert-danger" id="hours-alert" role="alert"
+                                             style="visibility: hidden">
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-primary" id="save-hours-btn" onclick="save_hours()"
+                                                    type="button">Save
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="training-info-modal" tabindex="-1" role="dialog"
+                     aria-labelledby="training-info-modal"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-md" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="training-info-modal-title">
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-left"></div>
+                            <div class="modal-footer">
+                                <div class="container">
+                                    <div class="row justify-content-between">
+                                        <div>
+                                            <button type="button" class="btn btn-danger" id="enroll-unenroll-btn"
+                                                    data-dismiss="modal">
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
