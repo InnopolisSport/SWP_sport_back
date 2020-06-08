@@ -14,7 +14,7 @@ def special_groups_create(sender, instance, created, **kwargs):
         other_sport, _ = Sport.objects.get_or_create(name="Other", special=True)
         trainer_group = AuthGroup.objects.get(verbose_name=settings.TRAINER_GROUP_VERBOSE_NAME)
         sport_dep_user, _ = User.objects.get_or_create(
-            first_name="Sport123",
+            first_name="Sport",
             last_name="Department",
             email=settings.SPORT_DEPARTMENT_EMAIL,
             defaults={
