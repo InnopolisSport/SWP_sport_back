@@ -12,5 +12,5 @@ class TrainerAdmin(admin.ModelAdmin):
 
     list_display = (
         "__str__",
-        "user__email",
+        "user",
     )

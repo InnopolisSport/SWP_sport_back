@@ -137,6 +137,9 @@ AUTH_ADFS = {
     },
 }
 
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "profile"
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
