@@ -1,8 +1,8 @@
-from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group as AuthGroup
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.conf import settings
+
 
 from sport.models import Semester, Sport, Trainer, Group, Schedule
 
@@ -12,14 +12,17 @@ def special_groups_create(sender, instance, created, **kwargs):
     if created:
         # get_or_create returns (object: Model, created: bool)
         other_sport, _ = Sport.objects.get_or_create(name="Other", special=True)
+        trainer_group = AuthGroup.objects.get(verbose_name=settings.TRAINER_GROUP_VERBOSE_NAME)
         sport_dep_user, _ = User.objects.get_or_create(
-            first_name="Sport",
+            first_name="Sport123",
             last_name="Department",
             email=settings.SPORT_DEPARTMENT_EMAIL,
             defaults={
                 "is_active": True,
+                "username": settings.SPORT_DEPARTMENT_EMAIL,
             }
         )
+        sport_dep_user.groups.add(trainer_group)
         sport_dep, _ = Trainer.objects.get_or_create(user=sport_dep_user)
         trainer_group = Group(name=settings.SC_TRAINERS_GROUP_NAME, capacity=9999,
                               is_club=False, sport=other_sport,
