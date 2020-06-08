@@ -5,6 +5,8 @@
 * Docker
 
 ## Environment Variables
+See `compose/example.env` for reference.
+
 The project require a file `compose/.env` to contain 
 following environment variables:
 
@@ -14,6 +16,8 @@ following environment variables:
 * `POSTGRES_SERVER` - database hostname (`db` - by default)
 * `SECRET_KEY` - a secret key for token verifications
 * `PROJECT_NAME`- project title
+* `BASE_URL` - service base url
+* `PYTHON_VERSION` - which python version is to be used (specify exact version)
 * `DEBUG`- boolean flag for DEBUG mode ( `true` enables fake login and Django debug)
 * `oauth_appID` - application ID for oauth
 * `oauth_shared_secret` - application secret for ouath
@@ -30,13 +34,12 @@ following environment variables:
 1. Mark `./backend/app` as a Source root
 1. To start server 
     1. From repo folder: `docker-compose up -f ./compose/docker-compose.yml`
-    1. From `/backend/app`: `docker-compose up -f ../../compose/docker-compose.yml`
 
-Server supports auto-reload on code change
+Server supports auto-reload on code change in debug mode
 
-Swagger documentation is at `localhost:<port>/docs`
-
-Redoc documentation is at `localhost:<port>/redoc`
+Documentation for `api` module:
+* Swagger is at `/api/swagger`
+* Redoc is at `/api/redoc`
 ```
 .
 ├── adminpage - Django project
