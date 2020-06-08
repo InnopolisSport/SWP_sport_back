@@ -4,7 +4,7 @@ from django.contrib import admin
 from sport.models import Enroll, Group
 
 from .mixins import EnrollExportXlsxMixin
-from .utils import custom_titled_filter, cache_filter, year_filter, cache_dependent_filter
+from .utils import custom_titled_filter, cache_filter, cache_dependent_filter
 
 
 class TrainerTextFilter(AutocompleteFilter):
@@ -22,20 +22,15 @@ class EnrollAdmin(admin.ModelAdmin, EnrollExportXlsxMixin):
     )
 
     list_filter = (
-        # filter on study year, resets semester and group sub filters
-        cache_filter(year_filter("group__semester__start__year"), ["group__semester__id", "group__id"]),
-        # semester filter, depends on chosen year, resets group sub filter
+        # semester filter, resets group sub filter
         (
             "group__semester",
-            cache_filter(cache_dependent_filter({"group__semester__start__year": "start__year"}), ["group__id"])
+            cache_filter(admin.RelatedFieldListFilter, ["group__id"])
         ),
-        # group filter, depends on chosen year and semester
+        # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({
-                "group__semester__start__year": "semester__start__year",
-                "group__semester": "semester"
-            })
+            cache_dependent_filter({"group__semester": "semester"})
         ),
         ("group__is_club", custom_titled_filter("club status")),
         ("is_primary", custom_titled_filter("primary status")),

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from sport.models import Training
 from .inlines import AttendanceInline
-from .utils import cache_filter, year_filter, cache_dependent_filter, cache_alternative_filter
+from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter
 
 
 @admin.register(Training)
@@ -22,23 +22,18 @@ class TrainingAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
-        # filter on study year, resets semester and group sub filters
-        cache_filter(year_filter("start__year"), ["group__semester__id", "group__id"]),
-        # semester filter, depends on chosen year, resets group sub filter
+        # semester filter, resets group sub filter
         (
             "group__semester",
-            cache_filter(cache_dependent_filter({"start__year": "start__year"}), ["group__id"])
+            cache_filter(admin.RelatedFieldListFilter, ["group__id"])
         ),
-        # group filter, depends on chosen year and semester
+        # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({
-                "start__year": "semester__start__year",
-                "group__semester": "semester"
-            })
+            cache_dependent_filter({"group__semester": "semester"})
         ),
         ("training_class", admin.RelatedOnlyFieldListFilter),
-        ("start", cache_alternative_filter(admin.DateFieldListFilter, ["start__year"])),
+        ("start", cache_alternative_filter(admin.DateFieldListFilter, ["group__semester"])),
     )
 
     list_display = (

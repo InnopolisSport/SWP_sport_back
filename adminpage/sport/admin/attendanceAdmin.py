@@ -1,7 +1,7 @@
 from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin
 
-from sport.admin.utils import year_filter, cache_filter, cache_dependent_filter, cache_alternative_filter
+from sport.admin.utils import cache_filter, cache_dependent_filter, cache_alternative_filter
 from sport.models import Attendance
 
 
@@ -27,22 +27,17 @@ class AttendanceAdmin(admin.ModelAdmin):
 
     list_filter = (
         StudentTextFilter,
-        # filter on study year, resets semester and group sub filters
-        cache_filter(year_filter("training__start__year"), ["training__group__semester__id", "training__group__id"]),
-        # semester filter, depends on chosen year, resets group sub filter
+        # semester filter, resets group sub filter
         (
             "training__group__semester",
-            cache_filter(cache_dependent_filter({"training__start__year": "start__year"}), ["training__group__id"])
+            cache_filter(admin.RelatedFieldListFilter, ["training__group__id"])
         ),
-        # group filter, depends on chosen year and semester
+        # group filter, depends on chosen semester
         (
             "training__group",
-            cache_dependent_filter({
-                "training__group__semester": "semester__pk",
-                "training__start__year": "semester__start__year"
-            })
+            cache_dependent_filter({"training__group__semester": "semester__pk"})
         ),
-        ("training__start", cache_alternative_filter(admin.DateFieldListFilter, ["training__start__year"])),
+        ("training__start", cache_alternative_filter(admin.DateFieldListFilter, ["training__group__semester"])),
     )
 
     class Media:

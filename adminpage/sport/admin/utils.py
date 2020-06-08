@@ -2,7 +2,12 @@ from typing import List, Dict
 
 from django.contrib import admin
 
-from sport.models import Semester
+
+def user__email(obj):
+    return obj.user.email
+
+
+user__email.short_description = 'user email'
 
 
 def custom_titled_filter(title, filter_class=admin.RelatedFieldListFilter):
@@ -94,19 +99,3 @@ def cache_alternative_filter(cls, cache_keys: List[str]):
             return self.no_output
 
     return CacheRelatedFieldListFilter
-
-
-def year_filter(year_field: str):
-    class YearFilter(admin.SimpleListFilter):
-        title = "study year"
-        parameter_name = year_field
-
-        def lookups(self, request, model_admin):
-            years = list(Semester.objects.all().values("start__year").distinct())
-            return list(map(lambda x: (x["start__year"], x["start__year"]), years))
-
-        def queryset(self, request, queryset):
-            if self.value() is not None:
-                return queryset.filter(**{year_field: self.value()})
-
-    return YearFilter

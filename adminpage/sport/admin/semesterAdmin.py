@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from sport.models import Semester
-from .utils import year_filter
 
 
 @admin.register(Semester)
@@ -13,10 +12,6 @@ class SemesterAdmin(admin.ModelAdmin):
 
     ordering = (
         "-start",
-    )
-
-    list_filter = (
-        year_filter("start__year"),
     )
 
     list_display = (

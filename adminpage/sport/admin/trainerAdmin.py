@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from sport.admin.utils import user__email
 from sport.models import Trainer
 
 
@@ -13,5 +14,5 @@ class TrainerAdmin(admin.ModelAdmin):
 
     list_display = (
         "__str__",
-        "user",
+        user__email,
     )
