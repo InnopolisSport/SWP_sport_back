@@ -32,6 +32,8 @@ from django.urls import path, include
 #     })
 #     return JsonResponse(data)
 
+handler404 = "sport.views.errors.handler404"
+handler500 = "sport.views.errors.handler500"
 
 urlpatterns = [
                   path(settings.PREFIX, include([
