@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from sport.models import Schedule
 from .inlines import ViewTrainingInline
-from .utils import cache_filter, cache_dependent_filter
+from .utils import cache_filter, cache_dependent_filter, custom_order_filter
 
 
 @admin.register(Schedule)
@@ -24,12 +24,12 @@ class ScheduleAdmin(admin.ModelAdmin):
         # semester filter, resets group sub filter
         (
             "group__semester",
-            cache_filter(admin.RelatedFieldListFilter, ["group__id"])
+            cache_filter(custom_order_filter(("-start",)), ["group__id"])
         ),
         # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({"group__semester": "semester"})
+            cache_dependent_filter({"group__semester": "semester"}, ("name",))
         ),
         "weekday",
         "start",

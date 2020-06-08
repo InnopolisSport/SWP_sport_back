@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 from django.contrib import admin
 
@@ -8,6 +8,13 @@ def user__email(obj):
 
 
 user__email.short_description = 'user email'
+
+
+def custom_order_filter(ordering: Tuple, cls=admin.RelatedFieldListFilter):
+    class Wrapper(cls):
+        def field_admin_ordering(self, field, request, model_admin):
+            return ordering
+    return Wrapper
 
 
 def custom_titled_filter(title, filter_class=admin.RelatedFieldListFilter):
@@ -60,10 +67,11 @@ def cache_filter(cls, clear_list: List[str]):
     return CacheAwareFilter
 
 
-def cache_dependent_filter(translation: Dict[str, str]):
+def cache_dependent_filter(translation: Dict[str, str], order=None):
     """
     Creates foreign key list filter, that can use cached values from other filters
     @param translation: rules for translating cached keys, if 'key' is cached,
+    @param order: desired filter list ordering
     translation['key'] will be used as the actual filter parameter
     """
 
@@ -73,7 +81,7 @@ def cache_dependent_filter(translation: Dict[str, str]):
             if self.no_output:
                 return []
             additional_filter = {translation[k]: request.cache_filter[k] for k in translation}
-            ordering = self.field_admin_ordering(field, request, model_admin)
+            ordering = order or self.field_admin_ordering(field, request, model_admin)
             return field.get_choices(include_blank=False, ordering=ordering,
                                      limit_choices_to=additional_filter)
 
