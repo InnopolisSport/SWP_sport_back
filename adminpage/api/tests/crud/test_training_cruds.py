@@ -92,7 +92,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
         "trainer_first_name": None,
         "trainer_last_name": None,
         "trainer_email": None,
-        "hours": None,
+        "hours": 0,
         "is_enrolled": True,
         "is_primary": False
     }
@@ -126,7 +126,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
             "group_id": group.pk,
             "group_name": group.name,
             "training_class": None,
-            "hours": None,
+            "hours": 0,
             "can_grade": False
         }
     ])
