@@ -1,5 +1,10 @@
 from django.db import models
+from django.db.models import Q, Func, F, Expression, ExpressionWrapper
 from django.forms.utils import to_current_timezone
+
+
+class Date(Func):
+    function = 'DATE'
 
 
 class Training(models.Model):
@@ -13,11 +18,16 @@ class Training(models.Model):
         db_table = "training"
         verbose_name_plural = "trainings"
         constraints = [
-            models.UniqueConstraint(fields=["group", "start", "end"], name="unique_training")
+            models.UniqueConstraint(fields=["group", "start", "end"], name="unique_training"),
+            models.CheckConstraint(check=Q(start__lt=F('end')), name='training_start_before_end')
         ]
 
     def __str__(self):
         return f"{self.group} at {to_current_timezone(self.start).date()} " \
-               f"{to_current_timezone(self.start).time().strftime('%H:%M')}-"\
+               f"{to_current_timezone(self.start).time().strftime('%H:%M')}-" \
                f"{to_current_timezone(self.end).time().strftime('%H:%M')}" \
                f"{'' if self.training_class is None else f' in {self.training_class}'}"
+
+    @property
+    def academic_duration(self) -> float:
+        return round((self.end - self.start).total_seconds() / 2700, 2)

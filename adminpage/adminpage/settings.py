@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 
 def getenv_boolean(var_name, default_value=False):
@@ -22,7 +23,20 @@ def getenv_boolean(var_name, default_value=False):
 
 
 SPORT_DEPARTMENT_EMAIL = "sport@innopolis.university"
+STUDENT_AUTH_GROUP_VERBOSE_NAME = "Students"
+STUDENT_AUTH_GROUP_NAME = "S-1-5-21-721043115-644155662-3522934251-2285"
 
+TRAINER_AUTH_GROUP_VERBOSE_NAME = "School Physical Activity for Health"
+TRAINER_AUTH_GROUP_NAME = "S-1-5-21-2948122937-1530199265-1034249961-9635"
+
+SC_TRAINERS_GROUP_NAME = "SC trainers"
+
+TRAINING_EDITABLE_INTERVAL = timedelta(
+    days=int(os.getenv("TRAINING_EDITABLE_INTERVAL", 14))
+)
+
+BASE_URL = os.getenv("BASE_URL", "http://localhost:81/")
+PREFIX = ""
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -32,14 +46,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = getenv_boolean("DEBUG", False)
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = getenv_boolean("DEBUG")
+PROJECT_ROOT = "/src/"
 ALLOWED_HOSTS = ['188.130.155.115', 'helpdesk.innopolis.university']
 
 if DEBUG:
     ALLOWED_HOSTS.append('localhost')
-
+else:
+    # make django think it is using https
+    # WARNING: make sure, only trusted connections are possible
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,7 +67,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sport.apps.SportConfig'
+    'django_auth_adfs',
+    'admin_auto_filters',
+    'rest_framework',
+    'drf_yasg',
+    'sport.apps.SportConfig',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -67,7 +90,9 @@ ROOT_URLCONF = 'adminpage.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(PROJECT_ROOT, "templates/"),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,6 +106,43 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'adminpage.wsgi.application'
+
+# Authentication
+
+OAUTH_CLIENT_ID = os.getenv('oauth_appID')
+OAUTH_CLIENT_SECRET = os.getenv("oauth_shared_secret")
+OAUTH_AUTHORIZATION_BASEURL = os.getenv("oauth_authorization_baseURL")
+OAUTH_GET_INFO_URL = os.getenv("oauth_get_infoURL")
+OAUTH_TOKEN_URL = os.getenv("oauth_tokenURL")
+OAUTH_END_SESSION_URL = os.getenv("oauth_end_session_endpoint")
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_auth_adfs.backend.AdfsAuthCodeBackend',
+)
+
+AUTH_ADFS = {
+    "SERVER": "sso.university.innopolis.ru",
+    "CLIENT_ID": OAUTH_CLIENT_ID,
+    "CLIENT_SECRET": OAUTH_CLIENT_SECRET,
+    "RELYING_PARTY_ID": OAUTH_CLIENT_ID,
+    # Make sure to read the documentation about the AUDIENCE setting
+    # when you configured the identifier as a URL!
+    "AUDIENCE": f"microsoft:identityserver:{OAUTH_CLIENT_ID}",
+    "CA_BUNDLE": True,
+    "USERNAME_CLAIM": "upn",
+    # use group ids instead of name, because names are written in different languages
+    "GROUPS_CLAIM": "groupsid",
+    "MIRROR_GROUPS": True,  # TODO: change when get info about all groups
+    "CLAIM_MAPPING": {
+        "first_name": "given_name",
+        "last_name": "family_name",
+        "email": "email"
+    },
+}
+
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "profile"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -131,8 +193,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATIC_ROOT = '/static/'
+
 if DEBUG:
-    STATIC_URL = '/admin/static/'
+    STATIC_URL = f'/{PREFIX}static/'
 else:
     STATIC_URL = '/static/'
-    STATIC_ROOT = '/static/'
+

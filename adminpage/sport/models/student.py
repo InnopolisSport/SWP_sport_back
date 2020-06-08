@@ -1,10 +1,17 @@
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch.dispatcher import receiver
 
 
 class Student(models.Model):
-    first_name = models.CharField(max_length=50, null=False)
-    last_name = models.CharField(max_length=50, null=False)
-    email = models.CharField(max_length=50, null=False, unique=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE,
+        null=False,
+        limit_choices_to={'groups__verbose_name': settings.STUDENT_AUTH_GROUP_VERBOSE_NAME}
+    )
+
     is_ill = models.BooleanField(default=False, null=False)
 
     class Meta:
@@ -12,4 +19,10 @@ class Student(models.Model):
         verbose_name_plural = "students"
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
+
+
+@receiver(post_save, sender=User)
+def save_student_profile(sender, instance, **kwargs):
+    if Student.objects.filter(user=instance.pk).exists():
+        instance.student.save()

@@ -9,53 +9,26 @@ services:
     ports:
       - "81:80"
     depends_on:
-      - backend
       - adminpanel
       - adminer
     volumes:
       - ../nginx/logs:/var/log/nginx
       - ../nginx/access.d:/etc/nginx/access.d
-      - django-static:/static/admin
-      - fastapi-static:/static
-
-  backend:
-    build:
-      context: ../backend
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; /start-reload.sh'
-    ports:
-      - "8082:80"
-    restart: always
-    depends_on:
-      - db
-    volumes:
-      - ../backend/app:/app
-      - fastapi-static:/static
-    environment:
-      - DEBUG
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-      - POSTGRES_SERVER
-      - PROJECT_NAME
-      - SECRET_KEY
-      - oauth_appID
-      - oauth_shared_secret
-      - oauth_authorization_baseURL
-      - oauth_get_infoURL
-      - oauth_tokenURL
-      - oauth_end_session_endpoint
-      - TRAINING_EDITABLE_DAYS
+      - django-static:/static
 
   adminpanel:
     build:
       context: ../adminpage
       dockerfile: Dockerfile
+      args:
+        - PYTHON_VERSION
     #   Wait for postgres to startup before running server
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
     restart: always
     volumes:
       - ../adminpage:/src
-      - django-static:/static/admin
+      - django-auth-preserve:/usr/local/lib/python${PYTHON_VERSION}/site-packages/django/contrib/auth/migrations/
+      - django-static:/static
     ports:
       - "8000:8000"
     depends_on:
@@ -68,11 +41,18 @@ services:
       - POSTGRES_SERVER
       - SECRET_KEY
       - PROJECT_NAME
+      - TRAINING_EDITABLE_INTERVAL
+      - oauth_appID
+      - oauth_shared_secret
+      - oauth_authorization_baseURL
+      - oauth_get_infoURL
+      - oauth_tokenURL
+      - oauth_end_session_endpoint
 
   db:
     image: db
     build:
-      context: ../backend
+      context: ..
       dockerfile: Dockerfile.db
     restart: always
     ports:
@@ -98,4 +78,8 @@ services:
 volumes:
   db-data:
   django-static:
-  fastapi-static:
+  # required to preserve change to django.contrib.auth.models.Group class.
+  # (verbose_name added)
+  # since Innopolis adfs provides groupsid as universal identifier
+  # (group - can be either in Russian or English)
+  django-auth-preserve:

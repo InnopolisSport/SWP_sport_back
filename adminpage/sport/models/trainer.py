@@ -1,14 +1,18 @@
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 
 
 class Trainer(models.Model):
-    first_name = models.CharField(max_length=50, null=False)
-    last_name = models.CharField(max_length=50, null=False)
-    email = models.CharField(max_length=50, null=False, unique=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE,
+        null=False,
+        limit_choices_to={'groups__verbose_name': settings.TRAINER_AUTH_GROUP_VERBOSE_NAME}
+    )
 
     class Meta:
         db_table = "trainer"
         verbose_name_plural = "trainers"
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"

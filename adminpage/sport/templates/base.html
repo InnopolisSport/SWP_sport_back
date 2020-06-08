@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{% static "sport/css/header.css" %}">
+    <script src="{% static "sport/js/header.js" %}"></script>
+    {% block extrahead %} {% endblock %}
+</head>
+<body>
+<header class="head">
+    <a class="head" href="/profile">
+        <img class="head" src="{% static "sport/images/Inno.png" %}" alt="IU logo">
+    </a>
+    <div>
+        {% if user.is_authenticated %}
+            <a class="head" href="/profile">{{ user.first_name }} {{ user.last_name }}</a>
+            <a class="head" id="logout-btn" href="{% url 'django_auth_adfs:logout' %}">Log out</a>
+        {% else %}
+            <a class="head" href="{% url 'django_auth_adfs:login' %}">Log in</a>
+        {% endif %}
+    </div>
+</header>
+
+{% block content %}
+{% endblock %}
+</body>
+
+</html>

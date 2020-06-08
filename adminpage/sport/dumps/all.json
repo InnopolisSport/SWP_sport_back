@@ -1,0 +1,6325 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 4,
+    "fields": {
+      "name": "S-1-5-21-721043115-644155662-3522934251-2285",
+      "verbose_name": "Students",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 5,
+    "fields": {
+      "name": "S-1-5-21-721043115-644155662-3522934251-513",
+      "verbose_name": "DomainUsers",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 6,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-10003",
+      "verbose_name": "AzureADsyncUsers",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 7,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-9424",
+      "verbose_name": "Student Affairs and Development Office",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 8,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-6082",
+      "verbose_name": "Education Programs Management Office",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 9,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-2141",
+      "verbose_name": "Academic Affairs Department",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 10,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-5822",
+      "verbose_name": "RDGateTier5",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 11,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-6162",
+      "verbose_name": "AcrobatPRO",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 12,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-1674",
+      "verbose_name": "All Staff",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 13,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-5821",
+      "verbose_name": "RDGateTier1",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 14,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-5998",
+      "verbose_name": "Canon8500_ColorHP",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 15,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-513",
+      "verbose_name": "\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u0438 \u0434\u043e\u043c\u0435\u043d\u0430",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 16,
+    "fields": {
+      "name": "S-1-5-21-2948122937-1530199265-1034249961-9635",
+      "verbose_name": "School Physical Activity for Health",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$180000$IJE87pT7juif$T0OQ2nts8KVrx1Dzaa2WHgtbLjd5x1AGOba/xmGnyKI=",
+      "last_login": "2020-05-31T09:21:26.591Z",
+      "is_superuser": true,
+      "username": "sportAdmin",
+      "first_name": "",
+      "last_name": "",
+      "email": "sport@innopolis.university",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2020-04-08T18:17:33.440Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "!GZGlYiAsuHOoewBDgZw22wLdPOZYD1Ca14jyiLBi",
+      "last_login": "2020-06-02T13:23:18.520Z",
+      "is_superuser": true,
+      "username": "d.manakovskiy@innopolis.university",
+      "first_name": "Daniil",
+      "last_name": "Manakovskiy",
+      "email": "d.manakovskiy@innopolis.university",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2020-05-30T07:49:13Z",
+      "groups": [
+        4,
+        5,
+        6,
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 6,
+    "fields": {
+      "password": "!laUU7XtLjc6AMju9I0uAVhOnaGg3ntgIIYkftcwh",
+      "last_login": "2020-05-30T16:36:40Z",
+      "is_superuser": false,
+      "username": "a.grishchenko@innopolis.university",
+      "first_name": "Alexandr",
+      "last_name": "Grichshenko",
+      "email": "a.grishchenko@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-05-30T16:36:40Z",
+      "groups": [
+        4,
+        5,
+        6
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$180000$hcreEsyZWhFn$s3OukEkQjlTPhFfnDT6gRd03cml0m49GCkcY9KN4m5o=",
+      "last_login": "2020-06-01T13:09:29.081Z",
+      "is_superuser": true,
+      "username": "demo",
+      "first_name": "Demo",
+      "last_name": "Account",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2020-06-01T06:09:52Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 8,
+    "fields": {
+      "password": "pbkdf2_sha256$180000$pWwyfjFqJQIw$Rt13isWUgaSgNXXk8v5v3zEfAyfM1H8Hf7hi2UFNmnc=",
+      "last_login": "2020-06-01T15:02:36.980Z",
+      "is_superuser": true,
+      "username": "k.fedoseev@innopolis.university",
+      "first_name": "Kirill",
+      "last_name": "Fedoseev",
+      "email": "k.fedoseev@innopolis.university",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2020-06-01T14:23:53Z",
+      "groups": [
+        4,
+        5,
+        6,
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 9,
+    "fields": {
+      "password": "!glGqcSheG1BAMhs89VloLGTibi6ZJvZ1UPssMkkJ",
+      "last_login": "2020-06-02T12:55:24.738Z",
+      "is_superuser": true,
+      "username": "d.podpryatov@innopolis.university",
+      "first_name": "Dmitry",
+      "last_name": "Podpryatov",
+      "email": "d.podpryatov@innopolis.university",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2020-06-01T14:24:25Z",
+      "groups": [
+        4,
+        5,
+        6
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 10,
+    "fields": {
+      "password": "!ASux3xWeQpTHc9KPRi2JGxljWpMZFLvxxy4pMO7d",
+      "last_login": "2020-06-02T13:36:19.748Z",
+      "is_superuser": false,
+      "username": "e.serochudinov@innopolis.ru",
+      "first_name": "\u0415\u0432\u0433\u0435\u043d\u0438\u0439",
+      "last_name": "\u0421\u0435\u0440\u043e\u0447\u0443\u0434\u0438\u043d\u043e\u0432",
+      "email": "e.serochudinov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-02T13:36:19.485Z",
+      "groups": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 12,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "o.okonicha@innopolis.university",
+      "first_name": "Ozioma",
+      "last_name": "Okonicha",
+      "email": "o.okonicha@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11.170Z",
+      "groups": [
+        4
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 13,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "p.turischeva@innopolis.university",
+      "first_name": "Polina",
+      "last_name": "Turishcheva",
+      "email": "p.turischeva@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11.187Z",
+      "groups": [
+        4
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 14,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "n.matrosova@innopolis.university",
+      "first_name": "Nataliya",
+      "last_name": "Matrosova",
+      "email": "n.matrosova@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11.204Z",
+      "groups": [
+        4
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 15,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "d.burakov@innopolis.university",
+      "first_name": "Daniil",
+      "last_name": "Burakov",
+      "email": "d.burakov@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11.219Z",
+      "groups": [
+        4,
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 16,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.bogdanova@innopolis.university",
+      "first_name": "Alina",
+      "last_name": "Bogdanova",
+      "email": "a.bogdanova@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11Z",
+      "groups": [
+        4,
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 17,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "e.duskaliev@innopolis.university",
+      "first_name": "Yelshat",
+      "last_name": "Duskaliyev",
+      "email": "e.duskaliev@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11.255Z",
+      "groups": [
+        4
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 18,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.brisilin@innopolis.university",
+      "first_name": "Anton",
+      "last_name": "Brisilin",
+      "email": "a.brisilin@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11.275Z",
+      "groups": [
+        4
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 19,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.zavideeva@innopolis.university",
+      "first_name": "Alena",
+      "last_name": "Zavideeva",
+      "email": "a.zavideeva@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11.288Z",
+      "groups": [
+        4
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 20,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "r.sirgalina@innopolis.university",
+      "first_name": "Rufina",
+      "last_name": "Sirgalina",
+      "email": "r.sirgalina@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11.314Z",
+      "groups": [
+        4
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 21,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.martyanova@innopolis.university",
+      "first_name": "Alisa",
+      "last_name": "Martyanova",
+      "email": "a.martyanova@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:38:11.340Z",
+      "groups": [
+        4
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 22,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "s.arslanov@innopolis.ru",
+      "first_name": "Shamil",
+      "last_name": "Arslanov",
+      "email": "s.arslanov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:01.989Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 23,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "d.khasanov@innopolis.ru",
+      "first_name": "Danila",
+      "last_name": "Khasanov",
+      "email": "d.khasanov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.022Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 24,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.pavlova@innopolis.ru",
+      "first_name": "Alina",
+      "last_name": "Pavlova",
+      "email": "a.pavlova@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.039Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 25,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.akhmetbek@innopolis.ru",
+      "first_name": "Ali",
+      "last_name": "Akhmetbek",
+      "email": "a.akhmetbek@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02Z",
+      "groups": [
+        4,
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 26,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "r.galimzianov@innopolis.ru",
+      "first_name": "Rafil",
+      "last_name": "Galimzianov",
+      "email": "r.galimzianov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.076Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 27,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "o.bulichev@innopolis.ru",
+      "first_name": "Oleg",
+      "last_name": "Bulichev",
+      "email": "o.bulichev@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.101Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 28,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "e.shaymardanov@innopolis.ru",
+      "first_name": "Eduard",
+      "last_name": "Shaimardanov",
+      "email": "e.shaymardanov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.120Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 29,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.gruk@innopolis.ru",
+      "first_name": "Alexander",
+      "last_name": "Gruk",
+      "email": "a.gruk@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.137Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 30,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "y.mesbah@innopolis.university",
+      "first_name": "Yusuf",
+      "last_name": "Mesbah",
+      "email": "y.mesbah@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.151Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 31,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.kuspakov@innopolis.ru",
+      "first_name": "Amadey",
+      "last_name": "Kuspakov",
+      "email": "a.kuspakov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.177Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 32,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "t.nugaev@innopolis.university",
+      "first_name": "Timur",
+      "last_name": "Nugaev",
+      "email": "t.nugaev@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.196Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 33,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.skudarnov@innopolis.ru",
+      "first_name": "Anton",
+      "last_name": "Skudarnov",
+      "email": "a.skudarnov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.213Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 34,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "d.gordin@innopolis.ru",
+      "first_name": "Dmitry",
+      "last_name": "Gordin",
+      "email": "d.gordin@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.236Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 35,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "y.yudinskikh@innopolis.university",
+      "first_name": "Yaroslav",
+      "last_name": "Yudinskikh",
+      "email": "y.yudinskikh@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.279Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 36,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "n.gurov@innopolis.ru",
+      "first_name": "Nikita",
+      "last_name": "Gurov",
+      "email": "n.gurov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.296Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 37,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "z.abbas@innopolis.ru",
+      "first_name": "Zuhair",
+      "last_name": "Abbas",
+      "email": "z.abbas@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.312Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 38,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.liniushin@innopolis.university",
+      "first_name": "Andrey",
+      "last_name": "Liniushin",
+      "email": "a.liniushin@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.333Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 39,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "y.ngouma@innopolis.ru",
+      "first_name": "Yonel",
+      "last_name": "Ngouma",
+      "email": "y.ngouma@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.386Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 40,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a. evlampyev@innopolis.university",
+      "first_name": "Alexey",
+      "last_name": "Evlampyev",
+      "email": "a. evlampyev@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.450Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 41,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "r.mullakhmetov@innopolis.ru",
+      "first_name": "Rinat",
+      "last_name": "Mullakhmetov",
+      "email": "r.mullakhmetov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.467Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 42,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "s.kiselyov@innopolis.university",
+      "first_name": "Semyon",
+      "last_name": "Kiselyov",
+      "email": "s.kiselyov@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.483Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 43,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "s.kiselyov@innopolis.ru",
+      "first_name": "Semyon",
+      "last_name": "Kiselyov",
+      "email": "s.kiselyov@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.498Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 44,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "g.stepanov@innopolis.university",
+      "first_name": "Gosha",
+      "last_name": "Stepanov",
+      "email": "g.stepanov@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.512Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 45,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.evlampyev@innopolis.ru",
+      "first_name": "Alexey",
+      "last_name": "Evlampyev",
+      "email": "a.evlampyev@innopolis.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.526Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 46,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "a.gruk@innopolis.university",
+      "first_name": "Alexander",
+      "last_name": "Gruk",
+      "email": "a.gruk@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.543Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 47,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "y.ngouma@innopolis.university",
+      "first_name": "Yonel",
+      "last_name": "Ngouma",
+      "email": "y.ngouma@innopolis.university",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-06-04T06:41:02.569Z",
+      "groups": [
+        16
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "sport.semester",
+    "pk": 2,
+    "fields": {
+      "name": "S20",
+      "start": "2020-01-20",
+      "end": "2020-06-14",
+      "choice_deadline": "2020-05-31"
+    }
+  },
+  {
+    "model": "sport.semester",
+    "pk": 4,
+    "fields": {
+      "name": "F20",
+      "start": "2020-08-20",
+      "end": "2020-12-20",
+      "choice_deadline": "2020-09-01"
+    }
+  }
+,
+  {
+    "model": "sport.student",
+    "pk": 2,
+    "fields": {
+      "first_name": "Dmitry",
+      "last_name": "Podpryatov",
+      "email": "d.podpryatov@innopolis.university",
+      "user": 9,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 4,
+    "fields": {
+      "first_name": "Ozioma",
+      "last_name": "Okonicha",
+      "email": "o.okonicha@innopolis.university",
+      "user": 12,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 5,
+    "fields": {
+      "first_name": "Polina",
+      "last_name": "Turishcheva",
+      "email": "p.turischeva@innopolis.university",
+      "user": 13,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 6,
+    "fields": {
+      "first_name": "Daniil",
+      "last_name": "Burakov",
+      "email": "d.burakov@innopolis.university",
+      "user": 15,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 8,
+    "fields": {
+      "first_name": "Nataliya",
+      "last_name": "Matrosova",
+      "email": "n.matrosova@innopolis.university",
+      "user": 14,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 9,
+    "fields": {
+      "first_name": "Alina",
+      "last_name": "Bogdanova",
+      "email": "a.bogdanova@innopolis.university",
+      "user": 16,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 10,
+    "fields": {
+      "first_name": "Yelshat",
+      "last_name": "Duskaliyev",
+      "email": "e.duskaliev@innopolis.university",
+      "user": 17,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 12,
+    "fields": {
+      "first_name": "Kirill",
+      "last_name": "Fedoseev",
+      "email": "k.fedoseev@innopolis.university",
+      "user": 8,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 13,
+    "fields": {
+      "first_name": "Anton",
+      "last_name": "Brisilin",
+      "email": "a.brisilin@innopolis.university",
+      "user": 18,
+      "is_ill": true
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 14,
+    "fields": {
+      "first_name": "Alena",
+      "last_name": "Zavideeva",
+      "email": "a.zavideeva@innopolis.university",
+      "user": 19,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 15,
+    "fields": {
+      "first_name": "Rufina",
+      "last_name": "Sirgalina",
+      "email": "r.sirgalina@innopolis.university",
+      "user": 20,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 16,
+    "fields": {
+      "first_name": "Alisa",
+      "last_name": "Martyanova",
+      "email": "a.martyanova@innopolis.university",
+      "user": 21,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 17,
+    "fields": {
+      "first_name": "Daniil",
+      "last_name": "Manakovskiy",
+      "email": "d.manakovskiy@innopolis.university",
+      "user": 2,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.student",
+    "pk": 30,
+    "fields": {
+      "first_name": null,
+      "last_name": null,
+      "email": null,
+      "user": 25,
+      "is_ill": false
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 3,
+    "fields": {
+      "first_name": "Sport",
+      "last_name": "Department",
+      "email": "sport@innopolis.university",
+      "user": 1
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 4,
+    "fields": {
+      "first_name": "Daniil",
+      "last_name": "Manakovskiy",
+      "email": "d.manakovskiy@innopolis.university",
+      "user": 2
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 5,
+    "fields": {
+      "first_name": "Kirill",
+      "last_name": "Fedoseev",
+      "email": "k.fedoseev@innopolis.university",
+      "user": 8
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 6,
+    "fields": {
+      "first_name": "Daniil",
+      "last_name": "Burakov",
+      "email": "d.burakov@innopolis.university",
+      "user": 15
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 7,
+    "fields": {
+      "first_name": "Alina",
+      "last_name": "Bogdanova",
+      "email": "a.bogdanova@innopolis.university",
+      "user": 16
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 8,
+    "fields": {
+      "first_name": "Shamil",
+      "last_name": "Arslanov",
+      "email": "s.arslanov@innopolis.ru",
+      "user": 22
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 9,
+    "fields": {
+      "first_name": "Danila",
+      "last_name": "Khasanov",
+      "email": "d.khasanov@innopolis.ru",
+      "user": 23
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 10,
+    "fields": {
+      "first_name": "Alina",
+      "last_name": "Pavlova",
+      "email": "a.pavlova@innopolis.ru",
+      "user": 24
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 11,
+    "fields": {
+      "first_name": "Ali",
+      "last_name": "Akhmetbek",
+      "email": "a.akhmetbek@innopolis.ru",
+      "user": 25
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 12,
+    "fields": {
+      "first_name": "Rafil",
+      "last_name": "Galimzianov",
+      "email": "r.galimzianov@innopolis.ru",
+      "user": 26
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 13,
+    "fields": {
+      "first_name": "Oleg",
+      "last_name": "Bulichev",
+      "email": "o.bulichev@innopolis.ru",
+      "user": 27
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 14,
+    "fields": {
+      "first_name": "Eduard",
+      "last_name": "Shaimardanov",
+      "email": "e.shaymardanov@innopolis.ru",
+      "user": 28
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 15,
+    "fields": {
+      "first_name": "Alexander",
+      "last_name": "Gruk",
+      "email": "a.gruk@innopolis.ru",
+      "user": 29
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 16,
+    "fields": {
+      "first_name": "Yusuf",
+      "last_name": "Mesbah",
+      "email": "y.mesbah@innopolis.university",
+      "user": 30
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 17,
+    "fields": {
+      "first_name": "Amadey",
+      "last_name": "Kuspakov",
+      "email": "a.kuspakov@innopolis.ru",
+      "user": 31
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 18,
+    "fields": {
+      "first_name": "Timur",
+      "last_name": "Nugaev",
+      "email": "t.nugaev@innopolis.university",
+      "user": 32
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 19,
+    "fields": {
+      "first_name": "Anton",
+      "last_name": "Skudarnov",
+      "email": "a.skudarnov@innopolis.ru",
+      "user": 33
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 20,
+    "fields": {
+      "first_name": "Dmitry",
+      "last_name": "Gordin",
+      "email": "d.gordin@innopolis.ru",
+      "user": 34
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 21,
+    "fields": {
+      "first_name": "Yaroslav",
+      "last_name": "Yudinskikh",
+      "email": "y.yudinskikh@innopolis.university",
+      "user": 35
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 22,
+    "fields": {
+      "first_name": "Nikita",
+      "last_name": "Gurov",
+      "email": "n.gurov@innopolis.ru",
+      "user": 36
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 23,
+    "fields": {
+      "first_name": "Zuhair",
+      "last_name": "Abbas",
+      "email": "z.abbas@innopolis.ru",
+      "user": 37
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 24,
+    "fields": {
+      "first_name": "Andrey",
+      "last_name": "Liniushin",
+      "email": "a.liniushin@innopolis.university",
+      "user": 38
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 25,
+    "fields": {
+      "first_name": "Yonel",
+      "last_name": "Ngouma",
+      "email": "y.ngouma@innopolis.ru",
+      "user": 39
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 26,
+    "fields": {
+      "first_name": "Alexey",
+      "last_name": "Evlampyev",
+      "email": "a. evlampyev@innopolis.university",
+      "user": 40
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 27,
+    "fields": {
+      "first_name": "Rinat",
+      "last_name": "Mullakhmetov",
+      "email": "r.mullakhmetov@innopolis.ru",
+      "user": 41
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 28,
+    "fields": {
+      "first_name": "Semyon",
+      "last_name": "Kiselyov",
+      "email": "s.kiselyov@innopolis.university",
+      "user": 42
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 29,
+    "fields": {
+      "first_name": "Semyon",
+      "last_name": "Kiselyov",
+      "email": "s.kiselyov@innopolis.ru",
+      "user": 43
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 30,
+    "fields": {
+      "first_name": "Gosha",
+      "last_name": "Stepanov",
+      "email": "g.stepanov@innopolis.university",
+      "user": 44
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 31,
+    "fields": {
+      "first_name": "Alexey",
+      "last_name": "Evlampyev",
+      "email": "a.evlampyev@innopolis.ru",
+      "user": 45
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 32,
+    "fields": {
+      "first_name": "Alexander",
+      "last_name": "Gruk",
+      "email": "a.gruk@innopolis.university",
+      "user": 46
+    }
+  },
+  {
+    "model": "sport.trainer",
+    "pk": 33,
+    "fields": {
+      "first_name": "Yonel",
+      "last_name": "Ngouma",
+      "email": "y.ngouma@innopolis.university",
+      "user": 47
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 1,
+    "fields": {
+      "name": "Other",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 2,
+    "fields": {
+      "name": "Functional Training",
+      "special": false
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 3,
+    "fields": {
+      "name": "Table tennis",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 4,
+    "fields": {
+      "name": "Fitness exercises",
+      "special": false
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 5,
+    "fields": {
+      "name": "Football",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 6,
+    "fields": {
+      "name": "Stretching",
+      "special": false
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 7,
+    "fields": {
+      "name": "DICH",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 8,
+    "fields": {
+      "name": "General Physical Training",
+      "special": false
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 9,
+    "fields": {
+      "name": "Swimming",
+      "special": false
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 10,
+    "fields": {
+      "name": "LSD",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 11,
+    "fields": {
+      "name": "Basic strength training",
+      "special": false
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 12,
+    "fields": {
+      "name": "Fighting",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 13,
+    "fields": {
+      "name": "Cheerleading",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 14,
+    "fields": {
+      "name": "Outdoor activity",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 15,
+    "fields": {
+      "name": "Floorball",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 16,
+    "fields": {
+      "name": "Ping pong",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 17,
+    "fields": {
+      "name": "Basketball",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 18,
+    "fields": {
+      "name": "Volleyball",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 19,
+    "fields": {
+      "name": "Badminton",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 20,
+    "fields": {
+      "name": "Workout",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 21,
+    "fields": {
+      "name": "Climbing",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 22,
+    "fields": {
+      "name": "Climbing",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 23,
+    "fields": {
+      "name": "Chess",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.sport",
+    "pk": 24,
+    "fields": {
+      "name": "Functional Club",
+      "special": true
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 3,
+    "fields": {
+      "name": "SC trainers",
+      "description": null,
+      "capacity": 9999,
+      "is_club": false,
+      "sport": 1,
+      "semester": 2,
+      "trainer": 3
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 4,
+    "fields": {
+      "name": "Extra sport events",
+      "description": null,
+      "capacity": 9999,
+      "is_club": false,
+      "sport": 1,
+      "semester": 2,
+      "trainer": null
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 7,
+    "fields": {
+      "name": "SC trainers",
+      "description": null,
+      "capacity": 9999,
+      "is_club": false,
+      "sport": 1,
+      "semester": 4,
+      "trainer": 3
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 8,
+    "fields": {
+      "name": "Extra sport events",
+      "description": null,
+      "capacity": 9999,
+      "is_club": false,
+      "sport": 1,
+      "semester": 4,
+      "trainer": 3
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 9,
+    "fields": {
+      "name": "Tennis Club",
+      "description": "Tennis Club looks to provide recreational and competitive tennis activity for students. Our mission is to encourage and promote tennis as a way to keep healthy and fit.",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 3,
+      "semester": 2,
+      "trainer": 8
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 10,
+    "fields": {
+      "name": "FT-1",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 2,
+      "semester": 2,
+      "trainer": 6
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 11,
+    "fields": {
+      "name": "Fit-17",
+      "description": "Fitness exercies",
+      "capacity": 50,
+      "is_club": false,
+      "sport": 4,
+      "semester": 2,
+      "trainer": 9
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 12,
+    "fields": {
+      "name": "Fit-11",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 4,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 13,
+    "fields": {
+      "name": "Football Club",
+      "description": "Football is in our blood. We train to improve skills and tactics, as well as to compete in various tournements. We are freindly and welcoming community. Join and have fun.",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 5,
+      "semester": 2,
+      "trainer": 11
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 14,
+    "fields": {
+      "name": "Fit-34",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 4,
+      "semester": 2,
+      "trainer": 12
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 15,
+    "fields": {
+      "name": "St-10",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 6,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 16,
+    "fields": {
+      "name": "St-9",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 6,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 17,
+    "fields": {
+      "name": "St-8",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 6,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 18,
+    "fields": {
+      "name": "RAGE",
+      "description": "This is a fellowship, united under the aegis of shared values and exercises in physical, spiritual and cultural dimensions. Learn more at club's page.",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 7,
+      "semester": 2,
+      "trainer": 13
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 19,
+    "fields": {
+      "name": "G-12",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 8,
+      "semester": 2,
+      "trainer": 9
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 20,
+    "fields": {
+      "name": "G-14",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 8,
+      "semester": 2,
+      "trainer": 9
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 21,
+    "fields": {
+      "name": "G-15",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 8,
+      "semester": 2,
+      "trainer": 9
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 22,
+    "fields": {
+      "name": "G-16",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 8,
+      "semester": 2,
+      "trainer": 9
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 23,
+    "fields": {
+      "name": "G-13",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 8,
+      "semester": 2,
+      "trainer": 9
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 24,
+    "fields": {
+      "name": "LSD",
+      "description": "Our club is about supporting every sport beginner by getting them into a team to prepare for future competitions. Our main focus is crossfit and or slogan comes like that: commit to be fit. Our aims: Kazan marathon (Spring) and the Race of Heroes (Summer).",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 10,
+      "semester": 2,
+      "trainer": 15
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 25,
+    "fields": {
+      "name": "Ping Pong Club",
+      "description": "Innopolis Ping Pong club is a sport club where you can find people with the same interests in table tennis and enjoy playing it. We run weekly meetings and some interesting competitions.",
+      "capacity": 50,
+      "is_club": false,
+      "sport": 16,
+      "semester": 2,
+      "trainer": 16
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 26,
+    "fields": {
+      "name": "Boxing Club",
+      "description": "The club is about practicing the art of boxing. The club aims at passing the art f boxing and technique to students of Innopolis University. We want to train 3 good instructors that would be able to deliver training sessions and also to recruit professional instructor.",
+      "capacity": 15,
+      "is_club": true,
+      "sport": 12,
+      "semester": 2,
+      "trainer": 17
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 27,
+    "fields": {
+      "name": "Skateboarding Club",
+      "description": "Our club is about honing skills in skateboarding and becoming more creative as skateboarding is one of the most creative kinds of sport. The most ultimate goal is to get to the first Olympic Games in Tokyo, but generally to evolve as skaters, and raise skaters' level up to the Russian-wide level.",
+      "capacity": 50,
+      "is_club": false,
+      "sport": 14,
+      "semester": 2,
+      "trainer": 18
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 28,
+    "fields": {
+      "name": "Cheerleading Club",
+      "description": "We learn cheearleading basics and combine it with acrobatic training. Open to all comers.",
+      "capacity": 15,
+      "is_club": true,
+      "sport": 13,
+      "semester": 2,
+      "trainer": 19
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 29,
+    "fields": {
+      "name": "Sw-6",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 9,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 30,
+    "fields": {
+      "name": "Sw-1",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 9,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 31,
+    "fields": {
+      "name": "Floorball Club",
+      "description": "The club is about training floorball skills and creating Innopolis University floorball team. We are aiming to organize at least one match vs a floorball team from Innopolis, Kazan or other city.",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 15,
+      "semester": 2,
+      "trainer": 20
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 32,
+    "fields": {
+      "name": "Sw-4",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 9,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 33,
+    "fields": {
+      "name": "Sw-5",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 9,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 34,
+    "fields": {
+      "name": "Sw-7",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 9,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 35,
+    "fields": {
+      "name": "Sw-2",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 9,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 36,
+    "fields": {
+      "name": "Basketball club",
+      "description": "We create a team for regular trainings and participation in student and amateur leagues. Don't hesitate if you have never played, we'll make sure you become a good player!",
+      "capacity": 50,
+      "is_club": true,
+      "sport": 17,
+      "semester": 2,
+      "trainer": 21
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 37,
+    "fields": {
+      "name": "Sw-3",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 9,
+      "semester": 2,
+      "trainer": 10
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 38,
+    "fields": {
+      "name": "Volleyball Club",
+      "description": "Our club is growing as we train hard and improve technical aspects of the game. We are a friendly community of people who like hitting the ball over the net. We are waiting to see you at our sessions!",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 18,
+      "semester": 2,
+      "trainer": 4
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 39,
+    "fields": {
+      "name": "B-18",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 14
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 40,
+    "fields": {
+      "name": "Badminton Club",
+      "description": "The first Badminton club of Innopolis for students who have never held a racket before, as well as for those who are already familiar with it. We have some experienced players who are willing to introduce this sport to others. We are looking forward to compete in tournaments too.",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 19,
+      "semester": 2,
+      "trainer": 23
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 41,
+    "fields": {
+      "name": "Street Workout",
+      "description": "Street workout consists of gimbarr, sport gymnastics, static and dynamic exercices on horizontal bar. Our goals are:  1) Making a team, introduction to basic exercices of street workout. 2) Create local workout competition.",
+      "capacity": 50,
+      "is_club": true,
+      "sport": 20,
+      "semester": 2,
+      "trainer": 24
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 42,
+    "fields": {
+      "name": "B-19",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 14
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 43,
+    "fields": {
+      "name": "B-26",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 14
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 44,
+    "fields": {
+      "name": "Sport fighting",
+      "description": "We are group of people who like Martial arts and several fighting sports. The goal is to train together, change experience and have fun within sports. We want to train students to be real gentlemen (gentlewomen) through sports.",
+      "capacity": 15,
+      "is_club": true,
+      "sport": 12,
+      "semester": 2,
+      "trainer": 25
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 45,
+    "fields": {
+      "name": "B-24",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 14
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 46,
+    "fields": {
+      "name": "B-20",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 14
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 48,
+    "fields": {
+      "name": "SAMBO/JUDO",
+      "description": "Sports activities always taught us restraint, discipline, rigor, as well as helped to keep ourselves in a good physical shape. What can be better than practicing real masculine sport under the guidance of experienced coaches? Be part of our team and learn this difficult but interesting art.",
+      "capacity": 15,
+      "is_club": true,
+      "sport": 12,
+      "semester": 2,
+      "trainer": 27
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 49,
+    "fields": {
+      "name": "B-28",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 12
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 51,
+    "fields": {
+      "name": "B-27",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 12
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 52,
+    "fields": {
+      "name": "B-22",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 12
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 53,
+    "fields": {
+      "name": "B-25",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 12
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 54,
+    "fields": {
+      "name": "Climbing Club",
+      "description": "We admire and get inspiration from natural rocks and beautiful caves. The main goal of our club is to develop climbing in Innopolis. Students are invited to travel and try rock climbing and other extreme sports.",
+      "capacity": 10,
+      "is_club": true,
+      "sport": 22,
+      "semester": 2,
+      "trainer": 29
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 55,
+    "fields": {
+      "name": "B-23",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 12
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 56,
+    "fields": {
+      "name": "Chess Club",
+      "description": "We meet twice a week to play chess OTB, share knowledge, and discuss chess news and events from all over the world. We also hold different tournaments regularly. Everyone is welcome to join us - from beginners to professionals!",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 23,
+      "semester": 2,
+      "trainer": 30
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 57,
+    "fields": {
+      "name": "B-21",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 12
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 58,
+    "fields": {
+      "name": "Func-33",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 2,
+      "semester": 2,
+      "trainer": 14
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 59,
+    "fields": {
+      "name": "Func-30",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 2,
+      "semester": 2,
+      "trainer": 14
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 60,
+    "fields": {
+      "name": "Functional Pro Club",
+      "description": "Our Goal: to improve participation in sport among students. Keep healthy lifestyle. Develop strength, endurance. Create university team to participate in competitions.",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 24,
+      "semester": 2,
+      "trainer": 31
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 61,
+    "fields": {
+      "name": "Func-31",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 2,
+      "semester": 2,
+      "trainer": 14
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 62,
+    "fields": {
+      "name": "Func-32",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 2,
+      "semester": 2,
+      "trainer": 12
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 63,
+    "fields": {
+      "name": "Func-29",
+      "description": null,
+      "capacity": 50,
+      "is_club": false,
+      "sport": 2,
+      "semester": 2,
+      "trainer": 12
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 64,
+    "fields": {
+      "name": "League of Sport Development",
+      "description": "Our club is about supporting every sport beginner by getting them into a team to prepare for future competitions. Our main focus is crossfit and or slogan comes like that: commit to be fit. Our aims: Kazan marathon (Spring) and the Race of Heroes (Summer).",
+      "capacity": 20,
+      "is_club": true,
+      "sport": 11,
+      "semester": 2,
+      "trainer": 32
+    }
+  },
+  {
+    "model": "sport.group",
+    "pk": 65,
+    "fields": {
+      "name": "Sport fighting and self-defense Club's (POGO)",
+      "description": "We are group of people who like Martial arts and several fighting sports. The goal is to train together, change experience and have fun within sports. We want to train students to be real gentlemen (gentlewomen) through sports.",
+      "capacity": 15,
+      "is_club": true,
+      "sport": 12,
+      "semester": 2,
+      "trainer": 33
+    }
+  },
+  {
+    "model": "sport.trainingclass",
+    "pk": 1,
+    "fields": {
+      "name": "Sports Hall"
+    }
+  },
+  {
+    "model": "sport.trainingclass",
+    "pk": 2,
+    "fields": {
+      "name": "[SC] Gym"
+    }
+  },
+  {
+    "model": "sport.trainingclass",
+    "pk": 3,
+    "fields": {
+      "name": "[SC] Pool"
+    }
+  },
+  {
+    "model": "sport.trainingclass",
+    "pk": 4,
+    "fields": {
+      "name": "[SC] room 233"
+    }
+  },
+  {
+    "model": "sport.trainingclass",
+    "pk": 5,
+    "fields": {
+      "name": "[SC] floor 2"
+    }
+  },
+  {
+    "model": "sport.trainingclass",
+    "pk": 7,
+    "fields": {
+      "name": "[OUTDOOR] Stadium"
+    }
+  },
+  {
+    "model": "sport.trainingclass",
+    "pk": 8,
+    "fields": {
+      "name": "[University]Room 314"
+    }
+  },
+  {
+    "model": "sport.trainingclass",
+    "pk": 9,
+    "fields": {
+      "name": "[SC] Big Hall"
+    }
+  },
+  {
+    "model": "sport.trainingclass",
+    "pk": 10,
+    "fields": {
+      "name": "[SC]Martial Arts Hal"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 2,
+    "fields": {
+      "training": 1,
+      "student": 5,
+      "hours": "2.00"
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 1,
+    "fields": {
+      "group": 9,
+      "weekday": 3,
+      "start": "10:30:00",
+      "end": "12:00:00",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 2,
+    "fields": {
+      "group": 10,
+      "weekday": 1,
+      "start": "15:00:00",
+      "end": "16:30:00",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 3,
+    "fields": {
+      "group": 19,
+      "weekday": 2,
+      "start": "08:30:00",
+      "end": "10:00:00",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 4,
+    "fields": {
+      "group": 23,
+      "weekday": 2,
+      "start": "10:00:00",
+      "end": "11:30:00",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 5,
+    "fields": {
+      "group": 21,
+      "weekday": 3,
+      "start": "08:30:00",
+      "end": "10:00:00",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 6,
+    "fields": {
+      "group": 22,
+      "weekday": 3,
+      "start": "11:00:00",
+      "end": "12:30:00",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 7,
+    "fields": {
+      "group": 23,
+      "weekday": 4,
+      "start": "17:00:00",
+      "end": "18:30:00",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 8,
+    "fields": {
+      "group": 15,
+      "weekday": 0,
+      "start": "15:00:00",
+      "end": "16:30:00",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 9,
+    "fields": {
+      "group": 16,
+      "weekday": 0,
+      "start": "17:00:00",
+      "end": "18:30:00",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 10,
+    "fields": {
+      "group": 17,
+      "weekday": 4,
+      "start": "17:00:00",
+      "end": "18:30:00",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 11,
+    "fields": {
+      "group": 12,
+      "weekday": 0,
+      "start": "13:30:00",
+      "end": "15:00:00",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 12,
+    "fields": {
+      "group": 11,
+      "weekday": 0,
+      "start": "11:00:00",
+      "end": "12:30:00",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 13,
+    "fields": {
+      "group": 29,
+      "weekday": 0,
+      "start": "09:00:00",
+      "end": "10:00:00",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 14,
+    "fields": {
+      "group": 30,
+      "weekday": 2,
+      "start": "09:00:00",
+      "end": "10:00:00",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 15,
+    "fields": {
+      "group": 32,
+      "weekday": 2,
+      "start": "10:00:00",
+      "end": "11:00:00",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 16,
+    "fields": {
+      "group": 33,
+      "weekday": 2,
+      "start": "11:00:00",
+      "end": "12:00:00",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 17,
+    "fields": {
+      "group": 34,
+      "weekday": 4,
+      "start": "09:00:00",
+      "end": "10:00:00",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 18,
+    "fields": {
+      "group": 35,
+      "weekday": 4,
+      "start": "15:00:00",
+      "end": "16:00:00",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 19,
+    "fields": {
+      "group": 37,
+      "weekday": 4,
+      "start": "16:00:00",
+      "end": "17:00:00",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 20,
+    "fields": {
+      "group": 39,
+      "weekday": 0,
+      "start": "09:00:00",
+      "end": "10:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 21,
+    "fields": {
+      "group": 42,
+      "weekday": 0,
+      "start": "11:00:00",
+      "end": "12:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 22,
+    "fields": {
+      "group": 43,
+      "weekday": 2,
+      "start": "10:00:00",
+      "end": "11:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 23,
+    "fields": {
+      "group": 58,
+      "weekday": 0,
+      "start": "13:30:00",
+      "end": "15:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 24,
+    "fields": {
+      "group": 45,
+      "weekday": 4,
+      "start": "08:30:00",
+      "end": "10:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 25,
+    "fields": {
+      "group": 46,
+      "weekday": 4,
+      "start": "16:00:00",
+      "end": "17:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 26,
+    "fields": {
+      "group": 59,
+      "weekday": 2,
+      "start": "08:30:00",
+      "end": "10:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 27,
+    "fields": {
+      "group": 49,
+      "weekday": 0,
+      "start": "10:30:00",
+      "end": "12:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 28,
+    "fields": {
+      "group": 51,
+      "weekday": 0,
+      "start": "12:00:00",
+      "end": "13:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 29,
+    "fields": {
+      "group": 61,
+      "weekday": 3,
+      "start": "08:30:00",
+      "end": "10:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 30,
+    "fields": {
+      "group": 62,
+      "weekday": 0,
+      "start": "14:30:00",
+      "end": "16:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 31,
+    "fields": {
+      "group": 52,
+      "weekday": 1,
+      "start": "12:30:00",
+      "end": "14:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 32,
+    "fields": {
+      "group": 63,
+      "weekday": 2,
+      "start": "08:30:00",
+      "end": "10:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 33,
+    "fields": {
+      "group": 53,
+      "weekday": 2,
+      "start": "10:00:00",
+      "end": "11:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 34,
+    "fields": {
+      "group": 55,
+      "weekday": 4,
+      "start": "08:30:00",
+      "end": "10:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 35,
+    "fields": {
+      "group": 57,
+      "weekday": 4,
+      "start": "16:00:00",
+      "end": "17:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 36,
+    "fields": {
+      "group": 25,
+      "weekday": 2,
+      "start": "19:00:00",
+      "end": "21:00:00",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 37,
+    "fields": {
+      "group": 25,
+      "weekday": 5,
+      "start": "19:00:00",
+      "end": "21:00:00",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 38,
+    "fields": {
+      "group": 25,
+      "weekday": 7,
+      "start": "17:30:00",
+      "end": "19:30:00",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 39,
+    "fields": {
+      "group": 25,
+      "weekday": 4,
+      "start": "19:30:00",
+      "end": "21:30:00",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 40,
+    "fields": {
+      "group": 36,
+      "weekday": 3,
+      "start": "20:00:00",
+      "end": "22:00:00",
+      "training_class": 7
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 41,
+    "fields": {
+      "group": 36,
+      "weekday": 1,
+      "start": "19:30:00",
+      "end": "21:30:00",
+      "training_class": 7
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 42,
+    "fields": {
+      "group": 41,
+      "weekday": 1,
+      "start": "18:00:00",
+      "end": "19:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 43,
+    "fields": {
+      "group": 41,
+      "weekday": 3,
+      "start": "18:00:00",
+      "end": "19:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 44,
+    "fields": {
+      "group": 41,
+      "weekday": 5,
+      "start": "18:00:00",
+      "end": "19:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 45,
+    "fields": {
+      "group": 60,
+      "weekday": 1,
+      "start": "19:00:00",
+      "end": "20:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 46,
+    "fields": {
+      "group": 60,
+      "weekday": 4,
+      "start": "19:00:00",
+      "end": "20:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 47,
+    "fields": {
+      "group": 60,
+      "weekday": 3,
+      "start": "21:00:00",
+      "end": "22:30:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 48,
+    "fields": {
+      "group": 56,
+      "weekday": 3,
+      "start": "20:00:00",
+      "end": "22:00:00",
+      "training_class": 8
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 49,
+    "fields": {
+      "group": 56,
+      "weekday": 1,
+      "start": "20:00:00",
+      "end": "22:00:00",
+      "training_class": 8
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 50,
+    "fields": {
+      "group": 48,
+      "weekday": 1,
+      "start": "19:00:00",
+      "end": "21:00:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 51,
+    "fields": {
+      "group": 48,
+      "weekday": 3,
+      "start": "19:00:00",
+      "end": "21:00:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 52,
+    "fields": {
+      "group": 48,
+      "weekday": 4,
+      "start": "19:00:00",
+      "end": "21:00:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 53,
+    "fields": {
+      "group": 48,
+      "weekday": 5,
+      "start": "09:30:00",
+      "end": "11:30:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 54,
+    "fields": {
+      "group": 40,
+      "weekday": 7,
+      "start": "18:30:00",
+      "end": "21:30:00",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 55,
+    "fields": {
+      "group": 65,
+      "weekday": 0,
+      "start": "20:30:00",
+      "end": "22:30:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 56,
+    "fields": {
+      "group": 38,
+      "weekday": 0,
+      "start": "20:30:00",
+      "end": "22:30:00",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 57,
+    "fields": {
+      "group": 65,
+      "weekday": 3,
+      "start": "17:00:00",
+      "end": "19:00:00",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 58,
+    "fields": {
+      "group": 38,
+      "weekday": 2,
+      "start": "20:30:00",
+      "end": "22:30:00",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 59,
+    "fields": {
+      "group": 38,
+      "weekday": 4,
+      "start": "20:30:00",
+      "end": "22:30:00",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 60,
+    "fields": {
+      "group": 28,
+      "weekday": 1,
+      "start": "21:00:00",
+      "end": "22:30:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 61,
+    "fields": {
+      "group": 31,
+      "weekday": 7,
+      "start": "16:30:00",
+      "end": "18:30:00",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 62,
+    "fields": {
+      "group": 28,
+      "weekday": 3,
+      "start": "21:30:00",
+      "end": "22:30:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 63,
+    "fields": {
+      "group": 28,
+      "weekday": 5,
+      "start": "21:00:00",
+      "end": "22:30:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 64,
+    "fields": {
+      "group": 26,
+      "weekday": 1,
+      "start": "17:30:00",
+      "end": "19:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 65,
+    "fields": {
+      "group": 24,
+      "weekday": 0,
+      "start": "21:00:00",
+      "end": "22:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 66,
+    "fields": {
+      "group": 26,
+      "weekday": 3,
+      "start": "17:30:00",
+      "end": "19:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 67,
+    "fields": {
+      "group": 24,
+      "weekday": 2,
+      "start": "20:00:00",
+      "end": "21:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 68,
+    "fields": {
+      "group": 24,
+      "weekday": 4,
+      "start": "20:00:00",
+      "end": "21:00:00",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 69,
+    "fields": {
+      "group": 13,
+      "weekday": 0,
+      "start": "18:30:00",
+      "end": "20:30:00",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 70,
+    "fields": {
+      "group": 18,
+      "weekday": 2,
+      "start": "20:30:00",
+      "end": "22:30:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 71,
+    "fields": {
+      "group": 13,
+      "weekday": 2,
+      "start": "18:30:00",
+      "end": "20:30:00",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 72,
+    "fields": {
+      "group": 18,
+      "weekday": 4,
+      "start": "21:00:00",
+      "end": "22:30:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 73,
+    "fields": {
+      "group": 13,
+      "weekday": 4,
+      "start": "18:30:00",
+      "end": "20:30:00",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.schedule",
+    "pk": 74,
+    "fields": {
+      "group": 18,
+      "weekday": 7,
+      "start": "19:00:00",
+      "end": "21:00:00",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 9,
+    "fields": {
+      "student": 5,
+      "group": 10,
+      "is_primary": true
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 10,
+    "fields": {
+      "student": 6,
+      "group": 9,
+      "is_primary": true
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 22,
+    "fields": {
+      "student": 8,
+      "group": 9,
+      "is_primary": true
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 28,
+    "fields": {
+      "student": 9,
+      "group": 3,
+      "is_primary": true
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 32,
+    "fields": {
+      "student": 10,
+      "group": 9,
+      "is_primary": false
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 34,
+    "fields": {
+      "student": 2,
+      "group": 13,
+      "is_primary": false
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 42,
+    "fields": {
+      "student": 12,
+      "group": 29,
+      "is_primary": true
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 43,
+    "fields": {
+      "student": 12,
+      "group": 36,
+      "is_primary": false
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 44,
+    "fields": {
+      "student": 13,
+      "group": 46,
+      "is_primary": false
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 45,
+    "fields": {
+      "student": 12,
+      "group": 38,
+      "is_primary": false
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 46,
+    "fields": {
+      "student": 16,
+      "group": 28,
+      "is_primary": true
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 47,
+    "fields": {
+      "student": 15,
+      "group": 54,
+      "is_primary": true
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 51,
+    "fields": {
+      "student": 17,
+      "group": 40,
+      "is_primary": true
+    }
+  },
+  {
+    "model": "sport.enroll",
+    "pk": 52,
+    "fields": {
+      "student": 17,
+      "group": 58,
+      "is_primary": false
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 1,
+    "fields": {
+      "group": 9,
+      "schedule": 1,
+      "start": "2020-04-22T07:30:00Z",
+      "end": "2020-04-22T09:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 2,
+    "fields": {
+      "group": 9,
+      "schedule": 1,
+      "start": "2020-04-30T07:30:00Z",
+      "end": "2020-04-30T09:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 3,
+    "fields": {
+      "group": 9,
+      "schedule": 1,
+      "start": "2020-05-07T07:30:00Z",
+      "end": "2020-05-07T09:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 4,
+    "fields": {
+      "group": 9,
+      "schedule": 1,
+      "start": "2020-05-14T07:30:00Z",
+      "end": "2020-05-14T09:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 5,
+    "fields": {
+      "group": 9,
+      "schedule": 1,
+      "start": "2020-05-21T07:30:00Z",
+      "end": "2020-05-21T09:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 6,
+    "fields": {
+      "group": 9,
+      "schedule": 1,
+      "start": "2020-05-28T07:30:00Z",
+      "end": "2020-05-28T09:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 7,
+    "fields": {
+      "group": 3,
+      "schedule": 1,
+      "start": "2020-04-20T11:00:00Z",
+      "end": "2020-04-20T12:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 8,
+    "fields": {
+      "group": 10,
+      "schedule": 2,
+      "start": "2020-04-21T12:00:00Z",
+      "end": "2020-04-21T13:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 9,
+    "fields": {
+      "group": 10,
+      "schedule": 2,
+      "start": "2020-04-28T12:00:00Z",
+      "end": "2020-04-28T13:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 10,
+    "fields": {
+      "group": 10,
+      "schedule": 2,
+      "start": "2020-05-05T12:00:00Z",
+      "end": "2020-05-05T13:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 11,
+    "fields": {
+      "group": 10,
+      "schedule": 2,
+      "start": "2020-05-12T12:00:00Z",
+      "end": "2020-05-12T13:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 12,
+    "fields": {
+      "group": 10,
+      "schedule": 2,
+      "start": "2020-05-19T12:00:00Z",
+      "end": "2020-05-19T13:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 13,
+    "fields": {
+      "group": 10,
+      "schedule": 2,
+      "start": "2020-05-26T12:00:00Z",
+      "end": "2020-05-26T13:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 14,
+    "fields": {
+      "group": 19,
+      "schedule": 3,
+      "start": "2020-05-13T05:30:00Z",
+      "end": "2020-05-13T07:00:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 15,
+    "fields": {
+      "group": 19,
+      "schedule": 3,
+      "start": "2020-05-20T05:30:00Z",
+      "end": "2020-05-20T07:00:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 16,
+    "fields": {
+      "group": 19,
+      "schedule": 3,
+      "start": "2020-05-27T05:30:00Z",
+      "end": "2020-05-27T07:00:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 17,
+    "fields": {
+      "group": 23,
+      "schedule": 4,
+      "start": "2020-05-13T07:00:00Z",
+      "end": "2020-05-13T08:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 18,
+    "fields": {
+      "group": 23,
+      "schedule": 4,
+      "start": "2020-05-20T07:00:00Z",
+      "end": "2020-05-20T08:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 19,
+    "fields": {
+      "group": 23,
+      "schedule": 4,
+      "start": "2020-05-27T07:00:00Z",
+      "end": "2020-05-27T08:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 20,
+    "fields": {
+      "group": 21,
+      "schedule": 5,
+      "start": "2020-05-14T05:30:00Z",
+      "end": "2020-05-14T07:00:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 21,
+    "fields": {
+      "group": 21,
+      "schedule": 5,
+      "start": "2020-05-21T05:30:00Z",
+      "end": "2020-05-21T07:00:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 22,
+    "fields": {
+      "group": 21,
+      "schedule": 5,
+      "start": "2020-05-28T05:30:00Z",
+      "end": "2020-05-28T07:00:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 23,
+    "fields": {
+      "group": 22,
+      "schedule": 6,
+      "start": "2020-05-14T08:00:00Z",
+      "end": "2020-05-14T09:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 24,
+    "fields": {
+      "group": 22,
+      "schedule": 6,
+      "start": "2020-05-21T08:00:00Z",
+      "end": "2020-05-21T09:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 25,
+    "fields": {
+      "group": 22,
+      "schedule": 6,
+      "start": "2020-05-28T08:00:00Z",
+      "end": "2020-05-28T09:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 26,
+    "fields": {
+      "group": 23,
+      "schedule": 7,
+      "start": "2020-05-15T14:00:00Z",
+      "end": "2020-05-15T15:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 27,
+    "fields": {
+      "group": 23,
+      "schedule": 7,
+      "start": "2020-05-22T14:00:00Z",
+      "end": "2020-05-22T15:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 28,
+    "fields": {
+      "group": 23,
+      "schedule": 7,
+      "start": "2020-05-29T14:00:00Z",
+      "end": "2020-05-29T15:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 29,
+    "fields": {
+      "group": 15,
+      "schedule": 8,
+      "start": "2020-05-11T12:00:00Z",
+      "end": "2020-05-11T13:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 30,
+    "fields": {
+      "group": 15,
+      "schedule": 8,
+      "start": "2020-05-18T12:00:00Z",
+      "end": "2020-05-18T13:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 31,
+    "fields": {
+      "group": 15,
+      "schedule": 8,
+      "start": "2020-05-25T12:00:00Z",
+      "end": "2020-05-25T13:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 32,
+    "fields": {
+      "group": 15,
+      "schedule": 8,
+      "start": "2020-06-01T12:00:00Z",
+      "end": "2020-06-01T13:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 33,
+    "fields": {
+      "group": 16,
+      "schedule": 9,
+      "start": "2020-05-11T14:00:00Z",
+      "end": "2020-05-11T15:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 34,
+    "fields": {
+      "group": 16,
+      "schedule": 9,
+      "start": "2020-05-18T14:00:00Z",
+      "end": "2020-05-18T15:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 35,
+    "fields": {
+      "group": 16,
+      "schedule": 9,
+      "start": "2020-05-25T14:00:00Z",
+      "end": "2020-05-25T15:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 36,
+    "fields": {
+      "group": 16,
+      "schedule": 9,
+      "start": "2020-06-01T14:00:00Z",
+      "end": "2020-06-01T15:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 37,
+    "fields": {
+      "group": 17,
+      "schedule": 10,
+      "start": "2020-05-15T14:00:00Z",
+      "end": "2020-05-15T15:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 38,
+    "fields": {
+      "group": 17,
+      "schedule": 10,
+      "start": "2020-05-22T14:00:00Z",
+      "end": "2020-05-22T15:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 39,
+    "fields": {
+      "group": 17,
+      "schedule": 10,
+      "start": "2020-05-29T14:00:00Z",
+      "end": "2020-05-29T15:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 40,
+    "fields": {
+      "group": 12,
+      "schedule": 11,
+      "start": "2020-05-11T10:30:00Z",
+      "end": "2020-05-11T12:00:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 41,
+    "fields": {
+      "group": 12,
+      "schedule": 11,
+      "start": "2020-05-18T10:30:00Z",
+      "end": "2020-05-18T12:00:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 42,
+    "fields": {
+      "group": 12,
+      "schedule": 11,
+      "start": "2020-05-25T10:30:00Z",
+      "end": "2020-05-25T12:00:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 43,
+    "fields": {
+      "group": 12,
+      "schedule": 11,
+      "start": "2020-06-01T10:30:00Z",
+      "end": "2020-06-01T12:00:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 44,
+    "fields": {
+      "group": 11,
+      "schedule": 12,
+      "start": "2020-05-11T08:00:00Z",
+      "end": "2020-05-11T09:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 45,
+    "fields": {
+      "group": 11,
+      "schedule": 12,
+      "start": "2020-05-18T08:00:00Z",
+      "end": "2020-05-18T09:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 46,
+    "fields": {
+      "group": 11,
+      "schedule": 12,
+      "start": "2020-05-25T08:00:00Z",
+      "end": "2020-05-25T09:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 47,
+    "fields": {
+      "group": 11,
+      "schedule": 12,
+      "start": "2020-06-01T08:00:00Z",
+      "end": "2020-06-01T09:30:00Z",
+      "training_class": 1
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 48,
+    "fields": {
+      "group": 29,
+      "schedule": 13,
+      "start": "2020-05-11T06:00:00Z",
+      "end": "2020-05-11T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 49,
+    "fields": {
+      "group": 29,
+      "schedule": 13,
+      "start": "2020-05-18T06:00:00Z",
+      "end": "2020-05-18T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 50,
+    "fields": {
+      "group": 29,
+      "schedule": 13,
+      "start": "2020-05-25T06:00:00Z",
+      "end": "2020-05-25T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 51,
+    "fields": {
+      "group": 29,
+      "schedule": 13,
+      "start": "2020-06-01T06:00:00Z",
+      "end": "2020-06-01T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 52,
+    "fields": {
+      "group": 30,
+      "schedule": 14,
+      "start": "2020-05-13T06:00:00Z",
+      "end": "2020-05-13T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 53,
+    "fields": {
+      "group": 30,
+      "schedule": 14,
+      "start": "2020-05-20T06:00:00Z",
+      "end": "2020-05-20T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 54,
+    "fields": {
+      "group": 30,
+      "schedule": 14,
+      "start": "2020-05-27T06:00:00Z",
+      "end": "2020-05-27T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 55,
+    "fields": {
+      "group": 32,
+      "schedule": 15,
+      "start": "2020-05-13T07:00:00Z",
+      "end": "2020-05-13T08:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 56,
+    "fields": {
+      "group": 32,
+      "schedule": 15,
+      "start": "2020-05-20T07:00:00Z",
+      "end": "2020-05-20T08:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 57,
+    "fields": {
+      "group": 32,
+      "schedule": 15,
+      "start": "2020-05-27T07:00:00Z",
+      "end": "2020-05-27T08:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 58,
+    "fields": {
+      "group": 33,
+      "schedule": 16,
+      "start": "2020-05-13T08:00:00Z",
+      "end": "2020-05-13T09:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 59,
+    "fields": {
+      "group": 33,
+      "schedule": 16,
+      "start": "2020-05-20T08:00:00Z",
+      "end": "2020-05-20T09:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 60,
+    "fields": {
+      "group": 33,
+      "schedule": 16,
+      "start": "2020-05-27T08:00:00Z",
+      "end": "2020-05-27T09:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 61,
+    "fields": {
+      "group": 34,
+      "schedule": 17,
+      "start": "2020-05-15T06:00:00Z",
+      "end": "2020-05-15T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 62,
+    "fields": {
+      "group": 34,
+      "schedule": 17,
+      "start": "2020-05-22T06:00:00Z",
+      "end": "2020-05-22T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 63,
+    "fields": {
+      "group": 34,
+      "schedule": 17,
+      "start": "2020-05-29T06:00:00Z",
+      "end": "2020-05-29T07:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 64,
+    "fields": {
+      "group": 35,
+      "schedule": 18,
+      "start": "2020-05-15T12:00:00Z",
+      "end": "2020-05-15T13:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 65,
+    "fields": {
+      "group": 35,
+      "schedule": 18,
+      "start": "2020-05-22T12:00:00Z",
+      "end": "2020-05-22T13:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 66,
+    "fields": {
+      "group": 35,
+      "schedule": 18,
+      "start": "2020-05-29T12:00:00Z",
+      "end": "2020-05-29T13:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 67,
+    "fields": {
+      "group": 37,
+      "schedule": 19,
+      "start": "2020-05-15T13:00:00Z",
+      "end": "2020-05-15T14:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 68,
+    "fields": {
+      "group": 37,
+      "schedule": 19,
+      "start": "2020-05-22T13:00:00Z",
+      "end": "2020-05-22T14:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 69,
+    "fields": {
+      "group": 37,
+      "schedule": 19,
+      "start": "2020-05-29T13:00:00Z",
+      "end": "2020-05-29T14:00:00Z",
+      "training_class": 3
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 70,
+    "fields": {
+      "group": 39,
+      "schedule": 20,
+      "start": "2020-05-11T06:00:00Z",
+      "end": "2020-05-11T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 71,
+    "fields": {
+      "group": 39,
+      "schedule": 20,
+      "start": "2020-05-18T06:00:00Z",
+      "end": "2020-05-18T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 72,
+    "fields": {
+      "group": 39,
+      "schedule": 20,
+      "start": "2020-05-25T06:00:00Z",
+      "end": "2020-05-25T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 73,
+    "fields": {
+      "group": 39,
+      "schedule": 20,
+      "start": "2020-06-01T06:00:00Z",
+      "end": "2020-06-01T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 74,
+    "fields": {
+      "group": 42,
+      "schedule": 21,
+      "start": "2020-05-11T08:00:00Z",
+      "end": "2020-05-11T09:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 75,
+    "fields": {
+      "group": 42,
+      "schedule": 21,
+      "start": "2020-05-18T08:00:00Z",
+      "end": "2020-05-18T09:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 76,
+    "fields": {
+      "group": 42,
+      "schedule": 21,
+      "start": "2020-05-25T08:00:00Z",
+      "end": "2020-05-25T09:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 77,
+    "fields": {
+      "group": 42,
+      "schedule": 21,
+      "start": "2020-06-01T08:00:00Z",
+      "end": "2020-06-01T09:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 78,
+    "fields": {
+      "group": 43,
+      "schedule": 22,
+      "start": "2020-05-13T07:00:00Z",
+      "end": "2020-05-13T08:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 79,
+    "fields": {
+      "group": 43,
+      "schedule": 22,
+      "start": "2020-05-20T07:00:00Z",
+      "end": "2020-05-20T08:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 80,
+    "fields": {
+      "group": 43,
+      "schedule": 22,
+      "start": "2020-05-27T07:00:00Z",
+      "end": "2020-05-27T08:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 81,
+    "fields": {
+      "group": 58,
+      "schedule": 23,
+      "start": "2020-05-11T10:30:00Z",
+      "end": "2020-05-11T12:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 82,
+    "fields": {
+      "group": 58,
+      "schedule": 23,
+      "start": "2020-05-18T10:30:00Z",
+      "end": "2020-05-18T12:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 83,
+    "fields": {
+      "group": 58,
+      "schedule": 23,
+      "start": "2020-05-25T10:30:00Z",
+      "end": "2020-05-25T12:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 84,
+    "fields": {
+      "group": 58,
+      "schedule": 23,
+      "start": "2020-06-01T10:30:00Z",
+      "end": "2020-06-01T12:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 85,
+    "fields": {
+      "group": 45,
+      "schedule": 24,
+      "start": "2020-05-15T05:30:00Z",
+      "end": "2020-05-15T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 86,
+    "fields": {
+      "group": 45,
+      "schedule": 24,
+      "start": "2020-05-22T05:30:00Z",
+      "end": "2020-05-22T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 87,
+    "fields": {
+      "group": 45,
+      "schedule": 24,
+      "start": "2020-05-29T05:30:00Z",
+      "end": "2020-05-29T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 88,
+    "fields": {
+      "group": 46,
+      "schedule": 25,
+      "start": "2020-05-15T13:00:00Z",
+      "end": "2020-05-15T14:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 89,
+    "fields": {
+      "group": 46,
+      "schedule": 25,
+      "start": "2020-05-22T13:00:00Z",
+      "end": "2020-05-22T14:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 90,
+    "fields": {
+      "group": 46,
+      "schedule": 25,
+      "start": "2020-05-29T13:00:00Z",
+      "end": "2020-05-29T14:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 91,
+    "fields": {
+      "group": 59,
+      "schedule": 26,
+      "start": "2020-05-13T05:30:00Z",
+      "end": "2020-05-13T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 92,
+    "fields": {
+      "group": 59,
+      "schedule": 26,
+      "start": "2020-05-20T05:30:00Z",
+      "end": "2020-05-20T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 93,
+    "fields": {
+      "group": 59,
+      "schedule": 26,
+      "start": "2020-05-27T05:30:00Z",
+      "end": "2020-05-27T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 94,
+    "fields": {
+      "group": 49,
+      "schedule": 27,
+      "start": "2020-05-11T07:30:00Z",
+      "end": "2020-05-11T09:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 95,
+    "fields": {
+      "group": 49,
+      "schedule": 27,
+      "start": "2020-05-18T07:30:00Z",
+      "end": "2020-05-18T09:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 96,
+    "fields": {
+      "group": 49,
+      "schedule": 27,
+      "start": "2020-05-25T07:30:00Z",
+      "end": "2020-05-25T09:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 97,
+    "fields": {
+      "group": 49,
+      "schedule": 27,
+      "start": "2020-06-01T07:30:00Z",
+      "end": "2020-06-01T09:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 98,
+    "fields": {
+      "group": 51,
+      "schedule": 28,
+      "start": "2020-05-11T09:00:00Z",
+      "end": "2020-05-11T10:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 99,
+    "fields": {
+      "group": 51,
+      "schedule": 28,
+      "start": "2020-05-18T09:00:00Z",
+      "end": "2020-05-18T10:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 100,
+    "fields": {
+      "group": 51,
+      "schedule": 28,
+      "start": "2020-05-25T09:00:00Z",
+      "end": "2020-05-25T10:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 101,
+    "fields": {
+      "group": 51,
+      "schedule": 28,
+      "start": "2020-06-01T09:00:00Z",
+      "end": "2020-06-01T10:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 102,
+    "fields": {
+      "group": 61,
+      "schedule": 29,
+      "start": "2020-05-14T05:30:00Z",
+      "end": "2020-05-14T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 103,
+    "fields": {
+      "group": 61,
+      "schedule": 29,
+      "start": "2020-05-21T05:30:00Z",
+      "end": "2020-05-21T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 104,
+    "fields": {
+      "group": 61,
+      "schedule": 29,
+      "start": "2020-05-28T05:30:00Z",
+      "end": "2020-05-28T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 105,
+    "fields": {
+      "group": 62,
+      "schedule": 30,
+      "start": "2020-05-11T11:30:00Z",
+      "end": "2020-05-11T13:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 106,
+    "fields": {
+      "group": 62,
+      "schedule": 30,
+      "start": "2020-05-18T11:30:00Z",
+      "end": "2020-05-18T13:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 107,
+    "fields": {
+      "group": 62,
+      "schedule": 30,
+      "start": "2020-05-25T11:30:00Z",
+      "end": "2020-05-25T13:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 108,
+    "fields": {
+      "group": 62,
+      "schedule": 30,
+      "start": "2020-06-01T11:30:00Z",
+      "end": "2020-06-01T13:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 109,
+    "fields": {
+      "group": 52,
+      "schedule": 31,
+      "start": "2020-05-12T09:30:00Z",
+      "end": "2020-05-12T11:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 110,
+    "fields": {
+      "group": 52,
+      "schedule": 31,
+      "start": "2020-05-19T09:30:00Z",
+      "end": "2020-05-19T11:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 111,
+    "fields": {
+      "group": 52,
+      "schedule": 31,
+      "start": "2020-05-26T09:30:00Z",
+      "end": "2020-05-26T11:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 112,
+    "fields": {
+      "group": 63,
+      "schedule": 32,
+      "start": "2020-05-13T05:30:00Z",
+      "end": "2020-05-13T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 113,
+    "fields": {
+      "group": 63,
+      "schedule": 32,
+      "start": "2020-05-20T05:30:00Z",
+      "end": "2020-05-20T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 114,
+    "fields": {
+      "group": 63,
+      "schedule": 32,
+      "start": "2020-05-27T05:30:00Z",
+      "end": "2020-05-27T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 115,
+    "fields": {
+      "group": 53,
+      "schedule": 33,
+      "start": "2020-05-13T07:00:00Z",
+      "end": "2020-05-13T08:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 116,
+    "fields": {
+      "group": 53,
+      "schedule": 33,
+      "start": "2020-05-20T07:00:00Z",
+      "end": "2020-05-20T08:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 117,
+    "fields": {
+      "group": 53,
+      "schedule": 33,
+      "start": "2020-05-27T07:00:00Z",
+      "end": "2020-05-27T08:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 118,
+    "fields": {
+      "group": 55,
+      "schedule": 34,
+      "start": "2020-05-15T05:30:00Z",
+      "end": "2020-05-15T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 119,
+    "fields": {
+      "group": 55,
+      "schedule": 34,
+      "start": "2020-05-22T05:30:00Z",
+      "end": "2020-05-22T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 120,
+    "fields": {
+      "group": 55,
+      "schedule": 34,
+      "start": "2020-05-29T05:30:00Z",
+      "end": "2020-05-29T07:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 121,
+    "fields": {
+      "group": 57,
+      "schedule": 35,
+      "start": "2020-05-15T13:00:00Z",
+      "end": "2020-05-15T14:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 122,
+    "fields": {
+      "group": 57,
+      "schedule": 35,
+      "start": "2020-05-22T13:00:00Z",
+      "end": "2020-05-22T14:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 123,
+    "fields": {
+      "group": 57,
+      "schedule": 35,
+      "start": "2020-05-29T13:00:00Z",
+      "end": "2020-05-29T14:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 124,
+    "fields": {
+      "group": 25,
+      "schedule": 36,
+      "start": "2020-05-13T16:00:00Z",
+      "end": "2020-05-13T18:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 125,
+    "fields": {
+      "group": 25,
+      "schedule": 36,
+      "start": "2020-05-20T16:00:00Z",
+      "end": "2020-05-20T18:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 126,
+    "fields": {
+      "group": 25,
+      "schedule": 36,
+      "start": "2020-05-27T16:00:00Z",
+      "end": "2020-05-27T18:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 127,
+    "fields": {
+      "group": 25,
+      "schedule": 37,
+      "start": "2020-05-16T16:00:00Z",
+      "end": "2020-05-16T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 128,
+    "fields": {
+      "group": 25,
+      "schedule": 37,
+      "start": "2020-05-23T16:00:00Z",
+      "end": "2020-05-23T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 129,
+    "fields": {
+      "group": 25,
+      "schedule": 37,
+      "start": "2020-05-30T16:00:00Z",
+      "end": "2020-05-30T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 130,
+    "fields": {
+      "group": 25,
+      "schedule": 38,
+      "start": "2020-05-11T14:30:00Z",
+      "end": "2020-05-11T16:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 131,
+    "fields": {
+      "group": 25,
+      "schedule": 38,
+      "start": "2020-05-18T14:30:00Z",
+      "end": "2020-05-18T16:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 132,
+    "fields": {
+      "group": 25,
+      "schedule": 38,
+      "start": "2020-05-25T14:30:00Z",
+      "end": "2020-05-25T16:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 133,
+    "fields": {
+      "group": 25,
+      "schedule": 38,
+      "start": "2020-06-01T14:30:00Z",
+      "end": "2020-06-01T16:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 134,
+    "fields": {
+      "group": 25,
+      "schedule": 39,
+      "start": "2020-05-15T16:30:00Z",
+      "end": "2020-05-15T18:30:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 135,
+    "fields": {
+      "group": 25,
+      "schedule": 39,
+      "start": "2020-05-22T16:30:00Z",
+      "end": "2020-05-22T18:30:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 136,
+    "fields": {
+      "group": 25,
+      "schedule": 39,
+      "start": "2020-05-29T16:30:00Z",
+      "end": "2020-05-29T18:30:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 137,
+    "fields": {
+      "group": 36,
+      "schedule": 40,
+      "start": "2020-05-14T17:00:00Z",
+      "end": "2020-05-14T19:00:00Z",
+      "training_class": 7
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 138,
+    "fields": {
+      "group": 36,
+      "schedule": 40,
+      "start": "2020-05-21T17:00:00Z",
+      "end": "2020-05-21T19:00:00Z",
+      "training_class": 7
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 139,
+    "fields": {
+      "group": 36,
+      "schedule": 40,
+      "start": "2020-05-28T17:00:00Z",
+      "end": "2020-05-28T19:00:00Z",
+      "training_class": 7
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 140,
+    "fields": {
+      "group": 36,
+      "schedule": 41,
+      "start": "2020-05-12T16:30:00Z",
+      "end": "2020-05-12T18:30:00Z",
+      "training_class": 7
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 141,
+    "fields": {
+      "group": 36,
+      "schedule": 41,
+      "start": "2020-05-19T16:30:00Z",
+      "end": "2020-05-19T18:30:00Z",
+      "training_class": 7
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 142,
+    "fields": {
+      "group": 36,
+      "schedule": 41,
+      "start": "2020-05-26T16:30:00Z",
+      "end": "2020-05-26T18:30:00Z",
+      "training_class": 7
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 143,
+    "fields": {
+      "group": 41,
+      "schedule": 42,
+      "start": "2020-05-12T15:00:00Z",
+      "end": "2020-05-12T16:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 144,
+    "fields": {
+      "group": 41,
+      "schedule": 42,
+      "start": "2020-05-19T15:00:00Z",
+      "end": "2020-05-19T16:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 145,
+    "fields": {
+      "group": 41,
+      "schedule": 42,
+      "start": "2020-05-26T15:00:00Z",
+      "end": "2020-05-26T16:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 146,
+    "fields": {
+      "group": 41,
+      "schedule": 43,
+      "start": "2020-05-14T15:00:00Z",
+      "end": "2020-05-14T16:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 147,
+    "fields": {
+      "group": 41,
+      "schedule": 43,
+      "start": "2020-05-21T15:00:00Z",
+      "end": "2020-05-21T16:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 148,
+    "fields": {
+      "group": 41,
+      "schedule": 43,
+      "start": "2020-05-28T15:00:00Z",
+      "end": "2020-05-28T16:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 149,
+    "fields": {
+      "group": 41,
+      "schedule": 44,
+      "start": "2020-05-16T15:00:00Z",
+      "end": "2020-05-16T16:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 150,
+    "fields": {
+      "group": 41,
+      "schedule": 44,
+      "start": "2020-05-23T15:00:00Z",
+      "end": "2020-05-23T16:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 151,
+    "fields": {
+      "group": 41,
+      "schedule": 44,
+      "start": "2020-05-30T15:00:00Z",
+      "end": "2020-05-30T16:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 152,
+    "fields": {
+      "group": 60,
+      "schedule": 45,
+      "start": "2020-05-12T16:00:00Z",
+      "end": "2020-05-12T17:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 153,
+    "fields": {
+      "group": 60,
+      "schedule": 45,
+      "start": "2020-05-19T16:00:00Z",
+      "end": "2020-05-19T17:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 154,
+    "fields": {
+      "group": 60,
+      "schedule": 45,
+      "start": "2020-05-26T16:00:00Z",
+      "end": "2020-05-26T17:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 155,
+    "fields": {
+      "group": 60,
+      "schedule": 46,
+      "start": "2020-05-15T16:00:00Z",
+      "end": "2020-05-15T17:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 156,
+    "fields": {
+      "group": 60,
+      "schedule": 46,
+      "start": "2020-05-22T16:00:00Z",
+      "end": "2020-05-22T17:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 157,
+    "fields": {
+      "group": 60,
+      "schedule": 46,
+      "start": "2020-05-29T16:00:00Z",
+      "end": "2020-05-29T17:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 158,
+    "fields": {
+      "group": 60,
+      "schedule": 47,
+      "start": "2020-05-14T18:00:00Z",
+      "end": "2020-05-14T19:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 159,
+    "fields": {
+      "group": 60,
+      "schedule": 47,
+      "start": "2020-05-21T18:00:00Z",
+      "end": "2020-05-21T19:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 160,
+    "fields": {
+      "group": 60,
+      "schedule": 47,
+      "start": "2020-05-28T18:00:00Z",
+      "end": "2020-05-28T19:30:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 161,
+    "fields": {
+      "group": 56,
+      "schedule": 48,
+      "start": "2020-05-14T17:00:00Z",
+      "end": "2020-05-14T19:00:00Z",
+      "training_class": 8
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 162,
+    "fields": {
+      "group": 56,
+      "schedule": 48,
+      "start": "2020-05-21T17:00:00Z",
+      "end": "2020-05-21T19:00:00Z",
+      "training_class": 8
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 163,
+    "fields": {
+      "group": 56,
+      "schedule": 48,
+      "start": "2020-05-28T17:00:00Z",
+      "end": "2020-05-28T19:00:00Z",
+      "training_class": 8
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 164,
+    "fields": {
+      "group": 56,
+      "schedule": 49,
+      "start": "2020-05-12T17:00:00Z",
+      "end": "2020-05-12T19:00:00Z",
+      "training_class": 8
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 165,
+    "fields": {
+      "group": 56,
+      "schedule": 49,
+      "start": "2020-05-19T17:00:00Z",
+      "end": "2020-05-19T19:00:00Z",
+      "training_class": 8
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 166,
+    "fields": {
+      "group": 56,
+      "schedule": 49,
+      "start": "2020-05-26T17:00:00Z",
+      "end": "2020-05-26T19:00:00Z",
+      "training_class": 8
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 167,
+    "fields": {
+      "group": 48,
+      "schedule": 50,
+      "start": "2020-05-12T16:00:00Z",
+      "end": "2020-05-12T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 168,
+    "fields": {
+      "group": 48,
+      "schedule": 50,
+      "start": "2020-05-19T16:00:00Z",
+      "end": "2020-05-19T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 169,
+    "fields": {
+      "group": 48,
+      "schedule": 50,
+      "start": "2020-05-26T16:00:00Z",
+      "end": "2020-05-26T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 170,
+    "fields": {
+      "group": 48,
+      "schedule": 51,
+      "start": "2020-05-14T16:00:00Z",
+      "end": "2020-05-14T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 171,
+    "fields": {
+      "group": 48,
+      "schedule": 51,
+      "start": "2020-05-21T16:00:00Z",
+      "end": "2020-05-21T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 172,
+    "fields": {
+      "group": 48,
+      "schedule": 51,
+      "start": "2020-05-28T16:00:00Z",
+      "end": "2020-05-28T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 173,
+    "fields": {
+      "group": 48,
+      "schedule": 52,
+      "start": "2020-05-15T16:00:00Z",
+      "end": "2020-05-15T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 174,
+    "fields": {
+      "group": 48,
+      "schedule": 52,
+      "start": "2020-05-22T16:00:00Z",
+      "end": "2020-05-22T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 175,
+    "fields": {
+      "group": 48,
+      "schedule": 52,
+      "start": "2020-05-29T16:00:00Z",
+      "end": "2020-05-29T18:00:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 176,
+    "fields": {
+      "group": 48,
+      "schedule": 53,
+      "start": "2020-05-16T06:30:00Z",
+      "end": "2020-05-16T08:30:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 177,
+    "fields": {
+      "group": 48,
+      "schedule": 53,
+      "start": "2020-05-23T06:30:00Z",
+      "end": "2020-05-23T08:30:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 178,
+    "fields": {
+      "group": 48,
+      "schedule": 53,
+      "start": "2020-05-30T06:30:00Z",
+      "end": "2020-05-30T08:30:00Z",
+      "training_class": 5
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 179,
+    "fields": {
+      "group": 40,
+      "schedule": 54,
+      "start": "2020-05-11T15:30:00Z",
+      "end": "2020-05-11T18:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 180,
+    "fields": {
+      "group": 40,
+      "schedule": 54,
+      "start": "2020-05-18T15:30:00Z",
+      "end": "2020-05-18T18:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 181,
+    "fields": {
+      "group": 40,
+      "schedule": 54,
+      "start": "2020-05-25T15:30:00Z",
+      "end": "2020-05-25T18:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 182,
+    "fields": {
+      "group": 40,
+      "schedule": 54,
+      "start": "2020-06-01T15:30:00Z",
+      "end": "2020-06-01T18:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 183,
+    "fields": {
+      "group": 65,
+      "schedule": 55,
+      "start": "2020-05-11T17:30:00Z",
+      "end": "2020-05-11T19:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 184,
+    "fields": {
+      "group": 65,
+      "schedule": 55,
+      "start": "2020-05-18T17:30:00Z",
+      "end": "2020-05-18T19:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 185,
+    "fields": {
+      "group": 65,
+      "schedule": 55,
+      "start": "2020-05-25T17:30:00Z",
+      "end": "2020-05-25T19:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 186,
+    "fields": {
+      "group": 65,
+      "schedule": 55,
+      "start": "2020-06-01T17:30:00Z",
+      "end": "2020-06-01T19:30:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 187,
+    "fields": {
+      "group": 38,
+      "schedule": 56,
+      "start": "2020-05-11T17:30:00Z",
+      "end": "2020-05-11T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 188,
+    "fields": {
+      "group": 38,
+      "schedule": 56,
+      "start": "2020-05-18T17:30:00Z",
+      "end": "2020-05-18T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 189,
+    "fields": {
+      "group": 38,
+      "schedule": 56,
+      "start": "2020-05-25T17:30:00Z",
+      "end": "2020-05-25T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 190,
+    "fields": {
+      "group": 38,
+      "schedule": 56,
+      "start": "2020-06-01T17:30:00Z",
+      "end": "2020-06-01T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 191,
+    "fields": {
+      "group": 65,
+      "schedule": 57,
+      "start": "2020-05-14T14:00:00Z",
+      "end": "2020-05-14T16:00:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 192,
+    "fields": {
+      "group": 65,
+      "schedule": 57,
+      "start": "2020-05-21T14:00:00Z",
+      "end": "2020-05-21T16:00:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 193,
+    "fields": {
+      "group": 65,
+      "schedule": 57,
+      "start": "2020-05-28T14:00:00Z",
+      "end": "2020-05-28T16:00:00Z",
+      "training_class": 4
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 194,
+    "fields": {
+      "group": 38,
+      "schedule": 58,
+      "start": "2020-05-13T17:30:00Z",
+      "end": "2020-05-13T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 195,
+    "fields": {
+      "group": 38,
+      "schedule": 58,
+      "start": "2020-05-20T17:30:00Z",
+      "end": "2020-05-20T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 196,
+    "fields": {
+      "group": 38,
+      "schedule": 58,
+      "start": "2020-05-27T17:30:00Z",
+      "end": "2020-05-27T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 197,
+    "fields": {
+      "group": 38,
+      "schedule": 59,
+      "start": "2020-05-15T17:30:00Z",
+      "end": "2020-05-15T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 198,
+    "fields": {
+      "group": 38,
+      "schedule": 59,
+      "start": "2020-05-22T17:30:00Z",
+      "end": "2020-05-22T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 199,
+    "fields": {
+      "group": 38,
+      "schedule": 59,
+      "start": "2020-05-29T17:30:00Z",
+      "end": "2020-05-29T19:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 200,
+    "fields": {
+      "group": 28,
+      "schedule": 60,
+      "start": "2020-05-12T18:00:00Z",
+      "end": "2020-05-12T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 201,
+    "fields": {
+      "group": 28,
+      "schedule": 60,
+      "start": "2020-05-19T18:00:00Z",
+      "end": "2020-05-19T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 202,
+    "fields": {
+      "group": 28,
+      "schedule": 60,
+      "start": "2020-05-26T18:00:00Z",
+      "end": "2020-05-26T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 203,
+    "fields": {
+      "group": 31,
+      "schedule": 61,
+      "start": "2020-05-11T13:30:00Z",
+      "end": "2020-05-11T15:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 204,
+    "fields": {
+      "group": 31,
+      "schedule": 61,
+      "start": "2020-05-18T13:30:00Z",
+      "end": "2020-05-18T15:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 205,
+    "fields": {
+      "group": 31,
+      "schedule": 61,
+      "start": "2020-05-25T13:30:00Z",
+      "end": "2020-05-25T15:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 206,
+    "fields": {
+      "group": 31,
+      "schedule": 61,
+      "start": "2020-06-01T13:30:00Z",
+      "end": "2020-06-01T15:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 207,
+    "fields": {
+      "group": 28,
+      "schedule": 62,
+      "start": "2020-05-14T18:30:00Z",
+      "end": "2020-05-14T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 208,
+    "fields": {
+      "group": 28,
+      "schedule": 62,
+      "start": "2020-05-21T18:30:00Z",
+      "end": "2020-05-21T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 209,
+    "fields": {
+      "group": 28,
+      "schedule": 62,
+      "start": "2020-05-28T18:30:00Z",
+      "end": "2020-05-28T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 210,
+    "fields": {
+      "group": 28,
+      "schedule": 63,
+      "start": "2020-05-16T18:00:00Z",
+      "end": "2020-05-16T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 211,
+    "fields": {
+      "group": 28,
+      "schedule": 63,
+      "start": "2020-05-23T18:00:00Z",
+      "end": "2020-05-23T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 212,
+    "fields": {
+      "group": 28,
+      "schedule": 63,
+      "start": "2020-05-30T18:00:00Z",
+      "end": "2020-05-30T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 213,
+    "fields": {
+      "group": 26,
+      "schedule": 64,
+      "start": "2020-05-12T14:30:00Z",
+      "end": "2020-05-12T16:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 214,
+    "fields": {
+      "group": 26,
+      "schedule": 64,
+      "start": "2020-05-19T14:30:00Z",
+      "end": "2020-05-19T16:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 215,
+    "fields": {
+      "group": 26,
+      "schedule": 64,
+      "start": "2020-05-26T14:30:00Z",
+      "end": "2020-05-26T16:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 216,
+    "fields": {
+      "group": 24,
+      "schedule": 65,
+      "start": "2020-05-11T18:00:00Z",
+      "end": "2020-05-11T19:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 217,
+    "fields": {
+      "group": 24,
+      "schedule": 65,
+      "start": "2020-05-18T18:00:00Z",
+      "end": "2020-05-18T19:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 218,
+    "fields": {
+      "group": 24,
+      "schedule": 65,
+      "start": "2020-05-25T18:00:00Z",
+      "end": "2020-05-25T19:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 219,
+    "fields": {
+      "group": 24,
+      "schedule": 65,
+      "start": "2020-06-01T18:00:00Z",
+      "end": "2020-06-01T19:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 220,
+    "fields": {
+      "group": 26,
+      "schedule": 66,
+      "start": "2020-05-14T14:30:00Z",
+      "end": "2020-05-14T16:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 221,
+    "fields": {
+      "group": 26,
+      "schedule": 66,
+      "start": "2020-05-21T14:30:00Z",
+      "end": "2020-05-21T16:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 222,
+    "fields": {
+      "group": 26,
+      "schedule": 66,
+      "start": "2020-05-28T14:30:00Z",
+      "end": "2020-05-28T16:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 223,
+    "fields": {
+      "group": 24,
+      "schedule": 67,
+      "start": "2020-05-13T17:00:00Z",
+      "end": "2020-05-13T18:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 224,
+    "fields": {
+      "group": 24,
+      "schedule": 67,
+      "start": "2020-05-20T17:00:00Z",
+      "end": "2020-05-20T18:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 225,
+    "fields": {
+      "group": 24,
+      "schedule": 67,
+      "start": "2020-05-27T17:00:00Z",
+      "end": "2020-05-27T18:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 226,
+    "fields": {
+      "group": 24,
+      "schedule": 68,
+      "start": "2020-05-15T17:00:00Z",
+      "end": "2020-05-15T18:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 227,
+    "fields": {
+      "group": 24,
+      "schedule": 68,
+      "start": "2020-05-22T17:00:00Z",
+      "end": "2020-05-22T18:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 228,
+    "fields": {
+      "group": 24,
+      "schedule": 68,
+      "start": "2020-05-29T17:00:00Z",
+      "end": "2020-05-29T18:00:00Z",
+      "training_class": 2
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 229,
+    "fields": {
+      "group": 13,
+      "schedule": 69,
+      "start": "2020-05-11T15:30:00Z",
+      "end": "2020-05-11T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 230,
+    "fields": {
+      "group": 13,
+      "schedule": 69,
+      "start": "2020-05-18T15:30:00Z",
+      "end": "2020-05-18T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 231,
+    "fields": {
+      "group": 13,
+      "schedule": 69,
+      "start": "2020-05-25T15:30:00Z",
+      "end": "2020-05-25T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 232,
+    "fields": {
+      "group": 13,
+      "schedule": 69,
+      "start": "2020-06-01T15:30:00Z",
+      "end": "2020-06-01T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 233,
+    "fields": {
+      "group": 18,
+      "schedule": 70,
+      "start": "2020-05-13T17:30:00Z",
+      "end": "2020-05-13T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 234,
+    "fields": {
+      "group": 18,
+      "schedule": 70,
+      "start": "2020-05-20T17:30:00Z",
+      "end": "2020-05-20T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 235,
+    "fields": {
+      "group": 18,
+      "schedule": 70,
+      "start": "2020-05-27T17:30:00Z",
+      "end": "2020-05-27T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 236,
+    "fields": {
+      "group": 13,
+      "schedule": 71,
+      "start": "2020-05-13T15:30:00Z",
+      "end": "2020-05-13T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 237,
+    "fields": {
+      "group": 13,
+      "schedule": 71,
+      "start": "2020-05-20T15:30:00Z",
+      "end": "2020-05-20T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 238,
+    "fields": {
+      "group": 13,
+      "schedule": 71,
+      "start": "2020-05-27T15:30:00Z",
+      "end": "2020-05-27T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 239,
+    "fields": {
+      "group": 18,
+      "schedule": 72,
+      "start": "2020-05-15T18:00:00Z",
+      "end": "2020-05-15T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 240,
+    "fields": {
+      "group": 18,
+      "schedule": 72,
+      "start": "2020-05-22T18:00:00Z",
+      "end": "2020-05-22T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 241,
+    "fields": {
+      "group": 18,
+      "schedule": 72,
+      "start": "2020-05-29T18:00:00Z",
+      "end": "2020-05-29T19:30:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 242,
+    "fields": {
+      "group": 13,
+      "schedule": 73,
+      "start": "2020-05-15T15:30:00Z",
+      "end": "2020-05-15T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 243,
+    "fields": {
+      "group": 13,
+      "schedule": 73,
+      "start": "2020-05-22T15:30:00Z",
+      "end": "2020-05-22T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 244,
+    "fields": {
+      "group": 13,
+      "schedule": 73,
+      "start": "2020-05-29T15:30:00Z",
+      "end": "2020-05-29T17:30:00Z",
+      "training_class": 9
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 245,
+    "fields": {
+      "group": 18,
+      "schedule": 74,
+      "start": "2020-05-11T16:00:00Z",
+      "end": "2020-05-11T18:00:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 246,
+    "fields": {
+      "group": 18,
+      "schedule": 74,
+      "start": "2020-05-18T16:00:00Z",
+      "end": "2020-05-18T18:00:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 247,
+    "fields": {
+      "group": 18,
+      "schedule": 74,
+      "start": "2020-05-25T16:00:00Z",
+      "end": "2020-05-25T18:00:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 248,
+    "fields": {
+      "group": 18,
+      "schedule": 74,
+      "start": "2020-06-01T16:00:00Z",
+      "end": "2020-06-01T18:00:00Z",
+      "training_class": 10
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 249,
+    "fields": {
+      "group": 38,
+      "schedule": 58,
+      "start": "2020-06-03T17:30:00Z",
+      "end": "2020-06-03T19:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 250,
+    "fields": {
+      "group": 38,
+      "schedule": 59,
+      "start": "2020-06-05T17:30:00Z",
+      "end": "2020-06-05T19:30:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 251,
+    "fields": {
+      "group": 26,
+      "schedule": 64,
+      "start": "2020-06-02T14:30:00Z",
+      "end": "2020-06-02T16:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.training",
+    "pk": 252,
+    "fields": {
+      "group": 26,
+      "schedule": 66,
+      "start": "2020-06-04T14:30:00Z",
+      "end": "2020-06-04T16:00:00Z",
+      "training_class": null
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 3,
+    "fields": {
+      "training": 1,
+      "student": 6,
+      "hours": "1.50"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 19,
+    "fields": {
+      "training": 2,
+      "student": 6,
+      "hours": "2.00"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 22,
+    "fields": {
+      "training": 2,
+      "student": 8,
+      "hours": "1.50"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 24,
+    "fields": {
+      "training": 9,
+      "student": 8,
+      "hours": "1.00"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 26,
+    "fields": {
+      "training": 187,
+      "student": 2,
+      "hours": "1.00"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 33,
+    "fields": {
+      "training": 189,
+      "student": 17,
+      "hours": "2.67"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 34,
+    "fields": {
+      "training": 189,
+      "student": 12,
+      "hours": "2.67"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 35,
+    "fields": {
+      "training": 196,
+      "student": 6,
+      "hours": "1.00"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 36,
+    "fields": {
+      "training": 196,
+      "student": 12,
+      "hours": "2.67"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 37,
+    "fields": {
+      "training": 199,
+      "student": 17,
+      "hours": "2.67"
+    }
+  },
+  {
+    "model": "sport.attendance",
+    "pk": 38,
+    "fields": {
+      "training": 199,
+      "student": 12,
+      "hours": "2.67"
+    }
+  }
+]

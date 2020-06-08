@@ -5,6 +5,8 @@
 * Docker
 
 ## Environment Variables
+See `compose/example.env` for reference.
+
 The project require a file `compose/.env` to contain 
 following environment variables:
 
@@ -14,6 +16,8 @@ following environment variables:
 * `POSTGRES_SERVER` - database hostname (`db` - by default)
 * `SECRET_KEY` - a secret key for token verifications
 * `PROJECT_NAME`- project title
+* `BASE_URL` - service base url
+* `PYTHON_VERSION` - which python version is to be used (specify exact version)
 * `DEBUG`- boolean flag for DEBUG mode ( `true` enables fake login and Django debug)
 * `oauth_appID` - application ID for oauth
 * `oauth_shared_secret` - application secret for ouath
@@ -30,68 +34,42 @@ following environment variables:
 1. Mark `./backend/app` as a Source root
 1. To start server 
     1. From repo folder: `docker-compose up -f ./compose/docker-compose.yml`
-    1. From `/backend/app`: `docker-compose up -f ../../compose/docker-compose.yml`
 
-Server supports auto-reload on code change
+Server supports auto-reload on code change in debug mode
 
-Swagger documentation is at `localhost:<port>/docs`
-
-Redoc documentation is at `localhost:<port>/redoc`
+Documentation for `api` module:
+* Swagger is at `/api/swagger`
+* Redoc is at `/api/redoc`
 ```
 .
-├── adminpage - Adminpage django app.
-│   ├── adminpage
-│   │   ├── __init__.py
+├── adminpage - Django project
+│   ├── adminpage - main django app
 │   │   ├── settings.py
+│   │   ├── swagger.py
 │   │   ├── urls.py
 │   │   └── wsgi.py
-│   ├── constraints.sql - Constraints that must be present at the db
-│   ├── Dockerfile
-│   ├── __init__.py
-│   ├── manage.py
-│   ├── requirements.txt
-│   └── sport
-│       ├── admin.py
-│       ├── apps.py
-│       ├── __init__.py
-│       ├── migrations - auto-generated migrations
-│       ├── models - SQL Alchemy db models
-│       ├── tests.py
-│       └── views.py
-├── backend - FAST API app
-│   ├── app
-│   │   ├── app
-│   │   │   ├── api
-│   │   │   │   ├── api_v1
-│   │   │   │   │   ├── api.py
-│   │   │   │   │   ├── endpoints - folder for API endpoints
-│   │   │   │   │   └── __init__.py
-│   │   │   │   ├── __init__.py
-│   │   │   │   └── utils - folder for API utilities
-│   │   │   ├── backend_pre_start.py
-│   │   │   ├── core - Core server functionality
-│   │   │   │   ├── config.py - configuration
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── jwt.py - token generation
-│   │   │   │   └── security.py - user verification
-│   │   │   ├── db - folder for CRUD
-│   │   │   ├── __init__.py
-│   │   │   ├── main.py - sever initialization
-│   │   │   ├── models - folder for pydantic models used in the code
-│   │   │   ├── backend_pre_start.py - code to be executed before the server run.
-│   │   │   ├── pages - code connected to page render
-│   │   │   │   ├── endpoints - endpoints for pages
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── pages.py
-│   │   │   │   └── utils - utils for page rendering
-│   │   │   ├── static - folder for all static files
-│   │   │   ├── tasks.py - background tasks
-│   │   │   ├── templates - jinja2 templates
-│   │   │   └── tests - folder for pytest tests
-│   │   ├── prestart.sh
-│   │   └── requirements.txt
-│   ├── Dockerfile
-│   └── Dockerfile.db
+│   ├── api
+│   │   ├── crud - directory with database queries
+│   │   ├── fixtures - database tools for testing
+│   │   ├── serializers - DRF serializers
+│   │   ├── tests
+│   │   │   ├── api - endpoints tests
+│   │   │   └── crud - database queries tests
+│   │   └── views - api endpoints
+│   ├── sport
+│   │   ├── admin - django adminpage classes
+│   │   ├── dumps - database dumps for tests
+│   │   ├── migrations - django database migrations
+│   │   ├── models - django database models
+│   │   ├── signals - django ORM signal handlers
+│   │   ├── static - static files for app (css, fonts, images, js)
+│   │   │   └── sport
+│   │   │       ├── css
+│   │   │       ├── fonts
+│   │   │       ├── images
+│   │   │       └── js
+│   │   ├── templates - django templates for app pages
+│   │   └── views - app pages url handlers
 ├── compose - compose for the project
 │   └── docker-compose.yml
 ├── nginx - load balancer and proxy
@@ -99,6 +77,6 @@ Redoc documentation is at `localhost:<port>/redoc`
 │   ├── conf - configuration folder
 │   ├── Dockerfile
 │   └── logs - log folder
+├── Dockerfile.db - Dockerfile for db image
 └── README.md
-
 ```
