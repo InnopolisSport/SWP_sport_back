@@ -61,8 +61,6 @@ def create_trainings_current_semester(instance: Schedule, created, **kwargs):
     for week_start in week_generator(max(get_current_monday(), semester.start), semester.end):
         training_date = week_start + timedelta(days=instance.weekday)
         if today <= training_date <= semester.end:
-            # using naive time here intended, since instance.{start, end}
-            # contain aware time (at least by values)
             training_start = datetime.combine(
                 date=training_date,
                 time=instance.start,
