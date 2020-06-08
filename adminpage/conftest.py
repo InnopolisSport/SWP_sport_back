@@ -3,6 +3,6 @@
 # here you can add all modules
 # with fixtures
 pytest_plugins = [
-    "sport.fixtures.user_creation",
-    "sport.fixtures.model_creation",
+    "api.fixtures.user_creation",
+    "api.fixtures.model_creation",
 ]

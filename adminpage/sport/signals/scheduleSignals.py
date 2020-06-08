@@ -56,21 +56,21 @@ def create_trainings_current_semester(instance: Schedule, created, **kwargs):
 
     semester = instance.group.semester
     today = get_today()
-    server_timezone = timezone.get_default_timezone()
-    server_time = timezone.make_naive(datetime.now(server_timezone))
+    server_timezone = timezone.localtime().tzinfo
+    server_time = datetime.now(server_timezone)
     for week_start in week_generator(max(get_current_monday(), semester.start), semester.end):
         training_date = week_start + timedelta(days=instance.weekday)
         if today <= training_date <= semester.end:
-            # using naive time here intended, since instance.{start, end}
-            # contain aware time (at least by values)
             training_start = datetime.combine(
                 date=training_date,
                 time=instance.start,
+                tzinfo=server_timezone
             )
             if server_time < training_start:
                 training_end = datetime.combine(
                     date=training_date,
                     time=instance.end,
+                    tzinfo=server_timezone
                 )
 
                 Training.objects.create(

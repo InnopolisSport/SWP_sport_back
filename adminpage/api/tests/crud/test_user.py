@@ -29,7 +29,8 @@ def test_get_email_name_like_students(student_factory):
         "id": user.student.pk,
         "first_name": user.first_name,
         "last_name": user.last_name,
-        "email": user.email
+        "email": user.email,
+        "full_name": f"{user.first_name} {user.last_name}",
     }]
     assert len(get_email_name_like_students("Kir")) == 1
     assert len(get_email_name_like_students("Kirill Fed")) == 1

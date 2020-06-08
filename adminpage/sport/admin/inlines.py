@@ -8,7 +8,7 @@ class AttendanceInline(admin.TabularInline):
     model = models.Attendance
     extra = 1
     autocomplete_fields = ("training", "student")
-    ordering = ("training__start", "student__first_name", "student__last_name")
+    ordering = ("training__start", "student__user__first_name", "student__user__last_name")
 
 
 class ScheduleInline(admin.TabularInline):
@@ -21,7 +21,7 @@ class EnrollInline(admin.TabularInline):
     model = models.Enroll
     extra = 1
     autocomplete_fields = ("student",)
-    ordering = ("student__first_name", "student__last_name")
+    ordering = ("student__user__first_name", "student__user__last_name")
 
 
 class GroupInline(admin.TabularInline):

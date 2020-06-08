@@ -9,6 +9,19 @@ class EmptySerializer(serializers.Serializer):
     pass
 
 
+class NotFoundSerializer(serializers.Serializer):
+    detail = serializers.ReadOnlyField(default="Not found")
+
+
+class InbuiltErrorSerializer(serializers.Serializer):
+    detail = serializers.ReadOnlyField()
+
+
+class ErrorSerializer(serializers.Serializer):
+    code = serializers.IntegerField()
+    detail = serializers.CharField()
+
+
 def get_error_serializer(
         reference_name: str,
         error_code: Optional[int] = None,

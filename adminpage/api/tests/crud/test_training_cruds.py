@@ -1,17 +1,20 @@
 import pytest
+import unittest
 from datetime import date, time, datetime
 
 from api.crud import get_attended_training_info, enroll_student_to_secondary_group, get_group_info, \
     get_trainings_for_student, get_trainings_for_trainer, get_trainings_in_time, get_students_grades
 from sport.models import Training, Schedule
 
+assertMembers = unittest.TestCase().assertCountEqual
+
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2019-12-31 10:00')
-def test_hours_statistics(student_factory, trainer_factory, sport_factory, semester_factory, training_class_factory,
-                          group_factory,
-                          schedule_factory,
-                          attendance_factory):
+def test_training_info(student_factory, trainer_factory, sport_factory, semester_factory, training_class_factory,
+                       group_factory,
+                       schedule_factory,
+                       attendance_factory):
     student = student_factory("A1").student
     other_student = student_factory("A2").student
     trainer = trainer_factory("B").trainer
@@ -55,14 +58,15 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
         "is_enrolled": False,
         "is_primary": False
     }
-    assert get_trainings_for_trainer(trainer=trainer, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)) == [
+    assertMembers(get_trainings_for_trainer(trainer=trainer, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)), [
         {
             "id": t1.pk,
             "start": t1.start,
             "end": t1.end,
             "group_id": group.pk,
             "group_name": group.name,
-            "training_class": training_class.name
+            "training_class": training_class.name,
+            "can_grade": True
         },
         {
             "id": t2.pk,
@@ -70,9 +74,10 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
             "end": t2.end,
             "group_id": group.pk,
             "group_name": group.name,
-            "training_class": None
+            "training_class": None,
+            "can_grade": True
         }
-    ]
+    ])
 
     enroll_student_to_secondary_group(group, student)
     group.trainer = None
@@ -87,7 +92,7 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
         "trainer_first_name": None,
         "trainer_last_name": None,
         "trainer_email": None,
-        "hours": None,
+        "hours": 0,
         "is_enrolled": True,
         "is_primary": False
     }
@@ -103,7 +108,7 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
         "is_enrolled": True,
         "is_primary": False
     }
-    assert get_trainings_for_student(student=student, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)) == [
+    assertMembers(get_trainings_for_student(student=student, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)), [
         {
             "id": t1.pk,
             "start": t1.start,
@@ -111,7 +116,8 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
             "group_id": group.pk,
             "group_name": group.name,
             "training_class": training_class.name,
-            "hours": a1.hours
+            "hours": a1.hours,
+            "can_grade": False
         },
         {
             "id": t2.pk,
@@ -120,14 +126,15 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
             "group_id": group.pk,
             "group_name": group.name,
             "training_class": None,
-            "hours": None
+            "hours": 0,
+            "can_grade": False
         }
-    ]
+    ])
 
     assert get_trainings_for_trainer(trainer=trainer, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)) == []
 
     assert get_trainings_in_time(sport_id=0, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)) == []
-    assert get_trainings_in_time(sport_id=sport.pk, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)) == [
+    assertMembers(get_trainings_in_time(sport_id=sport.pk, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)), [
         {
             "group_id": group.pk,
             "group_name": group.name,
@@ -148,38 +155,43 @@ def test_hours_statistics(student_factory, trainer_factory, sport_factory, semes
             "end": t1.end,
             "training_class": training_class.name,
         }
-    ]
+    ])
 
     assert get_students_grades(t1.pk) == [{
         "student_id": student.pk,
         "first_name": student.user.first_name,
         "last_name": student.user.last_name,
         "email": student.user.email,
-        "hours": a1.hours
+        "hours": a1.hours,
+        "full_name": f"{student.user.first_name} {student.user.last_name}",
     }]
     assert get_students_grades(t2.pk) == [{
         "student_id": student.pk,
         "first_name": student.user.first_name,
         "last_name": student.user.last_name,
         "email": student.user.email,
-        "hours": None
+        "hours": 0,
+        "full_name": f"{student.user.first_name} {student.user.last_name}",
+
     }]
 
     enroll_student_to_secondary_group(group, other_student)
 
-    assert get_students_grades(t1.pk) == [
+    assertMembers(get_students_grades(t1.pk), [
         {
             "student_id": student.pk,
             "first_name": student.user.first_name,
             "last_name": student.user.last_name,
             "email": student.user.email,
-            "hours": a1.hours
+            "hours": a1.hours,
+            "full_name": f"{student.user.first_name} {student.user.last_name}",
         },
         {
             "student_id": other_student.pk,
             "first_name": other_student.user.first_name,
             "last_name": other_student.user.last_name,
             "email": other_student.user.email,
-            "hours": None
+            "hours": 0,
+            "full_name": f"{student.user.first_name} {student.user.last_name}",
         }
-    ]
+    ])

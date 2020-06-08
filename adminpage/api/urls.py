@@ -6,6 +6,11 @@ from django.urls import path
 from api.views import (
     tmp,
     profile,
+    enroll,
+    group,
+    training,
+    attendance,
+    calendar,
 )
 
 urlpatterns = [
@@ -13,6 +18,25 @@ urlpatterns = [
     # profile
     path(r"profile/sick/toggle", profile.toggle_sick),
     path(r"profile/history/<int:semester_id>", profile.get_history),
+
+    # enroll
+    path(r"enrollment/enroll", enroll.enroll),
+    path(r"enrollment/unenroll", enroll.unenroll),
+
+    # group
+    path(r"group/<int:group_id>", group.group_info),
+
+    # training
+    path(r"training/<int:training_id>", training.training_info),
+
+    # attendance
+    path(r"attendance/suggest_student", attendance.suggest_student),
+    path(r"attendance/<int:training_id>/grades", attendance.get_grades),
+    path(r"attendance/mark", attendance.mark_attendance),
+
+    # calendar
+    path(r"calendar/<int:sport_id>/schedule", calendar.get_schedule),
+    path(r"calendar/trainings", calendar.get_personal_schedule),
 ]
 
 urlpatterns.extend([

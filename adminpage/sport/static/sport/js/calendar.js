@@ -1,66 +1,3 @@
-// let f = require("@fullcalendar/core");
-// let d = require("@fullcalendar/daygrid");
-// let t = require("@fullcalendar/timegrid");
-
-const colors = [
-    '#1f77b4',
-    '#ff7f0e',
-    '#2ca02c',
-    '#d62728',
-    '#9467bd',
-    '#8c564b',
-    '#b4005a',
-    '#7f7f7f',
-    '#7b7c1f',
-    '#157786',
-];
-
-const color_limit = colors.length;
-var color_ptr = 0;
-
-var group_colors = {};
-
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-
-function get_color(group) {
-    if (group_colors.hasOwnProperty(group)) {
-        // Keep it to assign consistent colors
-    } else if (color_ptr < color_limit) {
-        // Start assigning colors from the list
-        group_colors[group] = colors[color_ptr];
-        color_ptr += 1;
-        return group_colors[group];
-    } else {
-        // If it happen that we finished the list - assign random colors
-        group_colors[group] = getRandomColor();
-    }
-    return group_colors[group];
-
-}
-
-async function sendResults(url, data) {
-    let response = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        // headers: {
-        //     // 'Content-Type': 'application/json'
-        // }
-    });
-    return await response.json();
-}
-
-function goto_profile() {
-    window.location.href = "/profile";
-}
-
 async function open_modal(eventClickInfo) {
     const {event} = eventClickInfo
     const modal = $('#training-info-modal .modal-body');
@@ -88,7 +25,11 @@ async function open_modal(eventClickInfo) {
         .addClass(is_enrolled ? "btn-danger" : "btn-success")
         .removeClass(is_enrolled ? "btn-success" : "btn-danger")
         .off('click')
-        .click(() => enroll(event, is_enrolled ? "unenroll" : "enroll"))
+        .click(() => enroll(
+            event.extendedProps.group_id,
+            is_enrolled ? "unenroll" : "enroll",
+            set_max_load
+        ))
         .attr('disabled', is_enrolled ? is_primary : current_load >= capacity);
     $('#training-info-modal-title').text(`${group_name} training`);
     modal.empty();
@@ -110,19 +51,16 @@ async function open_modal(eventClickInfo) {
     }
 }
 
-async function enroll(event, action) {
-    const result = await sendResults(`/api/${action}`, {group_id: event.extendedProps.group_id})
-    if (result.ok) {
-        goto_profile();
-    } else {
-        update_rendered_events_load(event.extendedProps.group_id, event.extendedProps.capacity);
-        toastr.error(result.error.description);
-    }
+function set_max_load(group_id) {
+    update_rendered_events_load(group_id, 0, true);
 }
 
-function update_rendered_events_load(group_id, load) {
+function update_rendered_events_load(group_id, load, set_max = false) {
     calendar.getEvents().filter(event => event.extendedProps.group_id === group_id).forEach(
-        event => event.setExtendedProp('current_load', load)
+        event => event.setExtendedProp(
+            'current_load',
+            (set_max) ? event.extendedProps.capacity : load
+        )
     );
 }
 
@@ -137,7 +75,7 @@ function render(info) {
     element.style.cursor = 'pointer';
 }
 
-let calendar
+let calendar;
 document.addEventListener('DOMContentLoaded', function () {
     let calendarEl = document.getElementById('calendar');
 
@@ -161,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: open_modal,
         eventRender: render,
         // Event format: yyyy-mm-dd
-        // TODO: at backend use a loop of 10 standard colors as matplotlib do ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
         events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
 
     });

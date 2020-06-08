@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 
 def getenv_boolean(var_name, default_value=False):
@@ -26,7 +27,12 @@ STUDENT_GROUP_VERBOSE_NAME = "Students"
 TRAINER_GROUP_VERBOSE_NAME = "School Physical Activity for Health"
 SC_TRAINERS_GROUP_NAME = "SC trainers"
 
+TRAINING_EDITABLE_INTERVAL = timedelta(
+    days=int(os.getenv("TRAINING_EDITABLE_INTERVAL", 14))
+)
+
 BASE_URL = os.getenv("BASE_URL", "http://localhost:81/")
+PREFIX = ""
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -131,8 +137,8 @@ AUTH_ADFS = {
     },
 }
 
-LOGIN_URL = "django_auth_adfs:login"
-LOGIN_REDIRECT_URL = "/django/admin"
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "profile"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -186,7 +192,7 @@ USE_TZ = True
 STATIC_ROOT = '/static/'
 
 if DEBUG:
-    STATIC_URL = '/django/static/'
+    STATIC_URL = f'/{PREFIX}static/'
 else:
     STATIC_URL = '/static/'
 
