@@ -1,59 +1,3 @@
-class ApiError extends Error {
-    constructor(message, code, status) {
-        super(message);
-        this.code = code;
-        this.status = status;
-    }
-}
-
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-var csrf_token = getCookie('csrftoken');
-
-async function sendResults(url, data) {
-    function handleError(response) {
-        if (!response.ok) {
-            return response.json()
-                .then(data => {
-                    throw new ApiError(
-                        data.detail,
-                        data.code,
-                        response.status
-                    );
-                });
-
-        }
-        return response.json();
-    }
-
-    let response = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json',
-            "X-CSRFToken": csrf_token,
-        },
-    }).then(handleError);
-}
-
-function goto_profile() {
-    window.location.reload();
-}
-
 function make_hours_table(trainings) {
     const table = $('<table class="table table-hover">');
     table.append('<thead>')
@@ -101,52 +45,6 @@ function toggle_ill(elem) {
 /*
     Calendar
 */
-const colors = [
-    '#1f77b4',
-    '#ff7f0e',
-    '#2ca02c',
-    '#d62728',
-    '#9467bd',
-    '#8c564b',
-    '#b4005a',
-    '#7f7f7f',
-    '#7b7c1f',
-    '#157786',
-];
-
-const color_limit = colors.length;
-var color_ptr = 0;
-var group_colors = {};
-
-function clearColors(info) {
-    group_colors.clear;
-    color_ptr = 0;
-}
-
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-
-function get_color(group) {
-    if (group_colors.hasOwnProperty(group)) {
-        // Keep it to assign consistent colors
-    } else if (color_ptr < color_limit) {
-        // Start assigning colors from the list
-        group_colors[group] = colors[color_ptr];
-        color_ptr += 1;
-        return group_colors[group];
-    } else {
-        // If it happen that we finished the list - assign random colors
-        group_colors[group] = getRandomColor();
-    }
-    return group_colors[group];
-}
 
 
 function render(info) {
@@ -244,21 +142,20 @@ async function save_hours() {
             },
         });
 
-        // $.post('/django/api/attendance/mark',
-        //     {
-        //         training_id,
-        //         students_hours: parse_local_storage()
-        //     },
-        //     function (data, jqXHR) {
-        //     }
-        // );
-
-        $('#grading-modal tr').removeClass('table-warning')
-        local_hours_changes = {}
+        sendResults('/django/api/attendance/mark', {
+            training_id,
+            students_hours: parse_local_storage()
+        })
+            .then(data => {
+                $('#grading-modal tr').removeClass('table-warning')
+                local_hours_changes = {}
 
 
-        hide_alert("hours-alert");
-        $('#grading-modal').modal("hide")
+                hide_alert("hours-alert");
+                $('#grading-modal').modal("hide")
+            })
+
+
     }
     btn.prop('disabled', false);
 
@@ -340,6 +237,8 @@ async function open_info_modal_for_leave(group_id, hide_button) {
         method: 'GET',
         "X-CSRFToken": csrf_token,
     });
+
+
     const {
         group_name,
         group_description,
@@ -534,3 +433,12 @@ function autocomplete_select(event, ui) {
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
 }
+
+$(function () {
+    $("#student_emails")
+        .autocomplete({
+            source: "/django/api/attendance/suggest_student",
+            select: autocomplete_select
+        })
+        .autocomplete("option", "appendTo", ".student_email_suggestor");
+});
