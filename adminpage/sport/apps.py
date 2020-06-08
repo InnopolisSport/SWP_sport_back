@@ -6,5 +6,12 @@ class SportConfig(AppConfig):
 
     def ready(self) -> None:
         import sport.signals  # noqa
-        sport.signals.get_or_create_trainer_group()
-        sport.signals.get_or_create_student_group()
+        # TODO: resolve in a better way
+        # if the database doesn't have a migration
+        # on Group, these changes will cause an error
+        # preventing database migration
+        try:
+            sport.signals.get_or_create_trainer_group()
+            sport.signals.get_or_create_student_group()
+        except:
+            pass
