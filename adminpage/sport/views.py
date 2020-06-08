@@ -1,6 +1,6 @@
 from typing import Optional
 
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
@@ -19,6 +19,7 @@ def parse_group(group: dict) -> dict:
     }
 
 
+@login_required
 def profile_view(request, **kwargs):
     user = request.user
 
@@ -71,6 +72,7 @@ def profile_view(request, **kwargs):
     return render(request, "profile.html", context)
 
 
+@login_required
 def category_view(request, **kwargs):
     sports = get_sports()
     clubs = sorted(
@@ -89,6 +91,7 @@ def category_view(request, **kwargs):
     })
 
 
+@login_required
 def calendar_view(request, sport_id, **kwargs):
     sport = get_object_or_404(Sport, pk=sport_id)
     return render(request, "calendar.html", {
