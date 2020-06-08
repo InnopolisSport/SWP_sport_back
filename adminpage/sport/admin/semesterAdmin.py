@@ -16,7 +16,7 @@ class SemesterAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
-        year_filter(Semester, 'start__year'),
+        year_filter("start__year"),
     )
 
     list_display = (

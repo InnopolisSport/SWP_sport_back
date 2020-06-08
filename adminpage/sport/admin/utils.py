@@ -1,5 +1,8 @@
+from typing import List, Dict
+
 from django.contrib import admin
-from django.db import models
+
+from sport.models import Semester
 
 
 def custom_titled_filter(title, filter_class=admin.RelatedFieldListFilter):
@@ -12,16 +15,78 @@ def custom_titled_filter(title, filter_class=admin.RelatedFieldListFilter):
     return Wrapper
 
 
-def year_filter(model: models.Model, year_field: str):
+def cache_filter(cls, clear_list: List[str]):
+    """
+    Overrides filter methods, so that chosen filter value will be available to other filters
+    @param cls: used filter class
+    @param clear_list: list of query fields that should be cleared, when some choice within this filter is selected.
+    Useful for clearing dependent sub filters (clear semester choice, when study year is selected).
+    """
+
+    def add_value_to_cache(request, param, value):
+        try:
+            request.cache_filter[param] = value
+        except:
+            request.cache_filter = {param: value}
+
+    class CacheAwareFilter(cls):
+        def lookups(self, request, model_admin):
+            add_value_to_cache(request, self.parameter_name, self.value())
+            return super().lookups(request, model_admin)
+
+        def field_choices(self, field, request, model_admin):
+            add_value_to_cache(request, self.field_path, self.lookup_val)
+            return super().field_choices(field, request, model_admin)
+
+        def choices(self, changelist):
+            # save previous version of get_query_string that is used in super().choices(changelist)
+            f = changelist.get_query_string
+
+            def get_query_string(new_params=None, remove=None):
+                # call prior version with additional 'remove' fields
+                return f(new_params=new_params, remove=clear_list if remove is None else (clear_list + remove))
+
+            # override get_query_string
+            changelist.get_query_string = get_query_string
+            yield from super().choices(changelist)
+            # revert to original get_query_string, since it can be used further
+            changelist.get_query_string = f
+
+    return CacheAwareFilter
+
+
+def cache_dependent_filter(translation: Dict[str, str]):
+    """
+    Creates foreign key list filter, that can use cached values from other filters
+    @param translation: rules for translating cached keys, if 'key' is cached,
+    translation['key'] will be used as the actual filter parameter
+    """
+
+    class CacheRelatedFieldListFilter(admin.RelatedFieldListFilter):
+        def field_choices(self, field, request, model_admin):
+            additional_filter = {translation[k]: request.cache_filter[k] for k in translation if
+                                 request.cache_filter[k] is not None}
+            ordering = self.field_admin_ordering(field, request, model_admin)
+            return field.get_choices(include_blank=False, ordering=ordering,
+                                     limit_choices_to=additional_filter)
+
+        def has_output(self):
+            return True
+
+    return CacheRelatedFieldListFilter
+
+
+def year_filter(year_field: str):
     class YearFilter(admin.SimpleListFilter):
-        title = 'study year'
+        title = "study year"
         parameter_name = year_field
 
         def lookups(self, request, model_admin):
-            years = list(model.objects.all().values(year_field).distinct())
-            return list(map(lambda x: (x[year_field], x[year_field]), years))
+            years = list(Semester.objects.all().values("start__year").distinct())
+            return list(map(lambda x: (x["start__year"], x["start__year"]), years))
 
         def queryset(self, request, queryset):
             if self.value() is not None:
-                return queryset.filter(start__year=self.value())
+                return queryset.filter(**{year_field: self.value()})
+
     return YearFilter
