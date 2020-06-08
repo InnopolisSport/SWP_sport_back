@@ -7,7 +7,7 @@ class Trainer(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE,
         null=False,
-        limit_choices_to={'groups__verbose_name': settings.TRAINER_GROUP_VERBOSE_NAME}
+        limit_choices_to={'groups__verbose_name': settings.TRAINER_AUTH_GROUP_VERBOSE_NAME}
     )
 
     class Meta:
