@@ -1,10 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
 from api.crud import get_ongoing_semester, get_student_groups, get_trainer_groups, get_brief_hours, get_sports, \
     get_clubs, get_sc_training_group
-from sport.models import Student
+from sport.models import Student, Sport
 
 
 def parse_group(group: dict) -> dict:
@@ -79,4 +79,7 @@ def category_view(request, **kwargs):
 
 
 def calendar_view(request, sport_id, **kwargs):
-    return HttpResponse("Not implemented")
+    sport = get_object_or_404(Sport, pk=sport_id)
+    return render(request, "calendar.html", {
+        "sport": sport,
+    })
