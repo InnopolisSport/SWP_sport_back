@@ -11,9 +11,9 @@ from django.conf import settings
 @pytest.mark.django_db
 def student_group() -> Group:
     group, created = Group.objects.get_or_create(
-        verbose_name=settings.STUDENT_GROUP_VERBOSE_NAME,
+        verbose_name=settings.STUDENT_AUTH_GROUP_VERBOSE_NAME,
         defaults={
-            "name": "S-1-5-21-721043115-644155662-3522934251-2285",
+            "name": settings.STUDENT_AUTH_GROUP_NAME,
         }
     )
     return group
@@ -23,9 +23,9 @@ def student_group() -> Group:
 @pytest.mark.django_db
 def trainer_group() -> Group:
     group, created = Group.objects.get_or_create(
-        verbose_name=settings.TRAINER_GROUP_VERBOSE_NAME,
+        verbose_name=settings.TRAINER_AUTH_GROUP_VERBOSE_NAME,
         defaults={
-            "name": "S-1-5-21-2948122937-1530199265-1034249961-9635",
+            "name": settings.TRAINER_AUTH_GROUP_NAME,
         }
     )
     return group

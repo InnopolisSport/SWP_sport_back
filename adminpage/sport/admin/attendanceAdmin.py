@@ -1,7 +1,7 @@
 from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin
 
-from sport.admin.utils import cache_filter, cache_dependent_filter, cache_alternative_filter
+from sport.admin.utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter
 from sport.models import Attendance
 
 
@@ -30,12 +30,12 @@ class AttendanceAdmin(admin.ModelAdmin):
         # semester filter, resets group sub filter
         (
             "training__group__semester",
-            cache_filter(admin.RelatedFieldListFilter, ["training__group__id"])
+            cache_filter(custom_order_filter(("-start",)), ["training__group__id"])
         ),
         # group filter, depends on chosen semester
         (
             "training__group",
-            cache_dependent_filter({"training__group__semester": "semester__pk"})
+            cache_dependent_filter({"training__group__semester": "semester__pk"}, ("name",))
         ),
         ("training__start", cache_alternative_filter(admin.DateFieldListFilter, ["training__group__semester"])),
     )
