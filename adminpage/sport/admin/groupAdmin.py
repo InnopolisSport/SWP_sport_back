@@ -1,7 +1,14 @@
+from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin
 
 from sport.models import Group
 from .inlines import ScheduleInline, EnrollInline, TrainingInline
+from .utils import custom_titled_filter, cache_dependent_filter, cache_filter
+
+
+class TrainerTextFilter(AutocompleteFilter):
+    title = "trainer"
+    field_name = "trainer"
 
 
 @admin.register(Group)
@@ -16,11 +23,10 @@ class GroupAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
-        "name",
-        "semester",
-        "is_club",
+        ("semester", admin.RelatedOnlyFieldListFilter),
+        ("is_club", custom_titled_filter("club status")),
+        TrainerTextFilter,
         ("sport", admin.RelatedOnlyFieldListFilter),
-        ("trainer", admin.RelatedOnlyFieldListFilter),
     )
 
     list_display = (
@@ -37,6 +43,4 @@ class GroupAdmin(admin.ModelAdmin):
     )
 
     class Media:
-        js = (
-            "sport/js/list_filter_collapse.js",
-        )
+        pass

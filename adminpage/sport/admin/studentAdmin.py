@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from sport.models import Student
 from .inlines import AttendanceInline
+from .utils import user__email
 
 
 @admin.register(Student)
@@ -18,6 +19,7 @@ class StudentAdmin(admin.ModelAdmin):
 
     list_display = (
         "__str__",
+        user__email,
         "is_ill",
     )
 

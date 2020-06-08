@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from sport.admin.utils import user__email
 from sport.models import Trainer
 
 
@@ -8,9 +9,10 @@ class TrainerAdmin(admin.ModelAdmin):
     search_fields = (
         "user__first_name",
         "user__last_name",
+        "user__email"
     )
 
     list_display = (
         "__str__",
-        "user",
+        user__email,
     )

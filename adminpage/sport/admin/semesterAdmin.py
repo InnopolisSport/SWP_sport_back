@@ -5,4 +5,18 @@ from sport.models import Semester
 
 @admin.register(Semester)
 class SemesterAdmin(admin.ModelAdmin):
-    pass
+    search_fields = (
+        "name",
+        "start",
+    )
+
+    ordering = (
+        "-start",
+    )
+
+    list_display = (
+        "name",
+        "start",
+        "end",
+        "choice_deadline",
+    )
