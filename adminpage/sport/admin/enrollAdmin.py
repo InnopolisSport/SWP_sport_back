@@ -47,11 +47,6 @@ class EnrollAdmin(admin.ModelAdmin, EnrollExportXlsxMixin):
         "export_as_csv",
     )
 
-    def lookup_allowed(self, key, value):
-        if key in ('group__semester__start__year',):
-            return True
-        return super().lookup_allowed(key, value)
-
     class Media:
         js = (
             "sport/js/list_filter_collapse.js",

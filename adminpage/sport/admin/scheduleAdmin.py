@@ -48,11 +48,6 @@ class ScheduleAdmin(admin.ModelAdmin):
         ViewTrainingInline,
     )
 
-    def lookup_allowed(self, key, value):
-        if key in ('group__semester__start__year',):
-            return True
-        return super().lookup_allowed(key, value)
-
     def get_readonly_fields(self, request, obj=None):
         """
         Make some-fields immutable once set

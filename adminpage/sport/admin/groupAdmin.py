@@ -42,10 +42,5 @@ class GroupAdmin(admin.ModelAdmin):
         EnrollInline,
     )
 
-    def lookup_allowed(self, key, value):
-        if key in ('semester__start__year',):
-            return True
-        return super().lookup_allowed(key, value)
-
     class Media:
         pass

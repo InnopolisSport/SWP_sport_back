@@ -47,8 +47,3 @@ class TrainingAdmin(admin.ModelAdmin):
     inlines = (
         AttendanceInline,
     )
-
-    def lookup_allowed(self, key, value):
-        if key in ('group__semester__start__year',):
-            return True
-        return super().lookup_allowed(key, value)
