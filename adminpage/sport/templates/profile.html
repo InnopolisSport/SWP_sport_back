@@ -20,6 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <script src="{% static "sport/js/modules/networking.mjs" %}"></script>
+    <script src="{% static "sport/js/modules/enrollment.mjs" %}"></script>
     <script src="{% static "sport/js/modules/calendar.mjs" %}"></script>
     <script src="{% static "sport/js/profile.js" %}"></script>
 {% endblock %}
@@ -55,7 +56,8 @@
                             are:
                             {% for group in student.sport_groups %}
                                 {#<span class="badge badge-pill {{ 'badge-success' if group.is_primary else 'badge-secondary' }}"#}
-                                <span class="badge badge-pill {{ group.is_primary|yesno:"badge-success, badge-secondary" }}"
+                                <span class="badge badge-pill
+                                        {{ group.is_primary|yesno:"badge-success, badge-secondary" }}"
 
                                       onclick="open_info_modal_for_leave({{ group.id }}, false)">{{ group.name }}</span>
                             {% endfor %}
@@ -141,7 +143,7 @@
                                     </a>
                                 {% elif student.sport_groups|length < 2 %}
                                     <a href="{% url 'category' %}" class="btn btn-primary">
-                                        {{ student.secondary_group_left}} secondary choices left
+                                        {{ student.secondary_group_left }} secondary choices left
                                     </a>
                                 {% elif 2 == student.sport_groups|length %}
                                     <a href="{% url 'category' %}" class="btn btn-primary">

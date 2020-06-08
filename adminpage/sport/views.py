@@ -2,7 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
 
-from api.crud import get_ongoing_semester, get_student_groups, get_trainer_groups, get_brief_hours
+from api.crud import get_ongoing_semester, get_student_groups, get_trainer_groups, get_brief_hours, get_sports, \
+    get_clubs, get_sc_training_group
 from sport.models import Student
 
 
@@ -59,5 +60,23 @@ def profile_view(request, **kwargs):
     })
 
 
-def category_view(request):
+def category_view(request, **kwargs):
+    sports = get_sports()
+    clubs = sorted(
+        [{
+            "available_places": club["capacity"] - club["current_load"],
+            **club,
+        }
+            for club in get_clubs()],
+        key=lambda group: (group["current_load"] >= group["capacity"], group["name"])
+    )
+    sc_training_group_id = get_sc_training_group()["id"]
+    return render(request, "category.html", {
+        "sports": sports,
+        "clubs": clubs,
+        "sc_training_group_id": sc_training_group_id,
+    })
+
+
+def calendar_view(request, sport_id, **kwargs):
     return HttpResponse("Not implemented")

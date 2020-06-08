@@ -211,15 +211,7 @@ function mark_all(el) {
     }).val(duration_academic_hours).change();
 }
 
-async function enroll(group_id, action) {
-    sendResults(`/django/api/enrollment/${action}`, {group_id: group_id})
-        .then(data => {
-            goto_profile()
-        })
-        .catch(function (error) {
-            toastr.error(error.message);
-        })
-}
+
 
 async function open_modal(info) {
     if (info.event.extendedProps.can_grade) {

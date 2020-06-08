@@ -1,18 +1,3 @@
-async function sendResults(url, data) {
-    let response = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        // headers: {
-        //     // 'Content-Type': 'application/json'
-        // }
-    });
-    return await response.json();
-}
-
-function goto_profile() {
-    window.location.href = "/profile";
-}
-
 function mark_club_as_full(club_id) {
     $(`#club-${club_id}`).remove().insertAfter($(".club-dropdown a:last-child")).children('a span').text('0');
 }
@@ -21,18 +6,6 @@ function mark_club_as_free(club_id, free_places) {
     const elem = $(`#club-${club_id}`)
     if (elem.children('a span').text() === '0') {
         elem.remove().insertBefore($(".club-dropdown a:first-child")).children('a span').text(free_places.toString());
-    }
-}
-
-async function enroll(group_id, action) {
-    const result = await sendResults(`/django/api/enrollment/${action}`, {group_id: group_id})
-    if (result.ok) {
-        goto_profile();
-    } else {
-        if (result.error.code === 2) { // full group
-            mark_club_as_full(group_id)
-        }
-        toastr.error(result.error.description);
     }
 }
 
