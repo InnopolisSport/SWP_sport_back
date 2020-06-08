@@ -4,7 +4,7 @@ async function open_modal(eventClickInfo) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`/django/api/training/${event.extendedProps.id}`, {
+    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
         method: 'GET'
     });
     const {
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: open_modal,
         eventRender: render,
         // Event format: yyyy-mm-dd
-        events: '/django/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
+        events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
 
     });
 

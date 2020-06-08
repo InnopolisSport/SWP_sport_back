@@ -1,5 +1,5 @@
 async function enroll(group_id, action, errorHandler=function(group_id){}) {
-    sendResults(`/django/api/enrollment/${action}`, {group_id: group_id})
+    sendResults(`/api/enrollment/${action}`, {group_id: group_id})
         .then(data => {
             goto_profile()
         })

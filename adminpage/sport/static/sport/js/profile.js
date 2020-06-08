@@ -21,7 +21,7 @@ const loaded_hours = {};
 async function fetch_detailed_hours(e) {
     const semester_id = parseInt(e.getAttribute('data-semester-id'), 10);
     if (loaded_hours[semester_id]) return;
-    const response = await fetch(`/django/api/profile/history/${semester_id}`, {
+    const response = await fetch(`/api/profile/history/${semester_id}`, {
         method: 'GET',
         "X-CSRFToken": csrf_token,
     });
@@ -33,7 +33,7 @@ async function fetch_detailed_hours(e) {
 }
 
 function toggle_ill(elem) {
-    sendResults("/django/api/profile/sick/toggle", {})
+    sendResults("/api/profile/sick/toggle", {})
         .then(data => {
             goto_profile();
         })
@@ -130,7 +130,7 @@ async function save_hours() {
             "Invalid value of hours in " + invalid_row_count.toString() + " row(s)",
         );
     } else {
-        await fetch(`/django/api/attendance/mark`, {
+        await fetch(`/api/attendance/mark`, {
             method: 'POST',
             body: JSON.stringify({
                 training_id,
@@ -142,7 +142,7 @@ async function save_hours() {
             },
         });
 
-        sendResults('/django/api/attendance/mark', {
+        sendResults('/api/attendance/mark', {
             training_id,
             students_hours: parse_local_storage()
         })
@@ -225,7 +225,7 @@ async function open_info_modal_for_leave(group_id, hide_button) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`/django/api/group/${group_id}`, {
+    const response = await fetch(`/api/group/${group_id}`, {
         method: 'GET',
         "X-CSRFToken": csrf_token,
     });
@@ -272,7 +272,7 @@ async function open_info_modal({event}) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`/django/api/training/${event.extendedProps.id}`, {
+    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
         method: 'GET',
         "X-CSRFToken": csrf_token,
     });
@@ -320,7 +320,7 @@ async function open_trainer_modal({event}) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#grading-modal').modal('show');
-    const response = await fetch(`/django/api/attendance/${event.extendedProps.id}/grades`, {
+    const response = await fetch(`/api/attendance/${event.extendedProps.id}/grades`, {
         method: 'GET',
         "X-CSRFToken": csrf_token,
     });
@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         },
         // Event format: yyyy-mm-dd
-        events: '/django/api/calendar/trainings'
+        events: '/api/calendar/trainings'
     };
 
     if (document.body.clientWidth < tabletWidth) {
@@ -429,7 +429,7 @@ function autocomplete_select(event, ui) {
 $(function () {
     $("#student_emails")
         .autocomplete({
-            source: "/django/api/attendance/suggest_student",
+            source: "/api/attendance/suggest_student",
             select: autocomplete_select
         })
         .autocomplete("option", "appendTo", ".student_email_suggestor");

@@ -51,7 +51,7 @@ async function sendResults(url, data, method = 'POST') {
 }
 
 function goto_profile() {
-    window.location.href = "/django/profile";
+    window.location.href = "/profile";
 }
 
 function reload_page() {

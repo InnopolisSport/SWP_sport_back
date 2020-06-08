@@ -14,7 +14,7 @@ async function open_modal(id) {
     modal.empty();
     modal.append($('<div class="spinner-border" role="status"></div>'));
     $('#training-info-modal').modal('show');
-    const response = await fetch(`/django/api/group/${id}`, {
+    const response = await fetch(`/api/group/${id}`, {
         method: 'GET'
     });
     const {
