@@ -14,8 +14,7 @@ services:
     volumes:
       - ../nginx/logs:/var/log/nginx
       - ../nginx/access.d:/etc/nginx/access.d
-      - django-static-admin:/static/admin
-      - django-static-sport:/static/sport
+      - django-static:/static
 
   adminpanel:
     build:
@@ -29,8 +28,7 @@ services:
     volumes:
       - ../adminpage:/src
       - django-auth-preserve:/usr/local/lib/python${PYTHON_VERSION}/site-packages/django/contrib/auth/migrations/
-      - django-static-admin:/static/admin
-      - django-static-sport:/static/sport
+      - django-static:/static
     ports:
       - "8000:8000"
     depends_on:
@@ -43,6 +41,7 @@ services:
       - POSTGRES_SERVER
       - SECRET_KEY
       - PROJECT_NAME
+      - TRAINING_EDITABLE_INTERVAL
       - oauth_appID
       - oauth_shared_secret
       - oauth_authorization_baseURL
@@ -78,8 +77,7 @@ services:
 
 volumes:
   db-data:
-  django-static-admin:
-  django-static-sport:
+  django-static:
   # required to preserve change to django.contrib.auth.models.Group class.
   # (verbose_name added)
   # since Innopolis adfs provides groupsid as universal identifier
