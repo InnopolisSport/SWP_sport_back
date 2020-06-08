@@ -26,6 +26,7 @@ class AttendanceAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
+        StudentTextFilter,
         # filter on study year, resets semester and group sub filters
         cache_filter(year_filter("training__start__year"), ["training__group__semester__id", "training__group__id"]),
         # semester filter, depends on chosen year, resets group sub filter
@@ -41,11 +42,8 @@ class AttendanceAdmin(admin.ModelAdmin):
                 "training__start__year": "semester__start__year"
             })
         ),
-        StudentTextFilter,
         "training__start",
     )
 
     class Media:
-        js = (
-            "sport/js/list_filter_collapse.js",
-        )
+        pass
