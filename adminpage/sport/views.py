@@ -1,10 +1,12 @@
+from typing import Optional
+
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
 from api.crud import get_ongoing_semester, get_student_groups, get_trainer_groups, get_brief_hours, get_sports, \
     get_clubs, get_sc_training_group
-from sport.models import Student, Sport
+from sport.models import Student, Sport, Trainer
 
 
 def parse_group(group: dict) -> dict:
@@ -20,44 +22,53 @@ def parse_group(group: dict) -> dict:
 def profile_view(request, **kwargs):
     user = request.user
 
-    student = getattr(user, "student", None)  # type: Student
-    trainer = getattr(user, "trainer", None)
+    student = getattr(user, "student", None)  # type: Optional[Student]
+    trainer = getattr(user, "trainer", None)  # type: Optional[Trainer]
 
     current_semester = get_ongoing_semester()
     utc_date = timezone.localdate(timezone=timezone.utc)
 
-    student_groups = get_student_groups(student)
-    student_groups_parsed = list(map(
-        parse_group,
-        student_groups
-    ))
-    student_brief_hours_info = get_brief_hours(student)
-    student_data = student.__dict__
-
-    training_groups = list(map(
-        parse_group,
-        get_trainer_groups(trainer)
-    ))
-    trainer_data = student.__dict__
-
-    return render(request, "profile.html", {
+    context = {
         "user": request.user,
         "common": {
             "semester_name": current_semester["name"],
             "enroll_open": current_semester["start"] <= utc_date <= current_semester["choice_deadline"]
         },
-        "student": {
-            "student_id": student.pk,
-            "sport_groups": student_groups_parsed,
-            "secondary_group_left": 3 - len(student_groups_parsed),
-            "semesters": student_brief_hours_info,
-            **student_data,
-        },
-        "trainer": {
-            "sport_groups": training_groups,
-            **trainer_data,
-        },
-    })
+    }
+
+    if student is not None:
+        student_groups = get_student_groups(student)
+        student_groups_parsed = list(map(
+            parse_group,
+            student_groups
+        ))
+        student_brief_hours_info = get_brief_hours(student)
+        student_data = student.__dict__
+
+        context.update({
+            "student": {
+                "student_id": student.pk,
+                "sport_groups": student_groups_parsed,
+                "secondary_group_left": 3 - len(student_groups_parsed),
+                "semesters": student_brief_hours_info,
+                **student_data,
+            },
+        })
+
+    if trainer is not None:
+        training_groups = list(map(
+            parse_group,
+            get_trainer_groups(trainer)
+        ))
+        trainer_data = trainer.__dict__
+        context.update({
+            "trainer": {
+                "sport_groups": training_groups,
+                **trainer_data,
+            },
+        })
+
+    return render(request, "profile.html", context)
 
 
 def category_view(request, **kwargs):
