@@ -1,7 +1,7 @@
 from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin
 
-from sport.admin.utils import year_filter, cache_filter, cache_dependent_filter
+from sport.admin.utils import year_filter, cache_filter, cache_dependent_filter, cache_alternative_filter
 from sport.models import Attendance
 
 
@@ -42,7 +42,7 @@ class AttendanceAdmin(admin.ModelAdmin):
                 "training__start__year": "semester__start__year"
             })
         ),
-        "training__start",
+        ("training__start", cache_alternative_filter(admin.DateFieldListFilter, ["training__start__year"])),
     )
 
     class Media:

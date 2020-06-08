@@ -78,6 +78,24 @@ def cache_dependent_filter(translation: Dict[str, str]):
     return CacheRelatedFieldListFilter
 
 
+def cache_alternative_filter(cls, cache_keys: List[str]):
+    """
+    Creates foreign key list filter, that will be used when one of the cache value is empty
+    @param cache_keys: used cached keys, if an associated value for some given 'key' is None,
+    filter will be rendered
+    """
+
+    class CacheRelatedFieldListFilter(cls):
+        def __init__(self, field, request, *args, **kwargs):
+            self.no_output = any(map(lambda x: request.cache_filter[x] is None, cache_keys))
+            super().__init__(field, request, *args, **kwargs)
+
+        def has_output(self):
+            return self.no_output
+
+    return CacheRelatedFieldListFilter
+
+
 def year_filter(year_field: str):
     class YearFilter(admin.SimpleListFilter):
         title = "study year"
