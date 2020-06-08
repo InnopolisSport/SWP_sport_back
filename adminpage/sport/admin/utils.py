@@ -64,14 +64,16 @@ def cache_dependent_filter(translation: Dict[str, str]):
 
     class CacheRelatedFieldListFilter(admin.RelatedFieldListFilter):
         def field_choices(self, field, request, model_admin):
-            additional_filter = {translation[k]: request.cache_filter[k] for k in translation if
-                                 request.cache_filter[k] is not None}
+            self.no_output = any(map(lambda x: request.cache_filter[x] is None, translation))
+            if self.no_output:
+                return []
+            additional_filter = {translation[k]: request.cache_filter[k] for k in translation}
             ordering = self.field_admin_ordering(field, request, model_admin)
             return field.get_choices(include_blank=False, ordering=ordering,
                                      limit_choices_to=additional_filter)
 
         def has_output(self):
-            return True
+            return not self.no_output
 
     return CacheRelatedFieldListFilter
 
