@@ -21,10 +21,10 @@ DjangoGroup.add_to_class(
 
 DjangoGroup.add_to_class(
     "__str__",
-    lambda self: self.verbose_name
+    lambda self: str(self.verbose_name)
 )
 
 DjangoGroup.add_to_class(
     "natural_key",
-    lambda self: (self.verbose_name, )
+    lambda self: (str(self.verbose_name), )
 )
