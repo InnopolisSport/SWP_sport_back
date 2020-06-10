@@ -18,3 +18,13 @@ DjangoGroup.add_to_class(
         unique=True,
         )
     )
+
+DjangoGroup.add_to_class(
+    "__str__",
+    lambda self: str(self.verbose_name)
+)
+
+DjangoGroup.add_to_class(
+    "natural_key",
+    lambda self: (str(self.verbose_name), )
+)
