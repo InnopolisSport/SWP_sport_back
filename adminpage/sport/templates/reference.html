@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reference upload{% endblock %}
+
+{% block content %}
+    <form action="/api/reference/upload" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input name="image" type="file" accept="image/png, image/jpeg">
+        <input type="submit" value="OK">
+    </form>
+{% endblock %}
