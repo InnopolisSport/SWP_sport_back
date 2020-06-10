@@ -22,7 +22,9 @@ jobs:
       - run:
           name: "Run tests"
           command: docker-compose -f compose/docker-compose-test.yml exec adminpanel pytest
-      - slack/status
+      - slack/status:
+            success_message: '[$CIRCLE_BRANCH] job $CIRCLE_JOB passed ✅ '
+            failure_message: '[$CIRCLE_BRANCH] job $CIRCLE_JOB failed ❌'
 #           fail_only: true
 #           only_for_branches: 'master,development'
 workflows:
