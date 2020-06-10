@@ -4,7 +4,7 @@ from django.db import models
 class Group(models.Model):
     name = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=1000, null=True, blank=True)
-    capacity = models.IntegerField(default=50, null=False)
+    capacity = models.PositiveIntegerField(default=50, null=False)
     is_club = models.BooleanField(default=False, null=False)
     sport = models.ForeignKey('Sport', on_delete=models.CASCADE, null=False)
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, null=False)
