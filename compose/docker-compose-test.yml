@@ -5,27 +5,14 @@ services:
       context: ../adminpage
       dockerfile: Dockerfile
       args:
-        - PYTHON_VERSION
+        PYTHON_VERSION: 3.7
     #   Wait for postgres to startup before running server
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
     restart: always
     depends_on:
       - db
-    environment:
-      - DEBUG
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-      - POSTGRES_SERVER
-      - SECRET_KEY
-      - PROJECT_NAME
-      - TRAINING_EDITABLE_INTERVAL
-      - oauth_appID
-      - oauth_shared_secret
-      - oauth_authorization_baseURL
-      - oauth_get_infoURL
-      - oauth_tokenURL
-      - oauth_end_session_endpoint
+    env_file:
+      - .env.test
 
   db:
     image: db
@@ -33,8 +20,5 @@ services:
       context: ..
       dockerfile: Dockerfile.db
     restart: always
-    environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-      - POSTGRES_SERVER
+    env_file:
+      - .env.test
