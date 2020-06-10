@@ -35,11 +35,24 @@ async function fetch_detailed_hours(e) {
 function toggle_ill(elem) {
     sendResults("/api/profile/sick/toggle", {})
         .then(data => {
-            goto_profile();
+            if (elem.id === "recovered-btn") {
+                open_recovered_modal();
+            }
+            else {
+                goto_profile();
+            }
         })
         .catch(function (error) {
             toastr.error(error.message);
         })
+}
+
+function open_recovered_modal() {
+    $('#recovered-modal').modal('show');
+}
+
+function submit_reference() {
+    goto_profile();
 }
 
 /*

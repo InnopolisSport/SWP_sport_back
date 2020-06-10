@@ -127,7 +127,7 @@
                         <div class="row justify-content-center">
                             <div class="col-md-6 col-sm-12 col-left mb-1">
                                 {% if student.is_ill %}
-                                    <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered
+                                    <button type="button" class="btn btn-dark" id="recovered-btn" onclick="toggle_ill(this)">Recovered
                                         &#x1F601
                                     </button>
                                 {% else %}
@@ -154,6 +154,41 @@
                                         No group choices left
                                     </a>
                                 {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="recovered-modal" tabindex="-1" role="dialog"
+                         aria-labelledby="recovered-modal" aria-hidden="true">
+                        <div class="modal-dialog modal-md" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        Reference Submission
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="modal-body text-left">
+                                    <input type="file" accept="image/*, application/pdf">
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="container">
+                                        <div class="row justify-content-between">
+                                            <div>
+                                                <button type="button" class="btn btn-primary" id="submit-reference-btn"
+                                                        data-dismiss="modal" onclick="submit_reference()">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
