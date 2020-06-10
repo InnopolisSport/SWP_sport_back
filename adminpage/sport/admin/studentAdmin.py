@@ -23,6 +23,11 @@ class StudentAdmin(admin.ModelAdmin):
         "is_ill",
     )
 
+    ordering = (
+        "user__first_name",
+        "user__last_name"
+    )
+
     inlines = (
         AttendanceInline,
     )
