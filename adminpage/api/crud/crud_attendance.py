@@ -80,4 +80,3 @@ def toggle_illness(student: Student):
     """
     student.is_ill = not student.is_ill
     student.save()
-

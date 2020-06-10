@@ -11,6 +11,7 @@ from api.views import (
     training,
     attendance,
     calendar,
+    reference,
 )
 
 urlpatterns = [
@@ -37,6 +38,9 @@ urlpatterns = [
     # calendar
     path(r"calendar/<int:sport_id>/schedule", calendar.get_schedule),
     path(r"calendar/trainings", calendar.get_personal_schedule),
+
+    # reference management
+    path(r"reference/upload", reference.reference_upload)
 ]
 
 urlpatterns.extend([

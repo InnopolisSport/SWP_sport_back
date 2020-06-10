@@ -9,8 +9,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from api.views.attendance import AttendanceErrors
-from api.views.enroll import EnrollErrors
-from sport.models import Enroll, Group, Trainer, Student, Training, Attendance
+from sport.models import Trainer, Training, Attendance
 
 before_training = datetime(2020, 1, 15, 17, 0, 0, tzinfo=timezone.utc)
 training_start = datetime(2020, 1, 15, 18, 0, 0, tzinfo=timezone.utc)
