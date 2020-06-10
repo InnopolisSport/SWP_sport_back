@@ -1,0 +1,27 @@
+version: 2.1
+
+jobs:
+  run-tests:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: "Build docker images"
+          command: docker-compose -f compose/docker-compose-test.yml build
+      - run:
+          name: "Run app in docker"
+          command: |
+            docker-compose -f compose/docker-compose-test.yml up -d
+            sleep 3
+            docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py makemigrations
+            docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate
+      - run:
+          name: "Run tests"
+          command: docker-compose -f compose/docker-compose-test.yml exec adminpanel pytest
+workflows:
+   version: 2
+   main:
+     jobs:
+       - run-tests

@@ -33,21 +33,10 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    env_file:
+      - .env
     environment:
       - DEBUG
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-      - POSTGRES_SERVER
-      - SECRET_KEY
-      - PROJECT_NAME
-      - TRAINING_EDITABLE_INTERVAL
-      - oauth_appID
-      - oauth_shared_secret
-      - oauth_authorization_baseURL
-      - oauth_get_infoURL
-      - oauth_tokenURL
-      - oauth_end_session_endpoint
 
   db:
     image: db
@@ -59,11 +48,8 @@ services:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-      - POSTGRES_SERVER
+    env_file:
+      - .env
 
 
   adminer:
