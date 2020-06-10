@@ -1,0 +1,39 @@
+version: 2.1
+
+jobs:
+  run-tests:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: "Build docker images"
+          command: docker-compose -f compose/docker-compose-test.yml build
+      - run:
+          name: "Run app in docker"
+          command: |
+            docker-compose -f compose/docker-compose-test.yml up -d
+            sleep 3
+            docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py makemigrations
+            docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate
+      - run:
+          name: "Run tests"
+          command: docker-compose -f compose/docker-compose-test.yml exec adminpanel pytest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: database
+      POSTGRES_SERVER: db
+      SECRET_KEY: 11111111-2222-3333-4444-555555555555
+      oauth_appID: 11111111-2222-3333-4444-555555555555
+      oauth_shared_secret: AAAA_BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+      PROJECT_NAME: Sport
+      DEBUG: True
+      TRAINING_EDITABLE_DAYS: 7
+      PYTHON_VERSION: 3.7
+workflows:
+   version: 2
+   main:
+     jobs:
+       - run-tests
