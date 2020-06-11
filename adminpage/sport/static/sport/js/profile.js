@@ -51,10 +51,6 @@ function open_recovered_modal() {
     $('#recovered-modal').modal('show');
 }
 
-function submit_reference() {
-    goto_profile();
-}
-
 /*
     Calendar
 */
