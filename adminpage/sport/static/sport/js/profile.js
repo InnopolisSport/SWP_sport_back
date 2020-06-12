@@ -437,6 +437,18 @@ async function submit_reference() {
     const formData = new FormData()
     const fileInput = $('#reference-file-input')[0]
     const file = fileInput.files[0]
+
+    if (file.size > 5_000_000) {
+        toastr.error('Image file size too big, expected size <= 5 MB');
+        return false;
+    }
+    const _URL = window.URL || window.webkitURL;
+    const img = await loadImage(_URL.createObjectURL(file));
+    if (img.width < 400 || img.width > 2000 || img.height < 400 || img.height > 2000) {
+        toastr.error('Invalid image width/height, expected them to be in range 400px..2000px');
+        return false;
+    }
+
     formData.append(fileInput.name, file)
     try {
         await sendResults('/api/reference/upload', formData, 'POST', false)
