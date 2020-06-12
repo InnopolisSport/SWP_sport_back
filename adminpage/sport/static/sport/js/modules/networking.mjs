@@ -24,30 +24,25 @@ function getCookie(name) {
 
 var csrf_token = getCookie('csrftoken');
 
-async function sendResults(url, data, method = 'POST') {
-    function handleError(response) {
-        if (!response.ok) {
-            return response.json()
-                .then(data => {
-                    throw new ApiError(
-                        data.detail,
-                        data.code,
-                        response.status
-                    );
-                });
-
-        }
-        return response.json();
+async function sendResults(url, data, method = 'POST', asJSON = true) {
+    const headers = {"X-CSRFToken": csrf_token};
+    if (asJSON) {
+        headers['Content-Type'] = 'application/json';
     }
-
-    let response = await fetch(url, {
+    const response = await fetch(url, {
         method: method,
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json',
-            "X-CSRFToken": csrf_token,
-        },
-    }).then(handleError);
+        body: asJSON ? JSON.stringify(data) : data,
+        headers,
+    });
+    const responseData = await response.json()
+    if (!response.ok) {
+        throw new ApiError(
+            responseData.detail,
+            responseData.code,
+            response.status
+        );
+    }
+    return responseData;
 }
 
 function goto_profile() {

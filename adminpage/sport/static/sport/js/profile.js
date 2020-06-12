@@ -37,8 +37,7 @@ function toggle_ill(elem) {
         .then(data => {
             if (elem.id === "recovered-btn") {
                 open_recovered_modal();
-            }
-            else {
+            } else {
                 goto_profile();
             }
         })
@@ -219,7 +218,6 @@ function mark_all(el) {
         return $(this).val() === "0"
     }).val(duration_academic_hours).change();
 }
-
 
 
 async function open_modal(info) {
@@ -433,6 +431,20 @@ function autocomplete_select(event, ui) {
         student_row[0].scrollIntoView(); // scroll to the row with student
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
+}
+
+async function submit_reference() {
+    const formData = new FormData()
+    const fileInput = $('#reference-file-input')[0]
+    const file = fileInput.files[0]
+    formData.append(fileInput.name, file)
+    try {
+        await sendResults('/api/reference/upload', formData, 'POST', false)
+        goto_profile()
+    } catch (error) {
+        toastr.error(error.message);
+    }
+    return false;
 }
 
 $(function () {

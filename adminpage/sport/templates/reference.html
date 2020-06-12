@@ -3,7 +3,7 @@
      aria-labelledby="recovered-modal" aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
-            <form action="/api/reference/upload" method="POST" enctype="multipart/form-data">
+            <form action="#" onsubmit="return false;">
                 <div class="modal-header">
                     <h5 class="modal-title">
                         Reference Submission
@@ -13,14 +13,14 @@
                     </button>
                 </div>
                 <div class="modal-body text-left">
-                    {% csrf_token %}
-                    <input name="image" type="file" accept="image/png, image/jpeg">
+                    <input name="image" type="file" accept="image/png, image/jpeg" id="reference-file-input">
                 </div>
                 <div class="modal-footer">
                     <div class="container">
                         <div class="row justify-content-between">
                             <div>
-                                <input type="submit" value="OK" class="btn btn-primary" id="submit-reference-btn">
+                                <input type="submit" value="OK" class="btn btn-primary" id="submit-reference-btn"
+                                       onclick="submit_reference()">
                             </div>
                             <div>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
