@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -17,7 +18,12 @@ from api.serializers import (
 
 
 class ReferenceErrors:
-    TOO_MUCH_UPLOADS_PER_DAY = (123, "Only 1 reference upload per day is allowed")
+    IMAGE_FILE_SIZE_TOO_BIG = (1, f"Image file size too big, expected <= {settings.MAX_IMAGE_SIZE} bytes")
+    INVALID_IMAGE_SIZE = (
+        2,
+        f"Invalid image width/height, expected them to be in range {settings.MIN_IMAGE_DIMENSION}px..{settings.MAX_IMAGE_DIMENSION}px"
+    )
+    TOO_MUCH_UPLOADS_PER_DAY = (3, "Only 1 reference upload per day is allowed")
 
 
 @swagger_auto_schema(
@@ -34,6 +40,23 @@ class ReferenceErrors:
 def reference_upload(request, **kwargs):
     serializer = ReferenceUploadSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+
+    image = serializer.validated_data['image']
+    if image.size > settings.MAX_IMAGE_SIZE:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(*ReferenceErrors.IMAGE_FILE_SIZE_TOO_BIG)
+        )
+    width, height = image.image.size
+    if not (
+            settings.MIN_IMAGE_DIMENSION <= width <= settings.MAX_IMAGE_DIMENSION and
+            settings.MIN_IMAGE_DIMENSION <= height <= settings.MAX_IMAGE_DIMENSION
+    ):
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(*ReferenceErrors.INVALID_IMAGE_SIZE)
+        )
+
     student = request.user.student
 
     try:

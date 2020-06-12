@@ -52,12 +52,24 @@ def test_reference_upload(
         format='multipart'
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["code"] == ReferenceErrors.INVALID_IMAGE_SIZE[0]
     response = client.post(
         f"/{settings.PREFIX}api/reference/upload",
         data={"image": file_lg},
         format='multipart'
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["code"] == ReferenceErrors.INVALID_IMAGE_SIZE[0]
+    settings.MAX_IMAGE_SIZE = 1000
+    file_lg.seek(0)
+    response = client.post(
+        f"/{settings.PREFIX}api/reference/upload",
+        data={"image": file_lg},
+        format='multipart'
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["code"] == ReferenceErrors.IMAGE_FILE_SIZE_TOO_BIG[0]
+    settings.MAX_IMAGE_SIZE = 5_000_000
     response = client.post(
         f"/{settings.PREFIX}api/reference/upload",
         data={"image": file_md},
