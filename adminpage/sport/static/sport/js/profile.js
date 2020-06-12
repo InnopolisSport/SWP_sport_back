@@ -438,6 +438,10 @@ async function submit_reference() {
     const fileInput = $('#reference-file-input')[0]
     const file = fileInput.files[0]
 
+    toastr.options = {
+        positionClass: 'toast-top-center'
+    };
+
     if (file.size > 5_000_000) {
         toastr.error('Image file size too big, expected size <= 5 MB');
         return false;
