@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
@@ -6,8 +7,11 @@ from sport.models import Semester
 
 
 class EnrollExportXlsxMixin:
-    def export_as_csv(self, request, queryset):
-        field_names = ["Sport", "Fullname", "Email"]
+    def export_as_csv(self, request, queryset: QuerySet):
+        field_names = ["Group", "Fullname", "Email",
+                       "Monday", "Tuesday", "Wednesday",
+                       "Thursday", "Friday", "Saturday",
+                       "Sunday", ]
         semester_id = request.GET.get("semester")
         work_book = Workbook(write_only=True)
         if semester_id is None:
@@ -18,16 +22,21 @@ class EnrollExportXlsxMixin:
         work_sheet = work_book.create_sheet(title=semester_name)
         work_sheet.append(field_names)
 
-        for obj in queryset:
-            if not obj.is_primary:
+        for enrollment in queryset.order_by("group").select_related("group").prefetch_related("group__schedule"):
+            if not enrollment.is_primary:
                 continue
-            group = obj.group
-            sport = group.sport
-            sport_name = "Personal Trainer" if sport.special and not group.is_club else sport.name
+            group = enrollment.group
 
-            student_fullname = str(obj.student)
-            student_email = obj.student.email
-            work_sheet.append([sport_name, student_fullname, student_email])
+            schedule = [""] * 7
+            if group.schedule.exists():
+                for scheduled_training in group.schedule.all():
+                    schedule[scheduled_training.weekday] += f"{scheduled_training.start}-{scheduled_training.end}\n\n"
+
+            student_fullname = str(enrollment.student)
+            student_email = enrollment.student.user.email
+            data = [group.name, student_fullname, student_email, *schedule]
+
+            work_sheet.append(data)
 
         response = HttpResponse(save_virtual_workbook(work_book),
                                 content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
