@@ -203,7 +203,7 @@ else:
     STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/uploaded_media/'
 
 MAX_IMAGE_SIZE = 5_000_000  # 5MB
 MIN_IMAGE_DIMENSION = 400
