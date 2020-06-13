@@ -33,17 +33,17 @@ async function fetch_detailed_hours(e) {
 }
 
 function toggle_ill(elem) {
-    sendResults("/api/profile/sick/toggle", {})
-        .then(data => {
-            if (elem.id === "recovered-btn") {
-                open_recovered_modal();
-            } else {
+    if (elem.id === "recovered-btn") {
+        open_recovered_modal();
+    } else {
+        sendResults("/api/profile/sick/toggle", {})
+            .then(data => {
                 goto_profile();
-            }
-        })
-        .catch(function (error) {
-            toastr.error(error.message);
-        })
+            })
+            .catch(function (error) {
+                toastr.error(error.message);
+            })
+    }
 }
 
 function open_recovered_modal() {
@@ -456,6 +456,7 @@ async function submit_reference() {
     formData.append(fileInput.name, file)
     try {
         await sendResults('/api/reference/upload', formData, 'POST', false)
+        await sendResults("/api/profile/sick/toggle", {})
         goto_profile()
     } catch (error) {
         toastr.error(error.message);
