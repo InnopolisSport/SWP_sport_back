@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -26,7 +24,6 @@ def group_info_view(request, group_id, **kwargs):
     get_object_or_404(Group, pk=group_id)
     group_info = get_group_info(group_id, student)
     group_schedule = Schedule.objects.filter(group_id=group_id).all()
-    pprint(group_schedule)
     group_info.update({"schedule": group_schedule})
     serializer = GroupInfoSerializer(group_info)
     return Response(serializer.data)
