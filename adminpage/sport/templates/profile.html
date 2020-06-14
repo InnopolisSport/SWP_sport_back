@@ -22,6 +22,7 @@
     <script src="{% static "sport/js/modules/networking.mjs" %}"></script>
     <script src="{% static "sport/js/modules/enrollment.mjs" %}"></script>
     <script src="{% static "sport/js/modules/calendar.mjs" %}"></script>
+    <script src="{% static "sport/js/modules/modals.mjs" %}"></script>
     <script src="{% static "sport/js/profile.js" %}"></script>
 {% endblock %}
 
@@ -38,7 +39,7 @@
                             In semester <b>{{ common.semester_name }}</b> you train the following groups:
                             {% for group in trainer.sport_groups %}
                                 <span class="badge badge-pill badge-training"
-                                      onclick="open_info_modal_for_leave({{ group.id }}, true)">{{ group.qualified_name }}</span>
+                                      onclick="openGroupInfoModalForTrainer('/api/group/{{ group.id }}')">{{ group.qualified_name }}</span>
                             {% endfor %}
                         </p>
                     {% else %}
@@ -59,7 +60,7 @@
                                 <span class="badge badge-pill
                                         {{ group.is_primary|yesno:"badge-success, badge-secondary" }}"
 
-                                      onclick="open_info_modal_for_leave({{ group.id }}, false)">{{ group.name }}</span>
+                                      onclick="openGroupInfoModalForStudent('/api/group/{{ group.id }}')">{{ group.name }}</span>
                             {% endfor %}
                         </p>
                     {% else %}
@@ -231,37 +232,7 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="training-info-modal" tabindex="-1" role="dialog"
-                     aria-labelledby="training-info-modal"
-                     aria-hidden="true">
-                    <div class="modal-dialog modal-md" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="training-info-modal-title">
-                                </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body text-left"></div>
-                            <div class="modal-footer">
-                                <div class="container">
-                                    <div class="row justify-content-between">
-                                        <div>
-                                            <button type="button" class="btn btn-danger" id="enroll-unenroll-btn"
-                                                    data-dismiss="modal">
-                                            </button>
-                                        </div>
-                                        <div>
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div id="group-info-modal"></div>
             </div>
         </div>
     </div>

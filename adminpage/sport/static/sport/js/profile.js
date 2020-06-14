@@ -56,7 +56,7 @@ function render(info) {
     element.style.backgroundColor = get_color(event.title);
     element.style.cursor = 'pointer';
     if (props.can_grade) {
-        element.style.backgroundImage = 'url("../static/sport/images/categories/sc_trainer.png")';
+        element.style.backgroundImage = 'url("/static/sport/images/categories/sc_trainer.png")';
         element.style.backgroundPosition = 'right bottom';
         element.style.backgroundRepeat = 'no-repeat';
         element.style.backgroundSize = '40%';
@@ -130,32 +130,16 @@ async function save_hours() {
             "Invalid value of hours in " + invalid_row_count.toString() + " row(s)",
         );
     } else {
-        await fetch(`/api/attendance/mark`, {
-            method: 'POST',
-            body: JSON.stringify({
-                training_id,
-                students_hours: parse_local_storage()
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-                "X-CSRFToken": csrf_token,
-            },
-        });
-
-        sendResults('/api/attendance/mark', {
+        await sendResults('/api/attendance/mark', {
             training_id,
             students_hours: parse_local_storage()
         })
-            .then(data => {
-                $('#grading-modal tr').removeClass('table-warning')
-                local_hours_changes = {}
 
+        $('#grading-modal tr').removeClass('table-warning')
+        local_hours_changes = {}
 
-                hide_alert("hours-alert");
-                $('#grading-modal').modal("hide")
-            })
-
-
+        hide_alert("hours-alert");
+        $('#grading-modal').modal("hide")
     }
     btn.prop('disabled', false);
 
@@ -217,102 +201,7 @@ async function open_modal(info) {
     if (info.event.extendedProps.can_grade) {
         return await open_trainer_modal(info)
     }
-    return await open_info_modal(info)
-}
-
-async function open_info_modal_for_leave(group_id, hide_button) {
-    const modal = $('#training-info-modal .modal-body');
-    modal.empty();
-    modal.append($('<div class="spinner-border" role="status"></div>'));
-    $('#training-info-modal').modal('show');
-    const response = await fetch(`/api/group/${group_id}`, {
-        method: 'GET',
-        "X-CSRFToken": csrf_token,
-    });
-
-
-    const {
-        group_name,
-        group_description,
-        trainer_first_name,
-        trainer_last_name,
-        trainer_email,
-        is_enrolled,
-        capacity,
-        current_load,
-        training_class,
-        is_primary
-    } = await response.json();
-    $('#training-info-modal-title').text(`${group_name} group`);
-    $('#enroll-unenroll-btn')
-        .text(is_enrolled ? "Unenroll" : "Enroll")
-        .addClass(is_enrolled ? "btn-danger" : "btn-success")
-        .removeClass(is_enrolled ? "btn-success" : "btn-danger")
-        .off('click')
-        .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
-        .attr('hidden', hide_button)
-        .attr('disabled', is_enrolled ? is_primary : current_load >= capacity);
-    modal.empty();
-
-    if (group_description) {
-        modal.append(`<p>${group_description}</p>`)
-    }
-
-    if (training_class) {
-        const p = modal.append('<p>').children('p:last-child')
-        p.append(`<div>Class: <strong>${training_class}</strong></div>`)
-    }
-    if (trainer_first_name || trainer_last_name || trainer_email) {
-        modal.append(`<p>Trainer: <strong>${trainer_first_name} ${trainer_last_name}</strong> <a href="mailto:${trainer_email}">${trainer_email}</a></p>`)
-    }
-}
-
-async function open_info_modal({event}) {
-    const modal = $('#training-info-modal .modal-body');
-    modal.empty();
-    modal.append($('<div class="spinner-border" role="status"></div>'));
-    $('#training-info-modal').modal('show');
-    const response = await fetch(`/api/training/${event.extendedProps.id}`, {
-        method: 'GET',
-        "X-CSRFToken": csrf_token,
-    });
-    const {
-        group_id,
-        group_name,
-        group_description,
-        trainer_first_name,
-        trainer_last_name,
-        trainer_email,
-        is_enrolled,
-        capacity,
-        current_load,
-        training_class,
-        is_primary,
-        hours
-    } = await response.json();
-    $('#training-info-modal-title').text(`${group_name} training`);
-    $('#enroll-unenroll-btn')
-        .text(is_enrolled ? "Unenroll" : "Enroll")
-        .addClass(is_enrolled ? "btn-danger" : "btn-success")
-        .removeClass(is_enrolled ? "btn-success" : "btn-danger")
-        .off('click')
-        .click(() => enroll(group_id, is_enrolled ? "unenroll" : "enroll"))
-        .attr('disabled', is_enrolled ? is_primary : current_load >= capacity);
-    modal.empty();
-
-    if (group_description) {
-        modal.append(`<p>${group_description}</p>`)
-    }
-
-    const p = modal.append('<p>').children('p:last-child')
-    p.append(`<div>Date and time: <strong>${event.start.toJSON().split('T')[0]}, ${event.start.toJSON().slice(11, 16)}-${event.end.toJSON().slice(11, 16)}</strong></div>`)
-    if (training_class) {
-        p.append(`<div>Class: <strong>${training_class}</strong></div>`)
-    }
-    if (trainer_first_name || trainer_last_name || trainer_email) {
-        modal.append(`<p>Trainer: <strong>${trainer_first_name} ${trainer_last_name}</strong> <a href="mailto:${trainer_email}">${trainer_email}</a></p>`)
-    }
-    modal.append(`<p>Marked hours: <strong>${hours}</strong></p>`)
+    return await openGroupInfoModalForStudent(`/api/training/${info.event.extendedProps.id}`)
 }
 
 async function open_trainer_modal({event}) {
@@ -427,6 +316,7 @@ function autocomplete_select(event, ui) {
 }
 
 $(function () {
+    prepareModal('#group-info-modal');
     $("#student_emails")
         .autocomplete({
             source: "/api/attendance/suggest_student",
