@@ -53,18 +53,21 @@ def get_group_info(group_id: int, student: Student):
             'g.name AS group_name, '
             'g.description AS group_description, '
             'g.capacity AS capacity, '
+            'g.is_club AS is_club, '
             'count(e.id) AS current_load, '
             'd.first_name AS trainer_first_name, '
             'd.last_name AS trainer_last_name, '
             'd.email AS trainer_email, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = %s AND e.student_id = %s) AS is_enrolled, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = %s AND e.student_id = %s AND is_primary = TRUE) AS is_primary '
+            'exists(SELECT true FROM enroll e WHERE e.group_id = %(group_id)s '
+            '   AND e.student_id = %(student_id)s) AS is_enrolled, '
+            'exists(SELECT true FROM enroll e WHERE e.group_id = %(group_id)s '
+            '   AND e.student_id = %(student_id)s AND is_primary = TRUE) AS is_primary '
             'FROM "group" g '
-            'LEFT JOIN enroll e ON e.group_id = %s '
+            'LEFT JOIN enroll e ON e.group_id = %(group_id)s '
             'LEFT JOIN trainer t ON t.id = g.trainer_id '
             'LEFT JOIN auth_user d ON t.user_id = d.id '
-            'WHERE g.id = %s '
-            'GROUP BY g.id, t.id, d.id', (group_id, student.pk, group_id, student.pk, group_id, group_id))
+            'WHERE g.id = %(group_id)s '
+            'GROUP BY g.id, t.id, d.id', {"group_id": group_id, "student_id": student.pk})
         return dictfetchone(cursor)
 
 

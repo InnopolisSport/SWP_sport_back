@@ -44,7 +44,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
         "trainer_email": trainer.user.email,
         "hours": a1.hours,
         "is_enrolled": False,
-        "is_primary": False
+        "is_primary": False,
     }
     assert get_group_info(group.pk, student) == {
         "group_id": group.pk,
@@ -56,7 +56,8 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
         "trainer_last_name": trainer.user.last_name,
         "trainer_email": trainer.user.email,
         "is_enrolled": False,
-        "is_primary": False
+        "is_primary": False,
+        "is_club": False,
     }
     assertMembers(get_trainings_for_trainer(trainer=trainer, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)), [
         {
@@ -106,7 +107,8 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
         "trainer_last_name": None,
         "trainer_email": None,
         "is_enrolled": True,
-        "is_primary": False
+        "is_primary": False,
+        "is_club": False,
     }
     assertMembers(get_trainings_for_student(student=student, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)), [
         {
