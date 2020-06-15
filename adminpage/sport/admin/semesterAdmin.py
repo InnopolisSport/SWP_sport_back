@@ -1,14 +1,10 @@
-from sys import stderr
-
-from django.contrib import admin, messages
+from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.db.models import Sum
-from django.db.models.functions import Coalesce
 from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 
-from sport.models import Semester, Attendance, Student
+from sport.models import Semester
 
 
 def export_hours_as_xlsx(modeladmin, request, queryset):
