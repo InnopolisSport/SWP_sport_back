@@ -446,10 +446,16 @@ async function submit_reference() {
         toastr.error('Image file size too big, expected size <= 5 MB');
         return false;
     }
-    const _URL = window.URL || window.webkitURL;
-    const img = await loadImage(_URL.createObjectURL(file));
-    if (img.width < 400 || img.width > 2000 || img.height < 400 || img.height > 2000) {
-        toastr.error('Invalid image width/height, expected them to be in range 400px..2000px');
+
+    try {
+        const _URL = window.URL || window.webkitURL;
+        const img = await loadImage(_URL.createObjectURL(file));
+        if (img.width < 400 || img.width > 2000 || img.height < 400 || img.height > 2000) {
+            toastr.error('Invalid image width/height, expected them to be in range 400px..2000px');
+            return false;
+        }
+    } catch (e) {
+        toastr.error('Uploaded file is not an image');
         return false;
     }
 
