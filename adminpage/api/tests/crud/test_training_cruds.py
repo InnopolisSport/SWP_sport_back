@@ -197,3 +197,17 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
             "full_name": f"{student.user.first_name} {student.user.last_name}",
         }
     ])
+
+    student.is_ill = True
+    student.save()
+    other_student.is_ill = True
+    other_student.save()
+
+    assert get_students_grades(t1.pk) == [{
+        "student_id": student.pk,
+        "first_name": student.user.first_name,
+        "last_name": student.user.last_name,
+        "email": student.user.email,
+        "hours": a1.hours,
+        "full_name": f"{student.user.first_name} {student.user.last_name}",
+    }]
