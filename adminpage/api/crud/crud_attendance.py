@@ -52,7 +52,7 @@ def mark_hours(training: Training, student_hours: Iterable[Tuple[int, float]]):
             raise ValueError(f"All students id and marks must be non-negative, got {(student_id, student_mark)}")
         # Currently hours field is numeric(3,2), so
         # A field with precision 3, scale 2 must round to an absolute value less than 10^1.
-        floor_max = 10
+        floor_max = 1000  # TODO: hardcoded limit
         if floor(student_mark) >= floor_max:
             raise ValueError(f"All students marks must floor to less than {floor_max}, "
                              f"got {student_mark} -> {floor(student_mark)} >= {floor_max}")

@@ -339,7 +339,7 @@ async function open_trainer_modal({event}) {
     $('#grading-date').text(start.split('T')[0])
     const duration = event.end - event.start;
     // duration_academic_hours = (duration / 3_600_000) * (60 / 45) = duration / 2_700_000
-    current_duration_academic_hours = Math.min(10, round(duration / 2_700_000, 2)) // TODO: hardcoded max = 10 (DB issue)
+    current_duration_academic_hours = Math.min(999.99, round(duration / 2_700_000, 2)) // TODO: hardcoded max = 999.99  (DB issue)
     const mark_all_btn = $('#put-default-hours-btn');
     mark_all_btn.attr('data-hours', current_duration_academic_hours)
     $('#mark-all-hours-value').text(current_duration_academic_hours)
