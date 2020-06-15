@@ -67,17 +67,20 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
         footer.html(`
             <div class="container">
                 <div class="row justify-content-between">
-                    <div><button type="button" class="btn btn-danger ${is_primary ? 'disabled' : ''}" 
-                                 data-dismiss="modal">Unenroll</button></div>
                     <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+                    <div><button type="button" class="btn btn-danger ${is_primary ? 'disabled' : ''}">Unenroll</button></div>
                 </div>
             </div>
         `);
         footer.find('.btn-danger').click(() => enroll(group_id, 'unenroll'));
     } else {
         footer.html(`
-            <button type="button" class="btn btn-success ${current_load >= capacity ? 'disabled' : ''}">Enroll</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <div class="container">
+                <div class="row justify-content-between">
+                    <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+                    <div><button type="button" class="btn btn-success ${current_load >= capacity ? 'disabled' : ''}">Enroll</button></div>
+                </div>
+            </div>
         `);
         footer.find('.btn-success').click(() => enroll(group_id, 'enroll', enrollErrorCb));
     }

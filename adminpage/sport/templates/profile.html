@@ -193,7 +193,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="ui-widget d-flex flex-row my-1">
-                                    <form class="student_email_suggestor" onsubmit="alert('submitted')">
+                                    <form class="student_email_suggestor" onsubmit="return false;">
                                         <span class="align-text-top"><label
                                                 for="student_emails"><b>Name or email:</b> </label>
                                             <input id="student_emails" class="stundet_email_pick trainer-editable"
@@ -209,20 +209,18 @@
                                 <div class="container">
                                     <div class="row justify-content-between">
                                         <div>
-                                            <button type="button" class="btn btn-success float-left"
-                                                    id="put-default-hours-btn" onclick="mark_all(this)">Mark all (<span
-                                                    id="mark-all-hours-value"></span> h.)
-                                            </button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                         </div>
-
                                         <div class="alert alert-danger" id="hours-alert" role="alert"
                                              style="visibility: hidden">
                                         </div>
                                         <div>
+                                            <button type="button" class="btn btn-success"
+                                                    id="put-default-hours-btn" onclick="mark_all(this)">Mark all (<span
+                                                    id="mark-all-hours-value"></span> h.)
+                                            </button>
                                             <button class="btn btn-primary" id="save-hours-btn" onclick="save_hours()"
                                                     type="button">Save
-                                            </button>
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
                                             </button>
                                         </div>
                                     </div>
