@@ -10,9 +10,9 @@ class Schedule(models.Model):
         THURSDAY = 3, "Thursday"
         FRIDAY = 4, "Friday"
         SATURDAY = 5, "Saturday"
-        SUNDAY = 7, "Sunday"
+        SUNDAY = 6, "Sunday"
 
-    group = models.ForeignKey('Group', on_delete=models.CASCADE, null=False)
+    group = models.ForeignKey('Group', on_delete=models.CASCADE, null=False, related_name="schedule")
     weekday = models.IntegerField(choices=Weekday.choices, null=False)
     start = models.TimeField(auto_now=False, auto_now_add=False, null=False)
     end = models.TimeField(auto_now=False, auto_now_add=False, null=False)

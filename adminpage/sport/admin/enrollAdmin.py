@@ -1,9 +1,11 @@
 from admin_auto_filters.filters import AutocompleteFilter
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.http import HttpResponse
+from openpyxl import Workbook
+from openpyxl.writer.excel import save_virtual_workbook
 
-from sport.models import Enroll, Group
+from sport.models import Enroll, Group, Semester
 
-from .mixins import EnrollExportXlsxMixin
 from .utils import custom_titled_filter, cache_filter, cache_dependent_filter, custom_order_filter
 
 
@@ -14,8 +16,50 @@ class TrainerTextFilter(AutocompleteFilter):
     parameter_name = "group__trainer"
 
 
+def export_primary_as_xlsx(modeladmin, request, queryset):
+    field_names = ["Group", "Fullname", "Email",
+                   "Monday", "Tuesday", "Wednesday",
+                   "Thursday", "Friday", "Saturday",
+                   "Sunday", ]
+    semester_id = request.GET.get("group__semester__id__exact")
+    work_book = Workbook(write_only=True)
+    if semester_id is None:
+        modeladmin.message_user(request, "Please filter by semester", messages.ERROR)
+        return
+    else:
+        semester_name = Semester.objects.get(pk=semester_id).name
+
+    work_sheet = work_book.create_sheet(title=semester_name)
+    work_sheet.append(field_names)
+
+    for enrollment in queryset.select_related("group").order_by("group").prefetch_related("group__schedule"):
+        if not enrollment.is_primary:
+            continue
+        group = enrollment.group
+
+        schedule = [""] * 7
+        if group.schedule.exists():
+            for scheduled_training in group.schedule.all():
+                schedule[scheduled_training.weekday] += f"{scheduled_training.start}-{scheduled_training.end}\n\n"
+
+        student_fullname = str(enrollment.student)
+        student_email = enrollment.student.user.email
+        data = [group.name, student_fullname, student_email, *schedule]
+
+        work_sheet.append(data)
+
+    response = HttpResponse(save_virtual_workbook(work_book),
+                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename=SportEnrollment_{semester_name}.xlsx'
+
+    return response
+
+
+export_primary_as_xlsx.short_description = "Export primary sport groups"
+
+
 @admin.register(Enroll)
-class EnrollAdmin(admin.ModelAdmin, EnrollExportXlsxMixin):
+class EnrollAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         "student",
         "group",
@@ -44,7 +88,7 @@ class EnrollAdmin(admin.ModelAdmin, EnrollExportXlsxMixin):
         'is_primary',
     )
     actions = (
-        "export_as_csv",
+        export_primary_as_xlsx,
     )
 
     class Media:
