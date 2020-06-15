@@ -7,3 +7,5 @@ __pycache__/
 /compose/.env
 
 .vscode/
+
+/adminpage/media/

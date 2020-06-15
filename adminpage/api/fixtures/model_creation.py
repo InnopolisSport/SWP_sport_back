@@ -1,5 +1,5 @@
 from datetime import datetime, time, date
-from typing import Callable, Optional
+from typing import Optional
 
 import pytest
 

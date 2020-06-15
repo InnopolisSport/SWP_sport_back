@@ -15,7 +15,7 @@ from api.permissions import (
 from api.serializers import (
     get_error_serializer,
     IsIllSerializer,
-    TrainingHourSerializer, error_detail,
+    TrainingHourSerializer,
 )
 from sport.models import Semester
 

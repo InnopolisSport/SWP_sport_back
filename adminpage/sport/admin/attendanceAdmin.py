@@ -25,6 +25,10 @@ class AttendanceAdmin(admin.ModelAdmin):
         "hours",
     )
 
+    ordering = (
+        "-training__start",
+    )
+
     list_filter = (
         StudentTextFilter,
         # semester filter, resets group sub filter

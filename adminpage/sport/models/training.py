@@ -3,10 +3,6 @@ from django.db.models import Q, Func, F, Expression, ExpressionWrapper
 from django.forms.utils import to_current_timezone
 
 
-class Date(Func):
-    function = 'DATE'
-
-
 class Training(models.Model):
     group = models.ForeignKey("Group", on_delete=models.CASCADE)
     schedule = models.ForeignKey("Schedule", on_delete=models.SET_NULL, null=True, blank=True)

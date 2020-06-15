@@ -33,13 +33,21 @@ async function fetch_detailed_hours(e) {
 }
 
 function toggle_ill(elem) {
-    sendResults("/api/profile/sick/toggle", {})
-        .then(data => {
-            goto_profile();
-        })
-        .catch(function (error) {
-            toastr.error(error.message);
-        })
+    if (elem.id === "recovered-btn") {
+        open_recovered_modal();
+    } else {
+        sendResults("/api/profile/sick/toggle", {})
+            .then(data => {
+                goto_profile();
+            })
+            .catch(function (error) {
+                toastr.error(error.message);
+            })
+    }
+}
+
+function open_recovered_modal() {
+    $('#recovered-modal').modal('show');
 }
 
 /*
@@ -212,7 +220,6 @@ function mark_all(el) {
 }
 
 
-
 async function open_modal(info) {
     if (info.event.extendedProps.can_grade) {
         return await open_trainer_modal(info)
@@ -332,7 +339,7 @@ async function open_trainer_modal({event}) {
     $('#grading-date').text(start.split('T')[0])
     const duration = event.end - event.start;
     // duration_academic_hours = (duration / 3_600_000) * (60 / 45) = duration / 2_700_000
-    current_duration_academic_hours = Math.min(10, round(duration / 2_700_000, 2)) // TODO: hardcoded max = 10 (DB issue)
+    current_duration_academic_hours = Math.min(999.99, round(duration / 2_700_000, 2)) // TODO: hardcoded max = 999.99  (DB issue)
     const mark_all_btn = $('#put-default-hours-btn');
     mark_all_btn.attr('data-hours', current_duration_academic_hours)
     $('#mark-all-hours-value').text(current_duration_academic_hours)
@@ -424,6 +431,43 @@ function autocomplete_select(event, ui) {
         student_row[0].scrollIntoView(); // scroll to the row with student
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
+}
+
+async function submit_reference() {
+    const formData = new FormData()
+    const fileInput = $('#reference-file-input')[0]
+    const file = fileInput.files[0]
+
+    toastr.options = {
+        positionClass: 'toast-top-center'
+    };
+
+    if (file.size > 5_000_000) {
+        toastr.error('Image file size too big, expected size <= 5 MB');
+        return false;
+    }
+
+    try {
+        const _URL = window.URL || window.webkitURL;
+        const img = await loadImage(_URL.createObjectURL(file));
+        if (img.width < 400 || img.width > 2000 || img.height < 400 || img.height > 2000) {
+            toastr.error('Invalid image width/height, expected them to be in range 400px..2000px');
+            return false;
+        }
+    } catch (e) {
+        toastr.error('Uploaded file is not an image');
+        return false;
+    }
+
+    formData.append(fileInput.name, file)
+    try {
+        await sendResults('/api/reference/upload', formData, 'POST', false)
+        await sendResults("/api/profile/sick/toggle", {})
+        goto_profile()
+    } catch (error) {
+        toastr.error(error.message);
+    }
+    return false;
 }
 
 $(function () {

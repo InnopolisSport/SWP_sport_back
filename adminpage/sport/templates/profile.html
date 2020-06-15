@@ -127,7 +127,7 @@
                         <div class="row justify-content-center">
                             <div class="col-md-6 col-sm-12 col-left mb-1">
                                 {% if student.is_ill %}
-                                    <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Recovered
+                                    <button type="button" class="btn btn-dark" id="recovered-btn" onclick="toggle_ill(this)">Recovered
                                         &#x1F601
                                     </button>
                                 {% else %}
@@ -157,6 +157,7 @@
                             </div>
                         </div>
                     </div>
+                    {% include "reference.html" %}
                 {% endif %}
 
                 {% if user.is_staff or user.is_superuser %}

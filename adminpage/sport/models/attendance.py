@@ -10,8 +10,8 @@ def validate_hours(hours):
 
 class Attendance(models.Model):
     training = models.ForeignKey('Training', on_delete=models.SET_NULL, null=True)
-    student = models.ForeignKey("Student", on_delete=models.CASCADE, )
-    hours = models.DecimalField(max_digits=3, decimal_places=2, default=1, validators=[validate_hours])
+    student = models.ForeignKey("Student", on_delete=models.CASCADE)
+    hours = models.DecimalField(max_digits=5, decimal_places=2, default=1, validators=[validate_hours])
 
     class Meta:
         db_table = "attendance"

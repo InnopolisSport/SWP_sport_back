@@ -59,6 +59,10 @@ body.profile {
     padding: 6px 12px; /* The same padding as buttons has */
 }
 
+.toast-top-center {
+    top: 12px;
+}
+
 .btn.disabled, .btn:disabled {
     cursor: default;
 }
