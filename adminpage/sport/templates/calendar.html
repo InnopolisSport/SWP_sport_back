@@ -20,6 +20,7 @@
     <script src="{% static "sport/js/modules/networking.mjs" %}"></script>
     <script src="{% static "sport/js/modules/calendar.mjs" %}"></script>
     <script src="{% static "sport/js/modules/enrollment.mjs" %}"></script>
+    <script src="{% static "sport/js/modules/modals.mjs" %}"></script>
     <script src="{% static "sport/js/calendar.js" %}"></script>
 {% endblock %}
 
@@ -27,30 +28,6 @@
     <h1>{{ sport.name }}</h1>
     <div id='calendar' data-sport={{ sport.id }}></div>
     <div class="container">
-        <div class="modal fade" id="training-info-modal" tabindex="-1" role="dialog"
-             aria-labelledby="training-info-modal"
-             aria-hidden="true">
-            <div class="modal-dialog modal-md" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="training-info-modal-title">
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body text-left"></div>
-                    <div class="modal-footer">
-                        <div>
-                            <button type="button" class="btn btn-danger" id="enroll-unenroll-btn"
-                                    data-dismiss="modal">
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="group-info-modal"></div>
     </div>
 {% endblock %}

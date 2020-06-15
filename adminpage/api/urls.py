@@ -25,7 +25,7 @@ urlpatterns = [
     path(r"enrollment/unenroll", enroll.unenroll),
 
     # group
-    path(r"group/<int:group_id>", group.group_info),
+    path(r"group/<int:group_id>", group.group_info_view),
 
     # training
     path(r"training/<int:training_id>", training.training_info),
