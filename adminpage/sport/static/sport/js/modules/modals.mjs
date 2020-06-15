@@ -60,9 +60,14 @@ function renderGroupModalBody(body, data) {
     }
 }
 
+function formatTime(time){
+    return time.substring(0, time.length-3);
+}
+
 async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
     const {data, title, body, footer} = await openModal('#group-info-modal', apiUrl)
-    const {group_id, group_name, is_enrolled, capacity, current_load, is_primary} = data;
+    const {group_id, group_name, is_enrolled, capacity, current_load, is_primary, schedule} = data;
+
     if (is_enrolled) {
         footer.html(`
             <div class="container">
@@ -83,7 +88,36 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
     }
     title.text(`${group_name} group`);
     renderGroupModalBody(body, data)
-    return data
+    if (schedule && schedule.length > 0) {
+
+        const days = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ];
+        schedule.sort(
+            (a, b) => (a.weekday > b.weekday) ? 1 : (a.start > b.start) ? 1 : -1
+        )
+        body.append(`
+            <strong>Schedule</strong>:<br>    
+        `)
+
+        let currentDay = null;
+
+        for (let training of schedule) {
+            if (training.weekday !== currentDay) {
+                body.append(`<i>${days[training.weekday]}</i>:`);
+                currentDay = training.weekday;
+            }
+            body.append(`<li>${formatTime(training.start)} - ${formatTime(training.end)}</li>`);
+        }
+
+    }
+    return data;
 }
 
 async function openGroupInfoModalForTrainer(apiUrl) {
