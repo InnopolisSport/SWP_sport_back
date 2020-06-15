@@ -50,7 +50,7 @@ class ReferenceAdmin(admin.ModelAdmin):
     def reference_image(self, obj):
         return format_html('<a href="{}"><img style="width: 50%" src="{}" /></a>', obj.image.url, obj.image.url)
 
-    reference_image.short_description = 'Uploaded reference'
+    reference_image.short_description = 'Reference'
     reference_image.allow_tags = True
 
     class Media:
