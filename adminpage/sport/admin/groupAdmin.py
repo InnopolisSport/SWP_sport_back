@@ -3,7 +3,8 @@ from django.contrib import admin
 
 from sport.models import Group
 from .inlines import ScheduleInline, EnrollInline, TrainingInline
-from .utils import custom_titled_filter, cache_dependent_filter, cache_filter
+from .utils import custom_titled_filter
+from .site import site
 
 
 class TrainerTextFilter(AutocompleteFilter):
@@ -11,7 +12,7 @@ class TrainerTextFilter(AutocompleteFilter):
     field_name = "trainer"
 
 
-@admin.register(Group)
+@admin.register(Group, site=site)
 class GroupAdmin(admin.ModelAdmin):
     search_fields = (
         "name",

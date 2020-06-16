@@ -3,9 +3,10 @@ from django.contrib import admin
 from sport.models import Training
 from .inlines import AttendanceInline
 from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter
+from .site import site
 
 
-@admin.register(Training)
+@admin.register(Training, site=site)
 class TrainingAdmin(admin.ModelAdmin):
     search_fields = (
         "group__name",
