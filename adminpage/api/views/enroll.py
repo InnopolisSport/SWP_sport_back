@@ -59,7 +59,7 @@ def enroll(request, **kwargs):
     )
     student = request.user.student
     current_semester = get_ongoing_semester()
-    if timezone.localdate() <= current_semester["choice_deadline"]:
+    if timezone.localdate() <= current_semester.choice_deadline:
         try:
             enroll_student_to_primary_group(group, student)
         except InternalError:
@@ -92,7 +92,7 @@ def enroll(request, **kwargs):
                         *EnrollErrors.GROUP_IS_FULL
                     )
                 )
-    return Response(current_semester)
+    return Response({})
 
 
 @swagger_auto_schema(

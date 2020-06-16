@@ -46,11 +46,16 @@ def special_groups_create(sender, instance, created, **kwargs):
                               semester=instance,
                               trainer=sport_dep)
         trainer_group.save()
-        sport_event_group = Group(name="Extra sport events", capacity=9999,
+        sport_event_group = Group(name=settings.EXTRA_EVENTS_GROUP_NAME, capacity=0,
                                   is_club=False, sport=other_sport,
                                   semester=instance,
                                   trainer=sport_dep)
         sport_event_group.save()
+        medical_leave_group = Group(name=settings.MEDICAL_LEAVE_GROUP_NAME, capacity=0,
+                                    is_club=False, sport=other_sport,
+                                    semester=instance,
+                                    trainer=sport_dep)
+        medical_leave_group.save()
     else:
         # if semester changed, recalculate all future related schedules
         semester_schedules = Schedule.objects.filter(group__semester=instance.pk)

@@ -16,3 +16,8 @@ class TrainerAdmin(admin.ModelAdmin):
         "__str__",
         user__email,
     )
+
+    ordering = (
+        "user__first_name",
+        "user__last_name"
+    )

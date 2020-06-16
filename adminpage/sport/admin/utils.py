@@ -1,6 +1,7 @@
 from typing import List, Dict, Tuple
 
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 
 def user__email(obj):
@@ -107,3 +108,24 @@ def cache_alternative_filter(cls, cache_keys: List[str]):
             return self.no_output
 
     return CacheRelatedFieldListFilter
+
+
+def positive_number_filter(name: str, field: str):
+    class Wrapper(admin.SimpleListFilter):
+        parameter_name = field
+        title = name
+
+        def lookups(self, request, model_admin):
+            return (
+                ('1', _('Yes')),
+                ('0', _('No')),
+            )
+
+        def queryset(self, request, queryset):
+            if self.value() == '1':
+                return queryset.filter(**{f'{field}__gt': 0})
+            elif self.value() == '0':
+                return queryset.filter(**{f'{field}': 0})
+            return queryset
+
+    return Wrapper

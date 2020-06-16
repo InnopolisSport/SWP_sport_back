@@ -28,8 +28,8 @@ def profile_view(request, **kwargs):
     context = {
         "user": request.user,
         "common": {
-            "semester_name": current_semester["name"],
-            "enroll_open": current_semester["start"] <= utc_date <= current_semester["choice_deadline"]
+            "semester_name": current_semester.name,
+            "enroll_open": current_semester.start <= utc_date <= current_semester.choice_deadline
         },
     }
 

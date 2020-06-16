@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from api.crud import get_group_info
 from api.permissions import IsStudent
 from api.serializers import GroupInfoSerializer, NotFoundSerializer
-from sport.models import Group
+from sport.models import Group, Schedule
 
 
 @swagger_auto_schema(
@@ -19,7 +19,11 @@ from sport.models import Group
 )
 @api_view(["GET"])
 @permission_classes([IsStudent])
-def group_info(request, group_id, **kwargs):
+def group_info_view(request, group_id, **kwargs):
     student = request.user.student
     get_object_or_404(Group, pk=group_id)
-    return Response(get_group_info(group_id, student))
+    group_info = get_group_info(group_id, student)
+    group_schedule = Schedule.objects.filter(group_id=group_id).all()
+    group_info.update({"schedule": group_schedule})
+    serializer = GroupInfoSerializer(group_info)
+    return Response(serializer.data)

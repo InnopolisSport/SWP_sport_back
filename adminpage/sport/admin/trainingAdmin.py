@@ -18,7 +18,7 @@ class TrainingAdmin(admin.ModelAdmin):
     )
 
     ordering = (
-        'start',
+        '-start',
     )
 
     list_filter = (

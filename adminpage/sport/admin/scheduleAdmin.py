@@ -17,6 +17,7 @@ class ScheduleAdmin(admin.ModelAdmin):
     )
 
     ordering = (
+        "weekday",
         "start",
     )
 

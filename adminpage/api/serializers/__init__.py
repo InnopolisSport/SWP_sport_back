@@ -6,3 +6,4 @@ from .training import *
 from .attendance import *
 from .calendar import *
 from .tmp import *
+from .reference import *

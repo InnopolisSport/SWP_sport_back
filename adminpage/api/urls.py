@@ -11,6 +11,7 @@ from api.views import (
     training,
     attendance,
     calendar,
+    reference,
 )
 
 urlpatterns = [
@@ -24,7 +25,7 @@ urlpatterns = [
     path(r"enrollment/unenroll", enroll.unenroll),
 
     # group
-    path(r"group/<int:group_id>", group.group_info),
+    path(r"group/<int:group_id>", group.group_info_view),
 
     # training
     path(r"training/<int:training_id>", training.training_info),
@@ -37,6 +38,9 @@ urlpatterns = [
     # calendar
     path(r"calendar/<int:sport_id>/schedule", calendar.get_schedule),
     path(r"calendar/trainings", calendar.get_personal_schedule),
+
+    # reference management
+    path(r"reference/upload", reference.reference_upload)
 ]
 
 urlpatterns.extend([

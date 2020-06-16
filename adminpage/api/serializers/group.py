@@ -1,5 +1,18 @@
 from rest_framework import serializers
 
+from sport.models import Schedule
+
+
+class ScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Schedule
+        fields = (
+            "weekday",
+            "start",
+            "end",
+            "training_class",
+        )
+
 
 class GroupInfoSerializer(serializers.Serializer):
     group_id = serializers.IntegerField()
@@ -14,3 +27,5 @@ class GroupInfoSerializer(serializers.Serializer):
 
     is_enrolled = serializers.BooleanField()
     is_primary = serializers.BooleanField()
+
+    schedule = ScheduleSerializer(many=True)
