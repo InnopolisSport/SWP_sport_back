@@ -28,6 +28,7 @@ class EnrollErrors:
     TOO_MUCH_SECONDARY = (3, "You have too much secondary groups")
     DOUBLE_ENROLL = (4, "You can't enroll to a group you have already enrolled to")
     PRIMARY_UNENROLL = (5, "Can't unenroll from primary group")
+    MEDICAL_DISALLOWANCE = (6, "You can't enroll to the group due to your medical group")
 
 
 @swagger_auto_schema(
@@ -50,6 +51,7 @@ def enroll(request, **kwargs):
     2 - Group you chosen is full
     3 - You have too much secondary groups
     4 - You can't enroll to a group you have already enrolled to
+    6 - Enroll with insufficient medical group
     """
     serializer = EnrollSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -59,6 +61,11 @@ def enroll(request, **kwargs):
     )
     student = request.user.student
     current_semester = get_ongoing_semester()
+    if student.medical_group < group.minimum_medical_group:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(*EnrollErrors.MEDICAL_DISALLOWANCE)
+        )
     if timezone.localdate() <= current_semester.choice_deadline:
         try:
             enroll_student_to_primary_group(group, student)

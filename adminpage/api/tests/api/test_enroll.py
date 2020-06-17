@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from api.views.enroll import EnrollErrors
-from sport.models import Enroll, Group
+from sport.models import Enroll, Group, MedicalGroups
 
 start = date(2020, 1, 1)
 end = date(2020, 2, 20)
@@ -44,13 +44,15 @@ def setup_group(
 
 
 @pytest.fixture
-def logged_in_student(student_factory) -> Tuple[APIClient, User]:
+def logged_in_student_general_med(student_factory) -> Tuple[APIClient, User]:
     username = "user"
     password = "pass"
     student_user = student_factory(
         username=username,
         password=password,
     )
+    student_user.student.medical_group = MedicalGroups.General
+    student_user.save()
     client = APIClient()
     client.login(
         username=username,
@@ -61,8 +63,8 @@ def logged_in_student(student_factory) -> Tuple[APIClient, User]:
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(just_before_deadline)
-def test_enroll_primary_success(setup_group: Group, logged_in_student):
-    client, student_user = logged_in_student
+def test_enroll_primary_success(setup_group: Group, logged_in_student_general_med):
+    client, student_user = logged_in_student_general_med
 
     response = client.post(
         f"/{settings.PREFIX}api/enrollment/enroll",
@@ -80,8 +82,8 @@ def test_enroll_primary_success(setup_group: Group, logged_in_student):
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(just_before_deadline)
-def test_enroll_primary_update(setup_group: Group, logged_in_student, group_factory):
-    client, student_user = logged_in_student
+def test_enroll_primary_update(setup_group: Group, logged_in_student_general_med, group_factory):
+    client, student_user = logged_in_student_general_med
     g2 = group_factory(
         "G2",
         capacity=1,
@@ -125,8 +127,8 @@ def test_enroll_primary_update(setup_group: Group, logged_in_student, group_fact
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(just_before_deadline)
-def test_enroll_primary_full_group(setup_group: Group, logged_in_student):
-    client, student_user = logged_in_student
+def test_enroll_primary_full_group(setup_group: Group, logged_in_student_general_med):
+    client, student_user = logged_in_student_general_med
     setup_group.capacity = 0
     setup_group.save()
     response = client.post(
@@ -144,8 +146,8 @@ def test_enroll_primary_full_group(setup_group: Group, logged_in_student):
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(just_after_deadline)
-def test_enroll_secondary_success(setup_group: Group, logged_in_student):
-    client, student_user = logged_in_student
+def test_enroll_secondary_success(setup_group: Group, logged_in_student_general_med):
+    client, student_user = logged_in_student_general_med
 
     response = client.post(
         f"/{settings.PREFIX}api/enrollment/enroll",
@@ -163,8 +165,8 @@ def test_enroll_secondary_success(setup_group: Group, logged_in_student):
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(just_after_deadline)
-def test_enroll_secondary_full_group(setup_group: Group, logged_in_student):
-    client, student_user = logged_in_student
+def test_enroll_secondary_full_group(setup_group: Group, logged_in_student_general_med):
+    client, student_user = logged_in_student_general_med
     setup_group.capacity = 0
     setup_group.save()
     response = client.post(
@@ -182,9 +184,9 @@ def test_enroll_secondary_full_group(setup_group: Group, logged_in_student):
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time
-def test_enroll_double_enroll(setup_group: Group, logged_in_student, freezer):
+def test_enroll_double_enroll(setup_group: Group, logged_in_student_general_med, freezer):
     freezer.move_to(just_before_deadline)
-    client, student_user = logged_in_student
+    client, student_user = logged_in_student_general_med
 
     response = client.post(
         f"/{settings.PREFIX}api/enrollment/enroll",
@@ -213,13 +215,35 @@ def test_enroll_double_enroll(setup_group: Group, logged_in_student, freezer):
 
 
 @pytest.mark.django_db
+@pytest.mark.freeze_time
+def test_enroll_insufficient_medical(setup_group: Group, logged_in_student_general_med, freezer):
+    freezer.move_to(just_before_deadline)
+    client, student_user = logged_in_student_general_med
+
+    student_user.student.medical_group = MedicalGroups.SPECIAL2
+    student_user.save()
+
+    setup_group.minimum_medical_group = MedicalGroups.SPECIAL1
+    setup_group.save()
+
+    response = client.post(
+        f"/{settings.PREFIX}api/enrollment/enroll",
+        data={
+            "group_id": setup_group.pk,
+        }
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["code"] == EnrollErrors.MEDICAL_DISALLOWANCE[0]
+
+
+@pytest.mark.django_db
 @pytest.mark.freeze_time(just_after_deadline)
 def test_enroll_secondary_too_many_secondary_groups(
         setup_group: Group,
-        logged_in_student,
+        logged_in_student_general_med,
         group_factory
 ):
-    client, student_user = logged_in_student
+    client, student_user = logged_in_student_general_med
     groups = [setup_group]
     # setup group is G1, others are G2 and G3
     # 1 primary and 2 secondary are permitted,
@@ -259,8 +283,8 @@ def test_enroll_secondary_too_many_secondary_groups(
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(just_after_deadline)
-def test_unenroll_secondary(setup_group: Group, logged_in_student, enroll_factory):
-    client, student_user = logged_in_student
+def test_unenroll_secondary(setup_group: Group, logged_in_student_general_med, enroll_factory):
+    client, student_user = logged_in_student_general_med
     enroll_factory(
         student_user.student,
         setup_group,
@@ -280,8 +304,8 @@ def test_unenroll_secondary(setup_group: Group, logged_in_student, enroll_factor
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(just_after_deadline)
-def test_unenroll_primary(setup_group: Group, logged_in_student, enroll_factory):
-    client, student_user = logged_in_student
+def test_unenroll_primary(setup_group: Group, logged_in_student_general_med, enroll_factory):
+    client, student_user = logged_in_student_general_med
     enrollment = enroll_factory(
         student_user.student,
         setup_group,

@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import Optional
+
 from django.db import connection
 
 from api.crud import dictfetchone, dictfetchall
@@ -125,12 +127,18 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
         return dictfetchall(cursor)
 
 
-def get_trainings_in_time(sport_id: int, start: datetime, end: datetime):
+def get_trainings_in_time(
+        sport_id: int,
+        start: datetime,
+        end: datetime,
+        student: Optional[Student] = None,
+):
     """
     Retrieves existing trainings in the given range for given sport type
     @param sport_id - searched sport id
     @param start - range start date
     @param end - range end date
+    @param student - student, acquiring trainings. Trainings will be based on medical group
     @return list of trainings info
     """
     with connection.cursor() as cursor:
@@ -151,7 +159,15 @@ def get_trainings_in_time(sport_id: int, start: datetime, end: datetime):
                        'AND sp.id = %s '
                        'AND t.start >= %s '
                        'AND t.end <= %s '
-                       'GROUP BY g.id, t.id, tc.id', (sport_id, start, end))
+                       'AND %s >= g.minimum_medical_group  '
+                       'GROUP BY g.id, t.id, tc.id',
+                       (
+                           sport_id,
+                           start,
+                           end,
+                           100 if student is None else student.medical_group
+                       )
+                       )
         return dictfetchall(cursor)
 
 
