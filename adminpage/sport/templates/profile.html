@@ -10,15 +10,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-tourist@0.3.2/bootstrap-tourist.min.css">
     <link rel="stylesheet" href="{% static "sport/css/profile.css" %}">
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-tourist@0.3.2/bootstrap-tourist.min.js"></script>
     <script src="{% static "sport/js/modules/networking.mjs" %}"></script>
     <script src="{% static "sport/js/modules/enrollment.mjs" %}"></script>
     <script src="{% static "sport/js/modules/calendar.mjs" %}"></script>
@@ -30,7 +33,7 @@
     <div class="container-fluid">
         <div class="card text-center">
             <div class="card-body">
-                <h1 class="card-title">{{ user.get_full_name }}</h1>
+                <h1 class="card-title tour-step-1">{{ user.get_full_name }}</h1>
                 {#            <h4 class="card-title">{{ user.role }}</h4>#}
 
                 {% if trainer.sport_groups %}
@@ -132,26 +135,26 @@
                                         &#x1F601
                                     </button>
                                 {% else %}
-                                    <button type="button" class="btn btn-dark" onclick="toggle_ill(this)">Got sick
+                                    <button type="button" class="btn btn-dark tour-step-3" onclick="toggle_ill(this)">Got sick
                                         &#x1F912
                                     </button>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 col-sm-12 col-right mb-1">
                                 {% if common.enroll_open %}
-                                    <a href="{% url 'category' %}" class="btn btn-primary">
+                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-2">
                                         Choose primary sport group
                                     </a>
                                 {% elif student.sport_groups|length < 2 %}
-                                    <a href="{% url 'category' %}" class="btn btn-primary">
+                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-2">
                                         {{ student.secondary_group_left }} secondary choices left
                                     </a>
                                 {% elif 2 == student.sport_groups|length %}
-                                    <a href="{% url 'category' %}" class="btn btn-primary">
+                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-2">
                                         1 secondary choice left
                                     </a>
                                 {% else %}
-                                    <a href="{% url 'category' %}" class="btn btn-primary disabled">
+                                    <a href="{% url 'category' %}" class="btn btn-primary disabled tour-step-2">
                                         No group choices left
                                     </a>
                                 {% endif %}

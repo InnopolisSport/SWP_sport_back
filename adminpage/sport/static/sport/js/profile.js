@@ -368,3 +368,39 @@ $(function () {
         })
         .autocomplete("option", "appendTo", ".student_email_suggestor");
 });
+
+/*
+    Interactive Instructions
+*/
+$(function () {
+    const tour = new Tour({
+        framework: "bootstrap4",
+        storage: false
+    });
+
+    tour.addSteps([
+        {
+            element: ".tour-step-1",
+            placement: "bottom",
+            title: "Hello!",
+            content: "Welcome to the helpdesk.innopolis.university!<br />" +
+                "Here is a small tour to help you navigate the site."
+        },
+        {
+            element: ".tour-step-2",
+            placement: "bottom",
+            title: "Sport Groups",
+            content: "Here you can choose or change your sport group."
+        },
+        {
+            element: ".tour-step-3",
+            placement: "bottom",
+            title: "Illness",
+            content: "If you are ill, press this to inform your trainers. " +
+                "Do not forget to press it again when you are recovered. " +
+                "Additionally, you can submit reference to get hours."
+        }
+    ]);
+
+    tour.start();
+});
