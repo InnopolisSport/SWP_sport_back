@@ -1,6 +1,7 @@
 from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin
 
+from api.crud import get_ongoing_semester
 from sport.models import Group
 from .inlines import ScheduleInline, EnrollInline, TrainingInline
 from .utils import custom_titled_filter
@@ -42,6 +43,13 @@ class GroupAdmin(admin.ModelAdmin):
         TrainingInline,
         EnrollInline,
     )
+
+    # Dirty hack, filter autocomplete groups in "add extra form"
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if 'extra' in request.META['HTTP_REFERER']:
+            return qs.filter(semester=get_ongoing_semester(), sport__name="Other").order_by('name')
+        return qs
 
     class Media:
         pass
