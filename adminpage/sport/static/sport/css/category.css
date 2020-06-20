@@ -50,6 +50,10 @@ body {
         margin-bottom: 1rem;
     }
 
+    .col {
+        margin-bottom: 1rem;
+    }
+
     .dropdown-content {
         min-width: 200px;
     }
@@ -74,7 +78,7 @@ body {
     }
 
     .landscape {
-        display: block;
+        display: flex
     }
 
     .portrait {
@@ -106,7 +110,7 @@ body {
     }
 
     .landscape {
-        display: block;
+        display: flex;
     }
 
     .portrait {
@@ -160,4 +164,9 @@ body {
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
+}
+
+/* Disable mouse interaction */
+.disabled-object {
+    pointer-events: none;
 }
