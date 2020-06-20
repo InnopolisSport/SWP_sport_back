@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.conf import settings
 
-from sport.models import Semester, Sport, Trainer, Group, Schedule
+from sport.models import Semester, Sport, Trainer, Group, Schedule, MedicalGroups
 
 
 def get_or_create_student_group():
@@ -41,20 +41,35 @@ def special_groups_create(sender, instance, created, **kwargs):
         )
         sport_dep_user.groups.add(trainer_group)
         sport_dep, _ = Trainer.objects.get_or_create(user=sport_dep_user)
-        trainer_group = Group(name=settings.SC_TRAINERS_GROUP_NAME, capacity=9999,
-                              is_club=False, sport=other_sport,
-                              semester=instance,
-                              trainer=sport_dep)
+        trainer_group = Group(
+            name=settings.SC_TRAINERS_GROUP_NAME,
+            capacity=9999,
+            is_club=False,
+            sport=other_sport,
+            semester=instance,
+            trainer=sport_dep,
+            minimum_medical_group=MedicalGroups.NO_CHECKUP,
+        )
         trainer_group.save()
-        sport_event_group = Group(name=settings.EXTRA_EVENTS_GROUP_NAME, capacity=0,
-                                  is_club=False, sport=other_sport,
-                                  semester=instance,
-                                  trainer=sport_dep)
+        sport_event_group = Group(
+            name=settings.EXTRA_EVENTS_GROUP_NAME,
+            capacity=0,
+            is_club=False,
+            sport=other_sport,
+            semester=instance,
+            trainer=sport_dep,
+            minimum_medical_group=MedicalGroups.NO_CHECKUP,
+        )
         sport_event_group.save()
-        medical_leave_group = Group(name=settings.MEDICAL_LEAVE_GROUP_NAME, capacity=0,
-                                    is_club=False, sport=other_sport,
-                                    semester=instance,
-                                    trainer=sport_dep)
+        medical_leave_group = Group(
+            name=settings.MEDICAL_LEAVE_GROUP_NAME,
+            capacity=0,
+            is_club=False,
+            sport=other_sport,
+            semester=instance,
+            trainer=sport_dep,
+            minimum_medical_group=MedicalGroups.NO_CHECKUP,
+        )
         medical_leave_group.save()
     else:
         # if semester changed, recalculate all future related schedules

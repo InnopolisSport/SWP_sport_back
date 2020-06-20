@@ -16,12 +16,14 @@ class StudentAdmin(admin.ModelAdmin):
 
     list_filter = (
         "is_ill",
+        "medical_group",
     )
 
     list_display = (
         "__str__",
         user__email,
         "is_ill",
+        "medical_group",
     )
 
     ordering = (

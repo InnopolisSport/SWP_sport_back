@@ -48,6 +48,7 @@ def profile_view(request, **kwargs):
                 "sport_groups": student_groups_parsed,
                 "secondary_group_left": 3 - len(student_groups_parsed),
                 "semesters": student_brief_hours_info,
+                "obj": student,
                 **student_data,
             },
         })
@@ -61,6 +62,7 @@ def profile_view(request, **kwargs):
         context.update({
             "trainer": {
                 "sport_groups": training_groups,
+                "obj": trainer,
                 **trainer_data,
             },
         })

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from sport.models.enums import MedicalGroups
 
 
 class Student(models.Model):
@@ -12,7 +13,14 @@ class Student(models.Model):
         limit_choices_to={'groups__verbose_name': settings.STUDENT_AUTH_GROUP_VERBOSE_NAME}
     )
 
-    is_ill = models.BooleanField(default=False, null=False)
+    is_ill = models.BooleanField(
+        default=False,
+    )
+
+    medical_group = models.IntegerField(
+        choices=MedicalGroups.choices,
+        default=MedicalGroups.NO_CHECKUP,
+    )
 
     class Meta:
         db_table = "student"
