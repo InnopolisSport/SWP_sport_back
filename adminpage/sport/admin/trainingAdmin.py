@@ -4,6 +4,7 @@ from django import forms
 from django.contrib.admin.widgets import AutocompleteSelectMultiple
 from django.db import transaction
 from django.http import HttpResponseRedirect
+from django.utils import timezone
 
 from api.crud import get_ongoing_semester
 from sport.models import Training, Student, Attendance, Group
@@ -29,11 +30,7 @@ class CreateTrainingForm(forms.ModelForm):
 
     @transaction.atomic
     def save(self, commit=True):
-        group = Group.objects.get(semester=get_ongoing_semester(), name=settings.EXTRA_EVENTS_GROUP_NAME)
-        training = super().save(commit=False)
-        training.group = group
-        training.save()
-        self.save_m2m()
+        training = super().save()
         if not commit:
             self.save_m2m = lambda: None
         for student in self.cleaned_data['attended_students']:
@@ -42,9 +39,7 @@ class CreateTrainingForm(forms.ModelForm):
 
     class Meta:
         model = Training
-        fields = ('start', 'end')
-
-
+        fields = ('group', 'start', 'end')
 CreateTrainingForm.title = "Add extra training"
 
 
@@ -107,3 +102,12 @@ class TrainingAdmin(admin.ModelAdmin):
     def get_formsets_with_inlines(self, request, obj=None):
         if 'extra' not in request.GET:
             yield from super().get_formsets_with_inlines(request, obj)
+
+    def get_changeform_initial_data(self, request):
+        if 'extra' in request.GET:
+            return {
+                "group": Group.objects.get(semester=get_ongoing_semester(), name=settings.EXTRA_EVENTS_GROUP_NAME),
+                "start": timezone.now().replace(minute=0, second=0),
+                "end": timezone.now().replace(minute=30, second=0),
+            }
+        return {}
