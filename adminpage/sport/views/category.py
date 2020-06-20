@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from rest_framework.decorators import permission_classes
 
 from api.crud import get_sports, get_clubs, get_sc_training_group
 
