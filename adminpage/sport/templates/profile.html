@@ -69,6 +69,11 @@
                         </p>
                     {% endif %}
 
+                    <p>Your medical group is <span class="badge badge-pill
+                    badge-{% if student.medical_group < 0 %}danger{% elif student.medical_group == 0 %}warning{% else %}success{% endif %}">
+                        {{ student.obj.get_medical_group_display }}
+                    </span></p>
+
                     {% if student.semesters|length > 0 %}
                         <div class="container">
                             <table class="table table-hover">

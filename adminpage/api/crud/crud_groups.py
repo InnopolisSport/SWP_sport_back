@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db import connection
 
 from django.conf import settings
@@ -5,16 +7,21 @@ from api.crud.utils import dictfetchall, dictfetchone
 from sport.models import Sport, Student, Trainer
 
 
-def get_sports(all=False):
+def get_sports(all=False, student: Optional[Student] = None):
     """
     Retrieves existing sport types
     @param all - If true, returns also special sport types
+    @param student - if student passed, get sports applicable for student
     @return list of all sport types
     """
-    return Sport.objects.all().values() if all else Sport.objects.filter(special=False).values()
+    qs = Sport.objects.filter(
+        group__minimum_medical_group__lte=100 if student is None else student.medical_group,
+    ).distinct()
+    # w/o distinct returns a lot of duplicated
+    return qs.all().values() if all else qs.filter(special=False).values()
 
 
-def get_clubs():
+def get_clubs(student: Optional[Student] = None):
     """
     Retrieves existing clubs
     @return list of all club
@@ -34,7 +41,10 @@ def get_clubs():
             'AND sport_id = sport.id '
             'AND semester_id = s.id '
             'AND is_club = TRUE '
-            'GROUP BY g.id, sport.id, s.id')
+            'AND  %(student_medical_group)s >= g.minimum_medical_group '
+            'GROUP BY g.id, sport.id, s.id', {
+                "student_medical_group": 100 if student is None else student.medical_group
+            })
         return dictfetchall(cursor)
 
 
