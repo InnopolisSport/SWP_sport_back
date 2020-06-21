@@ -5,7 +5,7 @@ $(function () {
         showProgressBar: false,
         showProgressText: false,
         backdrop: true,
-        // debug: true
+        debug: true
     });
 
     tour.addSteps([
@@ -147,13 +147,22 @@ $(function () {
                 "Additionally, you can submit reference to get hours.",
             path: "/profile/",
             onPrev: function (tour) {
-                // Based on the width go to the landscape of portrait
+                // Based on the width go to the landscape or portrait
                 const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
                 if (width > 800) {
                     // Jump to landscape
                     tour.goTo(7);
                     return false;
                 }
+            },
+            onShown: function (tour) {
+                const step = tour.getStep(tour._current);
+                $(step.element).addClass("disabled-object");
+            },
+            onHidden: function (tour) {
+                const step = tour.getStep(tour._current);
+                $(step.element)[0].className =
+                    $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
             }
         }
     ]);

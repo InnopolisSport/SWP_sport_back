@@ -67,6 +67,16 @@ body.profile {
     cursor: default;
 }
 
+/* It needs to be more than 1113 to be shown above tour-backdrop */
+#group-info-modal {
+    z-index: 2000;
+}
+
+/* Disable mouse interaction */
+.disabled-object {
+    pointer-events: none;
+}
+
 @media only screen and (max-width: 576px) and (max-width: 768px) {
     .card {
         margin: 1%;
