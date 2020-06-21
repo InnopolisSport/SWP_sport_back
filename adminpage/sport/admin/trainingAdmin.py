@@ -20,7 +20,7 @@ class AutocompleteStudent:
     model = Student
 
 
-class TrainingFormWithCSV(forms.Form):
+class TrainingFormWithCSV(forms.ModelForm):
     attended_students = forms.ModelMultipleChoiceField(
         required=False,
         queryset=Student.objects.all(),
@@ -55,29 +55,14 @@ class TrainingFormWithCSV(forms.Form):
                 raise forms.ValidationError(f"Got invalid hours value \"{row[1]}\", expected value in range [0,999.99]")
             attendances.append((student, hours))
 
-    @transaction.atomic
-    def save(self, commit=True):
-        training = super().save()
-        if not commit:
-            self.save_m2m = lambda: None
-        for student in self.cleaned_data['attended_students']:
-            Attendance.objects.update_or_create(student=student, training=training,
-                                                defaults={'hours': self.cleaned_data['hours']})
-        for (student, hours) in self.cleaned_data['attendances']:
-            if hours == 0:
-                Attendance.objects.filter(student=student, training=training).delete()
-            else:
-                Attendance.objects.update_or_create(student=student, training=training, defaults={'hours': hours})
-        return training
 
-
-class ChangeTrainingForm(TrainingFormWithCSV, forms.ModelForm):
+class ChangeTrainingForm(TrainingFormWithCSV):
     class Meta:
         model = Training
         fields = ('group', 'schedule', 'start', 'end', 'training_class')
 
 
-class CreateExtraTrainingForm(TrainingFormWithCSV, forms.ModelForm):
+class CreateExtraTrainingForm(TrainingFormWithCSV):
     class Meta:
         model = Training
         fields = ('group', 'start', 'end')
@@ -181,3 +166,17 @@ class TrainingAdmin(admin.ModelAdmin):
                 'fields': ('csv',)
             }),
         )
+
+    @transaction.atomic
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        training = form.instance
+        for student in form.cleaned_data['attended_students']:
+            Attendance.objects.update_or_create(student=student, training=training,
+                                                defaults={'hours': form.cleaned_data['hours']})
+        for (student, hours) in form.cleaned_data['attendances']:
+            if hours == 0:
+                Attendance.objects.filter(student=student, training=training).delete()
+            else:
+                Attendance.objects.update_or_create(student=student, training=training, defaults={'hours': hours})
+        return training
