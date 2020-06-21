@@ -21,6 +21,17 @@ class AutocompleteStudent:
 
 
 class TrainingFormWithCSV(forms.Form):
+    attended_students = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Student.objects.all(),
+        widget=AutocompleteSelectMultiple(
+            rel=AutocompleteStudent,
+            admin_site=site,
+            attrs={'data-width': '50%'}
+        )
+    )
+    hours = forms.DecimalField(required=False, max_digits=5, decimal_places=2, min_value=0.01, max_value=999.99,
+                               initial=1)
     csv = forms.FileField(required=False, widget=forms.FileInput(attrs={'accept': '.csv'}))
 
     def clean(self):
@@ -43,35 +54,6 @@ class TrainingFormWithCSV(forms.Form):
                 raise forms.ValidationError(f"Cannot parse hours from {row[1]}")
             attendances.append((student, hours))
 
-
-class ChangeTrainingForm(TrainingFormWithCSV, forms.ModelForm):
-    @transaction.atomic
-    def save(self, commit=True):
-        training = super().save()
-        if not commit:
-            self.save_m2m = lambda: None
-        for (student, hours) in self.cleaned_data['attendances']:
-            Attendance.objects.update_or_create(student=student, training=training, defaults={'hours': hours})
-        return training
-
-    class Meta:
-        model = Training
-        fields = ('group', 'schedule', 'start', 'end', 'training_class')
-
-
-class CreateExtraTrainingForm(TrainingFormWithCSV, forms.ModelForm):
-    attended_students = forms.ModelMultipleChoiceField(
-        required=False,
-        queryset=Student.objects.all(),
-        widget=AutocompleteSelectMultiple(
-            rel=AutocompleteStudent,
-            admin_site=site,
-            attrs={'data-width': '50%'}
-        )
-    )
-    hours = forms.DecimalField(required=False, max_digits=5, decimal_places=2, min_value=0.01, max_value=999.99,
-                               initial=1)
-
     @transaction.atomic
     def save(self, commit=True):
         training = super().save()
@@ -84,6 +66,14 @@ class CreateExtraTrainingForm(TrainingFormWithCSV, forms.ModelForm):
             Attendance.objects.update_or_create(student=student, training=training, defaults={'hours': hours})
         return training
 
+
+class ChangeTrainingForm(TrainingFormWithCSV, forms.ModelForm):
+    class Meta:
+        model = Training
+        fields = ('group', 'schedule', 'start', 'end', 'training_class')
+
+
+class CreateExtraTrainingForm(TrainingFormWithCSV, forms.ModelForm):
     class Meta:
         model = Training
         fields = ('group', 'start', 'end')
@@ -176,24 +166,14 @@ class TrainingAdmin(admin.ModelAdmin):
         return {}
 
     def get_fieldsets(self, request, obj=None):
-        if obj is None and 'extra' in request.GET:
-            return (
-                (None, {
-                    'fields': ('group', 'start', 'end')
-                }),
-                ('Select attended students', {
-                    'fields': ('attended_students', 'hours',)
-                }),
-                ('Or upload a csv file with attendance records', {
-                    'fields': ('csv',)
-                }),
-            )
-        else:
-            return (
-                (None, {
-                    'fields': ('group', 'schedule', 'start', 'end', 'training_class')
-                }),
-                ('Upload a csv file with attendance records', {
-                    'fields': ('csv',)
-                }),
-            )
+        return (
+            (None, {
+                'fields': ('group', 'start', 'end')
+            }),
+            ('Add attended students with same hours', {
+                'fields': ('attended_students', 'hours',)
+            }),
+            ('Upload a csv file with attendance records', {
+                'fields': ('csv',)
+            }),
+        )
