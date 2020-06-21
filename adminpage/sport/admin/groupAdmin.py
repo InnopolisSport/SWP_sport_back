@@ -1,4 +1,5 @@
 from admin_auto_filters.filters import AutocompleteFilter
+from django.conf import settings
 from django.contrib import admin
 
 from api.crud import get_ongoing_semester
@@ -48,7 +49,7 @@ class GroupAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if 'extra' in request.META['HTTP_REFERER']:
-            return qs.filter(semester=get_ongoing_semester(), sport__name="Other").order_by('name')
+            return qs.filter(semester=get_ongoing_semester(), sport__name=settings.OTHER_SPORT_NAME).order_by('name')
         return qs
 
     class Media:
