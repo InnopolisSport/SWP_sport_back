@@ -49,9 +49,10 @@ class TrainingFormWithCSV(forms.Form):
             if student is None:
                 raise forms.ValidationError(f"Student with email {row[0]} not found")
             try:
-                hours = float(row[1])
+                hours = round(float(row[1]), 2)
+                assert 0 <= hours < 1000
             except:
-                raise forms.ValidationError(f"Cannot parse hours from {row[1]}")
+                raise forms.ValidationError(f"Got invalid hours value \"{row[1]}\", expected value in range [0,999.99]")
             attendances.append((student, hours))
 
     @transaction.atomic
@@ -63,7 +64,10 @@ class TrainingFormWithCSV(forms.Form):
             Attendance.objects.update_or_create(student=student, training=training,
                                                 defaults={'hours': self.cleaned_data['hours']})
         for (student, hours) in self.cleaned_data['attendances']:
-            Attendance.objects.update_or_create(student=student, training=training, defaults={'hours': hours})
+            if hours == 0:
+                Attendance.objects.filter(student=student, training=training).delete()
+            else:
+                Attendance.objects.update_or_create(student=student, training=training, defaults={'hours': hours})
         return training
 
 
