@@ -14,7 +14,7 @@
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.js"></script>
@@ -70,9 +70,10 @@
                     {% endif %}
 
                     <p>Your medical group is <span class="badge badge-pill
-                    badge-{% if student.medical_group < 0 %}danger{% elif student.medical_group == 0 %}warning{% else %}success{% endif %}">
+                    badge-{% if student.medical_group < 0 %}danger{% elif student.medical_group == 0 %}warning{% else %}success{% endif %}"
+                    data-toggle="tooltip" data-placement="bottom" title="{{ student.obj.medical_group_description}}">
                         {{ student.obj.get_medical_group_display }}
-                    </span></p>
+                    </span> </p>
 
                     {% if student.semesters|length > 0 %}
                         <div class="container">

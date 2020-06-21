@@ -12,3 +12,20 @@ class MedicalGroups(models.IntegerChoices):
     SPECIAL1 = 0, "Special 1"
     PREPARATIVE = 1, "Preparative"
     General = 2, "General"
+
+
+medical_groups_description = {
+    MedicalGroups.NO_CHECKUP: "You can't get sport hours "
+                              "for training unless "
+                              "you pass a checkup",
+    MedicalGroups.SPECIAL2: "You can't attend trainings "
+                            "instead you should write a "
+                            "report on sport related topic",
+    MedicalGroups.SPECIAL1: "You can attend only special groups. "
+                            "That is why you might see less available groups "
+                            "than your classmates",
+    **dict.fromkeys(
+        [MedicalGroups.PREPARATIVE, MedicalGroups.General], "Your health status is considered to be OK. "
+                                                            "You can attend any trainings"
+    )
+}
