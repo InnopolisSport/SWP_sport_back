@@ -1,3 +1,6 @@
+import csv
+import io
+
 from django.conf import settings
 from django.contrib import admin
 from django import forms
@@ -17,8 +20,48 @@ class AutocompleteStudent:
     model = Student
 
 
-class CreateTrainingForm(forms.ModelForm):
+class TrainingFormWithCSV(forms.Form):
+    csv = forms.FileField(required=False, widget=forms.FileInput(attrs={'accept': '.csv'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        attendances = []
+        cleaned_data['attendances'] = attendances
+        file = cleaned_data.get("csv", None)
+        if file is None:
+            return cleaned_data
+        data = file.read().decode('UTF-8')
+        for row in csv.reader(io.StringIO(data)):
+            if len(row) != 2:
+                raise forms.ValidationError(f"Expected 2 columns in each row, got {row}")
+            student = Student.objects.filter(user__email=row[0]).first()
+            if student is None:
+                raise forms.ValidationError(f"Student with email {row[0]} not found")
+            try:
+                hours = float(row[1])
+            except:
+                raise forms.ValidationError(f"Cannot parse hours from {row[1]}")
+            attendances.append((student, hours))
+
+
+class ChangeTrainingForm(TrainingFormWithCSV, forms.ModelForm):
+    @transaction.atomic
+    def save(self, commit=True):
+        training = super().save()
+        if not commit:
+            self.save_m2m = lambda: None
+        for (student, hours) in self.cleaned_data['attendances']:
+            Attendance.objects.update_or_create(student=student, training=training, defaults={'hours': hours})
+        return training
+
+    class Meta:
+        model = Training
+        fields = ('group', 'schedule', 'start', 'end', 'training_class')
+
+
+class CreateExtraTrainingForm(TrainingFormWithCSV, forms.ModelForm):
     attended_students = forms.ModelMultipleChoiceField(
+        required=False,
         queryset=Student.objects.all(),
         widget=AutocompleteSelectMultiple(
             rel=AutocompleteStudent,
@@ -26,7 +69,8 @@ class CreateTrainingForm(forms.ModelForm):
             attrs={'data-width': '50%'}
         )
     )
-    hours = forms.DecimalField(max_digits=5, decimal_places=2, min_value=0.01, max_value=999.99, initial=1)
+    hours = forms.DecimalField(required=False, max_digits=5, decimal_places=2, min_value=0.01, max_value=999.99,
+                               initial=1)
 
     @transaction.atomic
     def save(self, commit=True):
@@ -34,13 +78,18 @@ class CreateTrainingForm(forms.ModelForm):
         if not commit:
             self.save_m2m = lambda: None
         for student in self.cleaned_data['attended_students']:
-            Attendance.objects.create(student=student, training=training, hours=self.cleaned_data['hours'])
+            Attendance.objects.update_or_create(student=student, training=training,
+                                                defaults={'hours': self.cleaned_data['hours']})
+        for (student, hours) in self.cleaned_data['attendances']:
+            Attendance.objects.update_or_create(student=student, training=training, defaults={'hours': hours})
         return training
 
     class Meta:
         model = Training
         fields = ('group', 'start', 'end')
-CreateTrainingForm.title = "Add extra training"
+
+
+CreateExtraTrainingForm.title = "Add extra training"
 
 
 @admin.register(Training, site=site)
@@ -86,7 +135,16 @@ class TrainingAdmin(admin.ModelAdmin):
         AttendanceInline,
     )
 
+    fields = (
+        "group",
+        "schedule",
+        "start",
+        "end",
+        "training_class",
+    )
+
     def response_add(self, request, obj, post_url_continue=None):
+        """Keep the same url on "Save and add one another"""
         res = super().response_add(request, obj, post_url_continue)
         if "_addanother" in request.POST:
             redirect_url = request.path + ('?extra=' if 'extra' in request.GET else '')
@@ -95,15 +153,20 @@ class TrainingAdmin(admin.ModelAdmin):
             return res
 
     def get_form(self, request, obj=None, change=False, **kwargs):
-        if 'extra' in request.GET:
-            kwargs['form'] = CreateTrainingForm
+        """Return custom form on ?extra= URL"""
+        if obj is None and 'extra' in request.GET:
+            kwargs['form'] = CreateExtraTrainingForm
+        else:
+            kwargs['form'] = ChangeTrainingForm
         return super().get_form(request, obj, change, **kwargs)
 
     def get_formsets_with_inlines(self, request, obj=None):
-        if 'extra' not in request.GET:
+        """Skip inlines for custom form"""
+        if obj is not None or 'extra' not in request.GET:
             yield from super().get_formsets_with_inlines(request, obj)
 
     def get_changeform_initial_data(self, request):
+        """Custom form default values"""
         if 'extra' in request.GET:
             return {
                 "group": Group.objects.get(semester=get_ongoing_semester(), name=settings.EXTRA_EVENTS_GROUP_NAME),
@@ -111,3 +174,26 @@ class TrainingAdmin(admin.ModelAdmin):
                 "end": timezone.now().replace(minute=30, second=0),
             }
         return {}
+
+    def get_fieldsets(self, request, obj=None):
+        if obj is None and 'extra' in request.GET:
+            return (
+                (None, {
+                    'fields': ('group', 'start', 'end')
+                }),
+                ('Select attended students', {
+                    'fields': ('attended_students', 'hours',)
+                }),
+                ('Or upload a csv file with attendance records', {
+                    'fields': ('csv',)
+                }),
+            )
+        else:
+            return (
+                (None, {
+                    'fields': ('group', 'schedule', 'start', 'end', 'training_class')
+                }),
+                ('Upload a csv file with attendance records', {
+                    'fields': ('csv',)
+                }),
+            )
