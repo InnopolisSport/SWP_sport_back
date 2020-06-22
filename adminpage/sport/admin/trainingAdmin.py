@@ -9,8 +9,8 @@ from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 
-from api.crud import get_ongoing_semester
-from sport.models import Training, Student, Attendance, Group
+from api.crud import get_ongoing_semester, mark_hours
+from sport.models import Training, Student, Group
 from .inlines import AttendanceInline
 from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter
 from .site import site
@@ -42,18 +42,27 @@ class TrainingFormWithCSV(forms.ModelForm):
         if file is None:
             return cleaned_data
         data = file.read().decode('UTF-8')
+        emails = []
+        hours = {}
         for row in csv.reader(io.StringIO(data)):
             if len(row) != 2:
                 raise forms.ValidationError(f"Expected 2 columns in each row, got {row}")
-            student = Student.objects.filter(user__email=row[0]).first()
-            if student is None:
-                raise forms.ValidationError(f"Student with email {row[0]} not found")
+            emails.append(row[0])
             try:
-                hours = round(float(row[1]), 2)
-                assert 0 <= hours < 1000
+                hours[row[0]] = round(float(row[1]), 2)
+                assert 0 <= hours[row[0]] < 1000
             except:
-                raise forms.ValidationError(f"Got invalid hours value \"{row[1]}\", expected value in range [0,999.99]")
-            attendances.append((student, hours))
+                raise forms.ValidationError(f"Got invalid hours value \"{row[1]}\" for email {row[0]}, expected value in range [0,999.99]")
+        students = Student.objects.select_related('user').filter(user__email__in=emails)
+        if len(students) != len(emails):
+            missing = set(emails) - set(map(lambda student: student.user.email, students))
+            raise forms.ValidationError(
+                f"File contains {len(emails)} records. Only {len(students)} emails matched. "
+                f"Missing students emails are: {', '.join(missing)}"
+            )
+
+        for student in students:
+            attendances.append((student, hours[student.user.email]))
 
 
 class ChangeTrainingForm(TrainingFormWithCSV):
@@ -169,14 +178,21 @@ class TrainingAdmin(admin.ModelAdmin):
 
     @transaction.atomic
     def save_related(self, request, form, formsets, change):
+        """
+        There are three ways of creating/changing attendance records (from highest priority to lowest):
+        1) Upload CSV file
+        2) Use ModelMultipleChoiceField in ModelAdmin for training
+        3) Change/add attendance records using inline
+        """
         super().save_related(request, form, formsets, change)
         training = form.instance
-        for student in form.cleaned_data['attended_students']:
-            Attendance.objects.update_or_create(student=student, training=training,
-                                                defaults={'hours': form.cleaned_data['hours']})
-        for (student, hours) in form.cleaned_data['attendances']:
-            if hours == 0:
-                Attendance.objects.filter(student=student, training=training).delete()
-            else:
-                Attendance.objects.update_or_create(student=student, training=training, defaults={'hours': hours})
+        similar_student_hours = [
+            (student.pk, form.cleaned_data['hours'])
+            for student in form.cleaned_data['attended_students']
+        ]
+        csv_student_hours = [
+            (student.pk, hours)
+            for (student, hours) in form.cleaned_data['attendances']
+        ]
+        mark_hours(training, similar_student_hours + csv_student_hours)
         return training
