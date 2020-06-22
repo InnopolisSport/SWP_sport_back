@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
-from sport.models.enums import MedicalGroups
+from sport.models.enums import MedicalGroups, medical_groups_description
 
 
 class Student(models.Model):
@@ -28,6 +28,10 @@ class Student(models.Model):
 
     def __str__(self):
         return self.user.get_full_name()
+
+    @property
+    def medical_group_description(self) -> str:
+        return medical_groups_description[self.medical_group]
 
 
 @receiver(post_save, sender=User)

@@ -367,4 +367,5 @@ $(function () {
             select: autocomplete_select
         })
         .autocomplete("option", "appendTo", ".student_email_suggestor");
+    $('[data-toggle="tooltip"]').tooltip()
 });
