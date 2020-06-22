@@ -1,5 +1,6 @@
 import csv
 import io
+from collections import OrderedDict
 
 from django.conf import settings
 from django.contrib import admin
@@ -194,5 +195,5 @@ class TrainingAdmin(admin.ModelAdmin):
             (student.pk, hours)
             for (student, hours) in form.cleaned_data['attendances']
         ]
-        mark_hours(training, similar_student_hours + csv_student_hours)
+        mark_hours(training, OrderedDict(similar_student_hours + csv_student_hours).items())
         return training
