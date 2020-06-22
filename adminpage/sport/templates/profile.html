@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
-    {#    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-tourist@0.3.2/bootstrap-tourist.min.css">#}
     <link rel="stylesheet" href="{% static "sport/css/bootstrap-tourist.css" %}">
     <link rel="stylesheet" href="{% static "sport/css/profile.css" %}">
 
@@ -22,7 +21,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
-    {#    <script src="https://cdn.jsdelivr.net/npm/bootstrap-tourist@0.3.2/bootstrap-tourist.min.js"></script>#}
     <script src="{% static "sport/js/bootstrap-tourist.js" %}"></script>
     <script src="{% static "sport/js/modules/networking.mjs" %}"></script>
     <script src="{% static "sport/js/modules/enrollment.mjs" %}"></script>
@@ -44,7 +42,7 @@
                         <p>
                             In semester <b>{{ common.semester_name }}</b> you train the following groups:
                             {% for group in trainer.sport_groups %}
-                                <span class="badge badge-pill badge-training"
+                                <span class="badge badge-pill badge-training" id="trainer-span"
                                       onclick="openGroupInfoModalForTrainer('/api/group/{{ group.id }}')">{{ group.qualified_name }}</span>
                             {% endfor %}
                         </p>
@@ -65,7 +63,7 @@
                                 {#<span class="badge badge-pill {{ 'badge-success' if group.is_primary else 'badge-secondary' }}"#}
                                 <span class="badge badge-pill
                                         {{ group.is_primary|yesno:"badge-success, badge-secondary" }}"
-
+                                      id="student-span"
                                       onclick="openGroupInfoModalForStudent('/api/group/{{ group.id }}')">{{ group.name }}</span>
                             {% endfor %}
                         </p>
@@ -130,7 +128,7 @@
                         </div>
                     {% endif %}
 
-                    <div class="container">
+                    <div class="container" id="control-buttons">
                         <div class="row justify-content-center">
                             <div class="col-md-6 col-sm-12 col-left mb-1">
                                 {% if student.is_ill %}

@@ -123,7 +123,7 @@
                             },
                             highlightTransition: "tour-highlight-animation",
                             highlightHide: function (domElement, step) {
-                                domElement.width(0).height(0).offset({top:0, left:0}); // Reset offset on hiding
+                                domElement.width(0).height(0).offset({top: 0, left: 0}); // Reset offset on hiding
                                 domElement.fadeOut("slow")
                             }
                         },

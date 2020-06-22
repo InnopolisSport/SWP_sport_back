@@ -8,7 +8,8 @@ $(function () {
         debug: true
     });
 
-    tour.addSteps([
+    // First step
+    tour.addStep(
         {
             element: ".tour-step-1",
             placement: "bottom",
@@ -17,7 +18,10 @@ $(function () {
             content: "Welcome to the helpdesk.innopolis.university!<br />" +
                 "Here is a small tour to help you navigate the site.",
             path: "/profile/"
-        },
+        });
+
+    // If there is no such element, the tour will skip the step
+    tour.addSteps([
         {
             element: ".tour-step-2",
             placement: "bottom",
@@ -167,17 +171,51 @@ $(function () {
         }
     ]);
 
-    // If calendar is shown on the page
-    if (document.getElementById("calendar")) {
-        tour.addSteps([
+    /* If calendar is shown on the page */
+    // For both students and trainers
+    if (document.getElementById("student-span") && document.getElementById("trainer-span")) {
+        tour.addStep(
             {
                 element: ".tour-step-8",
-                placement: "top",
+                placement: "auto",
                 title: "Calendar",
                 content: "This is your schedule. You can find all your trainings there.<br />" +
-                    "You can click on the training to check out details such as trainer contacts or the place of training.",
+                    "There are <strong>two types of trainings - with and without icon.</strong><br /><br />" +
+                    "Trainings <strong>without the icon</strong> are the ones you are enrolled in. " +
+                    "You can click on the training to check out details such as trainer contacts or the place of training.<br /><br />" +
+                    "Trainings <strong>with the icon</strong> are the ones you are trainer in. You can click on the training to mark attendance.",
                 path: "/profile/"
-            },
+            }
+        );
+    } else {
+        // For only students
+        if (document.getElementById("student-span")) {
+            tour.addStep(
+                {
+                    element: ".tour-step-8",
+                    placement: "auto",
+                    title: "Calendar",
+                    content: "This is your schedule. You can find all your trainings there.<br />" +
+                        "You can click on the training to check out details such as trainer contacts or the place of training.",
+                    path: "/profile/"
+                }
+            );
+        } else {
+            // For only trainers
+            tour.addStep(
+                {
+                    element: ".tour-step-8",
+                    placement: "auto",
+                    title: "Calendar",
+                    content: "This is your schedule. You can find all your trainings there.<br />" +
+                        "You can click on the training to mark attendance.",
+                    path: "/profile/"
+                }
+            );
+        }
+
+        // For all
+        tour.addStep(
             {
                 element: ".fc-right",
                 placement: "top",
@@ -185,9 +223,10 @@ $(function () {
                 content: "You can navigate through the calendar using these buttons.",
                 path: "/profile/"
             }
-        ]);
+        )
     }
 
+    // Last step
     tour.addStep({
         element: ".tour-step-1",
         placement: "bottom",
