@@ -28,7 +28,7 @@ $(function () {
             reflex: true, // Continue only on button click
             reflexOnly: true,
             title: "Sport Groups",
-            content: "Here you can choose or change your sport group. <strong>Click it!</strong>",
+            content: "Here you can choose or change your sports group. <strong>Click it!</strong>",
             path: "/profile/",
         },
         {
@@ -80,9 +80,9 @@ $(function () {
         },
         {
             element: ".tour-step-5-landscape",
-            placement: "right",
+            placement: "left",
             title: "IU Trainer",
-            content: "Point here if you want to get hours for trainings that university offers you.",
+            content: "Point here if you want to get hours for sports classes that the university offers you.",
             path: "/category/",
             onShown: function (tour) {
                 const step = tour.getStep(tour._current);
@@ -98,7 +98,7 @@ $(function () {
             element: ".tour-step-5-portrait",
             placement: "top",
             title: "IU Trainer",
-            content: "Point here if you want to get hours for trainings that university offers you.",
+            content: "Point here if you want to get hours for sports classes that university offers you.",
             path: "/category/",
             onShown: function (tour) {
                 const step = tour.getStep(tour._current);
@@ -147,8 +147,8 @@ $(function () {
             placement: "bottom",
             title: "Illness",
             content: "If you are ill, press this to inform your trainers.<br />" +
-                "Do not forget to change status back when you are recovered.<br />" +
-                "Additionally, you can submit reference to get hours.",
+                "Do not forget to change the status back when you recover.<br />" +
+                "Additionally, you can submit a reference to get hours.",
             path: "/profile/",
             onPrev: function (tour) {
                 // Based on the width go to the landscape or portrait
@@ -179,11 +179,11 @@ $(function () {
                 element: ".tour-step-8",
                 placement: "auto",
                 title: "Calendar",
-                content: "This is your schedule. You can find all your trainings there.<br />" +
-                    "There are <strong>two types of trainings - with and without icon.</strong><br /><br />" +
-                    "Trainings <strong>without the icon</strong> are the ones you are enrolled in. " +
-                    "You can click on the training to check out details such as trainer contacts or the place of training.<br /><br />" +
-                    "Trainings <strong>with the icon</strong> are the ones you are trainer in. You can click on the training to mark attendance.",
+                content: "It is your schedule. You can find all your sports classes there.<br />" +
+                    "There are <strong>two types of events - with and without the icon.</strong><br /><br />" +
+                    "Events <strong>without the icon</strong> are the ones you joined. " +
+                    "You can click on the training to check out details such as trainer contacts or location.<br /><br />" +
+                    "Events <strong>with the icon</strong> are the ones you train. You can click on the training to mark attendance.",
                 path: "/profile/"
             }
         );
@@ -195,8 +195,8 @@ $(function () {
                     element: ".tour-step-8",
                     placement: "auto",
                     title: "Calendar",
-                    content: "This is your schedule. You can find all your trainings there.<br />" +
-                        "You can click on the training to check out details such as trainer contacts or the place of training.",
+                    content: "It is your schedule. You can find all your sports classes there.<br />" +
+                        "You can click on the training to check out details such as trainer contacts or location.",
                     path: "/profile/"
                 }
             );
@@ -207,7 +207,7 @@ $(function () {
                     element: ".tour-step-8",
                     placement: "auto",
                     title: "Calendar",
-                    content: "This is your schedule. You can find all your trainings there.<br />" +
+                    content: "It is your schedule. You can find all your sports classes there.<br />" +
                         "You can click on the training to mark attendance.",
                     path: "/profile/"
                 }
