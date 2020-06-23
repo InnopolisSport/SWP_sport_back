@@ -1,7 +1,7 @@
 $(function () {
     const tour = new Tour({
         framework: "bootstrap4",
-        name: 'tour',
+        name: 'main-tour',
         showProgressBar: false,
         showProgressText: false,
         backdrop: true,
@@ -188,20 +188,8 @@ $(function () {
             }
         );
     } else {
-        // For only students
-        if (document.getElementById("student-span")) {
-            tour.addStep(
-                {
-                    element: ".tour-step-8",
-                    placement: "auto",
-                    title: "Calendar",
-                    content: "It is your schedule. You can find all your sports classes there.<br />" +
-                        "You can click on the training to check out details such as trainer contacts or location.",
-                    path: "/profile/"
-                }
-            );
-        } else {
-            // For only trainers
+        // For only trainers
+        if (document.getElementById("trainer-span")) {
             tour.addStep(
                 {
                     element: ".tour-step-8",
@@ -212,19 +200,30 @@ $(function () {
                     path: "/profile/"
                 }
             );
+        } else {
+            // For only students
+            tour.addStep(
+                {
+                    element: ".tour-step-8",
+                    placement: "auto",
+                    title: "Calendar",
+                    content: "It is your schedule. You can find all your sports classes there.<br />" +
+                        "You can click on the training to check out details such as trainer contacts or location.",
+                    path: "/profile/"
+                }
+            );
         }
-
-        // For all
-        tour.addStep(
-            {
-                element: ".fc-right",
-                placement: "top",
-                title: "Calendar",
-                content: "You can navigate through the calendar using these buttons.",
-                path: "/profile/"
-            }
-        )
     }
+    // For all
+    tour.addStep(
+        {
+            element: ".fc-right",
+            placement: "top",
+            title: "Calendar",
+            content: "You can navigate through the calendar using these buttons.",
+            path: "/profile/"
+        }
+    )
 
     // Last step
     tour.addStep({
