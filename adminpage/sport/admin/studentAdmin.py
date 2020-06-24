@@ -1,23 +1,31 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from import_export import resources
+from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 
-from sport.models import Student
+from sport.models import Student, enums
 from sport.signals import get_or_create_student_group
 from .inlines import AttendanceInline
 from .utils import user__email
 from .site import site
 
 
+class MedicalGroupWidget(widgets.NumberWidget):
+    def render(self, value, obj=None):
+        return enums.MedicalGroups.labels[int(value) + 2]
+
+
 class StudentResource(resources.ModelResource):
+    medical_group = fields.Field(column_name="medical_group", attribute="medical_group", widget=MedicalGroupWidget())
 
     def before_import(self, dataset, dry_run, *args, **kwargs):
         user_ids = []
+        student_group = get_or_create_student_group()
+        user_model = get_user_model()
         for data in dataset.dict:
             email = data["email"]
 
-            user, _ = get_user_model().objects.get_or_create(
+            user, _ = user_model.objects.get_or_create(
                 email=email,
                 defaults={
                     "first_name": data["first_name"],
@@ -26,7 +34,7 @@ class StudentResource(resources.ModelResource):
                 }
             )
 
-            user.groups.add(get_or_create_student_group())
+            user.groups.add(student_group)
             user_ids.append(user.pk)
         dataset.insert_col(0, user_ids, "user")
         return super(StudentResource, self).before_import(dataset, dry_run, *args, **kwargs)
@@ -34,6 +42,12 @@ class StudentResource(resources.ModelResource):
     class Meta:
         model = Student
         fields = (
+            "user",
+            "user__email",
+            "user__first_name",
+            "user__last_name",
+        )
+        export_order = (
             "user",
             "user__email",
             "user__first_name",
