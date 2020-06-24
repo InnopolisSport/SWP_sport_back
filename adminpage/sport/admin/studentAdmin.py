@@ -1,14 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from import_export.widgets import ForeignKeyWidget
-
-from sport.models import Student
-from .inlines import AttendanceInline
-from .utils import user__email
-from import_export import resources, fields
+from import_export import resources
 from import_export.admin import ImportMixin
 
+from sport.models import Student
 from sport.signals import get_or_create_student_group
+from .inlines import AttendanceInline
+from .utils import user__email
 
 
 class StudentResource(resources.ModelResource):
