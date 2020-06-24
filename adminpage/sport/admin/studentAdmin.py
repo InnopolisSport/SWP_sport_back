@@ -38,7 +38,6 @@ class StudentResource(resources.ModelResource):
             "user__email",
             "user__first_name",
             "user__last_name",
-            "is_ill",
             "medical_group",
         )
         import_id_fields = ("user",)
