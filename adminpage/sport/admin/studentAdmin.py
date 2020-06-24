@@ -36,9 +36,9 @@ class StudentResource(resources.ModelResource):
         model = Student
         fields = (
             "user",
-            "email",
-            "first_name",
-            "last_name",
+            "user__email",
+            "user__first_name",
+            "user__last_name",
             "is_ill",
             "medical_group",
         )
