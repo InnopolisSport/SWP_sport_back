@@ -28,7 +28,7 @@ def get_or_create_trainer_group():
 def special_groups_create(sender, instance, created, **kwargs):
     if created:
         # get_or_create returns (object: Model, created: bool)
-        other_sport, _ = Sport.objects.get_or_create(name="Other", special=True)
+        other_sport, _ = Sport.objects.get_or_create(name=settings.OTHER_SPORT_NAME, special=True)
         trainer_group = get_or_create_trainer_group()
         sport_dep_user, _ = User.objects.get_or_create(
             first_name="Sport",

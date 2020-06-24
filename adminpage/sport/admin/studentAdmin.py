@@ -3,9 +3,10 @@ from django.contrib import admin
 from sport.models import Student
 from .inlines import AttendanceInline
 from .utils import user__email
+from .site import site
 
 
-@admin.register(Student)
+@admin.register(Student, site=site)
 class StudentAdmin(admin.ModelAdmin):
     search_fields = (
         "user__first_name",

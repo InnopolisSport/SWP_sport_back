@@ -5,6 +5,7 @@ from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 
 from sport.models import Semester
+from .site import site
 
 
 def export_hours_as_xlsx(modeladmin, request, queryset):
@@ -48,7 +49,7 @@ def export_hours_as_xlsx(modeladmin, request, queryset):
 export_hours_as_xlsx.short_description = "Export hours for selected semesters"
 
 
-@admin.register(Semester)
+@admin.register(Semester, site=site)
 class SemesterAdmin(admin.ModelAdmin):
     search_fields = (
         "name",
