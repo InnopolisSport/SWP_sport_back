@@ -7,6 +7,7 @@ from sport.models import Student
 from sport.signals import get_or_create_student_group
 from .inlines import AttendanceInline
 from .utils import user__email
+from .site import site
 
 
 class StudentResource(resources.ModelResource):
@@ -43,10 +44,10 @@ class StudentResource(resources.ModelResource):
         import_id_fields = ("user",)
 
 
-@admin.register(Student)
+@admin.register(Student, site=site)
 class StudentAdmin(ImportMixin, admin.ModelAdmin):
     resource_class = StudentResource
-
+    
     search_fields = (
         "user__first_name",
         "user__last_name",

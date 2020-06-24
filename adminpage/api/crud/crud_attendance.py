@@ -50,8 +50,8 @@ def mark_hours(training: Training, student_hours: Iterable[Tuple[int, float]]):
     for student_id, student_mark in student_hours:
         if student_id <= 0 or student_mark < 0.0:
             raise ValueError(f"All students id and marks must be non-negative, got {(student_id, student_mark)}")
-        # Currently hours field is numeric(3,2), so
-        # A field with precision 3, scale 2 must round to an absolute value less than 10^1.
+        # Currently hours field is numeric(5,2), so
+        # A field with precision 5, scale 2 must round to an absolute value less than 10^3.
         floor_max = 1000  # TODO: hardcoded limit
         if floor(student_mark) >= floor_max:
             raise ValueError(f"All students marks must floor to less than {floor_max}, "

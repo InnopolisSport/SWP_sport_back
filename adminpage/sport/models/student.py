@@ -27,7 +27,7 @@ class Student(models.Model):
         verbose_name_plural = "students"
 
     def __str__(self):
-        return self.user.get_full_name()
+        return f"{self.user.first_name} {self.user.last_name} ({self.user.email})"
 
     @property
     def medical_group_description(self) -> str:

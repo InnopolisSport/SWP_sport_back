@@ -1,11 +1,11 @@
 from django.contrib import admin
 
 from sport.models import Sport
+from .site import site
 
 
-@admin.register(Sport)
+@admin.register(Sport, site=site)
 class SportAdmin(admin.ModelAdmin):
-    save_on_top = True
     search_fields = (
         "name",
     )
