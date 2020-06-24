@@ -1,13 +1,13 @@
-$(function () {
-    const tour = new Tour({
-        framework: "bootstrap4",
-        name: 'main-tour',
-        showProgressBar: false,
-        showProgressText: false,
-        backdrop: true,
-        debug: true
-    });
+const tour = new Tour({
+    framework: "bootstrap4",
+    name: 'main-tour',
+    showProgressBar: false,
+    showProgressText: false,
+    backdrop: true,
+    debug: true
+});
 
+$(function () {
     // First step
     tour.addStep(
         {
@@ -243,6 +243,16 @@ $(function () {
     //     tour.start();
     // }
 });
+
+function start_tour() {
+    if (tour.ended()) {
+        console.log("Restart");
+        tour.restart();
+    } else {
+        console.log("Start");
+        tour.start();
+    }
+}
 
 // function disableObject (tour) {
 //     const step = tour.getStep(tour._current);
