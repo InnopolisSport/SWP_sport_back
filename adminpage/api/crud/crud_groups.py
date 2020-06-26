@@ -85,21 +85,22 @@ def get_trainer_groups(trainer: Trainer):
         return dictfetchall(cursor)
 
 
-def get_sc_training_group():
+def get_sc_training_groups():
     """
-    Finds sc training group for current semester
-    @return group dict
+    Finds sc training groups for the current semester
+    @return list of group dict
     """
     with connection.cursor() as cursor:
         cursor.execute('SELECT '
                        'g.id AS id, '
                        'g.name AS name, '
-                       'sport.name AS sport_name '
-                       'FROM "group" g, sport, semester s '
+                       's.name AS sport_name '
+                       'FROM "group" g, sport s '
                        'WHERE g.semester_id = current_semester() '
-                       'AND sport_id = sport.id '
-                       'AND g.name = %s', (settings.SC_TRAINERS_GROUP_NAME,))
-        row = dictfetchone(cursor)
-    if row is None:
-        raise ValueError("Unable to find SC training group")
+                       'AND g.sport_id = s.id '
+                       'AND g.name IN (%s, %s)',
+                       (settings.SC_TRAINERS_GROUP_NAME_FREE, settings.SC_TRAINERS_GROUP_NAME_PAID))
+        row = dictfetchall(cursor)
+    if row is None or len(row) == 0:
+        raise ValueError("Unable to find SC training groups")
     return row

@@ -19,7 +19,7 @@ def test_special_groups_creation(
         choice_deadline=choice_deadline,
     )
     qs = Group.objects.filter(sport__special=True)
-    assert qs.count() == 3
+    assert qs.count() == 4
 
 
 @pytest.mark.django_db
