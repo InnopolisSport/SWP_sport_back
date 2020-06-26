@@ -40,3 +40,9 @@ header div.head {
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
 }
+
+header a.help-link:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: white;
+}

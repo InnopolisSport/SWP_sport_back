@@ -39,7 +39,7 @@
 
                 {% if trainer.sport_groups %}
                     {% if trainer.sport_groups|length > 0 %}
-                        <p>
+                        <p id="trainer-list">
                             In semester <b>{{ common.semester_name }}</b> you train the following groups:
                             {% for group in trainer.sport_groups %}
                                 <span class="badge badge-pill badge-training" id="trainer-span"
@@ -47,7 +47,7 @@
                             {% endfor %}
                         </p>
                     {% else %}
-                        <p>
+                        <p id="trainer-list">
                             You are not training in the semester <b>{{ common.semester_name }}</b>
                         </p>
                     {% endif %}
@@ -56,7 +56,7 @@
                 {% if user.student %}
                     <meta id="illness-data" data-ill="{{ student.is_ill }}">
                     {% if student.sport_groups|length > 0 %}
-                        <p>
+                        <p id="student-list">
                             Your sport groups for semester <b>{{ common.semester_name }}</b>
                             are:
                             {% for group in student.sport_groups %}
@@ -68,13 +68,13 @@
                             {% endfor %}
                         </p>
                     {% else %}
-                        <p>
+                        <p id="student-list">
                             You have no groups selected for semester <b>{{ common.semester_name }}</b>
                         </p>
                     {% endif %}
 
                     {% if student.semesters|length > 0 %}
-                        <div class="container">
+                        <div class="container" id="semester-hours">
                             <table class="table table-hover">
                                 <thead>
                                 <tr>

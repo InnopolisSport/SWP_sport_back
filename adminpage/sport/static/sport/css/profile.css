@@ -67,8 +67,13 @@ body.profile {
     cursor: default;
 }
 
-/* It needs to be more than 1113 to be shown above tour-backdrop */
+/* z-index needs to be more than 1113 to be shown above tour-backdrop */
 #group-info-modal {
+    z-index: 2000;
+}
+
+/* z-index needs to be more than 1113 to be shown above tour-backdrop */
+#grading-modal {
     z-index: 2000;
 }
 
