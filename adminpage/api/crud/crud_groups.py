@@ -98,9 +98,10 @@ def get_sc_training_groups():
                        'FROM "group" g, sport s '
                        'WHERE g.semester_id = current_semester() '
                        'AND g.sport_id = s.id '
-                       'AND g.name IN (%s, %s)',
+                       'AND g.name IN (%s, %s) '
+                       'ORDER BY g.name',
                        (settings.SC_TRAINERS_GROUP_NAME_FREE, settings.SC_TRAINERS_GROUP_NAME_PAID))
         row = dictfetchall(cursor)
-    if row is None or len(row) == 0:
+    if row is None or len(row) != 2:
         raise ValueError("Unable to find SC training groups")
     return row
