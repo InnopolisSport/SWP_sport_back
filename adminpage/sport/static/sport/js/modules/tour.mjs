@@ -12,7 +12,6 @@ $(function () {
     tour.addStep(
         {
             element: ".tour-step-1",
-            placement: "bottom",
             orphan: true, // Center the popover
             title: "Hello!",
             content: "Welcome to the helpdesk.innopolis.university!<br />" +
@@ -66,19 +65,11 @@ $(function () {
             },
             {
                 element: ".tour-step-3",
-                placement: "right",
+                orphan: true,
                 title: "Sport Groups",
-                content: "You can select from three categories - student clubs, university trainers, and sport complex trainers.",
-                path: "/category/",
-                onShown: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element).addClass("disabled-object");
-                },
-                onHidden: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element)[0].className =
-                        $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
-                }
+                content: "You can select from three categories - <strong>student clubs</strong>, " +
+                    "<strong>university trainers</strong>, and <strong>sport complex trainers</strong>.",
+                path: "/category/"
             },
             {
                 element: ".tour-step-4-landscape",
@@ -98,6 +89,7 @@ $(function () {
             },
             {
                 element: ".tour-step-4-portrait",
+                placement: "bottom",
                 title: "Student Club",
                 content: "Here you can choose your favorite student club where you want to get hours.",
                 path: "/category/",
@@ -313,7 +305,6 @@ $(function () {
     tour.addStep(
         {
             element: ".tour-step-1",
-            placement: "bottom",
             orphan: true,
             title: "Thank You!",
             content: "Thank you for your patience! Now you know how to use this site!",

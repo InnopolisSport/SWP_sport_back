@@ -12,6 +12,11 @@ body {
     cursor: default;
 }
 
+.crop {
+    width: 100%;
+    overflow: hidden;
+}
+
 /*
     Properties for different screen sizes
 */
@@ -19,18 +24,6 @@ body {
 
     h1 {
         font-size: 150%;
-    }
-
-    img {
-        width: 200px;
-        height: auto;
-        background-size: cover;
-    }
-
-    .crop {
-        width: 200px;
-        height: 200px;
-        overflow: hidden;
     }
 
     .landscape {
@@ -65,18 +58,6 @@ body {
         font-size: 150%;
     }
 
-    img {
-        width: 200px;
-        height: auto;
-        background-size: cover;
-    }
-
-    .crop {
-        width: 200px;
-        height: 200px;
-        overflow: hidden;
-    }
-
     .landscape {
         display: flex
     }
@@ -96,18 +77,6 @@ body {
 }
 
 @media only screen and (min-width: 1201px) {
-
-    img {
-        width: 300px;
-        height: auto;
-        background-size: cover;
-    }
-
-    .crop {
-        width: 300px;
-        height: 300px;
-        overflow: hidden;
-    }
 
     .landscape {
         display: flex;
