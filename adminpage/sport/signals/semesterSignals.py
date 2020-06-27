@@ -41,36 +41,17 @@ def special_groups_create(sender, instance, created, **kwargs):
         )
         sport_dep_user.groups.add(trainer_group)
         sport_dep, _ = Trainer.objects.get_or_create(user=sport_dep_user)
-        trainer_group = Group(
-            name=settings.SC_TRAINERS_GROUP_NAME,
-            capacity=9999,
-            is_club=False,
-            sport=other_sport,
-            semester=instance,
-            trainer=sport_dep,
-            minimum_medical_group=MedicalGroups.NO_CHECKUP,
-        )
-        trainer_group.save()
-        sport_event_group = Group(
-            name=settings.EXTRA_EVENTS_GROUP_NAME,
-            capacity=0,
-            is_club=False,
-            sport=other_sport,
-            semester=instance,
-            trainer=sport_dep,
-            minimum_medical_group=MedicalGroups.NO_CHECKUP,
-        )
-        sport_event_group.save()
-        medical_leave_group = Group(
-            name=settings.MEDICAL_LEAVE_GROUP_NAME,
-            capacity=0,
-            is_club=False,
-            sport=other_sport,
-            semester=instance,
-            trainer=sport_dep,
-            minimum_medical_group=MedicalGroups.NO_CHECKUP,
-        )
-        medical_leave_group.save()
+        kwargs = {
+            'is_club': False,
+            'sport': other_sport,
+            'semester': instance,
+            'trainer': sport_dep,
+            'minimum_medical_group': MedicalGroups.NO_CHECKUP
+        }
+        Group.objects.create(name=settings.SC_TRAINERS_GROUP_NAME_FREE, capacity=9999, **kwargs)
+        Group.objects.create(name=settings.SC_TRAINERS_GROUP_NAME_PAID, capacity=9999, **kwargs)
+        Group.objects.create(name=settings.EXTRA_EVENTS_GROUP_NAME, capacity=0, **kwargs)
+        Group.objects.create(name=settings.MEDICAL_LEAVE_GROUP_NAME, capacity=0, **kwargs)
     else:
         # if semester changed, recalculate all future related schedules
         semester_schedules = Schedule.objects.filter(group__semester=instance.pk)

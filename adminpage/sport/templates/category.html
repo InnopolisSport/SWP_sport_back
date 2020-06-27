@@ -78,7 +78,9 @@
                              src="{% static "sport/images/categories/sc_trainer.png" %}"
                              alt="Trainings with SC trainer">
                         <div class="dropdown-content">
-                            <a href="#" onclick="openGroupInfoModal({{ sc_training_group_id }})">SC Trainings</a>
+                            {% for group in sc_training_groups %}
+                                <a href="#" onclick="openGroupInfoModal({{ group.id }})">{{ group.name }}</a>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -139,7 +141,9 @@
                              src="{% static "sport/images/categories/sc_trainer.png" %}"
                              alt="Trainings with SC trainer">
                         <div class="dropdown-content">
-                            <a href="#" onclick="openGroupInfoModal({{ sc_training_group_id }})">SC Trainings</a>
+                            {% for group in sc_training_groups %}
+                                <a href="#" onclick="openGroupInfoModal({{ group.id }})">{{ group.name }}</a>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
