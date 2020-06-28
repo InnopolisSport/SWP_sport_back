@@ -296,7 +296,19 @@ $(function () {
             content: "Forgot something? Consider clicking this to repeat the tour.",
             path: "/profile/",
             onShown: function (tour) {
-                $("#tourHighlight").css("opacity", 0);
+                // Stick highlighting to the button
+                const highlighter = $("#tourHighlight");
+                highlighter.css("top", "");
+                highlighter.css("left", "");
+                highlighter.css("bottom", "3%");
+                highlighter.css("right", "3%");
+                highlighter.css("position", "fixed");
+            },
+            onHidden: function (tour) {
+                const highlighter = $("#tourHighlight");
+                highlighter.css("bottom", ""); // Reset bottom and right to avoid white spot on the screen during "prev"
+                highlighter.css("right", "");
+                highlighter.css("position", "absolute");
             }
         }
     );
