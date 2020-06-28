@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import transaction
 from drf_yasg.utils import swagger_auto_schema
+from image_optimizer.utils import image_optimizer
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser
@@ -41,7 +42,10 @@ def reference_upload(request, **kwargs):
     serializer = ReferenceUploadSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    image = serializer.validated_data['image']
+    image = image_optimizer(
+        serializer.validated_data['image'],
+        resize_method="thumbnail",
+    )
     if image.size > settings.MAX_IMAGE_SIZE:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,

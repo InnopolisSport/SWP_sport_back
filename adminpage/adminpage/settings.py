@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'image_optimizer',
     'django_auth_adfs',
     'admin_auto_filters',
     'rest_framework',
@@ -112,8 +113,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'adminpage.wsgi.application'
 
-# Authentication
 
+
+# Authentication
 OAUTH_CLIENT_ID = os.getenv('oauth_appID')
 OAUTH_CLIENT_SECRET = os.getenv("oauth_shared_secret")
 OAUTH_AUTHORIZATION_BASEURL = os.getenv("oauth_authorization_baseURL")
@@ -208,6 +210,8 @@ else:
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/uploaded_media'
 
-MAX_IMAGE_SIZE = 5_000_000  # 5MB
+OPTIMIZED_IMAGE_METHOD = 'pillow'
+
+MAX_IMAGE_SIZE = 10_000_000  # 10MB
 MIN_IMAGE_DIMENSION = 400
-MAX_IMAGE_DIMENSION = 2000
+MAX_IMAGE_DIMENSION = 4500
