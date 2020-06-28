@@ -82,6 +82,14 @@ body.profile {
     pointer-events: none;
 }
 
+a.help-link {
+    z-index: 1000;
+    cursor: pointer;
+    position: fixed;
+    bottom: 3%;
+    right: 3%;
+}
+
 @media only screen and (max-width: 576px) {
     .card {
         margin: 1%;

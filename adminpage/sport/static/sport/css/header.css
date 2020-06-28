@@ -12,13 +12,13 @@ header.head {
 
 }
 
-@media only screen and (max-height: 400px){
+@media only screen and (max-height: 400px) {
     header.head {
         height: 12vh;
     }
 }
 
-@media only screen and (min-height: 401px){
+@media only screen and (min-height: 401px) {
     header.head {
         height: 5vh;
     }
@@ -41,8 +41,3 @@ header div.head {
     grid-gap: 20px;
 }
 
-header a.help-link:hover {
-    cursor: pointer;
-    text-decoration: underline;
-    color: white;
-}

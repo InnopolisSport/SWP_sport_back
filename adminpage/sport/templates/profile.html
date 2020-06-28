@@ -4,6 +4,7 @@
 {% block title %}Profile{% endblock %}
 
 {% block extrahead %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.css">
@@ -31,12 +32,14 @@
 {% endblock %}
 
 {% block content %}
+    {% if user.is_authenticated %}
+        <a class="help-link fa fa-question-circle fa-2x" id="help-btn" onclick="start_tour()"></a>
+    {% endif %}
     <div class="container-fluid">
         <div class="card text-center">
             <div class="card-body">
                 <h1 class="card-title tour-step-1">{{ user.get_full_name }}</h1>
                 {#            <h4 class="card-title">{{ user.role }}</h4>#}
-
                 {% if trainer.sport_groups %}
                     {% if trainer.sport_groups|length > 0 %}
                         <p id="trainer-list">
