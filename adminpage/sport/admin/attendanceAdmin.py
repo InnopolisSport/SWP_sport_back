@@ -45,5 +45,12 @@ class AttendanceAdmin(admin.ModelAdmin):
         ("training__start", cache_alternative_filter(admin.DateFieldListFilter, ["training__group__semester"])),
     )
 
+    list_select_related = (
+        "student__user",
+        "training__group",
+        "training__group__semester",
+        "training__training_class",
+    )
+
     class Media:
         pass

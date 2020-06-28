@@ -10,11 +10,21 @@ class AttendanceInline(admin.TabularInline):
     autocomplete_fields = ("training", "student")
     ordering = ("training__start", "student__user__first_name", "student__user__last_name")
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            "training__group__semester",
+            "student__user",
+            "training__training_class"
+        )
+
 
 class ScheduleInline(admin.TabularInline):
     model = models.Schedule
     extra = 1
     ordering = ("weekday", "start")
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("group__semester", "training_class")
 
 
 class EnrollInline(admin.TabularInline):
@@ -22,6 +32,9 @@ class EnrollInline(admin.TabularInline):
     extra = 1
     autocomplete_fields = ("student",)
     ordering = ("student__user__first_name", "student__user__last_name")
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("student__user", "group__semester")
 
 
 class GroupInline(admin.TabularInline):
@@ -32,9 +45,12 @@ class GroupInline(admin.TabularInline):
 
 class TrainingInline(admin.TabularInline):
     model = models.Training
-    autocomplete_fields = ("training_class",)
+    autocomplete_fields = ("schedule", "training_class",)
     extra = 1
     ordering = ("start",)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("training_class", "group__semester")
 
 
 class ViewTrainingInline(TrainingInline):

@@ -26,6 +26,9 @@ class Semester(models.Model):
             models.CheckConstraint(check=Q(start__lte=F('choice_deadline'), choice_deadline__lte=F('end')),
                                    name='semester_start_before_end')
         ]
+        indexes = [
+            models.Index(fields=("start",)),
+        ]
 
     def __str__(self):
         return f"{self.name}"

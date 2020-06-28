@@ -132,6 +132,11 @@ class TrainingAdmin(admin.ModelAdmin):
         "training_class",
     )
 
+    list_select_related = (
+        "group__semester",
+        "training_class",
+    )
+
     def response_add(self, request, obj, post_url_continue=None):
         """Keep the same url on "Save and add one another"""
         res = super().response_add(request, obj, post_url_continue)

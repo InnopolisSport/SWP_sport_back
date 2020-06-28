@@ -50,6 +50,12 @@ class ScheduleAdmin(admin.ModelAdmin):
         ViewTrainingInline,
     )
 
+    list_select_related = (
+        "group__trainer",
+        "group__semester",
+        "training_class"
+    )
+
     def get_readonly_fields(self, request, obj=None):
         """
         Make some-fields immutable once set

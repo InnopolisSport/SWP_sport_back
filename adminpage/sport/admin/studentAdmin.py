@@ -97,3 +97,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     inlines = (
         AttendanceInline,
     )
+
+    list_select_related = (
+        "user",
+    )

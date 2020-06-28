@@ -41,6 +41,10 @@ class ReferenceAdmin(admin.ModelAdmin):
         "reference_image",
     )
 
+    autocomplete_fields = (
+        "student",
+    )
+
     ordering = ("hours", "uploaded")
 
     def approval(self, obj):
