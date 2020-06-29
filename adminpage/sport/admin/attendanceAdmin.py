@@ -40,7 +40,7 @@ class AttendanceAdmin(admin.ModelAdmin):
         # group filter, depends on chosen semester
         (
             "training__group",
-            cache_dependent_filter({"training__group__semester": "semester__pk"}, ("name",))
+            cache_dependent_filter({"training__group__semester": "semester__pk"}, ("name",), select_related=["semester"])
         ),
         ("training__start", cache_alternative_filter(admin.DateFieldListFilter, ["training__group__semester"])),
     )

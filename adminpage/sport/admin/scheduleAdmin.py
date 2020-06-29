@@ -31,7 +31,7 @@ class ScheduleAdmin(admin.ModelAdmin):
         # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({"group__semester": "semester"}, ("name",))
+            cache_dependent_filter({"group__semester": "semester"}, ("name",), select_related=["semester"])
         ),
         "weekday",
         "start",
