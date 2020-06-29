@@ -25,10 +25,6 @@ class Schedule(models.Model):
         constraints = [
             models.CheckConstraint(check=Q(start__lt=F('end')), name='schedule_start_before_end'),
         ]
-        indexes = [
-            models.Index(fields=("start",)),
-            models.Index(fields=("weekday", "start")),
-        ]
 
     def __str__(self):
         return f"{self.group} {self.get_weekday_display()} {self.start}-{self.end}" \

@@ -18,7 +18,7 @@ class Training(models.Model):
             models.CheckConstraint(check=Q(start__lt=F('end')), name='training_start_before_end')
         ]
         indexes = [
-            models.Index(fields=("start",)),
+            models.Index(fields=("group", "start")),
         ]
 
     def __str__(self):

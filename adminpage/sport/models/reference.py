@@ -20,9 +20,6 @@ class Reference(models.Model):
     class Meta:
         db_table = "reference"
         verbose_name_plural = "medical references"
-        indexes = [
-            models.Index(fields=("hours", "uploaded")),
-        ]
 
     def __str__(self):
         return f"{self.student}{self.uploaded} for {self.semester}"
