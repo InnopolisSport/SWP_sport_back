@@ -45,6 +45,12 @@ class GroupAdmin(admin.ModelAdmin):
         EnrollInline,
     )
 
+    list_select_related = (
+        "semester",
+        "sport",
+        "trainer__user",
+    )
+
     # Dirty hack, filter autocomplete groups in "add extra form"
     def get_queryset(self, request):
         qs = super().get_queryset(request)

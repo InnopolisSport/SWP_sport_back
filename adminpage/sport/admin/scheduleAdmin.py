@@ -31,7 +31,7 @@ class ScheduleAdmin(admin.ModelAdmin):
         # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({"group__semester": "semester"}, ("name",))
+            cache_dependent_filter({"group__semester": "semester"}, ("name",), select_related=["semester"])
         ),
         "weekday",
         "start",
@@ -48,6 +48,12 @@ class ScheduleAdmin(admin.ModelAdmin):
 
     inlines = (
         ViewTrainingInline,
+    )
+
+    list_select_related = (
+        "group__trainer",
+        "group__semester",
+        "training_class"
     )
 
     def get_readonly_fields(self, request, obj=None):

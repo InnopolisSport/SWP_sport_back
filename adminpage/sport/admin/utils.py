@@ -1,3 +1,4 @@
+import operator
 from typing import List, Dict, Tuple
 
 from django.contrib import admin
@@ -15,6 +16,7 @@ def custom_order_filter(ordering: Tuple, cls=admin.RelatedFieldListFilter):
     class Wrapper(cls):
         def field_admin_ordering(self, field, request, model_admin):
             return ordering
+
     return Wrapper
 
 
@@ -68,11 +70,12 @@ def cache_filter(cls, clear_list: List[str]):
     return CacheAwareFilter
 
 
-def cache_dependent_filter(translation: Dict[str, str], order=None):
+def cache_dependent_filter(translation: Dict[str, str], order=None, select_related: List[str] = None):
     """
     Creates foreign key list filter, that can use cached values from other filters
     @param translation: rules for translating cached keys, if 'key' is cached,
     @param order: desired filter list ordering
+    @param select_related: related fields for faster lookup in one sql query
     translation['key'] will be used as the actual filter parameter
     """
 
@@ -83,8 +86,22 @@ def cache_dependent_filter(translation: Dict[str, str], order=None):
                 return []
             additional_filter = {translation[k]: request.cache_filter[k] for k in translation}
             ordering = order or self.field_admin_ordering(field, request, model_admin)
-            return field.get_choices(include_blank=False, ordering=ordering,
-                                     limit_choices_to=additional_filter)
+
+            # adapted from field.get_choices(...)
+            if field.choices is not None:
+                return list(field.choices)
+            rel_model = field.remote_field.model
+            choice_func = operator.attrgetter(
+                field.remote_field.get_related_field().attname
+                if hasattr(field.remote_field, 'get_related_field')
+                else 'pk'
+            )
+            qs = rel_model._default_manager.complex_filter(additional_filter).order_by(*ordering)
+            if select_related is not None:
+                qs = qs.select_related(*select_related)
+            return [
+                (choice_func(x), str(x)) for x in qs
+            ]
 
         def has_output(self):
             return not self.no_output

@@ -22,3 +22,7 @@ class TrainerAdmin(admin.ModelAdmin):
         "user__first_name",
         "user__last_name"
     )
+
+    list_select_related = (
+        "user",
+    )

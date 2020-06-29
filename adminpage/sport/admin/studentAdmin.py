@@ -5,7 +5,7 @@ from import_export.admin import ImportMixin
 
 from sport.models import Student, enums
 from sport.signals import get_or_create_student_group
-from .inlines import AttendanceInline
+from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .site import site
 from .utils import user__email
 
@@ -95,5 +95,10 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     )
 
     inlines = (
-        AttendanceInline,
+        ViewAttendanceInline,
+        AddAttendanceInline,
+    )
+
+    list_select_related = (
+        "user",
     )
