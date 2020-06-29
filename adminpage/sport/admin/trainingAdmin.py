@@ -12,7 +12,7 @@ from django.utils import timezone
 
 from api.crud import get_ongoing_semester, mark_hours
 from sport.models import Training, Student, Group
-from .inlines import AttendanceInline
+from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter
 from .site import site
 
@@ -121,7 +121,8 @@ class TrainingAdmin(admin.ModelAdmin):
     )
 
     inlines = (
-        AttendanceInline,
+        ViewAttendanceInline,
+        AddAttendanceInline,
     )
 
     fields = (
