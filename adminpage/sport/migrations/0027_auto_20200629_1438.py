@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sport', '0020_add_medical_group'),
+        ('sport', '0026_remove_old_pk'),
     ]
 
     operations = [
