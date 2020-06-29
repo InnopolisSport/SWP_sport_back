@@ -260,20 +260,22 @@ $(function () {
             );
         } else {
             // For only students
-            tour.addStep(
-                {
-                    element: ".tour-step-8",
-                    placement: "auto",
-                    title: "Calendar",
-                    content: "It is your schedule. You can find all your sports classes there.<br />" +
-                        "You can click on the training to check out details such as trainer contacts or location.",
-                    path: "/profile/",
-                    onShown: function (tour) {
-                        const step = tour.getStep(tour._current);
-                        $(step.element)[0].scrollIntoView(false);
+            if (document.getElementById("student-span")) {
+                tour.addStep(
+                    {
+                        element: ".tour-step-8",
+                        placement: "auto",
+                        title: "Calendar",
+                        content: "It is your schedule. You can find all your sports classes there.<br />" +
+                            "You can click on the training to check out details such as trainer contacts or location.",
+                        path: "/profile/",
+                        onShown: function (tour) {
+                            const step = tour.getStep(tour._current);
+                            $(step.element)[0].scrollIntoView(false);
+                        }
                     }
-                }
-            );
+                );
+            }
         }
     }
     // For all
@@ -323,7 +325,6 @@ $(function () {
             path: "/profile/"
         }
     );
-
     tour.start();
 });
 
