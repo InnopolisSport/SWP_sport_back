@@ -22,17 +22,15 @@ def export_hours_as_xlsx(modeladmin, request, queryset):
             "     , u.last_name "
             "     , u.email "
             "     , coalesce(sum(a.hours), 0) as hours "
-            "from student s "
-            "         join auth_user u on s.user_id = u.id "
+            "from auth_user u "
             "         left join ( "
             "    select * "
             "    from attendance a "
             "             join training t on a.training_id = t.id "
             "             join \"group\" g on t.group_id = g.id "
             "    where g.semester_id = %s "
-            ") as a on s.id = a.student_id "
-            "where s.user_id = u.id "
-            "group by s.id, u.id "
+            ") as a on u.id = a.student_id "
+            "group by u.id "
             "order by u.last_name, u.first_name; ", [semester.pk])
         work_sheet = work_book.create_sheet(title=semester.name)
         work_sheet.append(field_names)
