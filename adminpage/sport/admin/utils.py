@@ -53,6 +53,9 @@ def cache_filter(cls, clear_list: List[str]):
             add_value_to_cache(request, self.field_path, self.lookup_val)
             return super().field_choices(field, request, model_admin)
 
+        def has_output(self):
+            return True
+
         def choices(self, changelist):
             # save previous version of get_query_string that is used in super().choices(changelist)
             f = changelist.get_query_string
