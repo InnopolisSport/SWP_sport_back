@@ -125,50 +125,6 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
         return dictfetchall(cursor)
 
 
-def get_trainings_in_time(
-        sport_id: int,
-        start: datetime,
-        end: datetime,
-        student: Optional[Student] = None,
-):
-    """
-    Retrieves existing trainings in the given range for given sport type
-    @param sport_id - searched sport id
-    @param start - range start date
-    @param end - range end date
-    @param student - student, acquiring trainings. Trainings will be based on medical group
-    @return list of trainings info
-    """
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT '
-                       'g.id AS group_id, '
-                       'g.name AS group_name, '
-                       'count(e.id) AS current_load, '
-                       'g.capacity AS capacity, '
-                       't.id AS id, '
-                       't.start AS start, '
-                       't."end" AS "end", '
-                       'tc.name AS training_class '
-                       'FROM sport sp, "group" g LEFT JOIN enroll e ON e.group_id = g.id, training t '
-                       'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE g.sport_id = sp.id '
-                       'AND g.semester_id = current_semester() '
-                       'AND t.group_id = g.id '
-                       'AND sp.id = %s '
-                       'AND t.start >= %s '
-                       'AND t.end <= %s '
-                       'AND %s >= g.minimum_medical_group  '
-                       'GROUP BY g.id, t.id, tc.id',
-                       (
-                           sport_id,
-                           start,
-                           end,
-                           100 if student is None else student.medical_group
-                       )
-                       )
-        return dictfetchall(cursor)
-
-
 def get_students_grades(training_id: int):
     """
     Retrieves student grades for specific training
