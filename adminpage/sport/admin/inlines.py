@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.http import HttpRequest
 
-from sport import models
+from sport.models import Attendance, Schedule, Enroll, Group, Training
 
 
 class ViewAttendanceInline(admin.TabularInline):
-    model = models.Attendance
+    model = Attendance
     extra = 0
     fields = ("training", "student", "hours")
     readonly_fields = ("training", "student")
@@ -36,16 +36,17 @@ class AddAttendanceInline(ViewAttendanceInline):
 
 
 class ScheduleInline(admin.TabularInline):
-    model = models.Schedule
+    model = Schedule
     extra = 0
     ordering = ("weekday", "start")
+    autocomplete_fields = ("training_class",)
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("group__semester", "training_class")
 
 
 class EnrollInline(admin.TabularInline):
-    model = models.Enroll
+    model = Enroll
     extra = 0
     autocomplete_fields = ("student",)
     ordering = ("student__user__first_name", "student__user__last_name")
@@ -58,13 +59,13 @@ class EnrollInline(admin.TabularInline):
 
 
 class GroupInline(admin.TabularInline):
-    model = models.Group
+    model = Group
     extra = 0
     ordering = ("semester", "name")
 
 
 class TrainingInline(admin.TabularInline):
-    model = models.Training
+    model = Training
     fields = ("start", "end", "training_class")
     autocomplete_fields = ("training_class",)
     extra = 0
