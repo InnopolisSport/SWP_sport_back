@@ -45,10 +45,16 @@ class GroupAdmin(admin.ModelAdmin):
         EnrollInline,
     )
 
+    list_select_related = (
+        "semester",
+        "sport",
+        "trainer__user",
+    )
+
     # Dirty hack, filter autocomplete groups in "add extra form"
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if 'extra' in request.META['HTTP_REFERER']:
+        if 'extra' in request.META.get('HTTP_REFERER', []):
             return qs.filter(semester=get_ongoing_semester(), sport__name=settings.OTHER_SPORT_NAME).order_by('name')
         return qs
 

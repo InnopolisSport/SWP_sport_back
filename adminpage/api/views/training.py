@@ -20,6 +20,6 @@ from sport.models import Training
 @api_view(["GET"])
 @permission_classes([IsStudent])
 def training_info(request, training_id, **kwargs):
-    student = request.user.student
+    student = request.user  # user.pk == user.student.pk
     get_object_or_404(Training, pk=training_id)
     return Response(get_attended_training_info(training_id, student))

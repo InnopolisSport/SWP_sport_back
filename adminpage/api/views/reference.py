@@ -61,12 +61,12 @@ def reference_upload(request, **kwargs):
             data=error_detail(*ReferenceErrors.INVALID_IMAGE_SIZE)
         )
 
-    student = request.user.student
+    student = request.user  # user.pk == user.student.pk
 
     try:
         with transaction.atomic():
-            ref = serializer.save(semester=get_ongoing_semester(), student=student)
-            count = Reference.objects.filter(student=student, uploaded__date=ref.uploaded.date()).count()
+            ref = serializer.save(semester=get_ongoing_semester(), student_id=student.pk)
+            count = Reference.objects.filter(student_id=student.pk, uploaded__date=ref.uploaded.date()).count()
             assert count == 1
     except AssertionError:
         return Response(

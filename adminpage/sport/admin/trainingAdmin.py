@@ -12,7 +12,7 @@ from django.utils import timezone
 
 from api.crud import get_ongoing_semester, mark_hours
 from sport.models import Training, Student, Group
-from .inlines import AttendanceInline
+from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter
 from .site import site
 
@@ -106,7 +106,7 @@ class TrainingAdmin(admin.ModelAdmin):
         # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({"group__semester": "semester"}, ("name",))
+            cache_dependent_filter({"group__semester": "semester"}, ("name",), select_related=["semester"])
         ),
         ("training_class", admin.RelatedOnlyFieldListFilter),
         ("start", cache_alternative_filter(admin.DateFieldListFilter, ["group__semester"])),
@@ -121,7 +121,8 @@ class TrainingAdmin(admin.ModelAdmin):
     )
 
     inlines = (
-        AttendanceInline,
+        ViewAttendanceInline,
+        AddAttendanceInline,
     )
 
     fields = (
@@ -129,6 +130,11 @@ class TrainingAdmin(admin.ModelAdmin):
         "schedule",
         "start",
         "end",
+        "training_class",
+    )
+
+    list_select_related = (
+        "group__semester",
         "training_class",
     )
 

@@ -17,6 +17,9 @@ class Training(models.Model):
             models.UniqueConstraint(fields=["group", "start", "end"], name="unique_training"),
             models.CheckConstraint(check=Q(start__lt=F('end')), name='training_start_before_end')
         ]
+        indexes = [
+            models.Index(fields=("group", "start")),
+        ]
 
     def __str__(self):
         return f"{self.group} at {to_current_timezone(self.start).date()} " \

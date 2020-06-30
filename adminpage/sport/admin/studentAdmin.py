@@ -5,7 +5,7 @@ from import_export.admin import ImportMixin
 
 from sport.models import Student, enums
 from sport.signals import get_or_create_student_group
-from .inlines import AttendanceInline
+from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .site import site
 from .utils import user__email
 
@@ -71,6 +71,10 @@ class StudentResource(resources.ModelResource):
 class StudentAdmin(ImportMixin, admin.ModelAdmin):
     resource_class = StudentResource
 
+    autocomplete_fields = (
+        "user",
+    )
+
     search_fields = (
         "user__first_name",
         "user__last_name",
@@ -95,5 +99,10 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     )
 
     inlines = (
-        AttendanceInline,
+        ViewAttendanceInline,
+        AddAttendanceInline,
+    )
+
+    list_select_related = (
+        "user",
     )

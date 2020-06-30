@@ -75,7 +75,7 @@ class EnrollAdmin(admin.ModelAdmin):
         # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({"group__semester": "semester"}, ("name",))
+            cache_dependent_filter({"group__semester": "semester"}, ("name",), select_related=["semester"])
         ),
         ("group__is_club", custom_titled_filter("club status")),
         ("is_primary", custom_titled_filter("primary status")),
