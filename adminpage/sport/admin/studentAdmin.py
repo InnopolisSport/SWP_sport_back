@@ -71,6 +71,10 @@ class StudentResource(resources.ModelResource):
 class StudentAdmin(ImportMixin, admin.ModelAdmin):
     resource_class = StudentResource
 
+    autocomplete_fields = (
+        "user",
+    )
+
     search_fields = (
         "user__first_name",
         "user__last_name",
