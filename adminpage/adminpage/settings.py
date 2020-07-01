@@ -39,6 +39,8 @@ TRAINING_EDITABLE_INTERVAL = timedelta(
     days=int(os.getenv("TRAINING_EDITABLE_INTERVAL", 14))
 )
 
+BACHELOR_STUDY_PERIOD_YEARS = 4
+
 BASE_URL = os.getenv("BASE_URL", "http://localhost:81/")
 PREFIX = ""
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -49,7 +51,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_boolean("DEBUG")
@@ -113,8 +114,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'adminpage.wsgi.application'
-
-
 
 # Authentication
 OAUTH_CLIENT_ID = os.getenv('oauth_appID')

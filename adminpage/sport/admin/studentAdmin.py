@@ -83,6 +83,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     list_filter = (
         "is_ill",
+        "enrollment_year",
         "medical_group",
     )
 
