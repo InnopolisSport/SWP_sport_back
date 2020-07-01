@@ -1,17 +1,18 @@
-from datetime import date
+from datetime import date, datetime
 
 from admin_auto_filters.filters import AutocompleteFilter
-from django.contrib import admin
+from django.conf import settings
+from django.contrib import admin, messages
 from django.db.models import Sum, Subquery, OuterRef
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse
-from import_export.admin import ExportMixin
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 from rangefilter.filter import DateRangeFilter
 
 from sport.admin.utils import cache_filter, cache_dependent_filter, custom_order_filter
 from sport.models import Attendance, Student, Semester
+from sport.utils import get_study_year_from_date
 from .site import site
 
 
@@ -25,20 +26,45 @@ def export_attendance_as_xlsx(modeladmin, request, queryset):
     date_start_str = request.GET.get("training__start__range__gte", None)
     date_end_str = request.GET.get("training__start__range__lte", None)
 
-    export_period = ""
+    start = date.min
+    end = date.max
     if semester_id is not None:
         semester = Semester.objects.get(id=semester_id)
-        export_period = f"Semester {semester.name} ({semester.start} - {semester.end})"
-    elif date_start_str is not None:
-        export_period = f"{date_start_str} - {date_end_str if date_end_str else date.today()}"
-    else:
-        modeladmin.message_user(request, "Please filter by semester or specify training start range")
+        start = max(start, semester.start)
+        end = min(end, semester.end)
+
+    if date_start_str:
+        start_date = datetime.strptime(date_start_str, settings.DATE_FORMAT).date()
+        start = max(start, start_date)
+
+    if date_end_str:
+        end_date = datetime.strptime(date_end_str, settings.DATE_FORMAT).date()
+        end = min(end, end_date)
+
+    if start == date.min:
+        modeladmin.message_user(
+            request,
+            "Please filter by semester or specify training start range",
+            messages.ERROR,
+        )
+        return
+
+    end = min(end, date.today())
+    export_period = f"{start} - {end}"
+    start_study_year = get_study_year_from_date(start)
+    end_study_year = get_study_year_from_date(end)
 
     collected_hours = queryset.values("student_id").annotate(
         collected_hours=Sum('hours')
     ).filter(student_id=OuterRef("user_id")).values('collected_hours')
 
-    student_data = Student.objects.annotate(
+    student_data = Student.objects.filter(
+        # suppose student enrolled in 2020-21 -> finish 4th course in 2023-24,
+        # thus if start_study_year == 24 we exclude students enrolled in 2020
+        enrollment_year__gt=start_study_year - settings.BACHELOR_STUDY_PERIOD_YEARS,
+        # but include those enrolled in last study year
+        enrollment_year__lte=end_study_year,
+    ).annotate(
         collected_hours=Coalesce(Subquery(collected_hours), 0)
     ).select_related("user")
 

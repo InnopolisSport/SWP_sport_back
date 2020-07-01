@@ -21,6 +21,7 @@ def getenv_boolean(var_name, default_value=False):
         result = env_value.upper() in ("TRUE", "1")
     return result
 
+DATE_FORMAT = "%Y-%m-%d"
 
 SPORT_DEPARTMENT_EMAIL = "sport@innopolis.university"
 STUDENT_AUTH_GROUP_VERBOSE_NAME = "Students"
