@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'rangefilter',
     'image_optimizer',
     'django_auth_adfs',
     'admin_auto_filters',
