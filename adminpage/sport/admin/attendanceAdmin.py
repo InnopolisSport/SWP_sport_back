@@ -22,6 +22,10 @@ class StudentTextFilter(AutocompleteFilter):
 
 
 def export_attendance_as_xlsx(modeladmin, request, queryset):
+    """
+    Exports attendance for a period given by semester and/or training__start range
+    (the queryset must already be filtered !)
+    """
     semester_id = request.GET.get("training__group__semester__id__exact", None)
     date_start_str = request.GET.get("training__start__range__gte", None)
     date_end_str = request.GET.get("training__start__range__lte", None)
