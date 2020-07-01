@@ -207,7 +207,7 @@ $(function () {
                     const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
                     if (width > 800) {
                         // Jump to landscape
-                        tour.goTo(11);
+                        tour.goTo(tour.getCurrentStepIndex() - 2);
                         return false;
                     } else {
                         // Jump to portrait
