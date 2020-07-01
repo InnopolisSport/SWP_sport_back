@@ -4,23 +4,9 @@
 
 {% block extrahead %}
     <script type="text/javascript" src="{% static "admin/js/vendor/jquery/jquery.min.js" %}"></script>
-    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-
     <script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
-
-    {#        Uncomment the following line to always collapse filters #}
-    {#    <script type="text/javascript" src="{% static "sport/js/list_filter_collapse.js" %}"></script>#}
-    <script>
-        (function ($) {
-            $(document).ready(function () {
-                $(document).ready(function () {
-                    $('.datepicker').datepicker();
-                });
-            });
-        })(django.jQuery);
-    </script>
-
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+{#    Uncomment the following line to always collapse filters #}
+{#    <script type="text/javascript" src="{% static "sport/js/list_filter_collapse.js" %}"></script>#}
 {% endblock %}
 
 {% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
