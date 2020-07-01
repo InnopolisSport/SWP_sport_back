@@ -43,6 +43,11 @@ body.profile {
     background-color: #ffa500;
 }
 
+/* z-index needs to be more than 1113 to be shown above tour-backdrop */
+.tooltip {
+    z-index: 2000;
+}
+
 .fc-title {
     font-weight: bold;
 }

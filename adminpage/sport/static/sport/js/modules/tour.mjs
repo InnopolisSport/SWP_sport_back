@@ -41,6 +41,14 @@ $(function () {
             path: "/profile/"
         },
         {
+            element: "#medical-group",
+            placement: "bottom",
+            title: "Medical Group",
+            content: "Your medical group can be seen here (If you passed medical check up). " +
+                "You can hover the ellipse to check out the description.",
+            path: "/profile"
+        },
+        {
             element: "#semester-hours",
             placement: "bottom",
             title: "Attendance",
@@ -199,7 +207,7 @@ $(function () {
                     const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
                     if (width > 800) {
                         // Jump to landscape
-                        tour.goTo(10);
+                        tour.goTo(11);
                         return false;
                     } else {
                         // Jump to portrait
