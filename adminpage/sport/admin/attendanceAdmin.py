@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from tempfile import NamedTemporaryFile
 
 from admin_auto_filters.filters import AutocompleteFilter
 from django.conf import settings
@@ -7,7 +8,6 @@ from django.db.models import Sum, Subquery, OuterRef
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse
 from openpyxl import Workbook
-from openpyxl.writer.excel import save_virtual_workbook
 from rangefilter.filter import DateRangeFilter
 
 from sport.admin.utils import cache_filter, cache_dependent_filter, custom_order_filter
@@ -78,8 +78,14 @@ def export_attendance_as_xlsx(modeladmin, request, queryset):
     ws.append(["email", "hours"])
     for student in student_data:
         ws.append([student.user.email, student.collected_hours])
-    response = HttpResponse(save_virtual_workbook(wb),
-                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    with NamedTemporaryFile() as tmp:
+        wb.save(tmp.name)
+        tmp.seek(0)
+        stream = tmp.read()
+    response = HttpResponse(
+        stream,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
     response['Content-Disposition'] = f'attachment; filename=SportHours_{export_period}.xlsx'
 
     return response
