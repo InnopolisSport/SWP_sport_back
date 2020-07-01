@@ -7,6 +7,7 @@ from openpyxl.writer.excel import save_virtual_workbook
 from sport.models import Enroll, Group, Semester
 
 from .utils import custom_titled_filter, cache_filter, cache_dependent_filter, custom_order_filter
+from .site import site
 
 
 class TrainerTextFilter(AutocompleteFilter):
@@ -58,7 +59,7 @@ def export_primary_as_xlsx(modeladmin, request, queryset):
 export_primary_as_xlsx.short_description = "Export primary sport groups"
 
 
-@admin.register(Enroll)
+@admin.register(Enroll, site=site)
 class EnrollAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         "student",
@@ -74,7 +75,7 @@ class EnrollAdmin(admin.ModelAdmin):
         # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({"group__semester": "semester"}, ("name",))
+            cache_dependent_filter({"group__semester": "semester"}, ("name",), select_related=["semester"])
         ),
         ("group__is_club", custom_titled_filter("club status")),
         ("is_primary", custom_titled_filter("primary status")),

@@ -29,9 +29,11 @@ STUDENT_AUTH_GROUP_NAME = "S-1-5-21-721043115-644155662-3522934251-2285"
 TRAINER_AUTH_GROUP_VERBOSE_NAME = "School Physical Activity for Health"
 TRAINER_AUTH_GROUP_NAME = "S-1-5-21-2948122937-1530199265-1034249961-9635"
 
-SC_TRAINERS_GROUP_NAME = "SC trainers"
+SC_TRAINERS_GROUP_NAME_FREE = "SC trainers (free)"
+SC_TRAINERS_GROUP_NAME_PAID = "SC trainers (paid)"
 EXTRA_EVENTS_GROUP_NAME = "Extra sport events"
 MEDICAL_LEAVE_GROUP_NAME = "Medical leave"
+OTHER_SPORT_NAME = "Other"
 
 TRAINING_EDITABLE_INTERVAL = timedelta(
     days=int(os.getenv("TRAINING_EDITABLE_INTERVAL", 14))
@@ -63,12 +65,14 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'adminpage.apps.SportAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'import_export',
+    'image_optimizer',
     'django_auth_adfs',
     'admin_auto_filters',
     'rest_framework',
@@ -109,8 +113,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'adminpage.wsgi.application'
 
-# Authentication
 
+
+# Authentication
 OAUTH_CLIENT_ID = os.getenv('oauth_appID')
 OAUTH_CLIENT_SECRET = os.getenv("oauth_shared_secret")
 OAUTH_AUTHORIZATION_BASEURL = os.getenv("oauth_authorization_baseURL")
@@ -205,6 +210,8 @@ else:
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/uploaded_media'
 
-MAX_IMAGE_SIZE = 5_000_000  # 5MB
+OPTIMIZED_IMAGE_METHOD = 'pillow'
+
+MAX_IMAGE_SIZE = 10_000_000  # 10MB
 MIN_IMAGE_DIMENSION = 400
-MAX_IMAGE_DIMENSION = 2000
+MAX_IMAGE_DIMENSION = 4500

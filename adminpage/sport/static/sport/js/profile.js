@@ -331,16 +331,16 @@ async function submit_reference() {
         positionClass: 'toast-top-center'
     };
 
-    if (file.size > 5_000_000) {
-        toastr.error('Image file size too big, expected size <= 5 MB');
+    if (file.size > 10_000_000) {
+        toastr.error('Image file size too big, expected size <= 10 MB');
         return false;
     }
 
     try {
         const _URL = window.URL || window.webkitURL;
         const img = await loadImage(_URL.createObjectURL(file));
-        if (img.width < 400 || img.width > 2000 || img.height < 400 || img.height > 2000) {
-            toastr.error('Invalid image width/height, expected them to be in range 400px..2000px');
+        if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
+            toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
             return false;
         }
     } catch (e) {
@@ -367,4 +367,5 @@ $(function () {
             select: autocomplete_select
         })
         .autocomplete("option", "appendTo", ".student_email_suggestor");
+    $('[data-toggle="tooltip"]').tooltip()
 });

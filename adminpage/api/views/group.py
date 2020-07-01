@@ -20,7 +20,7 @@ from sport.models import Group, Schedule
 @api_view(["GET"])
 @permission_classes([IsStudent])
 def group_info_view(request, group_id, **kwargs):
-    student = request.user.student
+    student = request.user  # user.pk == user.student.pk
     get_object_or_404(Group, pk=group_id)
     group_info = get_group_info(group_id, student)
     group_schedule = Schedule.objects.filter(group_id=group_id).all()

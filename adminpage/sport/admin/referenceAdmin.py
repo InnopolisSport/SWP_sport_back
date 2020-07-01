@@ -4,6 +4,7 @@ from django.utils.html import format_html
 
 from sport.admin.utils import custom_order_filter, positive_number_filter
 from sport.models import Reference
+from .site import site
 
 
 class StudentTextFilter(AutocompleteFilter):
@@ -11,7 +12,7 @@ class StudentTextFilter(AutocompleteFilter):
     field_name = "student"
 
 
-@admin.register(Reference)
+@admin.register(Reference, site=site)
 class ReferenceAdmin(admin.ModelAdmin):
     list_display = (
         "student",
@@ -38,6 +39,10 @@ class ReferenceAdmin(admin.ModelAdmin):
     readonly_fields = (
         "uploaded",
         "reference_image",
+    )
+
+    autocomplete_fields = (
+        "student",
     )
 
     ordering = ("hours", "uploaded")

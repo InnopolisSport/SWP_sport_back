@@ -9,6 +9,7 @@ from .trainer import *
 from .training import *
 from .training_class import *
 from .reference import *
+from .enums import *
 
 from django.contrib.auth.models import Group as DjangoGroup
 DjangoGroup.add_to_class(

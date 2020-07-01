@@ -1,4 +1,5 @@
 from django.db import models
+from .enums import MedicalGroups
 
 
 class Group(models.Model):
@@ -10,9 +11,17 @@ class Group(models.Model):
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, null=False)
     trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True)
 
+    minimum_medical_group = models.IntegerField(
+        choices=MedicalGroups.choices,
+        default=MedicalGroups.PREPARATIVE,
+    )
+
     class Meta:
         db_table = "group"
         verbose_name_plural = "groups"
+        indexes = [
+            models.Index(fields=("name",)),
+        ]
 
     def __str__(self):
         return f"[{self.semester}] {self.name}"

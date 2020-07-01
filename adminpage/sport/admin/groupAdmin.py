@@ -1,9 +1,12 @@
 from admin_auto_filters.filters import AutocompleteFilter
+from django.conf import settings
 from django.contrib import admin
 
+from api.crud import get_ongoing_semester
 from sport.models import Group
 from .inlines import ScheduleInline, EnrollInline, TrainingInline
-from .utils import custom_titled_filter, cache_dependent_filter, cache_filter
+from .utils import custom_titled_filter
+from .site import site
 
 
 class TrainerTextFilter(AutocompleteFilter):
@@ -11,7 +14,7 @@ class TrainerTextFilter(AutocompleteFilter):
     field_name = "trainer"
 
 
-@admin.register(Group)
+@admin.register(Group, site=site)
 class GroupAdmin(admin.ModelAdmin):
     search_fields = (
         "name",
@@ -41,6 +44,19 @@ class GroupAdmin(admin.ModelAdmin):
         TrainingInline,
         EnrollInline,
     )
+
+    list_select_related = (
+        "semester",
+        "sport",
+        "trainer__user",
+    )
+
+    # Dirty hack, filter autocomplete groups in "add extra form"
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if 'extra' in request.META.get('HTTP_REFERER', []):
+            return qs.filter(semester=get_ongoing_semester(), sport__name=settings.OTHER_SPORT_NAME).order_by('name')
+        return qs
 
     class Media:
         pass

@@ -61,10 +61,12 @@ def convert_personal_training(t) -> dict:
 def get_schedule(request, sport_id, **kwargs):
     serializer = CalendarRequestSerializer(data=request.GET)
     serializer.is_valid(raise_exception=True)
+    student = getattr(request.user, "student", None)
     trainings = get_trainings_in_time(
         sport_id,
         serializer.validated_data["start"],
         serializer.validated_data["end"],
+        student=student,
     )
 
     return Response(list(map(convert_training, trainings)))
