@@ -1,6 +1,6 @@
 async function openGroupInfoModal(info) {
     const {group_id, current_load} = await openGroupInfoModalForStudent(
-        `/api/training/${info.event.extendedProps.id}`,
+        `/api/group/${info.event.extendedProps.group_id}`,
         update_rendered_events_load
     )
     update_rendered_events_load(group_id, current_load, false);
