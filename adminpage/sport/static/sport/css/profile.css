@@ -82,11 +82,6 @@ body.profile {
     z-index: 2000;
 }
 
-/* Disable mouse interaction */
-.disabled-object {
-    pointer-events: none;
-}
-
 a.help-link {
     z-index: 1000;
     cursor: pointer;

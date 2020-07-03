@@ -91,16 +91,7 @@ $(function () {
                 title: "Student Club",
                 content: "Here you can choose your favorite student club where you want to get hours.",
                 path: "/category/",
-                onShown: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element).addClass("disabled-object");
-                },
-                onHidden: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element)[0].className =
-                        $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
-                }
-                /* TODO: change onShown and onHidden on preventInteraction: true */
+                preventInteraction: true
             },
             {
                 element: ".tour-step-4-portrait",
@@ -108,15 +99,7 @@ $(function () {
                 title: "Student Club",
                 content: "Here you can choose your favorite student club where you want to get hours.",
                 path: "/category/",
-                onShown: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element).addClass("disabled-object");
-                },
-                onHidden: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element)[0].className =
-                        $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
-                }
+                preventInteraction: true
             },
             {
                 element: ".tour-step-5-landscape",
@@ -124,15 +107,7 @@ $(function () {
                 title: "IU Trainer",
                 content: "Point here if you want to get hours for sports classes that the university offers you.",
                 path: "/category/",
-                onShown: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element).addClass("disabled-object");
-                },
-                onHidden: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element)[0].className =
-                        $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
-                }
+                preventInteraction: true
             },
             {
                 element: ".tour-step-5-portrait",
@@ -140,15 +115,7 @@ $(function () {
                 title: "IU Trainer",
                 content: "Point here if you want to get hours for sports classes that university offers you.",
                 path: "/category/",
-                onShown: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element).addClass("disabled-object");
-                },
-                onHidden: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element)[0].className =
-                        $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
-                }
+                preventInteraction: true
             },
             {
                 element: ".tour-step-6-landscape",
@@ -156,15 +123,7 @@ $(function () {
                 title: "SC Trainer",
                 content: "Select this if you exercise with sport complex trainers and want to get hours.",
                 path: "/category/",
-                onShown: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element).addClass("disabled-object");
-                },
-                onHidden: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element)[0].className =
-                        $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
-                }
+                preventInteraction: true
             },
             {
                 element: ".tour-step-6-portrait",
@@ -172,15 +131,7 @@ $(function () {
                 title: "SC Trainer",
                 content: "Select this if you exercise with sport complex trainers and want to get hours.",
                 path: "/category/",
-                onShown: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element).addClass("disabled-object");
-                },
-                onHidden: function (tour) {
-                    const step = tour.getStep(tour._current);
-                    $(step.element)[0].className =
-                        $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
-                }
+                preventInteraction: true
             },
             {
                 orphan: true,
@@ -228,15 +179,7 @@ $(function () {
                 "Do not forget to change the status back when you recover.<br />" +
                 "Additionally, you can submit a reference to get hours.",
             path: "/profile/",
-            onShown: function (tour) {
-                const step = tour.getStep(tour._current);
-                $(step.element).addClass("disabled-object");
-            },
-            onHidden: function (tour) {
-                const step = tour.getStep(tour._current);
-                $(step.element)[0].className =
-                    $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
-            }
+            preventInteraction: true
         }
     );
 
@@ -316,6 +259,7 @@ $(function () {
             title: "Help",
             content: "Forgot something? Consider clicking this to repeat the tour.",
             path: "/profile/",
+            preventInteraction: true,
             onShown: function (tour) {
                 // Stick highlighting to the button
                 const highlighter = $("#tourHighlight");

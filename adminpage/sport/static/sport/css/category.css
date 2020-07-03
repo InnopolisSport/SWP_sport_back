@@ -134,8 +134,3 @@ body {
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
 }
-
-/* Disable mouse interaction */
-.disabled-object {
-    pointer-events: none;
-}
