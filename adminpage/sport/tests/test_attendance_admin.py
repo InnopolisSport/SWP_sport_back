@@ -142,53 +142,51 @@ def test_empty_filters(
     assert "Please filter by semester or specify training start range" in content
 
 
-@pytest.mark.django_db
-def test_semester_filter(
-        setup,
-        admin_user,
-):
-    # TODO: make test
-    assert True
-    return
-    training, trainer_user, student_user, semester = setup
-    client = APIClient()
-    client.login(
-        username="admin",
-        password="password",
-    )
+# @pytest.mark.django_db
+# def test_semester_filter(
+#         setup,
+#         admin_user,
+# ):
+#     # TODO: make test
+#     training, trainer_user, student_user, semester = setup
+#     client = APIClient()
+#     client.login(
+#         username="admin",
+#         password="password",
+#     )
 
-    mark_attendance(
-        training,
-        [
-            (student_user, 3),
-        ]
-    )
+#     mark_attendance(
+#         training,
+#         [
+#             (student_user, 3),
+#         ]
+#     )
 
-    qs = list(Attendance.objects.values_list(
-        "id",
-        flat=True,
-    ))
+#     qs = list(Attendance.objects.values_list(
+#         "id",
+#         flat=True,
+#     ))
 
-    data = {
-        'action': 'export_attendance_as_xlsx',
-        ACTION_CHECKBOX_NAME: qs,
-        **get_semester_filter(semester),
-    }
+#     data = {
+#         'action': 'export_attendance_as_xlsx',
+#         ACTION_CHECKBOX_NAME: qs,
+#         **get_semester_filter(semester),
+#     }
 
-    response = client.post(
-        change_url,
-        data,
-        follow=True,
+#     response = client.post(
+#         change_url,
+#         data,
+#         follow=True,
 
-    )
+#     )
 
-    content = response.content
-    print(type(response), file=stderr)
+#     content = response.content
+#     print(type(response), file=stderr)
 
-    print(response, file=stderr)
-    # print(response['Content-Disposition'], file=stderr)
+#     print(response, file=stderr)
+#     # print(response['Content-Disposition'], file=stderr)
 
-    assert False
+#     assert False
 
-    # assert response.status_code == 200
-    # assert "Please filter by semester or specify training start range" in content
+#     # assert response.status_code == 200
+#     # assert "Please filter by semester or specify training start range" in content
