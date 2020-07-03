@@ -15,7 +15,7 @@ def get_sports(all=False, student: Optional[Student] = None):
     @return list of all sport types
     """
     qs = Sport.objects.filter(
-        group__minimum_medical_group__lte=100 if student is None else student.medical_group,
+        group__minimum_medical_group_id__lte=100 if student is None else student.medical_group,
     ).distinct()
     # w/o distinct returns a lot of duplicated
     return qs.all().values() if all else qs.filter(special=False).values()
@@ -41,9 +41,9 @@ def get_clubs(student: Optional[Student] = None):
             'AND sport_id = sport.id '
             'AND semester_id = s.id '
             'AND is_club = TRUE '
-            'AND  %(student_medical_group)s >= g.minimum_medical_group '
+            'AND  %(student_medical_group)s >= g.minimum_medical_group_id '
             'GROUP BY g.id, sport.id, s.id', {
-                "student_medical_group": 100 if student is None else student.medical_group
+                "student_medical_group": 100 if student is None else student.medical_group_id
             })
         return dictfetchall(cursor)
 

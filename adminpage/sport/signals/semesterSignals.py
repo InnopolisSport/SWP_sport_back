@@ -46,7 +46,7 @@ def special_groups_create(sender, instance, created, **kwargs):
             'sport': other_sport,
             'semester': instance,
             'trainer': sport_dep,
-            'minimum_medical_group': MedicalGroups.NO_CHECKUP
+            'minimum_medical_group_id': MedicalGroups.NO_CHECKUP
         }
         Group.objects.create(name=settings.SC_TRAINERS_GROUP_NAME_FREE, capacity=9999, **kwargs)
         Group.objects.create(name=settings.SC_TRAINERS_GROUP_NAME_PAID, capacity=9999, **kwargs)

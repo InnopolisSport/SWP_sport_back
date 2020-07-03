@@ -1,6 +1,7 @@
 from .attendance import *
 from .enroll import *
 from .group import *
+from .medical_group import *
 from .schedule import *
 from .semester import *
 from .sport import *

@@ -90,7 +90,7 @@ def test_get_sport_schedule(
         capacity=30,
         sport=sport,
         semester=sem,
-        minimum_medical_group=MedicalGroups.SPECIAL1,
+        minimum_medical_group_id=MedicalGroups.SPECIAL1,
     )
 
     group2 = group_factory(
@@ -98,7 +98,7 @@ def test_get_sport_schedule(
         capacity=30,
         sport=sport,
         semester=sem,
-        minimum_medical_group=MedicalGroups.NO_CHECKUP,
+        minimum_medical_group_id=MedicalGroups.NO_CHECKUP,
     )
 
     schedule_start = time(14, 0, 0)
@@ -154,7 +154,7 @@ def test_get_sport_schedule(
             'training_class': None
         }
     ])
-    student.medical_group = MedicalGroups.General
+    student.medical_group_id = MedicalGroups.General
     student.save()
     enroll_student_to_primary_group(group2, student)
     assertMembers(get_sport_schedule(sport.pk, student), [
