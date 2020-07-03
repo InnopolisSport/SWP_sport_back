@@ -18,7 +18,7 @@ class Attendance(models.Model):
         verbose_name_plural = "attendance"
         constraints = [
             models.UniqueConstraint(fields=["training", "student"], name="unique_attendance"),
-            models.CheckConstraint(check=Q(hours__gt=0), name='positive_hours')
+            models.CheckConstraint(check=Q(hours__gte=0), name='positive_hours')
         ]
 
     def __str__(self):
