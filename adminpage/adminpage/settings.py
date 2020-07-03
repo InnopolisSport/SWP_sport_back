@@ -21,6 +21,7 @@ def getenv_boolean(var_name, default_value=False):
         result = env_value.upper() in ("TRUE", "1")
     return result
 
+DATE_FORMAT = "%Y-%m-%d"
 
 SPORT_DEPARTMENT_EMAIL = "sport@innopolis.university"
 STUDENT_AUTH_GROUP_VERBOSE_NAME = "Students"
@@ -39,6 +40,8 @@ TRAINING_EDITABLE_INTERVAL = timedelta(
     days=int(os.getenv("TRAINING_EDITABLE_INTERVAL", 14))
 )
 
+BACHELOR_STUDY_PERIOD_YEARS = 4
+
 BASE_URL = os.getenv("BASE_URL", "http://localhost:81/")
 PREFIX = ""
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -49,7 +52,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_boolean("DEBUG")
@@ -72,6 +74,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'rangefilter',
     'image_optimizer',
     'django_auth_adfs',
     'admin_auto_filters',
@@ -112,8 +115,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'adminpage.wsgi.application'
-
-
 
 # Authentication
 OAUTH_CLIENT_ID = os.getenv('oauth_appID')

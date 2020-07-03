@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from sport.models.enums import MedicalGroups, medical_groups_description
+from sport.utils import get_current_study_year
 
 
 class Student(models.Model):
@@ -21,6 +22,10 @@ class Student(models.Model):
     medical_group = models.IntegerField(
         choices=MedicalGroups.choices,
         default=MedicalGroups.NO_CHECKUP,
+    )
+
+    enrollment_year = models.PositiveSmallIntegerField(
+        default=get_current_study_year,
     )
 
     class Meta:

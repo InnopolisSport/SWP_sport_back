@@ -12,3 +12,4 @@ pillow==7.1.2
 uvicorn==0.11.5
 django-import-export==2.2.0
 django-image-optimizer==1.0.1
+django-admin-rangefilter==0.6.1
