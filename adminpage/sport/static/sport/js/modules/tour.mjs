@@ -17,7 +17,6 @@ $(function () {
     // First step
     tour.addStep(
         {
-            element: ".tour-step-1",
             orphan: true, // Center the popover
             title: "Hello!",
             content: "Welcome to the helpdesk.innopolis.university!<br />" +
@@ -75,10 +74,10 @@ $(function () {
 
     /* If there is no such element, the tour will skip the step */
     // If student can enroll
-    if (!$(".tour-step-2.disabled").length || document.URL.includes("/category/")) {
+    if (!$(".tour-step-choice-btn.disabled").length || document.URL.includes("/category/")) {
         tour.addSteps([
             {
-                element: ".tour-step-2",
+                element: ".tour-step-choice-btn",
                 placement: "bottom",
                 reflex: true, // Continue only on button click
                 reflexOnly: true,
@@ -87,7 +86,6 @@ $(function () {
                 path: "/profile/",
             },
             {
-                element: ".tour-step-3",
                 orphan: true,
                 title: "Sport Groups",
                 content: "You can select from three categories - <strong>student clubs</strong>, " +
@@ -95,7 +93,7 @@ $(function () {
                 path: "/category/"
             },
             {
-                element: ".tour-step-4-landscape",
+                element: "#tour-step-category-1-landscape",
                 placement: "right",
                 title: "Student Club",
                 content: "Here you can choose your favorite student club where you want to get hours.",
@@ -103,7 +101,7 @@ $(function () {
                 preventInteraction: true
             },
             {
-                element: ".tour-step-4-portrait",
+                element: "#tour-step-category-1-portrait",
                 placement: "bottom",
                 title: "Student Club",
                 content: "Here you can choose your favorite student club where you want to get hours.",
@@ -111,7 +109,7 @@ $(function () {
                 preventInteraction: true
             },
             {
-                element: ".tour-step-5-landscape",
+                element: "#tour-step-category-2-landscape",
                 placement: "left",
                 title: "IU Trainer",
                 content: "Point here if you want to get hours for sports classes that the university offers you.",
@@ -119,7 +117,7 @@ $(function () {
                 preventInteraction: true
             },
             {
-                element: ".tour-step-5-portrait",
+                element: "#tour-step-category-2-portrait",
                 placement: "top",
                 title: "IU Trainer",
                 content: "Point here if you want to get hours for sports classes that university offers you.",
@@ -127,7 +125,7 @@ $(function () {
                 preventInteraction: true
             },
             {
-                element: ".tour-step-6-landscape",
+                element: "#tour-step-category-3-landscape",
                 placement: "left",
                 title: "SC Trainer",
                 content: "Select this if you exercise with sport complex trainers and want to get hours.",
@@ -135,7 +133,7 @@ $(function () {
                 preventInteraction: true
             },
             {
-                element: ".tour-step-6-portrait",
+                element: "#tour-step-category-3-portrait",
                 placement: "top",
                 title: "SC Trainer",
                 content: "Select this if you exercise with sport complex trainers and want to get hours.",
@@ -168,7 +166,7 @@ $(function () {
         // If student cannot enroll
         tour.addStep(
             {
-                element: ".tour-step-2",
+                element: ".tour-step-choice-btn",
                 placement: "bottom",
                 title: "Sport Groups",
                 content: "Here you can choose your sports group.<br />Unfortunately, you have chosen the maximum number of groups. " +
@@ -181,7 +179,7 @@ $(function () {
     // Ill button
     tour.addStep(
         {
-            element: ".tour-step-7",
+            element: ".tour-step-ill-btn",
             placement: "bottom",
             title: "Illness",
             content: "If you are ill, press this to inform your trainers.<br />" +
@@ -197,7 +195,7 @@ $(function () {
     if (document.getElementById("student-span") && document.getElementById("trainer-span")) {
         tour.addStep(
             {
-                element: ".tour-step-8",
+                element: "#calendar",
                 placement: "auto",
                 title: "Calendar",
                 content: "It is your schedule. You can find all your sports classes there.<br />" +
@@ -217,7 +215,7 @@ $(function () {
         if (document.getElementById("trainer-span")) {
             tour.addStep(
                 {
-                    element: ".tour-step-8",
+                    element: "#calendar",
                     placement: "auto",
                     title: "Calendar",
                     content: "It is your schedule. You can find all your sports classes there.<br />" +
@@ -234,7 +232,7 @@ $(function () {
             if (document.getElementById("student-span")) {
                 tour.addStep(
                     {
-                        element: ".tour-step-8",
+                        element: "#calendar",
                         placement: "auto",
                         title: "Calendar",
                         content: "It is your schedule. You can find all your sports classes there.<br />" +
@@ -290,7 +288,6 @@ $(function () {
     // Last step
     tour.addStep(
         {
-            element: ".tour-step-1",
             orphan: true,
             title: "Thank You!",
             content: "Thank you for your patience! Now you know how to use this site!",
@@ -303,7 +300,7 @@ $(function () {
     if (document.URL.includes("/profile/") && localStorage.getItem("main-tour_choosing_process") === "true") {
         localStorage.removeItem("main-tour_choosing_process");
 
-        if ($('.tour-step-2').text().includes('No group choices left')) {
+        if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
             tour.restart(6);
         } else {
             tour.restart(14);

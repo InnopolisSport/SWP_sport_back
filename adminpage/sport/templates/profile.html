@@ -38,7 +38,7 @@
     <div class="container-fluid">
         <div class="card text-center">
             <div class="card-body">
-                <h1 class="card-title tour-step-1">{{ user.get_full_name }}</h1>
+                <h1 class="card-title">{{ user.get_full_name }}</h1>
                 {#            <h4 class="card-title">{{ user.role }}</h4>#}
                 {% if trainer.sport_groups %}
                     {% if trainer.sport_groups|length > 0 %}
@@ -141,12 +141,12 @@
                         <div class="row justify-content-center">
                             <div class="col-md-6 col-sm-12 col-left mb-1">
                                 {% if student.is_ill %}
-                                    <button type="button" class="btn btn-dark tour-step-7" id="recovered-btn"
+                                    <button type="button" class="btn btn-dark tour-step-ill-btn" id="recovered-btn"
                                             onclick="toggle_ill(this)">Recovered
                                         &#x1F601
                                     </button>
                                 {% else %}
-                                    <button type="button" class="btn btn-dark tour-step-7" onclick="toggle_ill(this)">
+                                    <button type="button" class="btn btn-dark tour-step-ill-btn" onclick="toggle_ill(this)">
                                         Got sick
                                         &#x1F912
                                     </button>
@@ -154,19 +154,19 @@
                             </div>
                             <div class="col-md-6 col-sm-12 col-right mb-1">
                                 {% if common.enroll_open %}
-                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-2">
+                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
                                         Choose primary sport group
                                     </a>
                                 {% elif student.sport_groups|length < 2 %}
-                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-2">
+                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
                                         {{ student.secondary_group_left }} secondary choices left
                                     </a>
                                 {% elif 2 == student.sport_groups|length %}
-                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-2">
+                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
                                         1 secondary choice left
                                     </a>
                                 {% else %}
-                                    <a href="{% url 'category' %}" class="btn btn-primary disabled tour-step-2">
+                                    <a href="{% url 'category' %}" class="btn btn-primary disabled tour-step-choice-btn">
                                         No group choices left
                                     </a>
                                 {% endif %}
@@ -189,7 +189,7 @@
                 {% endif %}
 
                 {% if student.sport_groups|length > 0 or trainer.sport_groups %}
-                    <div class="tour-step-8" id='calendar'></div>
+                    <div id='calendar'></div>
                 {% endif %}
             </div>
         </div>

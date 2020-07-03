@@ -26,13 +26,13 @@
 {% endblock %}
 
 {% block content %}
-    <div class="card text-center tour-step-3">
+    <div class="card text-center">
 
         <div class="card-body">
             <div class="container-fluid">
                 <!-- 3 columns for landscape -->
                 <div class="row landscape">
-                    <div class="col-4 tour-step-4-landscape">
+                    <div class="col-4" id="tour-step-category-1-landscape">
                         <h1>Student Club</h1>
                         <div class="dropdown">
                             <a> <img class="crop" src="{% static "sport/images/categories/club.png" %}"
@@ -53,7 +53,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-4 tour-step-5-landscape">
+                    <div class="col-4" id="tour-step-category-2-landscape">
                         <h1>IU Trainer</h1>
                         <div class="dropdown">
                             <a> <img class="crop dropdown-image"
@@ -70,7 +70,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-4 tour-step-6-landscape">
+                    <div class="col-4" id="tour-step-category-3-landscape">
                         <h1>SC Trainer</h1>
                         <div class="dropdown">
                             <img class="crop"
@@ -86,7 +86,7 @@
                 </div>
                 <!-- 1 column for landscape -->
                 <div class="col portrait">
-                    <div class="col tour-step-4-portrait">
+                    <div class="col" id="tour-step-category-1-portrait">
                         <h1>Student Club</h1>
                         <div class="dropdown">
                             <a> <img class="crop" src="{% static "sport/images/categories/club.png" %}"
@@ -107,7 +107,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col tour-step-5-portrait">
+                    <div class="col" id="tour-step-category-2-portrait">
                         <h1>IU Trainer</h1>
                         <div class="dropdown">
                             <a> <img class="crop dropdown-image"
@@ -124,7 +124,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col tour-step-6-portrait">
+                    <div class="col" id="tour-step-category-3-portrait">
                         <h1>SC Trainer</h1>
                         <div class="dropdown">
                             <img class="crop"
@@ -140,135 +140,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 3 columns for landscape -->
-        {% comment %}<div class="card-body landscape">
-            <div class="grid-container">
-
-                <div class="grid-item tour-step-4-landscape">
-                    <h1>Student Club</h1>
-                </div>
-                <div class="grid-item">
-                    <h1>IU Trainer</h1>
-                </div>
-                <div class="grid-item">
-                    <h1>SC Trainer</h1>
-                </div>
-
-
-                <div class="grid-item tour-step-4-landscape">
-                    <div class="dropdown">
-                        <a> <img class="crop" src="{% static "sport/images/categories/club.png" %}"
-                                 alt="Trainings in clubs"></a>
-                        <div class="dropdown-content club-dropdown">
-                            {% if clubs %}
-                                {% for club in clubs %}
-                                    <a id="club-{{ club.id }}"
-                                       href="#"
-                                       onclick="openGroupInfoModal({{ club.id }})">{{ club.name }}
-                                        (<span>{{ club.available_places }}</span>/{{ club.capacity }}
-                                        free)</a>
-                                {% endfor %}
-                            {% else %}
-                                <!-- If change this, don't forget to change the same string in category.js -->
-                                <a>No clubs are available</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="grid-item tour-step-5-landscape">
-                    <div class="dropdown">
-                        <a> <img class="crop dropdown-image" src="{% static "sport/images/categories/iu_trainer.png" %}"
-                                 alt="Trainings with IU trainer"></a>
-                        <div class="dropdown-content">
-                            {% if sports %}
-                                {% for sport in sports %}
-                                    <a href="{% url "sport_schedule_calendar" sport.id %}">{{ sport.name }}</a>
-                                {% endfor %}
-                            {% else %}
-                                <a>No sports are available</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="grid-item tour-step-6-landscape">
-                    <div class="dropdown">
-                        <img class="crop"
-                             src="{% static "sport/images/categories/sc_trainer.png" %}"
-                             alt="Trainings with SC trainer">
-                        <div class="dropdown-content">
-                            {% for group in sc_training_groups %}
-                                <a href="#" onclick="openGroupInfoModal({{ group.id }})">{{ group.name }}</a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <!-- 1 column for landscape -->
-        <div class="card-body portrait">
-            <div class="grid-container">
-
-                <div class="grid-item">
-                    <h1>Student Club</h1>
-                </div>
-                <div class="grid-item tour-step-4-portrait">
-                    <div class="dropdown">
-                        <a> <img class="crop" src="{% static "sport/images/categories/club.png" %}"
-                                 alt="Trainings in clubs"></a>
-                        <div class="dropdown-content club-dropdown">
-                            {% if clubs %}
-                                {% for club in clubs %}
-                                    <a id="club-{{ club.id }}"
-                                       href="#"
-                                       onclick="openGroupInfoModal({{ club.id }})">{{ club.name }}
-                                        (<span>{{ club.available_places }}</span>/{{ club.capacity }}
-                                        free)</a>
-                                {% endfor %}
-                            {% else %}
-                                <!-- If change this, don't forget to change the same string in category.js -->
-                                <a>No clubs are available</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <h1>IU Trainer</h1>
-                </div>
-                <div class="grid-item tour-step-5-portrait">
-                    <div class="dropdown">
-                        <a> <img class="crop dropdown-image" src="{% static "sport/images/categories/iu_trainer.png" %}"
-                                 alt="Trainings with IU trainer"></a>
-                        <div class="dropdown-content">
-                            {% if sports %}
-                                {% for sport in sports %}
-                                    <a href="{% url "sport_schedule_calendar" sport.id %}">{{ sport.name }}</a>
-                                {% endfor %}
-                            {% else %}
-                                <a>No sports are available</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <h1>SC Trainer</h1>
-                </div>
-                <div class="grid-item tour-step-6-portrait">
-                    <div class="dropdown">
-                        <img class="crop"
-                             src="{% static "sport/images/categories/sc_trainer.png" %}"
-                             alt="Trainings with SC trainer">
-                        <div class="dropdown-content">
-                            {% for group in sc_training_groups %}
-                                <a href="#" onclick="openGroupInfoModal({{ group.id }})">{{ group.name }}</a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>{% endcomment %}
     </div>
     <div id="group-info-modal"></div>
 {% endblock %}
