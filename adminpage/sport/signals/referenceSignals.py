@@ -9,7 +9,7 @@ from sport.models import Reference, Training, Attendance, Group
 
 @receiver(post_save, sender=Reference)
 def update_hours_for_reference(sender, instance: Reference, created, **kwargs):
-    if created and instance.hours == 0:
+    if created:
         return
 
     # get_or_create returns (object: Model, created: bool)
@@ -21,9 +21,6 @@ def update_hours_for_reference(sender, instance: Reference, created, **kwargs):
                                                          end=datetime.combine(upload_date, time(20, 0, 0), tzinfo=tz)
                                                          )
 
-    if instance.hours == 0:
-        Attendance.objects.filter(training=medical_training, student=instance.student).delete()
-    else:
-        attendance, _ = Attendance.objects.get_or_create(training=medical_training, student=instance.student)
-        attendance.hours = instance.hours
-        attendance.save()
+    attendance, _ = Attendance.objects.update_or_create(training=medical_training, student=instance.student, defaults={
+        "hours": instance.hours
+    })
