@@ -37,7 +37,8 @@ def get_detailed_hours(student: Student, semester: Semester):
                        'WHERE a.student_id = %s '
                        'AND a.training_id = t.id '
                        'AND t.group_id = g.id '
-                       'AND g.semester_id = %s', (student.pk, semester.pk))
+                       'AND g.semester_id = %s '
+                       'ORDER BY t.start', (student.pk, semester.pk))
         return dictfetchall(cursor)
 
 
