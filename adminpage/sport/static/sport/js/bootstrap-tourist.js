@@ -464,6 +464,14 @@
         };
 
         Tour.prototype.end = function () {
+            // Allow to override onEnd() function not to only finish the tour
+            // Setting tour-name_force_end = true in localStorage is required to end tour in onNext()
+            if (!localStorage.getItem(this._options.name + "_force_end") && this._options.steps[this.getCurrentStepIndex()].onEnd != null) {
+                // localStorage.removeItem(this._options.name + "_force_end");
+                return this._options.steps[this.getCurrentStepIndex()].onEnd(this);
+            }
+            localStorage.removeItem(this._options.name + "_force_end");
+
             this._debug("Tour.end() called");
 
             var endHelper,
@@ -495,8 +503,14 @@
             return this._getState('end') == 'yes';
         };
 
-        Tour.prototype.restart = function () {
-            this._removeState('current_step');
+        Tour.prototype.restart = function (value) {
+            // Allow to restart the tour from nonzero step
+            if (value != null) {
+                this.setCurrentStep(value);
+            } else {
+                this._removeState('current_step');
+            }
+
             this._removeState('end');
             this._removeState('redirect_to');
             return this.start();
@@ -1114,6 +1128,34 @@
             // current step index as a class. Therefore all preceeding funcs can check if they are being called because of a
             // scroll event (popover class using current step index exists), or because of a step change (class doesn't exist).
             this._showPopover(step, i);
+
+            // Allow to set button texts per tour step
+            // Firstly check if buttonTexts is specified for the step.
+            // Then set correspondent attribute for button if button text is present
+            if (this._options.steps[i].localization &&
+                !(JSON.stringify(this._options.steps[i].localization) === JSON.stringify(this._options.localization))) {
+                const btnTexts = this._options.steps[i].localization.buttonTexts;
+                // Prev button
+                if (btnTexts.prevButton) {
+                    $("button[data-role='prev']").text("« " + btnTexts.prevButton);
+                }
+                // Next button
+                if (btnTexts.nextButton) {
+                    $("button[data-role='next']").text(btnTexts.nextButton + " »");
+                }
+                // Pause-resume button
+                // It has two data attributes as well as the text
+                if (btnTexts.pauseButton && btnTexts.resumeButton) {
+                    const pause_resume_btn = $("button[data-role='pause-resume']");
+                    pause_resume_btn.attr("data-pause-text", btnTexts.pauseButton);
+                    pause_resume_btn.attr("data-resume-text", btnTexts.resumeButton);
+                    pause_resume_btn.text(btnTexts.pauseButton);
+                }
+                // End tour button
+                if (btnTexts.endTourButton) {
+                    $("button[data-role='end']").text(btnTexts.endTourButton);
+                }
+            }
 
             if (step.onShown != null) {
                 step.onShown(this);

@@ -4,7 +4,13 @@ const tour = new Tour({
     showProgressBar: false,
     showProgressText: false,
     backdrop: true,
-    debug: true
+    debug: true,
+    localization: {
+        buttonTexts: {
+            prevButton: "Back",
+            endTourButton: "Finish"
+        }
+    }
 });
 
 $(function () {
@@ -94,6 +100,7 @@ $(function () {
                     $(step.element)[0].className =
                         $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
                 }
+                /* TODO: change onShown and onHidden on preventInteraction: true */
             },
             {
                 element: ".tour-step-4-portrait",
@@ -174,6 +181,27 @@ $(function () {
                     $(step.element)[0].className =
                         $(step.element)[0].className.replace(/\bdisabled-object\b/g, ""); // Cross-browser solution for removing a class
                 }
+            },
+            {
+                orphan: true,
+                title: "Sport Groups",
+                content: "Now it's time to choose your sports groups for the next semester!<br />" +
+                    "<strong>Hover the desired category to choose the group.</strong>",
+                path: "/category/",
+                localization: {
+                    buttonTexts: {
+                        nextButton: "Select",
+                        endTourButton: "Skip"
+                    }
+                },
+                onNext: function (tour) {
+                    localStorage.setItem("main-tour_choosing_process", "true");
+                    localStorage.setItem("main-tour_force_end", "true");
+                    tour.end();
+                },
+                onEnd: function (tour) {
+                    tour.goTo(tour.getCurrentStepIndex() + 1);
+                }
             }
         ]);
     } else {
@@ -200,23 +228,6 @@ $(function () {
                 "Do not forget to change the status back when you recover.<br />" +
                 "Additionally, you can submit a reference to get hours.",
             path: "/profile/",
-            onPrev: function (tour) {
-                /* If student can enroll */
-                if (!$(".tour-step-2.disabled").length) {
-                    // Based on the width go to the landscape or portrait
-                    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-                    if (width > 800) {
-                        // Jump to landscape
-                        tour.goTo(tour.getCurrentStepIndex() - 2);
-                        return false;
-                    } else {
-                        // Jump to portrait
-                        return true;
-                    }
-                } else {
-                    return true;
-                }
-            },
             onShown: function (tour) {
                 const step = tour.getStep(tour._current);
                 $(step.element).addClass("disabled-object");
@@ -333,7 +344,20 @@ $(function () {
             path: "/profile/"
         }
     );
-    tour.start();
+
+    // On jump to the /profile check if the student was in choosing process
+    // If so, depending on their number of groups, jump to the corresponding tour step
+    if (document.URL.includes("/profile/") && localStorage.getItem("main-tour_choosing_process") === "true") {
+        localStorage.removeItem("main-tour_choosing_process");
+
+        if ($('.tour-step-2').text().includes('No group choices left')) {
+            tour.restart(7);
+        } else {
+            tour.restart(14);
+        }
+    } else {
+        tour.start();
+    }
 });
 
 function start_tour() {

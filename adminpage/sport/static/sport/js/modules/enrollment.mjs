@@ -5,7 +5,10 @@ async function  enroll(group_id, action, errorHandler=function(group_id){}) {
             /* If tour is in process and student unenrolls, having max number of groups,
             * the page reloads together with the tour, thus updating the steps, so the step update is required */
             if (!tour.ended() && $('.tour-step-2').text().includes('No group choices left')) {
-                tour.setCurrentStep(13);
+                // Calendar step
+                if (tour.getCurrentStepIndex() === 7) {
+                    tour.setCurrentStep(15);
+                }
             }
         })
         .catch(function (error) {
