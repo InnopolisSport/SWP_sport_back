@@ -50,7 +50,7 @@ $(function () {
             element: "#medical-group",
             placement: "bottom",
             title: "Medical Group",
-            content: "Your medical group can be seen here (If you passed medical check up). " +
+            content: "Your medical group can be seen here (If you passed medical check up).<br />" +
                 "You can hover the ellipse to check out the description.",
             path: "/profile"
         },
@@ -59,8 +59,17 @@ $(function () {
             placement: "bottom",
             title: "Attendance",
             content: "You can see all your graded activities in the current semester here. " +
-                "As soon as the trainer marks your attendance, you will see it.",
-            path: "/profile"
+                "As soon as the trainer marks your attendance, you will see it.<br />" +
+                "Click it to check out the detailed information.",
+            path: "/profile",
+            // jQuery - attribute starts with selector [name^='value']
+            // If modal is open and user clicks on prev or next, modal is closed
+            onPrev: function (tour) {
+                $("[id^='hours-modal']").modal('hide');
+            },
+            onNext: function (tour) {
+                $("[id^='hours-modal']").modal('hide');
+            }
         }
     ]);
 
@@ -295,7 +304,7 @@ $(function () {
         localStorage.removeItem("main-tour_choosing_process");
 
         if ($('.tour-step-2').text().includes('No group choices left')) {
-            tour.restart(7);
+            tour.restart(6);
         } else {
             tour.restart(14);
         }
