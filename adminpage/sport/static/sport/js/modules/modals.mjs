@@ -68,22 +68,26 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
     const {data, title, body, footer} = await openModal('#group-info-modal', apiUrl)
     const {group_id, group_name, is_enrolled, capacity, current_load, is_primary, schedule} = data;
 
+    let disabled_attr;
+
     if (is_enrolled) {
+        disabled_attr =  is_primary ? 'disabled' : '';
         footer.html(`
             <div class="container">
                 <div class="row justify-content-between">
                     <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
-                    <div><button type="button" class="btn btn-danger ${is_primary ? 'disabled' : ''}">Unenroll</button></div>
+                    <div><button type="button" class="btn btn-danger ${disabled_attr}" ${disabled_attr}>Unenroll</button></div>
                 </div>
             </div>
         `);
         footer.find('.btn-danger').click(() => enroll(group_id, 'unenroll'));
     } else {
+        disabled_attr = current_load >= capacity ? 'disabled' : ''
         footer.html(`
             <div class="container">
                 <div class="row justify-content-between">
                     <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
-                    <div><button type="button" class="btn btn-success ${current_load >= capacity ? 'disabled' : ''}">Enroll</button></div>
+                    <div><button type="button" class="btn btn-success ${disabled_attr}" ${disabled_attr}>Enroll</button></div>
                 </div>
             </div>
         `);
