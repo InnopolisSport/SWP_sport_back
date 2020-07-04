@@ -327,9 +327,10 @@ async function submit_reference() {
     const fileInput = $('#reference-file-input')[0]
     const file = fileInput.files[0]
 
-    toastr.options = {
-        positionClass: 'toast-top-center'
-    };
+    if (!file){
+        toastr.error("You can't submit a reference without attaching a file");
+        return;
+    }
 
     if (file.size > 10_000_000) {
         toastr.error('Image file size too big, expected size <= 10 MB');
