@@ -50,6 +50,19 @@ function open_recovered_modal() {
     $('#recovered-modal').modal('show');
 }
 
+async function openMedicalInfoModal(groupName, groupDescription) {
+    const {data, title, body, footer} = await openModal("#medical-group-info-modal", null);
+    title.text(`Medical group info - ${groupName}`);
+    body.append(`${groupDescription}`)
+    footer.html(`
+            <div class="container">
+                <div class="row justify-content-between">
+                    <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+                </div>
+            </div>
+        `);
+}
+
 /*
     Calendar
 */
@@ -361,6 +374,7 @@ async function submit_reference() {
 
 $(function () {
     prepareModal('#group-info-modal');
+    prepareModal('#medical-group-info-modal');
     $("#student_emails")
         .autocomplete({
             source: "/api/attendance/suggest_student",
