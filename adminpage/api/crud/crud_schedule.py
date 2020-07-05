@@ -32,11 +32,11 @@ def get_sport_schedule(
                        'AND g.semester_id = current_semester() '
                        'AND s.group_id = g.id '
                        'AND sp.id = %s '
-                       'AND %s >= g.minimum_medical_group  '
+                       'AND %s >= g.minimum_medical_group_id  '
                        'GROUP BY g.id, s.id, tc.id',
                        (
                            sport_id,
-                           100 if student is None else student.medical_group
+                           100 if student is None else student.medical_group_id
                        )
                        )
         return dictfetchall(cursor)

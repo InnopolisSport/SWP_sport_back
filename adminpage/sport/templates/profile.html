@@ -69,11 +69,20 @@
                         </p>
                     {% endif %}
 
-                    <p>Your medical group is <span class="badge badge-pill
-                    badge-{% if student.medical_group < 0 %}danger{% elif student.medical_group == 0 %}warning{% else %}success{% endif %}"
-                    data-toggle="tooltip" data-placement="bottom" title="{{ student.obj.medical_group_description}}">
-                        {{ student.obj.get_medical_group_display }}
-                    </span> </p>
+                    <p>Your medical group is <span
+                            class="badge badge-pill badge-{% if student.medical_group_id < 0 %}danger{% elif student.medical_group_id == 0 %}warning{% else %}success{% endif %}"
+{#                            data-toggle="tooltip"#}
+{#                            data-placement="bottom"#}
+{#                            title="{{ student.obj.medical_group_description }}"#}
+                            onclick="openMedicalInfoModal(
+                                    `{{ student.obj.medical_group_name }}`,
+                                    `{{ student.obj.medical_group_description }}`
+                                    )"
+                    >
+                        {{ student.obj.medical_group_name }}
+                    </span></p>
+
+                    <div id="medical-group-info-modal"></div>
 
                     {% if student.semesters|length > 0 %}
                         <div class="container">

@@ -30,10 +30,15 @@ async function openModal(id, apiUrl) {
     body.append($('<div class="spinner-border" role="status"></div>'));
     title.text('Loading...');
     modal.modal('show');
-    const response = await fetch(apiUrl, {
-        method: 'GET'
-    });
-    const data = await response.json();
+    let data;
+    if (apiUrl) {
+        const response = await fetch(apiUrl, {
+            method: 'GET'
+        });
+        data = await response.json();
+    }else{
+        data = null;
+    }
     body.empty();
     return {data, title, body, footer};
 }
@@ -60,8 +65,8 @@ function renderGroupModalBody(body, data) {
     }
 }
 
-function formatTime(time){
-    return time.substring(0, time.length-3);
+function formatTime(time) {
+    return time.substring(0, time.length - 3);
 }
 
 async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {

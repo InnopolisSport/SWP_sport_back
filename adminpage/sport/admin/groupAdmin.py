@@ -29,6 +29,7 @@ class GroupAdmin(admin.ModelAdmin):
         ("semester", admin.RelatedOnlyFieldListFilter),
         ("is_club", custom_titled_filter("club status")),
         TrainerTextFilter,
+        "minimum_medical_group",
         ("sport", admin.RelatedOnlyFieldListFilter),
     )
 
@@ -37,6 +38,7 @@ class GroupAdmin(admin.ModelAdmin):
         "sport",
         "is_club",
         "trainer",
+        "minimum_medical_group",
     )
 
     inlines = (
@@ -49,6 +51,7 @@ class GroupAdmin(admin.ModelAdmin):
         "semester",
         "sport",
         "trainer__user",
+        "minimum_medical_group",
     )
 
     # Dirty hack, filter autocomplete groups in "add extra form"

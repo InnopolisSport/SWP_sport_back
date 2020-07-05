@@ -51,7 +51,7 @@ def logged_in_student_general_med(student_factory) -> Tuple[APIClient, User]:
         username=username,
         password=password,
     )
-    student_user.student.medical_group = MedicalGroups.General
+    student_user.student.medical_group_id = MedicalGroups.General
     student_user.save()
     client = APIClient()
     client.login(
@@ -220,10 +220,10 @@ def test_enroll_insufficient_medical(setup_group: Group, logged_in_student_gener
     freezer.move_to(just_before_deadline)
     client, student_user = logged_in_student_general_med
 
-    student_user.student.medical_group = MedicalGroups.SPECIAL2
+    student_user.student.medical_group_id = MedicalGroups.SPECIAL2
     student_user.save()
 
-    setup_group.minimum_medical_group = MedicalGroups.SPECIAL1
+    setup_group.minimum_medical_group_id = MedicalGroups.SPECIAL1
     setup_group.save()
 
     response = client.post(
