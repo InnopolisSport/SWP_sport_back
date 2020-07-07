@@ -53,7 +53,8 @@ class TrainingFormWithCSV(forms.ModelForm):
                 hours[row[0]] = round(float(row[1]), 2)
                 assert 0 <= hours[row[0]] < 1000
             except:
-                raise forms.ValidationError(f"Got invalid hours value \"{row[1]}\" for email {row[0]}, expected value in range [0,999.99]")
+                raise forms.ValidationError(
+                    f"Got invalid hours value \"{row[1]}\" for email {row[0]}, expected value in range [0,999.99]")
         students = Student.objects.select_related('user').filter(user__email__in=emails)
         if len(students) != len(emails):
             missing = set(emails) - set(map(lambda student: student.user.email, students))
@@ -120,11 +121,6 @@ class TrainingAdmin(admin.ModelAdmin):
         "training_class",
     )
 
-    inlines = (
-        ViewAttendanceInline,
-        AddAttendanceInline,
-    )
-
     fields = (
         "group",
         "schedule",
@@ -155,10 +151,15 @@ class TrainingAdmin(admin.ModelAdmin):
             kwargs['form'] = ChangeTrainingForm
         return super().get_form(request, obj, change, **kwargs)
 
-    def get_formsets_with_inlines(self, request, obj=None):
-        """Skip inlines for custom form"""
+    def get_inlines(self, request, obj):
         if obj is not None or 'extra' not in request.GET:
-            yield from super().get_formsets_with_inlines(request, obj)
+            return (
+                ViewAttendanceInline,
+                AddAttendanceInline,
+            )
+        return (
+            AddAttendanceInline,
+        )
 
     def get_changeform_initial_data(self, request):
         """Custom form default values"""
