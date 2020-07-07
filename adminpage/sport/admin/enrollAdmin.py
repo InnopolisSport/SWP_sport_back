@@ -43,7 +43,7 @@ def export_primary_as_xlsx(modeladmin, request, queryset):
             for scheduled_training in group.schedule.all():
                 schedule[scheduled_training.weekday] += f"{scheduled_training.start}-{scheduled_training.end}\n\n"
 
-        student_fullname = str(enrollment.student)
+        student_fullname = enrollment.student.user.get_full_name()
         student_email = enrollment.student.user.email
         data = [group.name, student_fullname, student_email, *schedule]
 
@@ -94,6 +94,12 @@ class EnrollAdmin(admin.ModelAdmin):
         'group',
         'is_primary',
     )
+
+    list_select_related = (
+        "student",
+        "student__user",
+    )
+
     actions = (
         export_primary_as_xlsx,
     )
