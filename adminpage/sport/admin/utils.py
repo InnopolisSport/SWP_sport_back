@@ -2,6 +2,7 @@ import operator
 from typing import List, Dict, Tuple
 
 from django.contrib import admin
+from django.db.models.expressions import F
 from django.utils.translation import gettext_lazy as _
 
 
@@ -128,3 +129,24 @@ def cache_alternative_filter(cls, cache_keys: List[str]):
             return self.no_output
 
     return CacheRelatedFieldListFilter
+
+
+def has_free_places_filter():
+    class Wrapper(admin.SimpleListFilter):
+        title = 'free places'
+        parameter_name = 'has_free_places'
+
+        def lookups(self, request, model_admin):
+            return (
+                ('1', _('Has free places')),
+                ('0', _('Group is full')),
+            )
+
+        def queryset(self, request, queryset):
+            if self.value() == '1':
+                return queryset.filter(capacity__gt=F('enroll_count'))
+            if self.value() == '0':
+                return queryset.filter(capacity__lte=F('enroll_count'))
+            return queryset
+
+    return Wrapper
