@@ -45,13 +45,17 @@ class TrainingFormWithCSV(forms.ModelForm):
         data = file.read().decode('UTF-8')
         emails = []
         hours = {}
-        for row in csv.reader(io.StringIO(data)):
+        reader = csv.reader(io.StringIO(data))
+        header = next(reader)  # read header
+        if header != ["email", "hours"]:
+            raise forms.ValidationError(f'Missing header [email, hours], got: {header}')
+        for row in reader:
             if len(row) != 2:
                 raise forms.ValidationError(f"Expected 2 columns in each row, got {row}")
             emails.append(row[0])
             try:
                 hours[row[0]] = round(float(row[1]), 2)
-                assert 0 <= hours[row[0]] < 1000
+                assert 0 <= hours[row[0]] < 1000  # TODO: hardcoded constant
             except:
                 raise forms.ValidationError(f"Got invalid hours value \"{row[1]}\" for email {row[0]}, expected value in range [0,999.99]")
         students = Student.objects.select_related('user').filter(user__email__in=emails)
