@@ -1,6 +1,6 @@
-import csv
 import io
 from collections import OrderedDict
+from openpyxl import load_workbook
 
 from django.conf import settings
 from django.contrib import admin
@@ -33,27 +33,39 @@ class TrainingFormWithCSV(forms.ModelForm):
     )
     hours = forms.DecimalField(required=False, max_digits=5, decimal_places=2, min_value=0.01, max_value=999.99,
                                initial=1)
-    csv = forms.FileField(required=False, widget=forms.FileInput(attrs={'accept': '.csv'}))
+    xlsx = forms.FileField(required=False, widget=forms.FileInput(attrs={'accept': '.xlsx'}))
 
     def clean(self):
         cleaned_data = super().clean()
         attendances = []
         cleaned_data['attendances'] = attendances
-        file = cleaned_data.get("csv", None)
+        file = cleaned_data.get("xlsx", None)
         if file is None:
             return cleaned_data
-        data = file.read().decode('UTF-8')
+        data = file.read()
         emails = []
         hours = {}
-        for row in csv.reader(io.StringIO(data)):
+        ws = load_workbook(filename=io.BytesIO(data), read_only=True).active
+        for i, row in enumerate(ws):
+            if i == 0:
+                if len(row) != 2:
+                    raise forms.ValidationError(f"Expected 2 columns header, got {len(row)} columns")
+                header = [row[0].value, row[1].value]
+                if header != ["email", "hours"]:
+                    raise forms.ValidationError(f"Missing header ['email', 'hours'], got: {header}")
+                continue
+
             if len(row) != 2:
-                raise forms.ValidationError(f"Expected 2 columns in each row, got {row}")
-            emails.append(row[0])
+                raise forms.ValidationError(f"Expected 2 columns in each row, got {len(row)} columns in row {i + 1}")
+            email, student_hours = row[0].value, row[1].value
+            emails.append(email)
             try:
-                hours[row[0]] = round(float(row[1]), 2)
-                assert 0 <= hours[row[0]] < 1000
-            except:
-                raise forms.ValidationError(f"Got invalid hours value \"{row[1]}\" for email {row[0]}, expected value in range [0,999.99]")
+                hours[email] = round(float(student_hours), 2)
+                assert 0 <= hours[email] < 1000  # TODO: hardcoded constant
+            except AssertionError:
+                raise forms.ValidationError(
+                    f"Got invalid hours value \"{student_hours}\" for email {email}, expected value in range [0,999.99]"
+                )
         students = Student.objects.select_related('user').filter(user__email__in=emails)
         if len(students) != len(emails):
             missing = set(emails) - set(map(lambda student: student.user.email, students))
@@ -120,11 +132,6 @@ class TrainingAdmin(admin.ModelAdmin):
         "training_class",
     )
 
-    inlines = (
-        ViewAttendanceInline,
-        AddAttendanceInline,
-    )
-
     fields = (
         "group",
         "schedule",
@@ -155,10 +162,15 @@ class TrainingAdmin(admin.ModelAdmin):
             kwargs['form'] = ChangeTrainingForm
         return super().get_form(request, obj, change, **kwargs)
 
-    def get_formsets_with_inlines(self, request, obj=None):
-        """Skip inlines for custom form"""
+    def get_inlines(self, request, obj):
         if obj is not None or 'extra' not in request.GET:
-            yield from super().get_formsets_with_inlines(request, obj)
+            return (
+                ViewAttendanceInline,
+                AddAttendanceInline,
+            )
+        return (
+            AddAttendanceInline,
+        )
 
     def get_changeform_initial_data(self, request):
         """Custom form default values"""
@@ -178,8 +190,8 @@ class TrainingAdmin(admin.ModelAdmin):
             ('Add attended students with same hours', {
                 'fields': ('attended_students', 'hours',)
             }),
-            ('Upload a csv file with attendance records', {
-                'fields': ('csv',)
+            ('Upload a xlsx file with attendance records', {
+                'fields': ('xlsx',)
             }),
         )
 
@@ -197,9 +209,9 @@ class TrainingAdmin(admin.ModelAdmin):
             (student.pk, form.cleaned_data['hours'])
             for student in form.cleaned_data['attended_students']
         ]
-        csv_student_hours = [
+        xlsx_student_hours = [
             (student.pk, hours)
             for (student, hours) in form.cleaned_data['attendances']
         ]
-        mark_hours(training, OrderedDict(similar_student_hours + csv_student_hours).items())
+        mark_hours(training, OrderedDict(similar_student_hours + xlsx_student_hours).items())
         return training
