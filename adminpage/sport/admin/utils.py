@@ -150,3 +150,24 @@ def has_free_places_filter():
             return queryset
 
     return Wrapper
+
+
+def has_enrolled_filter():
+    class Wrapper(admin.SimpleListFilter):
+        title = 'primary group presense'
+        parameter_name = 'has_enrolled'
+
+        def lookups(self, request, model_admin):
+            return (
+                ('1', _('Has primary group')),
+                ('0', _('No primary group')),
+            )
+
+        def queryset(self, request, queryset):
+            if self.value() == '1':
+                return queryset.filter(has_enrolled=True)
+            if self.value() == '0':
+                return queryset.filter(has_enrolled=False)
+            return queryset
+
+    return Wrapper
