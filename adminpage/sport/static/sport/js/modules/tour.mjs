@@ -42,7 +42,7 @@ $(function () {
             element: "#student-list",
             placement: "bottom",
             title: "Sport Groups",
-            content: "It is the list of sports groups you joined.",
+            content: "You will see here the list of sports groups you joined.",
             path: "/profile/"
         },
         {
@@ -50,7 +50,7 @@ $(function () {
             placement: "bottom",
             title: "Medical Group",
             content: "Your medical group can be seen here (If you passed medical check up).<br />" +
-                "You can hover the ellipse to check out the description.",
+                "You can click on the ellipse to check out the description.",
             path: "/profile"
         },
         {

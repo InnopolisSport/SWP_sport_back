@@ -30,10 +30,15 @@ async function openModal(id, apiUrl) {
     body.append($('<div class="spinner-border" role="status"></div>'));
     title.text('Loading...');
     modal.modal('show');
-    const response = await fetch(apiUrl, {
-        method: 'GET'
-    });
-    const data = await response.json();
+    let data;
+    if (apiUrl) {
+        const response = await fetch(apiUrl, {
+            method: 'GET'
+        });
+        data = await response.json();
+    }else{
+        data = null;
+    }
     body.empty();
     return {data, title, body, footer};
 }
@@ -60,30 +65,34 @@ function renderGroupModalBody(body, data) {
     }
 }
 
-function formatTime(time){
-    return time.substring(0, time.length-3);
+function formatTime(time) {
+    return time.substring(0, time.length - 3);
 }
 
 async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
     const {data, title, body, footer} = await openModal('#group-info-modal', apiUrl)
     const {group_id, group_name, is_enrolled, capacity, current_load, is_primary, schedule} = data;
 
+    let disabled_attr;
+
     if (is_enrolled) {
+        disabled_attr =  is_primary ? 'disabled' : '';
         footer.html(`
             <div class="container">
                 <div class="row justify-content-between">
                     <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
-                    <div><button type="button" class="btn btn-danger ${is_primary ? 'disabled' : ''}">Unenroll</button></div>
+                    <div><button type="button" class="btn btn-danger ${disabled_attr}" ${disabled_attr}>Unenroll</button></div>
                 </div>
             </div>
         `);
         footer.find('.btn-danger').click(() => enroll(group_id, 'unenroll'));
     } else {
+        disabled_attr = current_load >= capacity ? 'disabled' : ''
         footer.html(`
             <div class="container">
                 <div class="row justify-content-between">
                     <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
-                    <div><button type="button" class="btn btn-success ${current_load >= capacity ? 'disabled' : ''}">Enroll</button></div>
+                    <div><button type="button" class="btn btn-success ${disabled_attr}" ${disabled_attr}>Enroll</button></div>
                 </div>
             </div>
         `);

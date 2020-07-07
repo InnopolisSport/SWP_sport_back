@@ -3,7 +3,7 @@ import unittest
 from datetime import date, time, datetime
 
 from api.crud import get_attended_training_info, enroll_student_to_secondary_group, get_group_info, \
-    get_trainings_for_student, get_trainings_for_trainer, get_trainings_in_time, get_students_grades
+    get_trainings_for_student, get_trainings_for_trainer, get_students_grades
 from sport.models import Training, Schedule
 
 assertMembers = unittest.TestCase().assertCountEqual
@@ -134,30 +134,6 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
     ])
 
     assert get_trainings_for_trainer(trainer=trainer, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)) == []
-
-    assert get_trainings_in_time(sport_id=0, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)) == []
-    assertMembers(get_trainings_in_time(sport_id=sport.pk, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)), [
-        {
-            "group_id": group.pk,
-            "group_name": group.name,
-            "current_load": 1,
-            "capacity": group.capacity,
-            "id": t2.pk,
-            "start": t2.start,
-            "end": t2.end,
-            "training_class": None
-        },
-        {
-            "group_id": group.pk,
-            "group_name": group.name,
-            "current_load": 1,
-            "capacity": group.capacity,
-            "id": t1.pk,
-            "start": t1.start,
-            "end": t1.end,
-            "training_class": training_class.name,
-        }
-    ])
 
     assert get_students_grades(t1.pk) == [{
         "student_id": student.pk,

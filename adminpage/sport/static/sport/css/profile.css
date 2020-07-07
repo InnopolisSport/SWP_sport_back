@@ -73,6 +73,11 @@ body.profile {
 }
 
 /* z-index needs to be more than 1113 to be shown above tour-backdrop */
+#medical-group-info-modal {
+    z-index: 2000;
+}
+
+/* z-index needs to be more than 1113 to be shown above tour-backdrop */
 #group-info-modal {
     z-index: 2000;
 }

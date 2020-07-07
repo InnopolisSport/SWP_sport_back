@@ -61,7 +61,7 @@ def enroll(request, **kwargs):
     )
     student = request.user.student
     current_semester = get_ongoing_semester()
-    if student.medical_group < group.minimum_medical_group:
+    if student.medical_group_id < group.minimum_medical_group_id:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*EnrollErrors.MEDICAL_DISALLOWANCE)
