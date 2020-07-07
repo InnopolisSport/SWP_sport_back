@@ -1,13 +1,13 @@
+from tempfile import NamedTemporaryFile
+
 from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin, messages
 from django.http import HttpResponse
 from openpyxl import Workbook
-from openpyxl.writer.excel import save_virtual_workbook
 
 from sport.models import Enroll, Group, Semester
-
-from .utils import custom_titled_filter, cache_filter, cache_dependent_filter, custom_order_filter
 from .site import site
+from .utils import custom_titled_filter, cache_filter, cache_dependent_filter, custom_order_filter
 
 
 class TrainerTextFilter(AutocompleteFilter):
@@ -48,9 +48,15 @@ def export_primary_as_xlsx(modeladmin, request, queryset):
         data = [group.name, student_fullname, student_email, *schedule]
 
         work_sheet.append(data)
+    with NamedTemporaryFile() as tmp:
+        work_book.save(tmp.name)
+        tmp.seek(0)
+        stream = tmp.read()
 
-    response = HttpResponse(save_virtual_workbook(work_book),
-                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response = HttpResponse(
+        stream,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
     response['Content-Disposition'] = f'attachment; filename=SportEnrollment_{semester_name}.xlsx'
 
     return response

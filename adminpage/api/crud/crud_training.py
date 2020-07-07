@@ -27,8 +27,8 @@ def get_attended_training_info(training_id: int, student: Student):
             'd.last_name AS trainer_last_name, '
             'd.email AS trainer_email, '
             'COALESCE(a.hours, 0) AS hours, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s) AS is_enrolled, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s AND is_primary = TRUE) AS is_primary '
+            'COALESCE(bool_or(e.student_id = %s), false) AS is_enrolled, '
+            'COALESCE(bool_or(e.student_id = %s AND is_primary = TRUE), false) AS is_primary '
             'FROM training tr '
             'LEFT JOIN training_class tc ON tr.training_class_id = tc.id, "group" g '
             'LEFT JOIN enroll e ON e.group_id = g.id '
@@ -59,10 +59,8 @@ def get_group_info(group_id: int, student: Student):
             'd.first_name AS trainer_first_name, '
             'd.last_name AS trainer_last_name, '
             'd.email AS trainer_email, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = %(group_id)s '
-            '   AND e.student_id = %(student_id)s) AS is_enrolled, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = %(group_id)s '
-            '   AND e.student_id = %(student_id)s AND is_primary = TRUE) AS is_primary '
+            'COALESCE(bool_or(e.student_id = %(student_id)s), false) AS is_enrolled, '
+            'COALESCE(bool_or(e.student_id = %(student_id)s AND is_primary = TRUE), false) AS is_primary '
             'FROM "group" g '
             'LEFT JOIN enroll e ON e.group_id = %(group_id)s '
             'LEFT JOIN auth_user d ON g.trainer_id = d.id '
@@ -122,50 +120,6 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
                        'AND t.group_id = g.id '
                        'AND g.trainer_id = %s '
                        'AND g.semester_id = current_semester()', (start, end, trainer.pk))
-        return dictfetchall(cursor)
-
-
-def get_trainings_in_time(
-        sport_id: int,
-        start: datetime,
-        end: datetime,
-        student: Optional[Student] = None,
-):
-    """
-    Retrieves existing trainings in the given range for given sport type
-    @param sport_id - searched sport id
-    @param start - range start date
-    @param end - range end date
-    @param student - student, acquiring trainings. Trainings will be based on medical group
-    @return list of trainings info
-    """
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT '
-                       'g.id AS group_id, '
-                       'g.name AS group_name, '
-                       'count(e.id) AS current_load, '
-                       'g.capacity AS capacity, '
-                       't.id AS id, '
-                       't.start AS start, '
-                       't."end" AS "end", '
-                       'tc.name AS training_class '
-                       'FROM sport sp, "group" g LEFT JOIN enroll e ON e.group_id = g.id, training t '
-                       'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE g.sport_id = sp.id '
-                       'AND g.semester_id = current_semester() '
-                       'AND t.group_id = g.id '
-                       'AND sp.id = %s '
-                       'AND t.start >= %s '
-                       'AND t.end <= %s '
-                       'AND %s >= g.minimum_medical_group  '
-                       'GROUP BY g.id, t.id, tc.id',
-                       (
-                           sport_id,
-                           start,
-                           end,
-                           100 if student is None else student.medical_group
-                       )
-                       )
         return dictfetchall(cursor)
 
 

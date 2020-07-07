@@ -1,5 +1,4 @@
 from django.db import models
-from .enums import MedicalGroups
 
 
 class Group(models.Model):
@@ -11,10 +10,7 @@ class Group(models.Model):
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, null=False)
     trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True)
 
-    minimum_medical_group = models.IntegerField(
-        choices=MedicalGroups.choices,
-        default=MedicalGroups.PREPARATIVE,
-    )
+    minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, default=-2)
 
     class Meta:
         db_table = "group"

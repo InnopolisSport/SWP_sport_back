@@ -20,13 +20,13 @@ def test_club_for_student(
         group_factory,
 ):
     student = student_factory("A").student
-    student.medical_group = MedicalGroups.NO_CHECKUP
+    student.medical_group_id = MedicalGroups.NO_CHECKUP
 
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
     group_factory(name="C1", sport=sport, semester=s1, capacity=20, is_club=True)
     c2 = group_factory(name="C2", sport=sport, semester=s1, capacity=20, is_club=True,
-                       minimum_medical_group=MedicalGroups.NO_CHECKUP,
+                       minimum_medical_group_id=MedicalGroups.NO_CHECKUP,
                        )
     clubs = get_clubs(student)
     assert clubs == [{
@@ -71,7 +71,7 @@ def test_sport_no_appropriate_group_in_sport(
         group_factory,
 ):
     student = student_factory("A").student
-    student.medical_group = MedicalGroups.NO_CHECKUP
+    student.medical_group_id = MedicalGroups.NO_CHECKUP
 
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))

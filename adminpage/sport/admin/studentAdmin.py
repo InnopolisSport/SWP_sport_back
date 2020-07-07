@@ -1,22 +1,27 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from django.db.models import ForeignKey
 from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 
-from sport.models import Student, enums
+from sport.models import Student, MedicalGroup
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .site import site
 from .utils import user__email
 
 
-class MedicalGroupWidget(widgets.NumberWidget):
-    def render(self, value, obj=None):
-        return enums.MedicalGroups.labels[int(value) + 2]
+class MedicalGroupWidget(widgets.ForeignKeyWidget):
+    def render(self, value: MedicalGroup, obj=None):
+        return str(value)
 
 
 class StudentResource(resources.ModelResource):
-    medical_group = fields.Field(column_name="medical_group", attribute="medical_group", widget=MedicalGroupWidget())
+    medical_group = fields.Field(
+        column_name="medical_group",
+        attribute="medical_group",
+        widget=MedicalGroupWidget(MedicalGroup, "pk"),
+    )
 
     def get_or_init_instance(self, instance_loader, row):
         student_group = get_or_create_student_group()
@@ -31,8 +36,9 @@ class StudentResource(resources.ModelResource):
         )
 
         student_model_fields = [
-            field.name
-            for field in Student._meta.fields
+            f.name
+            for f in Student._meta.fields
+            if not isinstance(f, ForeignKey)
         ]
 
         student_import_fields = row.keys() & student_model_fields
@@ -56,6 +62,7 @@ class StudentResource(resources.ModelResource):
             "user__email",
             "user__first_name",
             "user__last_name",
+            "enrollment_year",
         )
         export_order = (
             "user",
@@ -63,6 +70,7 @@ class StudentResource(resources.ModelResource):
             "user__first_name",
             "user__last_name",
             "medical_group",
+            "enrollment_year",
         )
         import_id_fields = ("user",)
 
@@ -83,6 +91,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     list_filter = (
         "is_ill",
+        "enrollment_year",
         "medical_group",
     )
 
@@ -105,4 +114,5 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     list_select_related = (
         "user",
+        "medical_group",
     )
