@@ -45,8 +45,8 @@ class TrainingFormWithCSV(forms.ModelForm):
         data = file.read()
         emails = []
         hours = {}
-        wc = load_workbook(filename=io.BytesIO(data), read_only=True).active
-        for i, row in enumerate(wc):
+        ws = load_workbook(filename=io.BytesIO(data), read_only=True).active
+        for i, row in enumerate(ws):
             if i == 0:
                 if len(row) != 2:
                     raise forms.ValidationError(f"Expected 2 columns header, got {len(row)} columns")
@@ -62,9 +62,10 @@ class TrainingFormWithCSV(forms.ModelForm):
             try:
                 hours[email] = round(float(student_hours), 2)
                 assert 0 <= hours[email] < 1000  # TODO: hardcoded constant
-            except:
+            except AssertionError:
                 raise forms.ValidationError(
-                    f"Got invalid hours value \"{student_hours}\" for email {email}, expected value in range [0,999.99]")
+                    f"Got invalid hours value \"{student_hours}\" for email {email}, expected value in range [0,999.99]"
+                )
         students = Student.objects.select_related('user').filter(user__email__in=emails)
         if len(students) != len(emails):
             missing = set(emails) - set(map(lambda student: student.user.email, students))
