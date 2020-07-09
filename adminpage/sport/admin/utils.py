@@ -143,6 +143,7 @@ def has_free_places_filter():
             )
 
         def queryset(self, request, queryset):
+            # enroll_count field was added using qs.annotate, see get_queryset() in groupAdmin
             if self.value() == '1':
                 return queryset.filter(capacity__gt=F('enroll_count'))
             if self.value() == '0':
@@ -164,6 +165,7 @@ def has_enrolled_filter():
             )
 
         def queryset(self, request, queryset):
+            # has_enrolled field was added using qs.annotate, see get_queryset() in studentAdmin
             if self.value() == '1':
                 return queryset.filter(has_enrolled=True)
             if self.value() == '0':
