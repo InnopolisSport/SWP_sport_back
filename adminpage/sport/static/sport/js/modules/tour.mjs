@@ -10,6 +10,24 @@ const tour = new Tour({
             prevButton: "Back",
             endTourButton: "Finish"
         }
+    },
+    onEnd: function (tour) {
+        // Variable for semester hours
+        // There are 3 states:
+        // 1) null => not passed, no need to show (e.g. at the very beginning)
+        // 2) false => not passed, need to show (e.g. there was no attendance during the tour walkthrough)
+        // 3) true => passed, no need to show (e.g. when this step was passed/seen)
+        if (localStorage.getItem("main-tour_student_hours") === null) {
+            localStorage.setItem("main-tour_student_hours", "false");
+        }
+
+        // Variable for calendar
+        // The same stages as for the semester hours (above)
+        // Do not set variable if the choosing process is going - end() was forced and tour is not finished yet
+        if (localStorage.getItem("main-tour_calendar") === null &&
+                !(localStorage.getItem("main-tour_choosing_process") === "true")) {
+            localStorage.setItem("main-tour_calendar", "false");
+        }
     }
 });
 
@@ -42,7 +60,7 @@ $(function () {
             element: "#student-list",
             placement: "bottom",
             title: "Sport Groups",
-            content: "It is the list of sports groups you joined.",
+            content: "You will see here the list of sports groups you joined.",
             path: "/profile/"
         },
         {
@@ -50,24 +68,45 @@ $(function () {
             placement: "bottom",
             title: "Medical Group",
             content: "Your medical group can be seen here (If you passed medical check up).<br />" +
-                "You can hover the ellipse to check out the description.",
+                "You can click on the ellipse to check out the description.",
             path: "/profile"
         },
         {
             element: "#semester-hours",
             placement: "bottom",
             title: "Attendance",
-            content: "You can see all your graded activities in the current semester here. " +
-                "As soon as the trainer marks your attendance, you will see it.<br />" +
+            content: "You can see all your graded activities in the current semester here.<br />" +
                 "Click it to check out the detailed information.",
             path: "/profile",
-            // jQuery - attribute starts with selector [name^='value']
-            // If modal is open and user clicks on prev or next, modal is closed
-            onPrev: function (tour) {
+            onShown: function (tour) {
+                // Show only this step in the tour (used in conjunction with restart(4) below)
+                if (localStorage.getItem("main-tour_student_hours") === "false") {
+                    // Hide prev and next buttons. Edit end button
+                    $("button[data-role='prev']").hide();
+                    $("button[data-role='next']").hide();
+                    $("button[data-role='end']").text("Ok");
+                }
+            },
+            onHide: function (tour) {
+                // If modal is open and user clicks on prev or next, or end, modal is closed
+                // jQuery - attribute starts with selector [name^='value']
                 $("[id^='hours-modal']").modal('hide');
             },
-            onNext: function (tour) {
-                $("[id^='hours-modal']").modal('hide');
+            onHidden: function (tour) {
+                // This step has been seen - mark it
+                localStorage.setItem("main-tour_student_hours", "true");
+            },
+            onEnd: function (tour) {
+                // If both attendance and calendar steps were skipped, after attendance go to calendar
+                if (localStorage.getItem("main-tour_calendar") === "false") {
+                    if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
+                        // When max number of groups
+                        tour.goTo(7);
+                    } else {
+                        // Otherwise
+                        tour.goTo(15);
+                    }
+                }
             }
         }
     ]);
@@ -154,7 +193,9 @@ $(function () {
                 },
                 onNext: function (tour) {
                     localStorage.setItem("main-tour_choosing_process", "true");
+                    // Allow to end tour from onNext
                     localStorage.setItem("main-tour_force_end", "true");
+
                     tour.end();
                 },
                 onEnd: function (tour) {
@@ -205,8 +246,24 @@ $(function () {
                     "Events <strong>with the icon</strong> are the ones you train. You can click on the training to mark attendance.",
                 path: "/profile/",
                 onShown: function (tour) {
+                    // Show only calendar steps in the tour (used in conjunction with calendar restart() below)
+                    if (localStorage.getItem("main-tour_calendar") === "false") {
+                        // Hide prev. Edit end button
+                        $("button[data-role='prev']").hide();
+                        $("button[data-role='end']").text("Skip");
+
+                        // Required for the next step
+                        // Note: code in the onNext is executed after onHide and onHidden,
+                        // thus this line cannot be placed in either of two functions
+                        localStorage.setItem("main-tour_calendar_btns", "false");
+                    }
+
                     const step = tour.getStep(tour._current);
                     $(step.element)[0].scrollIntoView(false);
+                },
+                onHidden: function (tour) {
+                    // This step has been seen - mark it
+                    localStorage.setItem("main-tour_calendar", "true");
                 }
             }
         );
@@ -222,8 +279,24 @@ $(function () {
                         "You can click on the training to mark attendance.",
                     path: "/profile/",
                     onShown: function (tour) {
+                        // Show only calendar steps in the tour (used in conjunction with calendar restart() below)
+                        if (localStorage.getItem("main-tour_calendar") === "false") {
+                            // Hide prev. Edit end button
+                            $("button[data-role='prev']").hide();
+                            $("button[data-role='end']").text("Skip");
+
+                            // Required for the next step
+                            // Note: code in the onNext is executed after onHide and onHidden,
+                            // thus this line cannot be placed in either of two functions
+                            localStorage.setItem("main-tour_calendar_btns", "false");
+                        }
+
                         const step = tour.getStep(tour._current);
                         $(step.element)[0].scrollIntoView(false);
+                    },
+                    onHidden: function (tour) {
+                        // This step has been seen - mark it
+                        localStorage.setItem("main-tour_calendar", "true");
                     }
                 }
             );
@@ -239,8 +312,24 @@ $(function () {
                             "You can click on the training to check out details such as trainer contacts or location.",
                         path: "/profile/",
                         onShown: function (tour) {
+                            // Show only calendar steps in the tour (used in conjunction with calendar restart() below)
+                            if (localStorage.getItem("main-tour_calendar") === "false") {
+                                // Hide prev. Edit end button
+                                $("button[data-role='prev']").hide();
+                                $("button[data-role='end']").text("Skip");
+
+                                // Required for the next step
+                                // Note: code in the onNext is executed after onHide and onHidden,
+                                // thus this line cannot be placed in either of two functions
+                                localStorage.setItem("main-tour_calendar_btns", "false");
+                            }
+
                             const step = tour.getStep(tour._current);
                             $(step.element)[0].scrollIntoView(false);
+                        },
+                        onHidden: function (tour) {
+                            // This step has been seen - mark it
+                            localStorage.setItem("main-tour_calendar", "true");
                         }
                     }
                 );
@@ -254,7 +343,21 @@ $(function () {
             placement: "top",
             title: "Calendar",
             content: "You can navigate through the calendar using these buttons.",
-            path: "/profile/"
+            path: "/profile/",
+            onShown: function (tour) {
+                // Show only calendar steps in the tour (can be accessed only from previous step)
+                if (localStorage.getItem("main-tour_calendar_btns") === "false") {
+                    // Hide next. Edit end button
+                    $("button[data-role='next']").hide();
+                    $("button[data-role='end']").text("Ok");
+                }
+            },
+            onPrev: function (tour) {
+                // Reset variable for the previous step
+                if (localStorage.getItem("main-tour_calendar_btns") === "false") {
+                    localStorage.setItem("main-tour_calendar", "false");
+                }
+            }
         }
     );
 
@@ -295,6 +398,8 @@ $(function () {
         }
     );
 
+    /* Starting the tour */
+
     // On jump to the /profile check if the student was in choosing process
     // If so, depending on their number of groups, jump to the corresponding tour step
     if (document.URL.includes("/profile/") && localStorage.getItem("main-tour_choosing_process") === "true") {
@@ -304,6 +409,18 @@ $(function () {
             tour.restart(6);
         } else {
             tour.restart(14);
+        }
+    } else if (document.URL.includes("/profile/") && document.getElementById("semester-hours") &&
+            tour.ended() && localStorage.getItem("main-tour_student_hours") === "false") {
+        // Show semester hours for student if it was skipped previously
+        tour.restart(4);
+    } else if (document.URL.includes("/profile/") && document.getElementById("calendar") &&
+            tour.ended() && localStorage.getItem("main-tour_calendar") === "false") {
+        // Show calendar steps if it was skipped previously
+        if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
+            tour.restart(7);
+        } else {
+            tour.restart(15);
         }
     } else {
         tour.start();
