@@ -62,7 +62,7 @@ class TrainingFormWithCSV(forms.ModelForm):
             try:
                 hours[email] = round(float(student_hours), 2)
                 assert 0 <= hours[email] < 1000  # TODO: hardcoded constant
-            except AssertionError:
+            except (AssertionError, ValueError, TypeError):
                 raise forms.ValidationError(
                     f"Got invalid hours value \"{student_hours}\" for email {email}, expected value in range [0,999.99]"
                 )

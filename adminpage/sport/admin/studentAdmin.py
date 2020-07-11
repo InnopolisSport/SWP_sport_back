@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.db.models import ForeignKey
+from django.db.models.expressions import RawSQL
 from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 
@@ -8,7 +9,7 @@ from sport.models import Student, MedicalGroup
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .site import site
-from .utils import user__email
+from .utils import user__email, has_enrolled_filter
 
 
 class MedicalGroupWidget(widgets.ForeignKeyWidget):
@@ -93,6 +94,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "is_ill",
         "enrollment_year",
         "medical_group",
+        has_enrolled_filter(),
     )
 
     list_display = (
@@ -100,7 +102,17 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         user__email,
         "is_ill",
         "medical_group",
+        "has_enrolled",
     )
+
+    readonly_fields = (
+        "has_enrolled",
+    )
+
+    def has_enrolled(self, obj):
+        return obj.has_enrolled
+
+    has_enrolled.boolean = True
 
     ordering = (
         "user__first_name",
@@ -116,3 +128,14 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "user",
         "medical_group",
     )
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.annotate(has_enrolled=RawSQL(
+            'SELECT count(*) > 0 FROM enroll, "group" '
+            'WHERE student_id = student.user_id '
+            'AND "group".semester_id = current_semester() '
+            'AND "group".id = enroll.group_id '
+            'AND enroll.is_primary = True',
+            ()
+        ))
