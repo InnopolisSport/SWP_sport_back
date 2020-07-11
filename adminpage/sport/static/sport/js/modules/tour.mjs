@@ -106,6 +106,15 @@ $(function () {
                         // Otherwise
                         tour.goTo(15);
                     }
+                } else {
+                    // Reset onEnd for this step to end the tour if only this step is shown.
+                    // In this version local onEnd overrides global one
+                    // which makes it impossible to end the tour from local onEnd (tour.end() will cause infinite recursion).
+                    // Thus need to set local onEnd to null to end the tour
+                    // TODO: rework end function in the library to handle such cases without ugly workarounds
+                    const step = tour.getStep(tour._current);
+                    step.onEnd = null;
+                    tour.end();
                 }
             }
         }
