@@ -249,10 +249,10 @@ $(function () {
                 placement: "auto",
                 title: "Calendar",
                 content: "It is your schedule. You can find all your sports classes there.<br />" +
-                    "There are <strong>two types of events - with and without the icon.</strong><br /><br />" +
-                    "Events <strong>without the icon</strong> are the ones you joined. " +
+                    "There are <strong>two types of events - with and without the trainer icon.</strong><br /><br />" +
+                    "Events <strong>without the trainer icon</strong> are the ones you joined. " +
                     "You can click on the training to check out details such as trainer contacts or location.<br /><br />" +
-                    "Events <strong>with the icon</strong> are the ones you train. You can click on the training to mark attendance.",
+                    "Events <strong>with the trainer icon</strong> are the ones you train. You can click on the training to mark attendance.",
                 path: "/profile/",
                 onShown: function (tour) {
                     // Show only calendar steps in the tour (used in conjunction with calendar restart() below)
