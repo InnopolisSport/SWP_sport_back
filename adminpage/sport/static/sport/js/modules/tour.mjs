@@ -25,8 +25,13 @@ const tour = new Tour({
         // The same stages as for the semester hours (above)
         // Do not set variable if the choosing process is going - end() was forced and tour is not finished yet
         if (localStorage.getItem("main-tour_calendar") === null &&
-                !(localStorage.getItem("main-tour_choosing_process") === "true")) {
+                !(localStorage.getItem("main-tour_group_selection") === "true")) {
             localStorage.setItem("main-tour_calendar", "false");
+        }
+
+        // Reset variable for group selection only
+        if (localStorage.getItem("main-tour_category") === "true") {
+            localStorage.removeItem("main-tour_category");
         }
     }
 });
@@ -131,14 +136,20 @@ $(function () {
                 reflexOnly: true,
                 title: "Sport Groups",
                 content: "Here you can choose your sports group. <strong>Click it!</strong>",
-                path: "/profile/",
+                path: "/profile/"
             },
             {
                 orphan: true,
                 title: "Sport Groups",
                 content: "You can select from three categories - <strong>student clubs</strong>, " +
                     "<strong>university trainers</strong>, and <strong>sport complex trainers</strong>.",
-                path: "/category/"
+                path: "/category/",
+                onShown: function (tour) {
+                    // Hide prev button when showing only group selection
+                    if (localStorage.getItem("main-tour_category") === "true") {
+                        $("button[data-role='prev']").hide();
+                    }
+                }
             },
             {
                 element: "#tour-step-category-1-landscape",
@@ -200,15 +211,31 @@ $(function () {
                         endTourButton: "Skip"
                     }
                 },
+                onShown: function(tour) {
+                    // Hide next button when showing only group selection
+                    if (localStorage.getItem("main-tour_category") === "true") {
+                        $("button[data-role='next']").hide();
+                        $("button[data-role='end']").text("Select");
+                    }
+                },
                 onNext: function (tour) {
-                    localStorage.setItem("main-tour_choosing_process", "true");
+                    localStorage.setItem("main-tour_group_selection", "true");
                     // Allow to end tour from onNext
                     localStorage.setItem("main-tour_force_end", "true");
 
                     tour.end();
                 },
                 onEnd: function (tour) {
-                    tour.goTo(tour.getCurrentStepIndex() + 1);
+                    // End the tour when showing only group selection
+                    if (localStorage.getItem("main-tour_category") === "true") {
+                        // Reset onEnd to end the tour
+                        const step = tour.getStep(tour._current);
+                        step.onEnd = null;
+                        tour.end();
+                    } else {
+                        // Continue the tour during regular run
+                        tour.goTo(tour.getCurrentStepIndex() + 1);
+                    }
                 }
             }
         ]);
@@ -411,8 +438,8 @@ $(function () {
 
     // On jump to the /profile check if the student was in choosing process
     // If so, depending on their number of groups, jump to the corresponding tour step
-    if (document.URL.includes("/profile/") && localStorage.getItem("main-tour_choosing_process") === "true") {
-        localStorage.removeItem("main-tour_choosing_process");
+    if (document.URL.includes("/profile/") && localStorage.getItem("main-tour_group_selection") === "true") {
+        localStorage.removeItem("main-tour_group_selection");
 
         if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
             tour.restart(6);
@@ -436,10 +463,14 @@ $(function () {
     }
 });
 
+// Start the tour from very beginning
 function start_tour() {
-    if (tour.ended()) {
-        tour.restart();
-    } else {
-        tour.start();
-    }
+    tour.restart();
+}
+
+// Show part of the tour with a group selection
+function start_tour_category() {
+    // Set variable for group selection only
+    localStorage.setItem("main-tour_category", "true");
+    tour.restart(6);
 }

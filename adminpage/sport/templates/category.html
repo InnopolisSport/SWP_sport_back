@@ -4,6 +4,7 @@
 {% block title %}Category choose{% endblock %}
 
 {% block extrahead %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap-grid.css">
     <link rel="stylesheet"
@@ -25,6 +26,8 @@
 {% endblock %}
 
 {% block content %}
+    <a class="help-link fa fa-question-circle fa-2x" id="help-btn" onclick="start_tour_category()"></a>
+
     <div class="card text-center">
 
         <div class="card-body">

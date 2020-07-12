@@ -17,6 +17,14 @@ body {
     overflow: hidden;
 }
 
+a.help-link {
+    z-index: 1000;
+    cursor: pointer;
+    position: fixed;
+    bottom: 3%;
+    right: 3%;
+}
+
 /*
     Properties for different screen sizes
 */
