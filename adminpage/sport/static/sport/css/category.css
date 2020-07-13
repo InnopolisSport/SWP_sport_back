@@ -28,7 +28,7 @@ a.help-link {
 /*
     Properties for different screen sizes
 */
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 767px) {
 
     h1 {
         font-size: 150%;
@@ -60,7 +60,7 @@ a.help-link {
     }
 }
 
-@media only screen and (min-width: 801px) and (max-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 1200px) {
 
     h1 {
         font-size: 150%;
