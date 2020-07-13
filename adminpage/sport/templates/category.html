@@ -45,8 +45,7 @@
                                         <a id="club-{{ club.id }}"
                                            href="#"
                                            onclick="openGroupInfoModal({{ club.id }})">{{ club.name }}
-                                            (<span>{{ club.available_places }}</span>/{{ club.capacity }}
-                                            free)</a>
+                                            (<span>{{ club.available_places }}</span>/{{ club.capacity }}&nbsp;free)</a>
                                     {% endfor %}
                                 {% else %}
                                     <!-- If change this, don't forget to change the same string in category.js -->
@@ -99,8 +98,7 @@
                                         <a id="club-{{ club.id }}"
                                            href="#"
                                            onclick="openGroupInfoModal({{ club.id }})">{{ club.name }}
-                                            (<span>{{ club.available_places }}</span>/{{ club.capacity }}
-                                            free)</a>
+                                            (<span>{{ club.available_places }}</span>/{{ club.capacity }}&nbsp;free)</a>
                                     {% endfor %}
                                 {% else %}
                                     <!-- If change this, don't forget to change the same string in category.js -->
