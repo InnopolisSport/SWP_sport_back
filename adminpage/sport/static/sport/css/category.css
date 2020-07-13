@@ -66,6 +66,10 @@ a.help-link {
         font-size: 150%;
     }
 
+    .card {
+        margin-top: 5%;
+    }
+
     .landscape {
         display: flex
     }
