@@ -136,6 +136,8 @@ a.help-link {
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
     display: block;
+    max-height: 400px;
+    overflow-y: scroll;
 }
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
