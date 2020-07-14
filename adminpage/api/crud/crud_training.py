@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import Optional
+
 from django.db import connection
 
 from api.crud import dictfetchone, dictfetchall
@@ -25,17 +27,16 @@ def get_attended_training_info(training_id: int, student: Student):
             'd.last_name AS trainer_last_name, '
             'd.email AS trainer_email, '
             'COALESCE(a.hours, 0) AS hours, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s) AS is_enrolled, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = g.id AND e.student_id = %s AND is_primary = TRUE) AS is_primary '
+            'COALESCE(bool_or(e.student_id = %s), false) AS is_enrolled, '
+            'COALESCE(bool_or(e.student_id = %s AND is_primary = TRUE), false) AS is_primary '
             'FROM training tr '
             'LEFT JOIN training_class tc ON tr.training_class_id = tc.id, "group" g '
             'LEFT JOIN enroll e ON e.group_id = g.id '
-            'LEFT JOIN trainer t ON t.id = g.trainer_id '
-            'LEFT JOIN auth_user d ON t.user_id = d.id '
+            'LEFT JOIN auth_user d ON g.trainer_id = d.id '
             'LEFT JOIN attendance a ON a.training_id = %s AND a.student_id = %s '
             'WHERE tr.group_id = g.id '
             'AND tr.id = %s '
-            'GROUP BY g.id, d.id, t.id, a.id, tc.id', (student.pk, student.pk, training_id, student.pk, training_id))
+            'GROUP BY g.id, d.id, a.id, tc.id', (student.pk, student.pk, training_id, student.pk, training_id))
         return dictfetchone(cursor)
 
 
@@ -58,16 +59,13 @@ def get_group_info(group_id: int, student: Student):
             'd.first_name AS trainer_first_name, '
             'd.last_name AS trainer_last_name, '
             'd.email AS trainer_email, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = %(group_id)s '
-            '   AND e.student_id = %(student_id)s) AS is_enrolled, '
-            'exists(SELECT true FROM enroll e WHERE e.group_id = %(group_id)s '
-            '   AND e.student_id = %(student_id)s AND is_primary = TRUE) AS is_primary '
+            'COALESCE(bool_or(e.student_id = %(student_id)s), false) AS is_enrolled, '
+            'COALESCE(bool_or(e.student_id = %(student_id)s AND is_primary = TRUE), false) AS is_primary '
             'FROM "group" g '
             'LEFT JOIN enroll e ON e.group_id = %(group_id)s '
-            'LEFT JOIN trainer t ON t.id = g.trainer_id '
-            'LEFT JOIN auth_user d ON t.user_id = d.id '
+            'LEFT JOIN auth_user d ON g.trainer_id = d.id '
             'WHERE g.id = %(group_id)s '
-            'GROUP BY g.id, t.id, d.id', {"group_id": group_id, "student_id": student.pk})
+            'GROUP BY g.id, d.id', {"group_id": group_id, "student_id": student.pk})
         return dictfetchone(cursor)
 
 
@@ -125,36 +123,6 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
         return dictfetchall(cursor)
 
 
-def get_trainings_in_time(sport_id: int, start: datetime, end: datetime):
-    """
-    Retrieves existing trainings in the given range for given sport type
-    @param sport_id - searched sport id
-    @param start - range start date
-    @param end - range end date
-    @return list of trainings info
-    """
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT '
-                       'g.id AS group_id, '
-                       'g.name AS group_name, '
-                       'count(e.id) AS current_load, '
-                       'g.capacity AS capacity, '
-                       't.id AS id, '
-                       't.start AS start, '
-                       't."end" AS "end", '
-                       'tc.name AS training_class '
-                       'FROM sport sp, "group" g LEFT JOIN enroll e ON e.group_id = g.id, training t '
-                       'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE g.sport_id = sp.id '
-                       'AND g.semester_id = current_semester() '
-                       'AND t.group_id = g.id '
-                       'AND sp.id = %s '
-                       'AND t.start >= %s '
-                       'AND t.end <= %s '
-                       'GROUP BY g.id, t.id, tc.id', (sport_id, start, end))
-        return dictfetchall(cursor)
-
-
 def get_students_grades(training_id: int):
     """
     Retrieves student grades for specific training
@@ -163,29 +131,28 @@ def get_students_grades(training_id: int):
     """
     with connection.cursor() as cursor:
         cursor.execute('SELECT '
-                       's.id AS student_id, '
+                       'd.id AS student_id, '
                        'd.first_name AS first_name, '
                        'd.last_name AS last_name, '
                        'd.email AS email, '
                        'a.hours AS hours, '
                        'concat(d.first_name, \' \', d.last_name) as full_name '
-                       'FROM training t, student s, attendance a, auth_user d '
-                       'WHERE a.student_id = s.id '
-                       'AND s.user_id = d.id '
+                       'FROM training t, attendance a, auth_user d '
+                       'WHERE d.id = a.student_id '
                        'AND a.training_id = %(training_id)s '
                        'AND t.id = %(training_id)s '
                        'UNION DISTINCT '
                        'SELECT '
-                       's.id AS student_id, '
+                       'd.id AS student_id, '
                        'd.first_name AS first_name, '
                        'd.last_name AS last_name, '
                        'd.email AS email, '
                        'COALESCE(a.hours, 0) AS hours, '
                        'concat(d.first_name, \' \', d.last_name) as full_name '
                        'FROM training t, enroll e, auth_user d, student s '
-                       'LEFT JOIN attendance a ON a.student_id = s.id AND a.training_id = %(training_id)s '
-                       'WHERE s.id = e.student_id '
-                       'AND s.user_id = d.id '
+                       'LEFT JOIN attendance a ON a.student_id = s.user_id AND a.training_id = %(training_id)s '
+                       'WHERE s.user_id = e.student_id '
+                       'AND d.id = e.student_id '
                        'AND s.is_ill = FALSE '
                        'AND t.id = %(training_id)s '
                        'AND t.group_id = e.group_id ', {"training_id": training_id})

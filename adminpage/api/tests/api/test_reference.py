@@ -36,7 +36,7 @@ def test_reference_upload(
     )
     image_sm = Image.new('RGB', (600, 300))
     image_md = Image.new('RGB', (600, 600))
-    image_lg = Image.new('RGB', (600, 2100))
+    image_lg = Image.new('RGB', (600, 5500))
     file_sm = tempfile.NamedTemporaryFile(suffix='.jpg')
     file_md = tempfile.NamedTemporaryFile(suffix='.jpg')
     file_lg = tempfile.NamedTemporaryFile(suffix='.jpg')

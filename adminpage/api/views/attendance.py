@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
@@ -10,7 +11,6 @@ from api.crud import get_email_name_like_students, Training, get_students_grades
 from api.permissions import IsTrainer
 from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, NotFoundSerializer, InbuiltErrorSerializer, \
     TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, BadGradeReportGradeSerializer, BadGradeReport
-from sport.models import Student
 
 
 class AttendanceErrors:
@@ -20,7 +20,7 @@ class AttendanceErrors:
 
 
 def is_training_group(training, trainer):
-    if training.group.trainer != trainer:
+    if training.group.trainer_id != trainer.pk:
         raise PermissionDenied(
             detail="You are not a trainer of this group"
         )
@@ -71,11 +71,11 @@ def suggest_student(request, **kwargs):
 @api_view(["GET"])
 @permission_classes([IsTrainer])
 def get_grades(request, training_id, **kwargs):
-    trainer = request.user.trainer
+    trainer = request.user  # trainer.pk == trainer.user.pk
     try:
         training = Training.objects.select_related(
             "group"
-        ).get(pk=training_id)
+        ).only("group__name", "group__trainer", "start").get(pk=training_id)
     except Training.DoesNotExist:
         raise NotFound()
 
@@ -84,7 +84,7 @@ def get_grades(request, training_id, **kwargs):
     return Response({
         "group_name": training.group.name,
         "start": training.start,
-        "grades": get_students_grades(training.pk)
+        "grades": get_students_grades(training_id)
     })
 
 
@@ -102,11 +102,11 @@ def get_grades(request, training_id, **kwargs):
 def mark_attendance(request, **kwargs):
     serializer = AttendanceMarkSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    trainer = request.user.trainer
+    trainer = request.user  # trainer.pk == trainer.user.pk
     try:
         training = Training.objects.select_related(
             "group"
-        ).get(pk=serializer.validated_data["training_id"])
+        ).only("group__trainer", "start", "end").get(pk=serializer.validated_data["training_id"])
     except Training.DoesNotExist:
         raise NotFound()
 
@@ -125,8 +125,7 @@ def mark_attendance(request, **kwargs):
     ])
 
     max_hours = training.academic_duration
-    students = Student.objects.select_related("user") \
-        .filter(pk__in=id_to_hours.keys()).all()
+    students = User.objects.filter(pk__in=id_to_hours.keys()).only("email")
 
     hours_to_mark = []
     negative_mark = []
@@ -135,9 +134,9 @@ def mark_attendance(request, **kwargs):
     for student in students:
         hours_put = id_to_hours[student.pk]
         if hours_put < 0:
-            negative_mark.append(compose_bad_grade_report(student.user.email, hours_put))
+            negative_mark.append(compose_bad_grade_report(student.email, hours_put))
         elif hours_put > max_hours:
-            overflow_mark.append(compose_bad_grade_report(student.user.email, hours_put))
+            overflow_mark.append(compose_bad_grade_report(student.email, hours_put))
         else:
             hours_to_mark.append((student, hours_put))
 
@@ -155,7 +154,7 @@ def mark_attendance(request, **kwargs):
         mark_hours(training, mark_data)
         return Response(list(
             map(
-                lambda x: compose_bad_grade_report(x[0].user.email, x[1]),
+                lambda x: compose_bad_grade_report(x[0].email, x[1]),
                 hours_to_mark
             )
         ))

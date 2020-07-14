@@ -14,6 +14,7 @@ from sport.models import (
     Trainer,
     Training,
     TrainingClass,
+    MedicalGroups,
 )
 
 
@@ -69,7 +70,7 @@ def group_factory():
             trainer: Optional[Trainer] = None,
             description: Optional[str] = None,
             is_club: bool = False,
-
+            minimum_medical_group_id: MedicalGroups = MedicalGroups.PREPARATIVE,
     ) -> Group:
         obj, _ = Group.objects.get_or_create(
             name=name,
@@ -80,6 +81,7 @@ def group_factory():
                 "trainer": trainer,
                 "description": description,
                 "is_club": is_club,
+                "minimum_medical_group_id": minimum_medical_group_id,
             }
         )
         return obj

@@ -21,6 +21,7 @@ def getenv_boolean(var_name, default_value=False):
         result = env_value.upper() in ("TRUE", "1")
     return result
 
+DATE_FORMAT = "%Y-%m-%d"
 
 SPORT_DEPARTMENT_EMAIL = "sport@innopolis.university"
 STUDENT_AUTH_GROUP_VERBOSE_NAME = "Students"
@@ -29,13 +30,17 @@ STUDENT_AUTH_GROUP_NAME = "S-1-5-21-721043115-644155662-3522934251-2285"
 TRAINER_AUTH_GROUP_VERBOSE_NAME = "School Physical Activity for Health"
 TRAINER_AUTH_GROUP_NAME = "S-1-5-21-2948122937-1530199265-1034249961-9635"
 
-SC_TRAINERS_GROUP_NAME = "SC trainers"
+SC_TRAINERS_GROUP_NAME_FREE = "SC trainers (free)"
+SC_TRAINERS_GROUP_NAME_PAID = "SC trainers (paid)"
 EXTRA_EVENTS_GROUP_NAME = "Extra sport events"
 MEDICAL_LEAVE_GROUP_NAME = "Medical leave"
+OTHER_SPORT_NAME = "Other"
 
 TRAINING_EDITABLE_INTERVAL = timedelta(
     days=int(os.getenv("TRAINING_EDITABLE_INTERVAL", 14))
 )
+
+BACHELOR_STUDY_PERIOD_YEARS = 4
 
 BASE_URL = os.getenv("BASE_URL", "http://localhost:81/")
 PREFIX = ""
@@ -47,7 +52,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_boolean("DEBUG")
@@ -63,12 +67,15 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'adminpage.apps.SportAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'import_export',
+    'rangefilter',
+    'image_optimizer',
     'django_auth_adfs',
     'admin_auto_filters',
     'rest_framework',
@@ -110,7 +117,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'adminpage.wsgi.application'
 
 # Authentication
-
 OAUTH_CLIENT_ID = os.getenv('oauth_appID')
 OAUTH_CLIENT_SECRET = os.getenv("oauth_shared_secret")
 OAUTH_AUTHORIZATION_BASEURL = os.getenv("oauth_authorization_baseURL")
@@ -205,6 +211,8 @@ else:
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/uploaded_media'
 
-MAX_IMAGE_SIZE = 5_000_000  # 5MB
+OPTIMIZED_IMAGE_METHOD = 'pillow'
+
+MAX_IMAGE_SIZE = 10_000_000  # 10MB
 MIN_IMAGE_DIMENSION = 400
-MAX_IMAGE_DIMENSION = 2000
+MAX_IMAGE_DIMENSION = 4500

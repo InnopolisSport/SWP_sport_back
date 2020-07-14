@@ -3,9 +3,10 @@ from django.contrib import admin
 from sport.models import Schedule
 from .inlines import ViewTrainingInline
 from .utils import cache_filter, cache_dependent_filter, custom_order_filter
+from .site import site
 
 
-@admin.register(Schedule)
+@admin.register(Schedule, site=site)
 class ScheduleAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         "group",
@@ -30,7 +31,7 @@ class ScheduleAdmin(admin.ModelAdmin):
         # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({"group__semester": "semester"}, ("name",))
+            cache_dependent_filter({"group__semester": "semester"}, ("name",), select_related=["semester"])
         ),
         "weekday",
         "start",
@@ -47,6 +48,12 @@ class ScheduleAdmin(admin.ModelAdmin):
 
     inlines = (
         ViewTrainingInline,
+    )
+
+    list_select_related = (
+        "group__trainer",
+        "group__semester",
+        "training_class"
     )
 
     def get_readonly_fields(self, request, obj=None):

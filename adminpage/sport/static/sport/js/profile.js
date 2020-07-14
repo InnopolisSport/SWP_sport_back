@@ -50,6 +50,19 @@ function open_recovered_modal() {
     $('#recovered-modal').modal('show');
 }
 
+async function openMedicalInfoModal(groupName, groupDescription) {
+    const {data, title, body, footer} = await openModal("#medical-group-info-modal", null);
+    title.text(`Medical group info - ${groupName}`);
+    body.append(`${groupDescription}`)
+    footer.html(`
+            <div class="container">
+                <div class="row justify-content-between">
+                    <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+                </div>
+            </div>
+        `);
+}
+
 /*
     Calendar
 */
@@ -327,20 +340,21 @@ async function submit_reference() {
     const fileInput = $('#reference-file-input')[0]
     const file = fileInput.files[0]
 
-    toastr.options = {
-        positionClass: 'toast-top-center'
-    };
+    if (!file){
+        toastr.error("You can't submit a reference without attaching a file");
+        return;
+    }
 
-    if (file.size > 5_000_000) {
-        toastr.error('Image file size too big, expected size <= 5 MB');
+    if (file.size > 10_000_000) {
+        toastr.error('Image file size too big, expected size <= 10 MB');
         return false;
     }
 
     try {
         const _URL = window.URL || window.webkitURL;
         const img = await loadImage(_URL.createObjectURL(file));
-        if (img.width < 400 || img.width > 2000 || img.height < 400 || img.height > 2000) {
-            toastr.error('Invalid image width/height, expected them to be in range 400px..2000px');
+        if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
+            toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
             return false;
         }
     } catch (e) {
@@ -361,10 +375,12 @@ async function submit_reference() {
 
 $(function () {
     prepareModal('#group-info-modal');
+    prepareModal('#medical-group-info-modal');
     $("#student_emails")
         .autocomplete({
             source: "/api/attendance/suggest_student",
             select: autocomplete_select
         })
         .autocomplete("option", "appendTo", ".student_email_suggestor");
+    $('[data-toggle="tooltip"]').tooltip()
 });

@@ -5,7 +5,7 @@ from django.db import transaction
 @transaction.atomic
 def enroll_student_to_primary_group(group: Group, student: Student):
     """
-    Enrolls given student in a primary group, removes all previous primary enrollments
+    Enrolls given student in a primary group, removes all previous enrollments
     """
     Enroll.objects.filter(student=student, group__semester=group.semester).delete()
     Enroll.objects.create(student=student, group=group, is_primary=True)

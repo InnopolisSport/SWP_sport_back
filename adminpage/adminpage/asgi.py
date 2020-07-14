@@ -1,5 +1,5 @@
 """
-ASGI config for kek project.
+ASGI config for adminpage project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

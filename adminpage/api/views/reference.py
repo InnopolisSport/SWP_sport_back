@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import transaction
 from drf_yasg.utils import swagger_auto_schema
+from image_optimizer.utils import image_optimizer
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser
@@ -41,7 +42,10 @@ def reference_upload(request, **kwargs):
     serializer = ReferenceUploadSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    image = serializer.validated_data['image']
+    image = image_optimizer(
+        serializer.validated_data['image'],
+        resize_method="thumbnail",
+    )
     if image.size > settings.MAX_IMAGE_SIZE:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
@@ -57,12 +61,12 @@ def reference_upload(request, **kwargs):
             data=error_detail(*ReferenceErrors.INVALID_IMAGE_SIZE)
         )
 
-    student = request.user.student
+    student = request.user  # user.pk == user.student.pk
 
     try:
         with transaction.atomic():
-            ref = serializer.save(semester=get_ongoing_semester(), student=student)
-            count = Reference.objects.filter(student=student, uploaded__date=ref.uploaded.date()).count()
+            ref = serializer.save(semester=get_ongoing_semester(), student_id=student.pk)
+            count = Reference.objects.filter(student_id=student.pk, uploaded__date=ref.uploaded.date()).count()
             assert count == 1
     except AssertionError:
         return Response(

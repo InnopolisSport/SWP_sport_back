@@ -1,6 +1,8 @@
+import operator
 from typing import List, Dict, Tuple
 
 from django.contrib import admin
+from django.db.models.expressions import F
 from django.utils.translation import gettext_lazy as _
 
 
@@ -15,6 +17,7 @@ def custom_order_filter(ordering: Tuple, cls=admin.RelatedFieldListFilter):
     class Wrapper(cls):
         def field_admin_ordering(self, field, request, model_admin):
             return ordering
+
     return Wrapper
 
 
@@ -51,6 +54,9 @@ def cache_filter(cls, clear_list: List[str]):
             add_value_to_cache(request, self.field_path, self.lookup_val)
             return super().field_choices(field, request, model_admin)
 
+        def has_output(self):
+            return True
+
         def choices(self, changelist):
             # save previous version of get_query_string that is used in super().choices(changelist)
             f = changelist.get_query_string
@@ -68,11 +74,12 @@ def cache_filter(cls, clear_list: List[str]):
     return CacheAwareFilter
 
 
-def cache_dependent_filter(translation: Dict[str, str], order=None):
+def cache_dependent_filter(translation: Dict[str, str], order=None, select_related: List[str] = None):
     """
     Creates foreign key list filter, that can use cached values from other filters
     @param translation: rules for translating cached keys, if 'key' is cached,
     @param order: desired filter list ordering
+    @param select_related: related fields for faster lookup in one sql query
     translation['key'] will be used as the actual filter parameter
     """
 
@@ -83,8 +90,22 @@ def cache_dependent_filter(translation: Dict[str, str], order=None):
                 return []
             additional_filter = {translation[k]: request.cache_filter[k] for k in translation}
             ordering = order or self.field_admin_ordering(field, request, model_admin)
-            return field.get_choices(include_blank=False, ordering=ordering,
-                                     limit_choices_to=additional_filter)
+
+            # adapted from field.get_choices(...)
+            if field.choices is not None:
+                return list(field.choices)
+            rel_model = field.remote_field.model
+            choice_func = operator.attrgetter(
+                field.remote_field.get_related_field().attname
+                if hasattr(field.remote_field, 'get_related_field')
+                else 'pk'
+            )
+            qs = rel_model._default_manager.complex_filter(additional_filter).order_by(*ordering)
+            if select_related is not None:
+                qs = qs.select_related(*select_related)
+            return [
+                (choice_func(x), str(x)) for x in qs
+            ]
 
         def has_output(self):
             return not self.no_output
@@ -110,22 +131,45 @@ def cache_alternative_filter(cls, cache_keys: List[str]):
     return CacheRelatedFieldListFilter
 
 
-def positive_number_filter(name: str, field: str):
+def has_free_places_filter():
     class Wrapper(admin.SimpleListFilter):
-        parameter_name = field
-        title = name
+        title = 'free places'
+        parameter_name = 'has_free_places'
 
         def lookups(self, request, model_admin):
             return (
-                ('1', _('Yes')),
-                ('0', _('No')),
+                ('1', _('Has free places')),
+                ('0', _('Group is full')),
             )
 
         def queryset(self, request, queryset):
+            # enroll_count field was added using qs.annotate, see get_queryset() in groupAdmin
             if self.value() == '1':
-                return queryset.filter(**{f'{field}__gt': 0})
-            elif self.value() == '0':
-                return queryset.filter(**{f'{field}': 0})
+                return queryset.filter(capacity__gt=F('enroll_count'))
+            if self.value() == '0':
+                return queryset.filter(capacity__lte=F('enroll_count'))
+            return queryset
+
+    return Wrapper
+
+
+def has_enrolled_filter():
+    class Wrapper(admin.SimpleListFilter):
+        title = 'primary group presense'
+        parameter_name = 'has_enrolled'
+
+        def lookups(self, request, model_admin):
+            return (
+                ('1', _('Has primary group')),
+                ('0', _('No primary group')),
+            )
+
+        def queryset(self, request, queryset):
+            # has_enrolled field was added using qs.annotate, see get_queryset() in studentAdmin
+            if self.value() == '1':
+                return queryset.filter(has_enrolled=True)
+            if self.value() == '0':
+                return queryset.filter(has_enrolled=False)
             return queryset
 
     return Wrapper

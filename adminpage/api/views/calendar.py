@@ -5,22 +5,18 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.utils import timezone
 
-from api.crud import get_trainings_in_time, get_trainings_for_student, get_trainings_for_trainer
+from api.crud import get_sport_schedule, get_trainings_for_student, get_trainings_for_trainer
 from api.permissions import IsStudent, IsTrainer
 from api.serializers import CalendarRequestSerializer, CalendarSerializer
 
 
-def convert_training(t) -> dict:
+def convert_training_schedule(t) -> dict:
     return {
         "title": t["group_name"],
-        "start": timezone.localtime(
-            t["start"],
-        ),
-        "end": timezone.localtime(
-            t["end"],
-        ),
+        "daysOfWeek": [(t["weekday"] + 1) % 7],
+        "startTime": t["start"],
+        "endTime": t["end"],
         "extendedProps": {
-            "id": t["id"],
             "group_id": t["group_id"],
             "training_class": t["training_class"],
             "current_load": t["current_load"],
@@ -61,13 +57,13 @@ def convert_personal_training(t) -> dict:
 def get_schedule(request, sport_id, **kwargs):
     serializer = CalendarRequestSerializer(data=request.GET)
     serializer.is_valid(raise_exception=True)
-    trainings = get_trainings_in_time(
+    student = getattr(request.user, "student", None)
+    trainings = get_sport_schedule(
         sport_id,
-        serializer.validated_data["start"],
-        serializer.validated_data["end"],
+        student=student,
     )
 
-    return Response(list(map(convert_training, trainings)))
+    return Response(list(map(convert_training_schedule, trainings)))
 
 
 @swagger_auto_schema(

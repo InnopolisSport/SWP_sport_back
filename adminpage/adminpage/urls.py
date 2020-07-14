@@ -16,8 +16,8 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.urls import path, include
+from sport.admin.site import site
 
 # TODO: remove when not needed
 # from django.http import JsonResponse
@@ -38,7 +38,7 @@ handler500 = "sport.views.errors.handler500"
 urlpatterns = [
                   path(settings.PREFIX, include([
                       path("", include("sport.urls")),
-                      path('admin/', admin.site.urls),
+                      path('admin/', site.urls),
                       path('oauth2/', include('django_auth_adfs.urls')),
 
                       url(r"api/", include("api.urls")),

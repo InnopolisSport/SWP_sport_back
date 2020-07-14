@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db import connection
 
 from django.conf import settings
@@ -5,16 +7,21 @@ from api.crud.utils import dictfetchall, dictfetchone
 from sport.models import Sport, Student, Trainer
 
 
-def get_sports(all=False):
+def get_sports(all=False, student: Optional[Student] = None):
     """
     Retrieves existing sport types
     @param all - If true, returns also special sport types
+    @param student - if student passed, get sports applicable for student
     @return list of all sport types
     """
-    return Sport.objects.all().values() if all else Sport.objects.filter(special=False).values()
+    qs = Sport.objects.filter(
+        group__minimum_medical_group_id__lte=100 if student is None else student.medical_group,
+    ).distinct()
+    # w/o distinct returns a lot of duplicated
+    return qs.all().values() if all else qs.filter(special=False).values()
 
 
-def get_clubs():
+def get_clubs(student: Optional[Student] = None):
     """
     Retrieves existing clubs
     @return list of all club
@@ -34,7 +41,10 @@ def get_clubs():
             'AND sport_id = sport.id '
             'AND semester_id = s.id '
             'AND is_club = TRUE '
-            'GROUP BY g.id, sport.id, s.id')
+            'AND  %(student_medical_group)s >= g.minimum_medical_group_id '
+            'GROUP BY g.id, sport.id, s.id', {
+                "student_medical_group": 100 if student is None else student.medical_group_id
+            })
         return dictfetchall(cursor)
 
 
@@ -75,21 +85,23 @@ def get_trainer_groups(trainer: Trainer):
         return dictfetchall(cursor)
 
 
-def get_sc_training_group():
+def get_sc_training_groups():
     """
-    Finds sc training group for current semester
-    @return group dict
+    Finds sc training groups for the current semester
+    @return list of group dict
     """
     with connection.cursor() as cursor:
         cursor.execute('SELECT '
                        'g.id AS id, '
                        'g.name AS name, '
-                       'sport.name AS sport_name '
-                       'FROM "group" g, sport, semester s '
+                       's.name AS sport_name '
+                       'FROM "group" g, sport s '
                        'WHERE g.semester_id = current_semester() '
-                       'AND sport_id = sport.id '
-                       'AND g.name = %s', (settings.SC_TRAINERS_GROUP_NAME,))
-        row = dictfetchone(cursor)
-    if row is None:
-        raise ValueError("Unable to find SC training group")
+                       'AND g.sport_id = s.id '
+                       'AND g.name IN (%s, %s) '
+                       'ORDER BY g.name',
+                       (settings.SC_TRAINERS_GROUP_NAME_FREE, settings.SC_TRAINERS_GROUP_NAME_PAID))
+        row = dictfetchall(cursor)
+    if row is None or len(row) != 2:
+        raise ValueError("Unable to find SC training groups")
     return row

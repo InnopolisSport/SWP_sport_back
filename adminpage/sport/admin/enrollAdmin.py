@@ -1,11 +1,12 @@
+from tempfile import NamedTemporaryFile
+
 from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin, messages
 from django.http import HttpResponse
 from openpyxl import Workbook
-from openpyxl.writer.excel import save_virtual_workbook
 
 from sport.models import Enroll, Group, Semester
-
+from .site import site
 from .utils import custom_titled_filter, cache_filter, cache_dependent_filter, custom_order_filter
 
 
@@ -42,14 +43,20 @@ def export_primary_as_xlsx(modeladmin, request, queryset):
             for scheduled_training in group.schedule.all():
                 schedule[scheduled_training.weekday] += f"{scheduled_training.start}-{scheduled_training.end}\n\n"
 
-        student_fullname = str(enrollment.student)
+        student_fullname = enrollment.student.user.get_full_name()
         student_email = enrollment.student.user.email
         data = [group.name, student_fullname, student_email, *schedule]
 
         work_sheet.append(data)
+    with NamedTemporaryFile() as tmp:
+        work_book.save(tmp.name)
+        tmp.seek(0)
+        stream = tmp.read()
 
-    response = HttpResponse(save_virtual_workbook(work_book),
-                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response = HttpResponse(
+        stream,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
     response['Content-Disposition'] = f'attachment; filename=SportEnrollment_{semester_name}.xlsx'
 
     return response
@@ -58,7 +65,7 @@ def export_primary_as_xlsx(modeladmin, request, queryset):
 export_primary_as_xlsx.short_description = "Export primary sport groups"
 
 
-@admin.register(Enroll)
+@admin.register(Enroll, site=site)
 class EnrollAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         "student",
@@ -74,7 +81,7 @@ class EnrollAdmin(admin.ModelAdmin):
         # group filter, depends on chosen semester
         (
             "group",
-            cache_dependent_filter({"group__semester": "semester"}, ("name",))
+            cache_dependent_filter({"group__semester": "semester"}, ("name",), select_related=["semester"])
         ),
         ("group__is_club", custom_titled_filter("club status")),
         ("is_primary", custom_titled_filter("primary status")),
@@ -87,6 +94,12 @@ class EnrollAdmin(admin.ModelAdmin):
         'group',
         'is_primary',
     )
+
+    list_select_related = (
+        "student",
+        "student__user",
+    )
+
     actions = (
         export_primary_as_xlsx,
     )

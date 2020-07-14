@@ -1,6 +1,7 @@
 from .attendance import *
 from .enroll import *
 from .group import *
+from .medical_group import *
 from .schedule import *
 from .semester import *
 from .sport import *
@@ -9,6 +10,7 @@ from .trainer import *
 from .training import *
 from .training_class import *
 from .reference import *
+from .enums import *
 
 from django.contrib.auth.models import Group as DjangoGroup
 DjangoGroup.add_to_class(
