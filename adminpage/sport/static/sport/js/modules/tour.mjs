@@ -4,7 +4,7 @@ const tour = new Tour({
     showProgressBar: false,
     showProgressText: false,
     backdrop: true,
-    debug: true,
+    // debug: true,
     localization: {
         buttonTexts: {
             prevButton: "Back",
