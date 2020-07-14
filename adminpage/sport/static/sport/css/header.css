@@ -10,23 +10,12 @@ header.head {
     align-items: center;
     justify-content: space-around;
 
-}
-
-@media only screen and (max-height: 400px){
-    header.head {
-        height: 12vh;
-    }
-}
-
-@media only screen and (min-height: 401px){
-    header.head {
-        height: 5vh;
-    }
+    height: fit-content;
 }
 
 header img.head {
     background-color: white;
-    width: 60px;
+    width: 70px;
 
 }
 
@@ -40,3 +29,4 @@ header div.head {
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
 }
+

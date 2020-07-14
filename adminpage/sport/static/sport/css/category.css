@@ -12,25 +12,26 @@ body {
     cursor: default;
 }
 
+.crop {
+    width: 100%;
+    overflow: hidden;
+}
+
+a.help-link {
+    z-index: 1000;
+    cursor: pointer;
+    position: fixed;
+    bottom: 3%;
+    right: 3%;
+}
+
 /*
     Properties for different screen sizes
 */
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 767px) {
 
     h1 {
         font-size: 150%;
-    }
-
-    img {
-        width: 200px;
-        height: auto;
-        background-size: cover;
-    }
-
-    .crop {
-        width: 200px;
-        height: 200px;
-        overflow: hidden;
     }
 
     .landscape {
@@ -50,31 +51,27 @@ body {
         margin-bottom: 1rem;
     }
 
+    .col {
+        margin-bottom: 1rem;
+    }
+
     .dropdown-content {
         min-width: 200px;
     }
 }
 
-@media only screen and (min-width: 801px) and (max-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 1200px) {
 
     h1 {
         font-size: 150%;
     }
 
-    img {
-        width: 200px;
-        height: auto;
-        background-size: cover;
-    }
-
-    .crop {
-        width: 200px;
-        height: 200px;
-        overflow: hidden;
+    .card {
+        margin-top: 5%;
     }
 
     .landscape {
-        display: block;
+        display: flex
     }
 
     .portrait {
@@ -93,20 +90,8 @@ body {
 
 @media only screen and (min-width: 1201px) {
 
-    img {
-        width: 300px;
-        height: auto;
-        background-size: cover;
-    }
-
-    .crop {
-        width: 300px;
-        height: 300px;
-        overflow: hidden;
-    }
-
     .landscape {
-        display: block;
+        display: flex;
     }
 
     .portrait {
@@ -155,6 +140,8 @@ body {
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
     display: block;
+    max-height: 400px;
+    overflow-y: scroll;
 }
 
 /* Change the background color of the dropdown button when the dropdown content is shown */

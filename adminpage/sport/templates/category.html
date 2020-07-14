@@ -4,154 +4,142 @@
 {% block title %}Category choose{% endblock %}
 
 {% block extrahead %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap-grid.css">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap-reboot.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+    <link rel="stylesheet" href="{% static "sport/css/bootstrap-tourist.css" %}">
     <link rel="stylesheet" href="{% static "sport/css/category.css" %}">
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script src="{% static "sport/js/bootstrap-tourist.js" %}"></script>
     <script src="{% static "sport/js/modules/networking.mjs" %}"></script>
     <script src="{% static "sport/js/modules/enrollment.mjs" %}"></script>
     <script src="{% static "sport/js/modules/modals.mjs" %}"></script>
+    <script src="{% static "sport/js/modules/tour.mjs" %}"></script>
     <script src="{% static "sport/js/category.js" %}"></script>
 {% endblock %}
 
 {% block content %}
+    <a class="help-link fa fa-question-circle fa-2x" id="help-btn" onclick="start_tour_category()"></a>
+
     <div class="card text-center">
-        <!-- 3 columns for landscape -->
-        <div class="card-body landscape">
-            <div class="grid-container">
 
-                <div class="grid-item">
-                    <h1>Student Club</h1>
-                </div>
-                <div class="grid-item">
-                    <h1>IU Trainer</h1>
-                </div>
-                <div class="grid-item">
-                    <h1>SC Trainer</h1>
-                </div>
-
-
-                <div class="grid-item">
-                    <div class="dropdown">
-                        <a> <img class="crop" src="{% static "sport/images/categories/club.png" %}"
-                                 alt="Trainings in clubs"></a>
-                        <div class="dropdown-content club-dropdown">
-                            {% if clubs %}
-                                {% for club in clubs %}
-                                    <a id="club-{{ club.id }}"
-                                       href="#"
-                                       onclick="openGroupInfoModal({{ club.id }})">{{ club.name }}
-                                        (<span>{{ club.available_places }}</span>/{{ club.capacity }}
-                                        free)</a>
+        <div class="card-body">
+            <div class="container-fluid">
+                <!-- 3 columns for landscape -->
+                <div class="row landscape">
+                    <div class="col-4" id="tour-step-category-1-landscape">
+                        <h1>Student Club</h1>
+                        <div class="dropdown">
+                            <a> <img class="crop" src="{% static "sport/images/categories/club.png" %}"
+                                     alt="Trainings in clubs"></a>
+                            <div class="dropdown-content club-dropdown">
+                                {% if clubs %}
+                                    {% for club in clubs %}
+                                        <a id="club-{{ club.id }}"
+                                           href="#"
+                                           onclick="openGroupInfoModal({{ club.id }})">{{ club.name }}
+                                            (<span>{{ club.available_places }}</span>/{{ club.capacity }}&nbsp;free)</a>
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- If change this, don't forget to change the same string in category.js -->
+                                    <a>No clubs are available</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4" id="tour-step-category-2-landscape">
+                        <h1>IU Trainer</h1>
+                        <div class="dropdown">
+                            <a> <img class="crop dropdown-image"
+                                     src="{% static "sport/images/categories/iu_trainer.png" %}"
+                                     alt="Trainings with IU trainer"></a>
+                            <div class="dropdown-content">
+                                {% if sports %}
+                                    {% for sport in sports %}
+                                        <a href="{% url "sport_schedule_calendar" sport.id %}">{{ sport.name }}</a>
+                                    {% endfor %}
+                                {% else %}
+                                    <a>No sports are available</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4" id="tour-step-category-3-landscape">
+                        <h1>SC Trainer</h1>
+                        <div class="dropdown">
+                            <img class="crop"
+                                 src="{% static "sport/images/categories/sc_trainer.png" %}"
+                                 alt="Trainings with SC trainer">
+                            <div class="dropdown-content">
+                                {% for group in sc_training_groups %}
+                                    <a href="#" onclick="openGroupInfoModal({{ group.id }})">{{ group.name }}</a>
                                 {% endfor %}
-                            {% else %}
-                                <!-- If change this, don't forget to change the same string in category.js -->
-                                <a>No clubs are available</a>
-                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="grid-item">
-                    <div class="dropdown">
-                        <a> <img class="crop dropdown-image" src="{% static "sport/images/categories/iu_trainer.png" %}"
-                                 alt="Trainings with IU trainer"></a>
-                        <div class="dropdown-content">
-                            {% if sports %}
-                                {% for sport in sports %}
-                                    <a href="{% url "sport_schedule_calendar" sport.id %}">{{ sport.name }}</a>
+                <!-- 1 column for landscape -->
+                <div class="col portrait">
+                    <div class="col" id="tour-step-category-1-portrait">
+                        <h1>Student Club</h1>
+                        <div class="dropdown">
+                            <a> <img class="crop" src="{% static "sport/images/categories/club.png" %}"
+                                     alt="Trainings in clubs"></a>
+                            <div class="dropdown-content club-dropdown">
+                                {% if clubs %}
+                                    {% for club in clubs %}
+                                        <a id="club-{{ club.id }}"
+                                           href="#"
+                                           onclick="openGroupInfoModal({{ club.id }})">{{ club.name }}
+                                            (<span>{{ club.available_places }}</span>/{{ club.capacity }}&nbsp;free)</a>
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- If change this, don't forget to change the same string in category.js -->
+                                    <a>No clubs are available</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" id="tour-step-category-2-portrait">
+                        <h1>IU Trainer</h1>
+                        <div class="dropdown">
+                            <a> <img class="crop dropdown-image"
+                                     src="{% static "sport/images/categories/iu_trainer.png" %}"
+                                     alt="Trainings with IU trainer"></a>
+                            <div class="dropdown-content">
+                                {% if sports %}
+                                    {% for sport in sports %}
+                                        <a href="{% url "sport_schedule_calendar" sport.id %}">{{ sport.name }}</a>
+                                    {% endfor %}
+                                {% else %}
+                                    <a>No sports are available</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" id="tour-step-category-3-portrait">
+                        <h1>SC Trainer</h1>
+                        <div class="dropdown">
+                            <img class="crop"
+                                 src="{% static "sport/images/categories/sc_trainer.png" %}"
+                                 alt="Trainings with SC trainer">
+                            <div class="dropdown-content">
+                                {% for group in sc_training_groups %}
+                                    <a href="#" onclick="openGroupInfoModal({{ group.id }})">{{ group.name }}</a>
                                 {% endfor %}
-                            {% else %}
-                                <a>No sports are available</a>
-                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="grid-item">
-                    <div class="dropdown">
-                        <img class="crop"
-                             src="{% static "sport/images/categories/sc_trainer.png" %}"
-                             alt="Trainings with SC trainer">
-                        <div class="dropdown-content">
-                            {% for group in sc_training_groups %}
-                                <a href="#" onclick="openGroupInfoModal({{ group.id }})">{{ group.name }}</a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
             </div>
-        </div>
-        <!-- 1 column for landscape -->
-        <div class="card-body portrait">
-            <div class="grid-container">
-
-                <div class="grid-item">
-                    <h1>Student Club</h1>
-                </div>
-                <div class="grid-item">
-                    <div class="dropdown">
-                        <a> <img class="crop" src="{% static "sport/images/categories/club.png" %}"
-                                 alt="Trainings in clubs"></a>
-                        <div class="dropdown-content club-dropdown">
-                            {% if clubs %}
-                                {% for club in clubs %}
-                                    <a id="club-{{ club.id }}"
-                                       href="#"
-                                       onclick="openGroupInfoModal({{ club.id }})">{{ club.name }}
-                                        (<span>{{ club.available_places }}</span>/{{ club.capacity }}
-                                        free)</a>
-                                {% endfor %}
-                            {% else %}
-                                <!-- If change this, don't forget to change the same string in category.js -->
-                                <a>No clubs are available</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <h1>IU Trainer</h1>
-                </div>
-                <div class="grid-item">
-                    <div class="dropdown">
-                        <a> <img class="crop dropdown-image" src="{% static "sport/images/categories/iu_trainer.png" %}"
-                                 alt="Trainings with IU trainer"></a>
-                        <div class="dropdown-content">
-                            {% if sports %}
-                                {% for sport in sports %}
-                                    <a href="{% url "sport_schedule_calendar" sport.id %}">{{ sport.name }}</a>
-                                {% endfor %}
-                            {% else %}
-                                <a>No sports are available</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <h1>SC Trainer</h1>
-                </div>
-                <div class="grid-item">
-                    <div class="dropdown">
-                        <img class="crop"
-                             src="{% static "sport/images/categories/sc_trainer.png" %}"
-                             alt="Trainings with SC trainer">
-                        <div class="dropdown-content">
-                            {% for group in sc_training_groups %}
-                                <a href="#" onclick="openGroupInfoModal({{ group.id }})">{{ group.name }}</a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="container">
-            <div id="group-info-modal"></div>
         </div>
     </div>
+    <div id="group-info-modal"></div>
 {% endblock %}
