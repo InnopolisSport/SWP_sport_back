@@ -56,7 +56,7 @@
                     {% endif %}
                 {% endif %}
 
-                {% if user.student %}
+                {% if student %}
                     <meta id="illness-data" data-ill="{{ student.is_ill }}">
                     {% if student.sport_groups|length > 0 %}
                         <p id="student-list">
@@ -80,13 +80,13 @@
                             class="badge badge-pill badge-{% if student.medical_group_id < 0 %}danger{% elif student.medical_group_id == 0 %}warning{% else %}success{% endif %}"
 {#                            data-toggle="tooltip"#}
 {#                            data-placement="bottom"#}
-{#                            title="{{ student.obj.medical_group_description }}"#}
+{#                            title="{{ student.obj.medical_group.description }}"#}
                             onclick="openMedicalInfoModal(
-                                    `{{ student.obj.medical_group_name }}`,
-                                    `{{ student.obj.medical_group_description }}`
+                                    `{{ student.obj.medical_group.name }}`,
+                                    `{{ student.obj.medical_group.description }}`
                                     )"
                     >
-                        {{ student.obj.medical_group_name }}
+                        {{ student.obj.medical_group.name }}
                     </span></p>
 
                     <div id="medical-group-info-modal"></div>

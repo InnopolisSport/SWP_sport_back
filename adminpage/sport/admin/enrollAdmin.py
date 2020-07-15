@@ -98,6 +98,8 @@ class EnrollAdmin(admin.ModelAdmin):
     list_select_related = (
         "student",
         "student__user",
+        "group",
+        "group__semester",
     )
 
     actions = (

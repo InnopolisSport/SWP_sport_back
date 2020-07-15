@@ -12,7 +12,3 @@ class MedicalGroups(models.IntegerChoices):
     SPECIAL1 = 0, "Special 1"
     PREPARATIVE = 1, "Preparative"
     General = 2, "General"
-
-
-medical_groups_name = {}
-medical_groups_description = {}
