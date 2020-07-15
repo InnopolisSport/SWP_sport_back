@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
-from sport.models.enums import medical_groups_description, medical_groups_name
 from sport.utils import get_current_study_year
 
 
@@ -31,14 +30,6 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} ({self.user.email})"
-
-    @property
-    def medical_group_name(self) -> str:
-        return medical_groups_name[self.medical_group_id]
-
-    @property
-    def medical_group_description(self) -> str:
-        return medical_groups_description[self.medical_group_id]
 
 
 @receiver(post_save, sender=User)

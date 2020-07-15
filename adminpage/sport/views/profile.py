@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from api.crud import get_ongoing_semester, get_student_groups, get_brief_hours, get_trainer_groups
+from sport.models import Student
 
 
 def parse_group(group: dict) -> dict:
@@ -19,7 +20,7 @@ def parse_group(group: dict) -> dict:
 def profile_view(request, **kwargs):
     user = request.user
 
-    student = getattr(user, "student", None)  # type: Optional[Student]
+    student = Student.objects.filter(pk=user.pk).select_related("medical_group").first()  # type: Optional[Student]
     trainer = getattr(user, "trainer", None)  # type: Optional[Trainer]
 
     current_semester = get_ongoing_semester()
