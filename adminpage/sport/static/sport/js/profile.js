@@ -53,14 +53,8 @@ function open_recovered_modal() {
 async function openMedicalInfoModal(groupName, groupDescription) {
     const {data, title, body, footer} = await openModal("#medical-group-info-modal", null);
     title.text(`Medical group info - ${groupName}`);
-    body.append(`${groupDescription}`)
-    footer.html(`
-            <div class="container">
-                <div class="row justify-content-between">
-                    <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
-                </div>
-            </div>
-        `);
+    body.append(groupDescription)
+    footer.html('<button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>');
 }
 
 /*
