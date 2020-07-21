@@ -47,7 +47,11 @@ def profile_view(request, **kwargs):
             "student": {
                 "student_id": student.pk,
                 "sport_groups": student_groups_parsed,
-                "secondary_group_left": 3 - len(student_groups_parsed),
+                "secondary_group_left": 2 - len([
+                    group
+                    for group in student_groups_parsed
+                    if not group["is_primary"]
+                ]),
                 "semesters": student_brief_hours_info,
                 "obj": student,
                 **student_data,
