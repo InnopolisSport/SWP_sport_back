@@ -44,7 +44,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - ./db_data:/var/lib/postgresql/data
     env_file:
       - .env
 
@@ -59,7 +59,6 @@ services:
 
 
 volumes:
-  db-data:
   django-static:
   # required to preserve change to django.contrib.auth.models.Group class.
   # (verbose_name added)
