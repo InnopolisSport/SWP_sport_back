@@ -21,6 +21,14 @@ def getenv_boolean(var_name, default_value=False):
         result = env_value.upper() in ("TRUE", "1")
     return result
 
+
+def compose_base_url(schema, hostname, port) -> str:
+    base_url = f"{schema}://{hostname}"
+    if port is not None and int(port) != 80:
+        base_url += f":{port}"
+    return base_url + '/'
+
+
 DATE_FORMAT = "%Y-%m-%d"
 
 SPORT_DEPARTMENT_EMAIL = "sport@innopolis.university"
@@ -42,7 +50,12 @@ TRAINING_EDITABLE_INTERVAL = timedelta(
 
 BACHELOR_STUDY_PERIOD_YEARS = 4
 
-BASE_URL = os.getenv("BASE_URL", "http://localhost:81/")
+SCHEMA = os.getenv("SCHEMA", "http")
+HOSTNAME = os.getenv("HOSTNAME", "localhost")
+PORT = os.getenv("PORT", 80)
+
+BASE_URL = compose_base_url(SCHEMA, HOSTNAME, PORT)
+
 PREFIX = ""
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -56,7 +69,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_boolean("DEBUG")
 PROJECT_ROOT = "/src/"
-ALLOWED_HOSTS = ['188.130.155.115', 'helpdesk.innopolis.university']
+ALLOWED_HOSTS = [HOSTNAME, ]
 
 if DEBUG:
     ALLOWED_HOSTS.append('localhost')
