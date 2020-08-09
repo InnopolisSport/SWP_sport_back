@@ -166,11 +166,11 @@
                                     <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
                                         Choose primary sport group
                                     </a>
-                                {% elif student.sport_groups|length < 2 %}
+                                {% elif student.secondary_group_left > 1 %}
                                     <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
                                         {{ student.secondary_group_left }} secondary choices left
                                     </a>
-                                {% elif 2 == student.sport_groups|length %}
+                                {% elif student.secondary_group_left == 1 %}
                                     <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
                                         1 secondary choice left
                                     </a>
