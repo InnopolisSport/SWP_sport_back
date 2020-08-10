@@ -2,7 +2,7 @@ from typing import Optional
 
 from django.db import connection
 
-from api.crud import dictfetchall
+from api.crud.utils import dictfetchall
 from sport.models import Student
 
 
@@ -31,12 +31,12 @@ def get_sport_schedule(
                        'WHERE g.sport_id = sp.id '
                        'AND g.semester_id = current_semester() '
                        'AND s.group_id = g.id '
-                       'AND sp.id = %s '
-                       'AND %s >= g.minimum_medical_group_id  '
+                       'AND sp.id = %(sport_id)s '
+                       'AND sign(%(medical_group_id_sign)s) = sign(g.minimum_medical_group_id)  '
                        'GROUP BY g.id, s.id, tc.id',
-                       (
-                           sport_id,
-                           100 if student is None else student.medical_group_id
-                       )
+                       {
+                           "sport_id": sport_id,
+                           "medical_group_id_sign": 1 if student is None else student.medical_group_id
+                       }
                        )
         return dictfetchall(cursor)

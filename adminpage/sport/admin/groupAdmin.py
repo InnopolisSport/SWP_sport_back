@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.db.models.expressions import RawSQL
 
 from api.crud import get_ongoing_semester
-from sport.models import Group
+from sport.models import Group, MedicalGroup
 from .inlines import ScheduleInline, EnrollInline, TrainingInline
 from .utils import custom_titled_filter, has_free_places_filter
 from .site import site
@@ -81,6 +81,11 @@ class GroupAdmin(admin.ModelAdmin):
         if 'extra' in request.META.get('HTTP_REFERER', []):
             return qs.filter(semester=get_ongoing_semester(), sport__name=settings.OTHER_SPORT_NAME).order_by('name')
         return qs.annotate(enroll_count=RawSQL('select count(*) from enroll where group_id = "group".id', ()))
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "minimum_medical_group":
+            kwargs["queryset"] = MedicalGroup.objects.filter(pk__gte=0)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     class Media:
         pass

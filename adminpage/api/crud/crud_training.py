@@ -1,9 +1,8 @@
 from datetime import datetime
-from typing import Optional
 
 from django.db import connection
 
-from api.crud import dictfetchone, dictfetchall
+from api.crud.utils import dictfetchone, dictfetchall
 from sport.models import Student, Trainer
 
 

@@ -98,7 +98,7 @@ def test_get_sport_schedule(
         capacity=30,
         sport=sport,
         semester=sem,
-        minimum_medical_group_id=MedicalGroups.NO_CHECKUP,
+        minimum_medical_group_id=MedicalGroups.GENERAL,
     )
 
     schedule_start = time(14, 0, 0)
@@ -132,31 +132,9 @@ def test_get_sport_schedule(
 
     assert get_sport_schedule(other_sport.pk) == []
     assert get_sport_schedule(other_sport.pk, student) == []
-    assertMembers(get_sport_schedule(sport.pk, student), [
-        {
-            'group_id': group2.pk,
-            'group_name': group2.name,
-            'current_load': 0,
-            'capacity': group2.capacity,
-            'weekday': schedule21.weekday,
-            'start': schedule_start,
-            'end': schedule_end,
-            'training_class': training_class.name
-        },
-        {
-            'group_id': group2.pk,
-            'group_name': group2.name,
-            'current_load': 0,
-            'capacity': group2.capacity,
-            'weekday': schedule22.weekday,
-            'start': schedule_start,
-            'end': schedule_end,
-            'training_class': None
-        }
-    ])
-    student.medical_group_id = MedicalGroups.General
+    assert get_sport_schedule(sport.pk, student) == []
+    student.medical_group_id = MedicalGroups.SPECIAL1
     student.save()
-    enroll_student_to_primary_group(group2, student)
     assertMembers(get_sport_schedule(sport.pk, student), [
         {
             'group_id': group1.pk,
@@ -177,7 +155,13 @@ def test_get_sport_schedule(
             'start': schedule_start,
             'end': schedule_end,
             'training_class': None
-        },
+        }
+    ])
+    assert get_sport_schedule(other_sport.pk, student) == []
+    student.medical_group_id = MedicalGroups.GENERAL
+    student.save()
+    enroll_student_to_primary_group(group2, student)
+    assertMembers(get_sport_schedule(sport.pk, student), [
         {
             'group_id': group2.pk,
             'group_name': group2.name,
