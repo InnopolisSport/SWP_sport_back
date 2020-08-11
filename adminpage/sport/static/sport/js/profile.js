@@ -50,6 +50,11 @@ function open_recovered_modal() {
     $('#recovered-modal').modal('show');
 }
 
+function open_med_group_modal() {
+    $('#med-group-modal').modal('show');
+}
+
+
 async function openMedicalInfoModal(groupName, groupDescription) {
     const {data, title, body, footer} = await openModal("#medical-group-info-modal", null);
     title.text(`Medical group info - ${groupName}`);
