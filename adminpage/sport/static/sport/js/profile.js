@@ -218,6 +218,7 @@ async function open_modal(info) {
     return await openGroupInfoModalForStudent(`/api/training/${info.event.extendedProps.id}`)
 }
 
+let group_id
 async function open_trainer_modal({event}) {
     const modal = $('#grading-modal .modal-body-table');
     modal.empty();
@@ -229,7 +230,8 @@ async function open_trainer_modal({event}) {
     });
     const save_btn = $('#save-hours-btn');
     save_btn.attr('data-training-id', event.extendedProps.id);
-    const {group_name, start, grades} = await response.json();
+    const { group_id: gid, group_name, start, grades } = await response.json();
+    group_id = gid
     modal.empty();
     $('#grading-group-name').text(group_name)
     $('#grading-date').text(start.split('T')[0])
@@ -334,7 +336,7 @@ async function submit_reference() {
     const fileInput = $('#reference-file-input')[0]
     const file = fileInput.files[0]
 
-    if (!file){
+    if (!file) {
         toastr.error("You can't submit a reference without attaching a file");
         return;
     }
@@ -372,7 +374,15 @@ $(function () {
     prepareModal('#medical-group-info-modal');
     $("#student_emails")
         .autocomplete({
-            source: "/api/attendance/suggest_student",
+            source: function (request, response) {
+                $.ajax({
+                    url: '/api/attendance/suggest_student',
+                    data: { term: request.term, group_id },
+                    dataType: "json",
+                    success: response,
+                    error: () => response([])
+                });
+            },
             select: autocomplete_select
         })
         .autocomplete("option", "appendTo", ".student_email_suggestor");

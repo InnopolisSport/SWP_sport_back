@@ -10,7 +10,7 @@ class Group(models.Model):
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, null=False)
     trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True)
 
-    minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, null=True)
+    minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, null=True, blank=True)
 
     class Meta:
         db_table = "group"
