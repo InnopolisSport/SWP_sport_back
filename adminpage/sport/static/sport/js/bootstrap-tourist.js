@@ -1575,29 +1575,6 @@
                         return;
                     }
                     switch (e.which) {
-                        case 39:
-                            // arrow right
-                            if ($(".tour-step-element-reflexOnly").length == 0) {
-                                e.preventDefault();
-                                if (_this._isLast()) {
-                                    return _this.end();
-                                } else {
-                                    return _this.next();
-                                }
-                            }
-
-                            break;
-
-                        case 37:
-                            // arrow left
-                            if ($(".tour-step-element-reflexOnly").length == 0) {
-                                e.preventDefault();
-                                if (_this._current > 0) {
-                                    return _this.prev();
-                                }
-                            }
-                            break;
-
                         case 27:
                             // escape
                             e.preventDefault();
