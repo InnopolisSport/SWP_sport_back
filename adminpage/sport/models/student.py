@@ -18,7 +18,12 @@ class Student(models.Model):
         default=False,
     )
 
-    medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, default=-2)
+    medical_group = models.ForeignKey(
+        'MedicalGroup',
+        on_delete=models.DO_NOTHING,
+        default=-2,
+    )
+
 
     enrollment_year = models.PositiveSmallIntegerField(
         default=get_current_study_year,

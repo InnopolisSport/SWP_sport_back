@@ -9,3 +9,7 @@ def get_study_year_from_date(in_date: date) -> int:
 
 def get_current_study_year() -> int:
     return get_study_year_from_date(date.today())
+
+
+def set_session_notification(request, msg: str, msg_type: str):
+    request.session["notify"] = (msg_type, msg)

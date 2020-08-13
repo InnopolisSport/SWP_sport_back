@@ -46,6 +46,7 @@ def suggest_student(request, **kwargs):
     serializer = SuggestionQuerySerializer(data=request.GET)
     serializer.is_valid(raise_exception=True)
     suggested_students = get_email_name_like_students(
+        serializer.validated_data["group_id"],
         serializer.validated_data["term"]
     )
     return Response([
@@ -82,6 +83,7 @@ def get_grades(request, training_id, **kwargs):
     is_training_group(training, trainer)
 
     return Response({
+        "group_id": training.group_id,
         "group_name": training.group.name,
         "start": training.start,
         "grades": get_students_grades(training_id)

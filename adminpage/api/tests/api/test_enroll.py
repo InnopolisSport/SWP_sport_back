@@ -51,7 +51,7 @@ def logged_in_student_general_med(student_factory) -> Tuple[APIClient, User]:
         username=username,
         password=password,
     )
-    student_user.student.medical_group_id = MedicalGroups.General
+    student_user.student.medical_group_id = MedicalGroups.GENERAL
     student_user.save()
     client = APIClient()
     client.login(

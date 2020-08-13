@@ -10,6 +10,7 @@ from .trainer import *
 from .training import *
 from .training_class import *
 from .reference import *
+from .medical_group_reference import MedicalGroupReference
 from .enums import *
 
 from django.contrib.auth.models import Group as DjangoGroup
