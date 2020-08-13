@@ -72,7 +72,7 @@ $(function () {
             element: "#medical-group",
             placement: "bottom",
             title: "Medical Group",
-            content: "Your medical group can be seen here (If you passed medical check up).<br />" +
+            content: "Your medical group can be seen here (If you passed medical checkup).<br />" +
                 "You can click on the ellipse to check out the description.",
             path: "/profile"
         },
@@ -106,10 +106,10 @@ $(function () {
                 if (localStorage.getItem("main-tour_calendar") === "false") {
                     if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
                         // When max number of groups
-                        tour.goTo(7);
+                        tour.goTo(8);
                     } else {
                         // Otherwise
-                        tour.goTo(15);
+                        tour.goTo(16);
                     }
                 } else {
                     // Reset onEnd for this step to end the tour if only this step is shown.
@@ -262,6 +262,19 @@ $(function () {
             content: "If you are ill, press this to inform your trainers.<br />" +
                 "Do not forget to change the status back when you recover.<br />" +
                 "Additionally, you can submit a reference to get hours.",
+            path: "/profile/",
+            preventInteraction: true
+        }
+    );
+
+    // Submit medical group button
+    tour.addStep(
+        {
+            element: ".tour-step-medical-group-btn",
+            placement: "bottom",
+            title: "Medical Group",
+            content: "If you passed medical checkup, " +
+                "you can upload a document confirming your medical group here.",
             path: "/profile/",
             preventInteraction: true
         }
@@ -454,9 +467,9 @@ $(function () {
             tour.ended() && localStorage.getItem("main-tour_calendar") === "false") {
         // Show calendar steps if it was skipped previously
         if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
-            tour.restart(7);
+            tour.restart(8);
         } else {
-            tour.restart(15);
+            tour.restart(16);
         }
     } else {
         tour.start();

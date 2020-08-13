@@ -198,7 +198,7 @@
                         {% if student.medical_group_id == -2 %}
                             <div class="col-md-6 col-sm-12 mb-1">
                                 {% if student.has_med_group_submission %}
-                                    <button type="button" class="btn btn-dark disabled"
+                                    <button type="button" class="btn btn-dark tour-step-medical-group-btn disabled"
                                             id="recovered-btn"
                                             onclick=""
                                             disabled
@@ -206,7 +206,7 @@
                                         Submit medical group
                                     </button>
                                 {% else %}
-                                    <button type="button" class="btn btn-dark" id="recovered-btn"
+                                    <button type="button" class="btn btn-dark tour-step-medical-group-btn" id="recovered-btn"
                                             onclick="open_med_group_modal()"
                                     >
                                         Submit medical group
