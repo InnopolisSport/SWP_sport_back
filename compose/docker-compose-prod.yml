@@ -5,7 +5,7 @@ services:
     build:
       context: ../nginx
     ports:
-      - "81:80"
+      - "80:80"
     depends_on:
       - adminpanel
       - adminer
