@@ -42,7 +42,7 @@ $(function () {
         {
             orphan: true, // Center the popover
             title: "Hello!",
-            content: "Welcome to the helpdesk.innopolis.university!<br />" +
+            content: "Welcome to the " + window.location.hostname + "!<br />" +
                 "Here is a small tour to help you navigate the site.",
             path: "/profile/"
         }

@@ -16,7 +16,9 @@ following environment variables:
 * `POSTGRES_SERVER` - database hostname (`db` - by default)
 * `SECRET_KEY` - a secret key for token verifications
 * `PROJECT_NAME`- project title
-* `BASE_URL` - service base url
+* `SCHEMA` - schema of a web page (prefer `https`)
+* `HOSTNAME` - hostname of a web page e.g: `example.com`
+* `PORT` - port over which web page is served
 * `PYTHON_VERSION` - which python version is to be used (specify exact version)
 * `DEBUG`- boolean flag for DEBUG mode ( `true` enables fake login and Django debug)
 * `oauth_appID` - application ID for oauth
