@@ -15,7 +15,7 @@ class StudentTextFilter(AutocompleteFilter):
 class MedicalGroupReferenceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance:
+        if self.instance.student_id is not None:
             self.fields['medical_group'].initial = self.instance.student.medical_group_id
 
     medical_group = forms.ModelChoiceField(MedicalGroup.objects.all(), initial=-2)
@@ -62,6 +62,9 @@ class MedicalGroupReferenceAdmin(admin.ModelAdmin):
         "student",
         "reference_image",
     )
+
+    def has_add_permission(self, request):
+        return False
 
     def reference_image(self, obj):
         return format_html('<a href="{}"><img style="width: 50%" src="{}" /></a>', obj.image.url, obj.image.url)
