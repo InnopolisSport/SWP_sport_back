@@ -1,9 +1,10 @@
 from admin_auto_filters.filters import AutocompleteFilter
+from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 
 from sport.admin import site
-from sport.models import MedicalGroupReference
+from sport.models import MedicalGroupReference, MedicalGroup
 
 
 class StudentTextFilter(AutocompleteFilter):
@@ -11,8 +12,30 @@ class StudentTextFilter(AutocompleteFilter):
     field_name = "student"
 
 
+class MedicalGroupReferenceForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance:
+            self.fields['medical_group'].initial = self.instance.student.medical_group_id
+
+    medical_group = forms.ModelChoiceField(MedicalGroup.objects.all(), initial=-2)
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+        instance.student.medical_group_id = self.cleaned_data['medical_group'].pk
+        instance.student.save()
+        return instance
+
+    class Meta:
+        model = MedicalGroupReference
+        fields = (
+            'student',
+        )
+
+
 @admin.register(MedicalGroupReference, site=site)
 class MedicalGroupReferenceAdmin(admin.ModelAdmin):
+    form = MedicalGroupReferenceForm
     list_display = (
         "student",
         "image",
@@ -24,10 +47,6 @@ class MedicalGroupReferenceAdmin(admin.ModelAdmin):
         "student__user",
     )
 
-    autocomplete_fields = (
-        "student",
-    )
-
     list_filter = (
         "resolved",
         StudentTextFilter,
@@ -35,10 +54,12 @@ class MedicalGroupReferenceAdmin(admin.ModelAdmin):
 
     fields = (
         "student",
+        "medical_group",
         "reference_image",
     )
 
     readonly_fields = (
+        "student",
         "reference_image",
     )
 

@@ -32,5 +32,8 @@ class MedicalGroupReference(models.Model):
         self.resolved = self.student.medical_group_id != -2
         return super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f'{self.student} - {self.semester}'
+
     class Meta:
         db_table = "medical_group_reference"
