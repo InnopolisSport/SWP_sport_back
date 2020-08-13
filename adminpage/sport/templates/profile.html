@@ -151,35 +151,18 @@
                     <div class="container" id="control-buttons">
                         <div class="row justify-content-center">
                             <div class="col-md-6 col-sm-12 col-left mb-1">
-                                {% if student.medical_group_id != -2 %}
-                                    {% if student.is_ill %}
-                                        <button type="button" class="btn btn-dark tour-step-ill-btn" id="recovered-btn"
-                                                onclick="toggle_ill(this)">Recovered
-                                            &#x1F601
-                                        </button>
-                                    {% else %}
-                                        <button type="button" class="btn btn-dark tour-step-ill-btn"
-                                                onclick="toggle_ill(this)">
-                                            Got sick
-                                            &#x1F912
-                                        </button>
-                                    {% endif %}
+
+                                {% if student.is_ill %}
+                                    <button type="button" class="btn btn-dark tour-step-ill-btn" id="recovered-btn"
+                                            onclick="toggle_ill(this)">Recovered
+                                        &#x1F601
+                                    </button>
                                 {% else %}
-                                    {% if student.has_med_group_submission %}
-                                        <button type="button" class="btn btn-dark disabled"
-                                                id="recovered-btn"
-                                                onclick=""
-                                                disabled
-                                        >
-                                            Submit medical group
-                                        </button>
-                                    {% else %}
-                                        <button type="button" class="btn btn-dark" id="recovered-btn"
-                                                onclick="open_med_group_modal()"
-                                        >
-                                            Submit medical group
-                                        </button>
-                                    {% endif %}
+                                    <button type="button" class="btn btn-dark tour-step-ill-btn"
+                                            onclick="toggle_ill(this)">
+                                        Got sick
+                                        &#x1F912
+                                    </button>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 col-sm-12 col-right mb-1">
@@ -207,18 +190,41 @@
                     {% include "reference.html" %}
                     {% include "med_group_reference.html" %}
                 {% endif %}
+            
 
-                {% if user.is_staff or user.is_superuser %}
-                    <div class="container">
-                        <div class="row justify-content-center">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        {# fixme: hardcoded reference to dynamic obj #}
+                        {% if student.medical_group_id == -2 %}
+                            <div class="col-md-6 col-sm-12 mb-1">
+                                {% if student.has_med_group_submission %}
+                                    <button type="button" class="btn btn-dark disabled"
+                                            id="recovered-btn"
+                                            onclick=""
+                                            disabled
+                                    >
+                                        Submit medical group
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-dark" id="recovered-btn"
+                                            onclick="open_med_group_modal()"
+                                    >
+                                        Submit medical group
+                                    </button>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        {% if user.is_staff or user.is_superuser %}
                             <div class="col-md-12 col-sm-12  mb-1">
+
                                 <a href="{% url 'admin:index' %}" class="btn btn-info">
                                     Admin panel
                                 </a>
                             </div>
-                        </div>
+                        {% endif %}
+
                     </div>
-                {% endif %}
+                </div>
 
                 {% if student.sport_groups|length > 0 or trainer.sport_groups %}
                     <div id='calendar'></div>
