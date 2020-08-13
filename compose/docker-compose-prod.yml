@@ -8,7 +8,6 @@ services:
       - "80:80"
     depends_on:
       - adminpanel
-      - adminer
     volumes:
       - ../nginx/logs:/var/log/nginx
       - ../nginx/access.d:/etc/nginx/access.d
