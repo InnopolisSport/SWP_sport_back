@@ -35,7 +35,6 @@ class MedicalGroupReferenceAdmin(admin.ModelAdmin):
 
     fields = (
         "student",
-        "student__medical_group",
         "reference_image",
     )
 
