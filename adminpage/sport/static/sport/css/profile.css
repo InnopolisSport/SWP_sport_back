@@ -87,6 +87,16 @@ body.profile {
     z-index: 2000;
 }
 
+/* z-index needs to be more than 1113 to be shown above tour-backdrop */
+#med-group-modal {
+    z-index: 2000;
+}
+
+/* z-index needs to be more than 1113 to be shown above tour-backdrop */
+#recovered-modal {
+    z-index: 2000;
+}
+
 a.help-link {
     z-index: 1000;
     cursor: pointer;

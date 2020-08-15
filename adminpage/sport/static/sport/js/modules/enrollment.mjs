@@ -5,8 +5,8 @@ async function  enroll(group_id, action, errorHandler=function(group_id){}) {
             // If tour is in process and student unenrolls, having max number of groups,
             // the page reloads together with the tour, thus updating the steps, so the step update is required
             if (!tour.ended() && $('.tour-step-choice-btn').text().includes('No group choices left')) {
-                if (tour.getCurrentStepIndex() === 7) {
-                    tour.setCurrentStep(15);
+                if (tour.getCurrentStepIndex() === 8) {
+                    tour.setCurrentStep(16);
                 }
             } else
                 // When only two calendar steps are shown, and student has only one group (secondary - student cannot unenroll from primary group)
