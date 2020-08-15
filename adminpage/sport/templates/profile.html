@@ -148,6 +148,43 @@
                         </div>
                     {% endif %}
 
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            {% if user.is_staff or user.is_superuser %}
+                                <div class="col-md-12 col-sm-12  mb-1">
+
+                                    <a href="{% url 'admin:index' %}" class="btn btn-info">
+                                        Admin panel
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            {# fixme: hardcoded reference to dynamic obj #}
+                            {% if student.medical_group_id == -2 %}
+                                <div class="col-md-6 col-sm-12 mb-1">
+                                    {% if student.has_med_group_submission %}
+                                        <button type="button" class="btn btn-dark tour-step-medical-group-btn disabled"
+                                                id="recovered-btn"
+                                                onclick=""
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Your reference is waiting for approval"
+                                        >
+                                            Submit medical group
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-dark tour-step-medical-group-btn"
+                                                id="recovered-btn"
+                                                onclick="open_med_group_modal()"
+                                        >
+                                            Submit medical group
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
                     <div class="container" id="control-buttons">
                         <div class="row justify-content-center">
                             <div class="col-md-6 col-sm-12 col-left mb-1">
@@ -190,41 +227,6 @@
                     {% include "reference.html" %}
                     {% include "med_group_reference.html" %}
                 {% endif %}
-            
-
-                <div class="container">
-                    <div class="row justify-content-center">
-                        {# fixme: hardcoded reference to dynamic obj #}
-                        {% if student.medical_group_id == -2 %}
-                            <div class="col-md-6 col-sm-12 mb-1">
-                                {% if student.has_med_group_submission %}
-                                    <button type="button" class="btn btn-dark disabled"
-                                            id="recovered-btn"
-                                            onclick=""
-                                            disabled
-                                    >
-                                        Submit medical group
-                                    </button>
-                                {% else %}
-                                    <button type="button" class="btn btn-dark" id="recovered-btn"
-                                            onclick="open_med_group_modal()"
-                                    >
-                                        Submit medical group
-                                    </button>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                        {% if user.is_staff or user.is_superuser %}
-                            <div class="col-md-12 col-sm-12  mb-1">
-
-                                <a href="{% url 'admin:index' %}" class="btn btn-info">
-                                    Admin panel
-                                </a>
-                            </div>
-                        {% endif %}
-
-                    </div>
-                </div>
 
                 {% if student.sport_groups|length > 0 or trainer.sport_groups %}
                     <div id='calendar'></div>
@@ -289,4 +291,9 @@
 
     <div id="medical-group-info-modal"></div>
     <div id="group-info-modal"></div>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 {% endblock %}
