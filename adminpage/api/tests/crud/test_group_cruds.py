@@ -191,14 +191,15 @@ def test_get_student_trainer_groups(student_factory, trainer_factory, sport_fact
 def test_get_sc_training_groups(sport_factory, semester_factory, group_factory):
     semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
 
-    assert Group.objects.count() == 4
+    assert Group.objects.count() == 5
 
     s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24), choice_deadline=date(2020, 1, 20))
 
-    assert Group.objects.count() == 8
+    assert Group.objects.count() == 10
 
     sc_group21 = Group.objects.get(semester=s2, name=settings.SC_TRAINERS_GROUP_NAME_FREE)
     sc_group22 = Group.objects.get(semester=s2, name=settings.SC_TRAINERS_GROUP_NAME_PAID)
+    self_group2 = Group.objects.get(semester=s2, name=settings.SELF_TRAINING_GROUP_NAME)
 
     assertMembers(get_sc_training_groups(), [
         {
@@ -210,5 +211,10 @@ def test_get_sc_training_groups(sport_factory, semester_factory, group_factory):
             "id": sc_group22.pk,
             "name": sc_group22.name,
             "sport_name": sc_group22.sport.name,
-        }
+        },
+        {
+            "id": self_group2.pk,
+            "name": self_group2.name,
+            "sport_name": self_group2.sport.name
+        },
     ])
