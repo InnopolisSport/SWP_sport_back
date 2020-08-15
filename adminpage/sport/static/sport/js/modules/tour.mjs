@@ -156,8 +156,9 @@ $(function () {
             {
                 orphan: true,
                 title: "Sport Groups",
-                content: "You can select from three categories - <strong>student clubs</strong>, " +
-                    "<strong>university trainers</strong>, and <strong>sport complex trainers</strong>.",
+                content: "You can select from different categories - <strong>student clubs</strong>, " +
+                    "<strong>university trainers</strong>, <strong>sport complex trainers</strong> " +
+                    "or <strong>self training</strong>.",
                 path: "/category/",
                 onShown: function (tour) {
                     // Hide prev button when showing only group selection
@@ -201,16 +202,16 @@ $(function () {
             {
                 element: "#tour-step-category-3-landscape",
                 placement: "left",
-                title: "SC Trainer",
-                content: "Select this if you exercise with sport complex trainers and want to get hours.",
+                title: "Other",
+                content: "Select this if you exercise with sport complex trainers or by yourself.",
                 path: "/category/",
                 preventInteraction: true
             },
             {
                 element: "#tour-step-category-3-portrait",
                 placement: "top",
-                title: "SC Trainer",
-                content: "Select this if you exercise with sport complex trainers and want to get hours.",
+                title: "Other",
+                content: "Select this if you exercise with sport complex trainers or by yourself.",
                 path: "/category/",
                 preventInteraction: true
             },

@@ -49,6 +49,7 @@ def special_groups_create(sender, instance, created, **kwargs):
         }
         Group.objects.create(name=settings.SC_TRAINERS_GROUP_NAME_FREE, capacity=9999, **kwargs)
         Group.objects.create(name=settings.SC_TRAINERS_GROUP_NAME_PAID, capacity=9999, **kwargs)
+        Group.objects.create(name=settings.SELF_TRAINING_GROUP_NAME, capacity=9999, **kwargs)
         Group.objects.create(name=settings.EXTRA_EVENTS_GROUP_NAME, capacity=0, **kwargs)
         Group.objects.create(name=settings.MEDICAL_LEAVE_GROUP_NAME, capacity=0, **kwargs)
     else:
