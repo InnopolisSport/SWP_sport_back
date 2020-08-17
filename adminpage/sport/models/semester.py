@@ -17,14 +17,12 @@ class Semester(models.Model):
     name = models.CharField(max_length=50, null=False, unique=True)
     start = models.DateField(null=False, default=today)
     end = models.DateField(null=False, default=today)
-    choice_deadline = models.DateField(null=False, default=today)
 
     class Meta:
         db_table = "semester"
         verbose_name_plural = "semesters"
         constraints = [
-            models.CheckConstraint(check=Q(start__lte=F('choice_deadline'), choice_deadline__lte=F('end')),
-                                   name='semester_start_before_end')
+            models.CheckConstraint(check=Q(start__lte=F('end')), name='semester_start_before_end')
         ]
         indexes = [
             models.Index(fields=("start",)),

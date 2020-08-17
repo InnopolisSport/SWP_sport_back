@@ -23,7 +23,7 @@ def test_club_for_student(
     student.medical_group_id = MedicalGroups.NO_CHECKUP
 
     sport = sport_factory(name="Sport")
-    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
+    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3))
     group_factory(name="C1", sport=sport, semester=s1, capacity=20, is_club=True)
     c2 = group_factory(name="C2", sport=sport, semester=s1, capacity=20, is_club=True,
                        minimum_medical_group_id=MedicalGroups.NO_CHECKUP,
@@ -52,7 +52,7 @@ def test_sport(
 ):
     student_factory("A")
     sport = sport_factory(name="Sport")
-    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
+    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3))
     group_factory(name="C1", sport=sport, semester=s1, capacity=20)
     group_factory(name="C2", sport=sport, semester=s1, capacity=20)
 
@@ -74,7 +74,7 @@ def test_sport_no_appropriate_group_in_sport(
     student.medical_group_id = MedicalGroups.NO_CHECKUP
 
     sport = sport_factory(name="Sport")
-    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
+    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3))
     group_factory(name="C1", sport=sport, semester=s1, capacity=20)
     group_factory(name="C2", sport=sport, semester=s1, capacity=20)
 
@@ -87,8 +87,8 @@ def test_sport_no_appropriate_group_in_sport(
 def test_get_clubs(student_factory, sport_factory, semester_factory, group_factory, enroll_factory):
     student = student_factory("A").student
     sport = sport_factory(name="Sport")
-    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
-    s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24), choice_deadline=date(2020, 1, 20))
+    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3))
+    s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24))
     g1 = group_factory(name="G1", sport=sport, semester=s1, capacity=20, is_club=False)
     c1 = group_factory(name="C1", sport=sport, semester=s1, capacity=20, is_club=True)
     g2 = group_factory(name="G2", sport=sport, semester=s2, capacity=20, is_club=False)
@@ -149,8 +149,8 @@ def test_get_student_trainer_groups(student_factory, trainer_factory, sport_fact
     student = student_factory("A").student
     trainer = trainer_factory("B").trainer
     sport = sport_factory(name="Sport")
-    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
-    s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24), choice_deadline=date(2020, 1, 20))
+    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3))
+    s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24))
     g1 = group_factory(name="G1", sport=sport, semester=s1, capacity=20, is_club=False, trainer=trainer)
     c1 = group_factory(name="C1", sport=sport, semester=s1, capacity=20, is_club=True)
     g2 = group_factory(name="G2", sport=sport, semester=s2, capacity=20, is_club=False, trainer=trainer)
@@ -188,12 +188,12 @@ def test_get_student_trainer_groups(student_factory, trainer_factory, sport_fact
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-20 10:03')
-def test_get_sc_training_groups(sport_factory, semester_factory, group_factory):
-    semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3), choice_deadline=date(2020, 1, 2))
+def test_get_sc_training_groups(semester_factory):
+    semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3))
 
     assert Group.objects.count() == 5
 
-    s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24), choice_deadline=date(2020, 1, 20))
+    s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24))
 
     assert Group.objects.count() == 10
 

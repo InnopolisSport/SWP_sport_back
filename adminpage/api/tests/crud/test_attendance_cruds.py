@@ -16,8 +16,8 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
     student = student_factory("A").student
     other_student = student_factory("B").student
     sport = sport_factory(name="Sport")
-    s1 = semester_factory(name="S19", start=dummy_date, end=dummy_date, choice_deadline=dummy_date)
-    s2 = semester_factory(name="S20", start=dummy_date, end=dummy_date, choice_deadline=dummy_date)
+    s1 = semester_factory(name="S19", start=dummy_date, end=dummy_date)
+    s2 = semester_factory(name="S20", start=dummy_date, end=dummy_date)
     g11 = group_factory(name="G11", sport=sport, semester=s1, capacity=20)
     g12 = group_factory(name="G12", sport=sport, semester=s1, capacity=20)
     g21 = group_factory(name="G21", sport=sport, semester=s2, capacity=20)
@@ -79,7 +79,7 @@ def test_mark_hours(student_factory, sport_factory, semester_factory, group_fact
     student1 = student_factory("A").student
     student2 = student_factory("B").student
     sport = sport_factory(name="Sport")
-    semester = semester_factory(name="S19", start=dummy_date, end=dummy_date, choice_deadline=dummy_date)
+    semester = semester_factory(name="S19", start=dummy_date, end=dummy_date)
     group = group_factory(name="G1", sport=sport, semester=semester, capacity=20)
     training = training_factory(group=group, start=timezone.now(), end=timezone.now())
     mark_hours(training, [
