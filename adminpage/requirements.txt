@@ -13,3 +13,4 @@ uvicorn==0.11.7
 django-import-export==2.2.0
 django-image-optimizer==1.0.1
 django-admin-rangefilter==0.6.1
+sentry-sdk==0.16.5

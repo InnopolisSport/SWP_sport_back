@@ -3,7 +3,7 @@ import unittest
 import pytest
 from datetime import time, date
 
-from api.crud import get_sport_schedule, enroll_student_to_primary_group
+from api.crud import get_sport_schedule, enroll_student
 from sport.models import Schedule, Training, MedicalGroups
 
 assertMembers = unittest.TestCase().assertCountEqual
@@ -19,12 +19,10 @@ def test_training_creation_on_schedule(
 ):
     start = date(2020, 1, 20)
     end = date(2020, 1, 27)
-    choice_deadline = date(2020, 1, 27)
     sem = semester_factory(
         name="S20",
         start=start,
         end=end,
-        choice_deadline=choice_deadline,
     )
 
     sport = sport_factory(
@@ -67,12 +65,10 @@ def test_get_sport_schedule(
     student = student_factory("A").student
     start = date(2020, 1, 20)
     end = date(2020, 1, 27)
-    choice_deadline = date(2020, 1, 27)
     sem = semester_factory(
         name="S20",
         start=start,
         end=end,
-        choice_deadline=choice_deadline,
     )
 
     other_sport = sport_factory(
@@ -160,7 +156,7 @@ def test_get_sport_schedule(
     assert get_sport_schedule(other_sport.pk, student) == []
     student.medical_group_id = MedicalGroups.GENERAL
     student.save()
-    enroll_student_to_primary_group(group2, student)
+    enroll_student(group2, student)
     assertMembers(get_sport_schedule(sport.pk, student), [
         {
             'group_id': group2.pk,

@@ -32,12 +32,10 @@ def setup(
 ) -> Tuple[Training, Trainer, User]:
     semester_start = date(2020, 1, 1)
     semester_end = date(2020, 2, 20)
-    choice_deadline = date(2020, 1, 10)
     sem = semester_factory(
         "S1",
         semester_start,
         semester_end,
-        choice_deadline
     )
 
     trainer_user = trainer_factory(

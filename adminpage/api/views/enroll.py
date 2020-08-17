@@ -9,8 +9,7 @@ from rest_framework.response import Response
 from api.crud import (
     unenroll_student,
     get_ongoing_semester,
-    enroll_student_to_primary_group,
-    enroll_student_to_secondary_group,
+    enroll_student,
 )
 from api.permissions import IsStudent
 from api.serializers import (
@@ -60,7 +59,6 @@ def enroll(request, **kwargs):
         pk=serializer.validated_data["group_id"]
     )
     student = request.user.student
-    current_semester = get_ongoing_semester()
     if group.minimum_medical_group_id is not None \
             and student.medical_group_id * group.minimum_medical_group_id <= 0 \
             and not (student.medical_group_id == 0 and group.minimum_medical_group_id == 0):
@@ -68,39 +66,30 @@ def enroll(request, **kwargs):
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*EnrollErrors.MEDICAL_DISALLOWANCE)
         )
-    if timezone.localdate() <= current_semester.choice_deadline:
-        try:
-            enroll_student_to_primary_group(group, student)
-        except InternalError:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data=error_detail(*EnrollErrors.GROUP_IS_FULL)
+    try:
+        enroll_student(group, student)
+    except IntegrityError:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(
+                *EnrollErrors.DOUBLE_ENROLL
             )
-    else:
-        try:
-            enroll_student_to_secondary_group(group, student)
-        except IntegrityError:
+        )
+    except InternalError as e:
+        if "too much groups" in str(e):
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data=error_detail(
-                    *EnrollErrors.DOUBLE_ENROLL
+                    *EnrollErrors.TOO_MUCH_SECONDARY
                 )
             )
-        except InternalError as e:
-            if "too much groups" in str(e):
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data=error_detail(
-                        *EnrollErrors.TOO_MUCH_SECONDARY
-                    )
+        else:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data=error_detail(
+                    *EnrollErrors.GROUP_IS_FULL
                 )
-            else:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data=error_detail(
-                        *EnrollErrors.GROUP_IS_FULL
-                    )
-                )
+            )
     return Response({})
 
 

@@ -27,7 +27,6 @@ def test_reference_upload(
         name="S20",
         start=date(2020, 1, 1),
         end=date(2020, 1, 15),
-        choice_deadline=date(2020, 1, 15),
     )
     client = APIClient()
     client.login(

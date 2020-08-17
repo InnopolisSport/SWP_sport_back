@@ -2,7 +2,7 @@ import pytest
 import unittest
 from datetime import date, time, datetime
 
-from api.crud import get_attended_training_info, enroll_student_to_secondary_group, get_group_info, \
+from api.crud import get_attended_training_info, enroll_student, get_group_info, \
     get_trainings_for_student, get_trainings_for_trainer, get_students_grades
 from sport.models import Training, Schedule
 
@@ -19,8 +19,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
     other_student = student_factory("A2").student
     trainer = trainer_factory("B").trainer
     sport = sport_factory(name="Sport")
-    semester = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 30),
-                                choice_deadline=date(2020, 1, 15))
+    semester = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 30))
     training_class = training_class_factory(name="1337")
     group = group_factory(name="G1", sport=sport, semester=semester, capacity=20, trainer=trainer)
     schedule = schedule_factory(group=group, weekday=Schedule.Weekday.MONDAY, start=time(14, 0, 0), end=time(18, 30, 0),
@@ -80,7 +79,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
         }
     ])
 
-    enroll_student_to_secondary_group(group, student)
+    enroll_student(group, student)
     group.trainer = None
     group.save()
     assert get_attended_training_info(t2.pk, student) == {
@@ -95,7 +94,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
         "trainer_email": None,
         "hours": 0,
         "is_enrolled": True,
-        "is_primary": False
+        "is_primary": True
     }
     assert get_group_info(group.pk, student) == {
         "group_id": group.pk,
@@ -107,7 +106,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
         "trainer_last_name": None,
         "trainer_email": None,
         "is_enrolled": True,
-        "is_primary": False,
+        "is_primary": True,
         "is_club": False,
     }
     assertMembers(get_trainings_for_student(student=student, start=datetime(2020, 1, 1), end=datetime(2020, 1, 14)), [
@@ -153,7 +152,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory, semester
 
     }]
 
-    enroll_student_to_secondary_group(group, other_student)
+    enroll_student(group, other_student)
 
     assertMembers(get_students_grades(t1.pk), [
         {
