@@ -43,12 +43,10 @@ def test_get_email_name_like_students(student_factory, semester_factory, sport_f
 
     start = date(2020, 1, 20)
     end = date(2020, 1, 27)
-    choice_deadline = date(2020, 1, 27)
     sem = semester_factory(
         name="S20",
         start=start,
         end=end,
-        choice_deadline=choice_deadline,
     )
 
     sport = sport_factory(

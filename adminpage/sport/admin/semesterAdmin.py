@@ -19,5 +19,4 @@ class SemesterAdmin(admin.ModelAdmin):
         "name",
         "start",
         "end",
-        "choice_deadline",
     )

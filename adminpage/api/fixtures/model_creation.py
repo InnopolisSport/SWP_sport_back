@@ -25,14 +25,12 @@ def semester_factory():
             name: str,
             start: date,
             end: date,
-            choice_deadline: date
     ) -> Semester:
         obj, _ = Semester.objects.get_or_create(
             name=name,
             defaults={
                 "start": start,
                 "end": end,
-                "choice_deadline": choice_deadline,
             }
         )
         return obj
