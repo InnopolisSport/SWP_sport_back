@@ -11,12 +11,11 @@ header.head {
     justify-content: space-around;
 
     height: fit-content;
+    padding: 4px 0;
 }
 
 header img.head {
-    background-color: white;
     width: 70px;
-
 }
 
 header a.head {
@@ -30,3 +29,8 @@ header div.head {
     grid-gap: 20px;
 }
 
+@media screen and (min-width: 480px) {
+    header div > a:last-child {
+        margin-left: 24px;
+    }
+}

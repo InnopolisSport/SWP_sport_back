@@ -184,7 +184,7 @@ function add_student_row(student_id, full_name, email, hours) {
                     <td>${email}</td>
                     <td style="cursor: pointer">
                         <form onsubmit="return false">
-                            <input class="studentHourField trainer-editable" type="number" min="0" max="${current_duration_academic_hours}" 
+                            <input class="studentHourField trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
                             onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"
                             />
                      </form></td>
@@ -242,7 +242,7 @@ async function open_trainer_modal({event}) {
     $('#grading-date').text(start.split('T')[0])
     const duration = event.end - event.start;
     // duration_academic_hours = (duration / 3_600_000) * (60 / 45) = duration / 2_700_000
-    current_duration_academic_hours = Math.min(999.99, round(duration / 2_700_000, 2)) // TODO: hardcoded max = 999.99  (DB issue)
+    current_duration_academic_hours = Math.min(10, round(duration / 2700000, 2)) // Maximum amount of hours: 10
     const mark_all_btn = $('#put-default-hours-btn');
     mark_all_btn.attr('data-hours', current_duration_academic_hours)
     $('#mark-all-hours-value').text(current_duration_academic_hours)
@@ -346,7 +346,7 @@ async function submit_reference() {
         return;
     }
 
-    if (file.size > 10_000_000) {
+    if (file.size > 10000000) {
         toastr.error('Image file size too big, expected size <= 10 MB');
         return false;
     }
