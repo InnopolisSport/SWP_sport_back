@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.conf import settings
 from django.db import connection
 
 from api.crud.utils import dictfetchone, dictfetchall
@@ -86,14 +87,16 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'tc.name AS training_class, '
                        'COALESCE(a.hours, 0) AS hours, '
                        'FALSE AS can_grade '
-                       'FROM enroll e, "group" g, training t '
+                       'FROM enroll e, "group" g, sport s, training t '
                        'LEFT JOIN attendance a ON a.student_id = %s AND a.training_id = t.id '
                        'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                        'WHERE t.start > %s AND t."end" < %s '
+                       'AND g.sport_id = s.id '
+                       'AND (hours > 0 OR s.name != %s) '
                        'AND t.group_id = g.id '
                        'AND e.group_id = g.id '
                        'AND e.student_id = %s '
-                       'AND g.semester_id = current_semester()', (student.pk, start, end, student.pk))
+                       'AND g.semester_id = current_semester()', (student.pk, start, end, settings.OTHER_SPORT_NAME, student.pk))
         return dictfetchall(cursor)
 
 
