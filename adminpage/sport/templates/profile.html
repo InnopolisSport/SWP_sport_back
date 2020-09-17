@@ -203,7 +203,7 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-6 col-sm-12 col-right mb-1">
-                                {% if student.sport_groups|length == 0  %}
+                                {% if student.no_primary_group %}
                                     <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
                                         Choose primary sport group
                                     </a>
