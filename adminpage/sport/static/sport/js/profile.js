@@ -59,7 +59,12 @@ async function openMedicalInfoModal(groupName, groupDescription) {
     const {data, title, body, footer} = await openModal("#medical-group-info-modal", null);
     title.text(`Medical group info - ${groupName}`);
     body.append(groupDescription)
-    footer.html('<button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>');
+    footer.html('<div class="container">' +
+        '<div class="row justify-content-between">' +
+        '<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="open_med_group_modal()">Change medical group</button> ' +
+        '<button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>' +
+        '</div>' +
+        '</div>');
 }
 
 /*

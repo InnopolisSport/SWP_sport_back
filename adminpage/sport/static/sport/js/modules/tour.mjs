@@ -73,23 +73,9 @@ $(function () {
             placement: "bottom",
             title: "Medical Group",
             content: "Your medical group can be seen here (If you passed medical checkup).<br />" +
-                "You can click on the ellipse to check out the description.",
+                "You can click on the ellipse to check out the description and " +
+                "<strong>change your current medical group.</strong>",
             path: "/profile"
-        },
-        // Submit medical group button
-        {
-            element: ".tour-step-medical-group-btn",
-            placement: "bottom",
-            title: "Medical Group",
-            content: "If you passed medical checkup, " +
-                "you can upload a document confirming your medical group here.",
-            path: "/profile/",
-            // preventInteraction: true,
-            onShown: function (tour) {
-                // There is a bug with changing title when user submits reference with medical group
-                // The following line rewrites the title back
-                $('.popover-header').text("Medical Group");
-            }
         },
         {
             element: "#semester-hours",
@@ -121,10 +107,10 @@ $(function () {
                 if (localStorage.getItem("main-tour_calendar") === "false") {
                     if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
                         // When max number of groups
-                        tour.goTo(8);
+                        tour.goTo(7);
                     } else {
                         // Otherwise
-                        tour.goTo(16);
+                        tour.goTo(15);
                     }
                 } else {
                     // Reset onEnd for this step to end the tour if only this step is shown.
@@ -480,21 +466,21 @@ $(function () {
         localStorage.removeItem("main-tour_group_selection");
 
         if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
-            tour.restart(7);
+            tour.restart(6);
         } else {
-            tour.restart(15);
+            tour.restart(14);
         }
     } else if (document.URL.includes("/profile/") && document.getElementById("semester-hours") &&
             tour.ended() && localStorage.getItem("main-tour_student_hours") === "false") {
         // Show semester hours for student if it was skipped previously
-        tour.restart(5);
+        tour.restart(4);
     } else if (document.URL.includes("/profile/") && document.getElementById("calendar") &&
             tour.ended() && localStorage.getItem("main-tour_calendar") === "false") {
         // Show calendar steps if it was skipped previously
         if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
-            tour.restart(8);
+            tour.restart(7);
         } else {
-            tour.restart(16);
+            tour.restart(15);
         }
     } else {
         tour.start();
@@ -510,5 +496,5 @@ function start_tour() {
 function start_tour_category() {
     // Set variable for group selection only
     localStorage.setItem("main-tour_category", "true");
-    tour.restart(7);
+    tour.restart(6);
 }
