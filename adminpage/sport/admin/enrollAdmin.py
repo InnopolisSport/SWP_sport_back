@@ -5,16 +5,15 @@ from django.contrib import admin, messages
 from django.http import HttpResponse
 from openpyxl import Workbook
 
-from sport.models import Enroll, Group, Semester
+from sport.models import Enroll, Semester
 from .site import site
 from .utils import custom_titled_filter, cache_filter, cache_dependent_filter, custom_order_filter
 
 
-class TrainerTextFilter(AutocompleteFilter):
-    title = "trainer"
-    field_name = "trainer"
-    rel_model = Group
-    parameter_name = "group__trainer"
+class StudentTextFilter(AutocompleteFilter):
+    title = "student"
+    field_name = "student"
+    parameter_name = "student"
 
 
 def export_primary_as_xlsx(modeladmin, request, queryset):
@@ -73,6 +72,7 @@ class EnrollAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
+        StudentTextFilter,
         # semester filter, resets group sub filter
         (
             "group__semester",
@@ -86,7 +86,6 @@ class EnrollAdmin(admin.ModelAdmin):
         ("group__is_club", custom_titled_filter("club status")),
         ("is_primary", custom_titled_filter("primary status")),
         ("group__sport", admin.RelatedOnlyFieldListFilter),
-        TrainerTextFilter,
     )
 
     list_display = (
@@ -107,6 +106,4 @@ class EnrollAdmin(admin.ModelAdmin):
     )
 
     class Media:
-        js = (
-            "sport/js/list_filter_collapse.js",
-        )
+        pass

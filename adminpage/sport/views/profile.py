@@ -68,15 +68,17 @@ def profile_view(request, **kwargs):
             semester=current_semester,
         ).exists()
 
+        secondary_groups = len([
+            group
+            for group in student_groups_parsed
+            if not group["is_primary"]
+        ])
         context.update({
             "student": {
                 "student_id": student.pk,
                 "sport_groups": student_groups_parsed,
-                "secondary_group_left": 2 - len([
-                    group
-                    for group in student_groups_parsed
-                    if not group["is_primary"]
-                ]),
+                "no_primary_group": secondary_groups == len(student_groups_parsed),
+                "secondary_group_left": 2 - secondary_groups,
                 "semesters": student_brief_hours_info,
                 "obj": student,
                 "has_med_group_submission": has_med_group_submission,

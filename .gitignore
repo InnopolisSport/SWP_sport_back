@@ -1,5 +1,6 @@
 compose/db_data/*
 !compose/db_data/.keep
+compose/*.sh
 
 .idea/
 

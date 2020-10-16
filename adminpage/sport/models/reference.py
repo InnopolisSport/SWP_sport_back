@@ -12,7 +12,7 @@ class Reference(models.Model):
     student = models.ForeignKey('Student', on_delete=models.CASCADE, null=False)
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, null=False)
     image = models.ImageField(upload_to=get_reference_path)
-    hours = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    hours = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     uploaded = models.DateTimeField(auto_now_add=True, null=False)
     approval = models.BooleanField(null=True)
 
