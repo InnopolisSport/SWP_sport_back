@@ -61,6 +61,19 @@
                     {% endif %}
                 {% endif %}
 
+                <div class="container">
+                    <div class="row justify-content-center">
+                        {% if user.is_staff or user.is_superuser %}
+                            <div class="col-md-12 col-sm-12  mb-1">
+
+                                <a href="{% url 'admin:index' %}" class="btn btn-info">
+                                    Admin panel
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
                 {% if student %}
                     <meta id="illness-data" data-ill="{{ student.is_ill }}">
                     {% if student.sport_groups|length > 0 %}
@@ -147,19 +160,6 @@
                             </table>
                         </div>
                     {% endif %}
-
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            {% if user.is_staff or user.is_superuser %}
-                                <div class="col-md-12 col-sm-12  mb-1">
-
-                                    <a href="{% url 'admin:index' %}" class="btn btn-info">
-                                        Admin panel
-                                    </a>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
 
                     <div class="container" id="control-buttons">
                         <div class="row justify-content-center">
