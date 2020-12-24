@@ -1,7 +1,7 @@
-import pytest
 import unittest
 from datetime import date
 
+import pytest
 from django.conf import settings
 from django.forms.models import model_to_dict
 
@@ -43,7 +43,7 @@ def test_club_for_student(
 
 
 @pytest.mark.django_db
-@pytest.mark.freeze_time('2020-01-20 10:03')
+@pytest.mark.freeze_time('2020-01-02 10:03')
 def test_sport(
         student_factory,
         sport_factory,
@@ -59,6 +59,50 @@ def test_sport(
     sport_list = get_sports()
     assert list(sport_list) == [
         model_to_dict(sport),
+    ]
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time('2020-01-05 10:03')
+def test_sports_in_new_empty_semester(
+        student_factory,
+        sport_factory,
+        semester_factory,
+        group_factory,
+):
+    student_factory("A")
+    sport = sport_factory(name="Sport")
+    s1 = semester_factory(name="S1", start=date(2020, 1, 1), end=date(2020, 1, 3))
+    group_factory(name="C1", sport=sport, semester=s1, capacity=20)
+    group_factory(name="C2", sport=sport, semester=s1, capacity=20)
+
+    semester_factory(name="S2", start=date(2020, 1, 4), end=date(2020, 1, 7))
+
+    sport_list = get_sports()
+    assert len(list(sport_list)) == 0
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time('2020-01-05 10:03')
+def test_sports_in_new_filled_semester(
+        student_factory,
+        sport_factory,
+        semester_factory,
+        group_factory,
+):
+    student_factory("A")
+    sport = sport_factory(name="Sport")
+    s1 = semester_factory(name="S1", start=date(2020, 1, 1), end=date(2020, 1, 3))
+    group_factory(name="C1", sport=sport, semester=s1, capacity=20)
+    group_factory(name="C2", sport=sport, semester=s1, capacity=20)
+
+    sport1 = sport_factory(name="Sport1")
+    s2 = semester_factory(name="S2", start=date(2020, 1, 4), end=date(2020, 1, 7))
+    group_factory(name="C1", sport=sport1, semester=s2, capacity=20)
+
+    sport_list = get_sports()
+    assert list(sport_list) == [
+        model_to_dict(sport1),
     ]
 
 
