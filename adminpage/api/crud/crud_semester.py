@@ -1,7 +1,7 @@
 from sport.models import Semester
 
 
-def get_ongoing_semester():
+def get_ongoing_semester() -> Semester:
     """
     Retrieves current ongoing semester
     @return ongoing semester

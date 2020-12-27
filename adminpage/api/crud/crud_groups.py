@@ -1,8 +1,9 @@
 from typing import Optional
 
+from django.conf import settings
 from django.db import connection
 
-from django.conf import settings
+import api.crud
 from api.crud.utils import dictfetchall
 from sport.models import Sport, Student, Trainer
 
@@ -14,13 +15,15 @@ def get_sports(all=False, student: Optional[Student] = None):
     @param student - if student passed, get sports applicable for student
     @return list of all sport types
     """
+    # w/o distinct returns a lot of duplicated
     if student is None or student.medical_group_id > 0:
         qs = Sport.objects.filter(group__minimum_medical_group_id__gt=0).distinct()
     elif student.medical_group_id < 0:
         qs = Sport.objects.filter(group__minimum_medical_group_id__lt=0).distinct()
     else:
         qs = Sport.objects.filter(group__minimum_medical_group_id=0).distinct()
-    # w/o distinct returns a lot of duplicated
+    # Return those objects for which exists at least 1 group in current semester
+    qs = qs.filter(group__semester__pk=api.crud.get_ongoing_semester().pk)
     return qs.all().values() if all else qs.filter(special=False).values()
 
 
