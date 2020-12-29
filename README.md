@@ -14,6 +14,7 @@ following environment variables:
 * `POSTGRES_PASSWORD`- database password 
 * `POSTGRES_DB` - database name
 * `POSTGRES_SERVER` - database hostname (`db` - by default)
+* `GF_SECURITY_ADMIN_PASSWORD` - admin password for Grafana Dashboard
 * `SECRET_KEY` - a secret key for token verifications
 * `PROJECT_NAME`- project title
 * `SCHEMA` - schema of a web page (prefer `https`)

@@ -98,6 +98,7 @@ else:
 INSTALLED_APPS = [
     'adminpage.apps.SportAdminConfig',
     'django.contrib.auth',
+    'revproxy',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
