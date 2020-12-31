@@ -11,6 +11,5 @@ urlpatterns = [
     path('profile/', profile_view, name='profile'),
     path('category/', category_view, name='category'),
     path('calendar/sport/<int:sport_id>', calendar_view, name="sport_schedule_calendar"),
-
     path('form/meg_group', process_med_group_form, name="process_med_group_form"),
 ]

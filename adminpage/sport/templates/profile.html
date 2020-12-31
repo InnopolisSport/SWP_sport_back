@@ -81,9 +81,7 @@
                             Your sport groups for semester <b>{{ common.semester_name }}</b>
                             are:
                             {% for group in student.sport_groups %}
-                                {#<span class="badge badge-pill {{ 'badge-success' if group.is_primary else 'badge-secondary' }}"#}
-                                <span class="badge badge-pill
-                                        {{ group.is_primary|yesno:"badge-success, badge-secondary" }}"
+                                <span class="badge badge-pill badge-success"
                                       id="student-span"
                                       onclick="openGroupInfoModalForStudent('/api/group/{{ group.id }}')">{{ group.name }}</span>
                             {% endfor %}
@@ -179,17 +177,13 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-6 col-sm-12 col-right mb-1">
-                                {% if student.no_primary_group %}
+                                {% if student.group_choices_left > 1 %}
                                     <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
-                                        Choose primary sport group
+                                        {{ student.group_choices_left }} group choices left
                                     </a>
-                                {% elif student.secondary_group_left > 1 %}
+                                {% elif student.group_choices_left == 1 %}
                                     <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
-                                        {{ student.secondary_group_left }} secondary choices left
-                                    </a>
-                                {% elif student.secondary_group_left == 1 %}
-                                    <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
-                                        1 secondary choice left
+                                        1 group choice left
                                     </a>
                                 {% else %}
                                     <a href="{% url 'category' %}" class="btn btn-primary disabled tour-step-choice-btn"
