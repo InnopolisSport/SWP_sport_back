@@ -9,16 +9,31 @@ class Migration(migrations.Migration):
     dependencies = [
         ('sport', '0039_auto_20200830_1221'),
     ]
+    # Needed to preserve Django state
+    # https://docs.djangoproject.com/en/3.1/ref/migration-operations/#runsql
+    atomic = False
 
     grafana_user = getenv('GRAFANA_DB_USER')
     grafana_password = getenv('GRAFANA_DB_USER_PASSWORD')
 
     operations = {
         migrations.RunSQL(
-            f"create role {grafana_user} with login "
-            f"password '{grafana_password}' "
-            "nosuperuser inherit nocreatedb nocreaterole noreplication "
-            "valid until 'infinity';",
+            # Create user for grafana if not exists already
+            f'''
+            DO
+            $do$
+            BEGIN
+               IF NOT EXISTS (
+                  SELECT FROM pg_catalog.pg_roles
+                  WHERE  rolname = '{grafana_user}') THEN
+                  create role {grafana_user} 
+                    with login password '{grafana_password}' 
+                    nosuperuser inherit nocreatedb nocreaterole noreplication 
+                    valid until 'infinity';
+               END IF;
+            END
+            $do$;
+            ''',
             reverse_sql=f"drop role {grafana_user};"
         ),
     }
