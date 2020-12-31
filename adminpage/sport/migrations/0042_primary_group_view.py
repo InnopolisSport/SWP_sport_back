@@ -11,8 +11,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             """
-create or replace function get_primary_groups_in_semester(query_semester_id 
-int)
+create or replace function get_primary_groups_in_semester(query_semester_id int)
     returns table
             (
                 student_id int,
@@ -21,16 +20,12 @@ int)
 as
 $$
 begin
-    with ranked_attended_groups as (
-        select a.student_id                                                
-        as student_id,
-               g.id                                                        
-               as group_id,
-               count(a.id)                                                 
-               as attendance_count,
+    return query with ranked_attended_groups as (
+        select a.student_id                                                as student_id,
+               g.id                                                        as group_id,
+               count(a.id)                                                 as attendance_count,
                row_number()
-               over (partition by a.student_id order by count(a.id) desc ) 
-               as rk
+               over (partition by a.student_id order by count(a.id) desc ) as rk
         from "group" g
                  join training t on g.id = t.group_id
                  join attendance a on t.id = a.training_id
@@ -41,8 +36,8 @@ begin
         group by a.student_id, g.id
     ),
          best_suit as (
-             select student_id, group_id
-             from ranked_attended_groups
+             select rag.student_id, rag.group_id
+             from ranked_attended_groups rag
              where rk = 1
          )
     select *

@@ -1,5 +1,7 @@
+from typing import Optional
+
 from sport.models import Student, Enroll, Group
-from django.db import transaction
+from django.db import transaction, connection
 
 
 @transaction.atomic
@@ -25,3 +27,14 @@ def unenroll_student(group: Group, student: Student) -> int:
             group=group,
         ).delete()
     return removed_count
+
+
+def get_primary_groups(semester_id: int):
+    # TODO: test this in django
+    if semester_id is None or not isinstance(semester_id, int):
+        raise ValueError("semester_id must be int")
+    with connection.cursor() as cursor:
+        cursor.execute()
+    return Enroll.objects.raw(
+        'select * from get_primary_groups_in_semester(%s);', [semester_id]
+    )

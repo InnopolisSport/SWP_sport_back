@@ -1,14 +1,22 @@
 import pytest
 from datetime import date
 
-from api.crud import enroll_student, unenroll_student
+from django.utils import timezone
+
+from api.crud import enroll_student, unenroll_student, get_primary_groups, \
+    get_ongoing_semester
 from sport.models import Enroll
 
 dummy_date = date(2020, 1, 1)
 
 
 @pytest.mark.django_db
-def test_enroll(student_factory, sport_factory, semester_factory, group_factory):
+def test_enroll(
+        student_factory,
+        sport_factory,
+        semester_factory,
+        group_factory
+):
     student = student_factory("A").student
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S19", start=dummy_date, end=dummy_date)
