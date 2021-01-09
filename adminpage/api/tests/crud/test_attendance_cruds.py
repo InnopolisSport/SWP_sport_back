@@ -51,11 +51,13 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
     assertMembers(stat1, [
         {
             "group": g12.name,
+            "custom_name": None,
             "timestamp": trainings[1].start,
             "hours": 2
         },
         {
             "group": g11.name,
+            "custom_name": None,
             "timestamp": trainings[0].start,
             "hours": 1
         }
@@ -63,11 +65,13 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
     assertMembers(stat2, [
         {
             "group": g22.name,
+            "custom_name": None,
             "timestamp": trainings[3].start,
             "hours": 4
         },
         {
             "group": g21.name,
+            "custom_name": None,
             "timestamp": trainings[2].start,
             "hours": 3
         }

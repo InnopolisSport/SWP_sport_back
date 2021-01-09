@@ -9,12 +9,12 @@ class Training(models.Model):
     start = models.DateTimeField(null=False)
     end = models.DateTimeField(null=False)
     training_class = models.ForeignKey("TrainingClass", on_delete=models.SET_NULL, null=True, blank=True)
+    custom_name = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
         db_table = "training"
         verbose_name_plural = "trainings"
         constraints = [
-            models.UniqueConstraint(fields=["group", "start", "end"], name="unique_training"),
             models.CheckConstraint(check=Q(start__lt=F('end')), name='training_start_before_end')
         ]
         indexes = [

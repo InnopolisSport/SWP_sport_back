@@ -32,7 +32,7 @@ def get_detailed_hours(student: Student, semester: Semester):
     Retrieves statistics of hours in one semester
     """
     with connection.cursor() as cursor:
-        cursor.execute('SELECT g.name AS "group", t.start AS "timestamp", a.hours AS hours '
+        cursor.execute('SELECT g.name AS "group", t.custom_name AS custom_name, t.start AS "timestamp", a.hours AS hours '
                        'FROM training t, "group" g, attendance a '
                        'WHERE a.student_id = %s '
                        'AND a.training_id = t.id '
