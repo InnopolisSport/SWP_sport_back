@@ -25,6 +25,18 @@ class TrainingGradesSerializer(serializers.Serializer):
     grades = GradeReportSerializer(many=True)
 
 
+class LastAttendedStat(serializers.Serializer):
+    student_id = serializers.IntegerField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.EmailField()
+    last_attended = serializers.FloatField(default=None)
+
+
+class LastAttendedDatesSerializer(serializers.Serializer):
+    last_attended_dates = LastAttendedStat(many=True)
+
+
 class BadGradeReportGradeSerializer(serializers.Serializer):
     email = serializers.EmailField()
     hours = serializers.FloatField()

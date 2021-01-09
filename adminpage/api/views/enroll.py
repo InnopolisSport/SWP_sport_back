@@ -1,25 +1,25 @@
 from django.db import transaction, InternalError, IntegrityError
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
 from api.crud import (
     unenroll_student,
-    get_ongoing_semester,
     enroll_student,
 )
-from api.permissions import IsStudent
+from api.permissions import IsStudent, IsTrainer
 from api.serializers import (
     EnrollSerializer,
     error_detail,
     EmptySerializer,
     NotFoundSerializer,
-    ErrorSerializer,
+    ErrorSerializer, UnenrollStudentSerializer,
 )
-from sport.models import Group
+from api.views.attendance import is_training_group
+from sport.models import Group, Student
 
 
 class EnrollErrors:
@@ -28,6 +28,7 @@ class EnrollErrors:
     DOUBLE_ENROLL = (4, "You can't enroll to a group you have already enrolled to")
     PRIMARY_UNENROLL = (5, "Can't unenroll from primary group")
     MEDICAL_DISALLOWANCE = (6, "You can't enroll to the group due to your medical group")
+    NOT_ENROLLED = (7, "Requested student is not enrolled into this group")
 
 
 @swagger_auto_schema(
@@ -126,6 +127,51 @@ def unenroll(request, **kwargs):
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(
                 *EnrollErrors.PRIMARY_UNENROLL
+            )
+        )
+    return Response({})
+
+
+@swagger_auto_schema(
+    method="POST",
+    request_body=UnenrollStudentSerializer,
+    responses={
+        status.HTTP_200_OK: EmptySerializer,
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer,
+        status.HTTP_400_BAD_REQUEST: ErrorSerializer,
+    },
+)
+@api_view(["POST"])
+@permission_classes([IsTrainer])
+@transaction.atomic
+def unenroll_by_trainer(request, **kwargs):
+    """
+    Unenroll student
+
+    Error codes:
+    5 - Can't unenroll from primary group
+    """
+    serializer = UnenrollStudentSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    group = get_object_or_404(
+        Group,
+        pk=serializer.validated_data["group_id"]
+    )
+
+    is_training_group(group, request.user)
+
+    student = get_object_or_404(
+        Student,
+        pk=serializer.validated_data["student_id"]
+    )
+
+    removed_count = unenroll_student(group, student)
+    if removed_count == 0:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(
+                *EnrollErrors.NOT_ENROLLED
             )
         )
     return Response({})
