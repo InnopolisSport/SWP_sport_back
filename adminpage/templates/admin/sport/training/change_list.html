@@ -4,7 +4,7 @@
 
     {% if has_add_permission %}
         <li>
-            <a href="{{ model.add_url }}add-extra/" class="addlink">
+            <a href="{{ model.admin_url }}add-extra/" class="addlink">
                 {% blocktrans with cl.opts.verbose_name as name %}Add extra {{ name }}{% endblocktrans %}
             </a>
         </li>

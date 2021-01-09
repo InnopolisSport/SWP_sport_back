@@ -161,12 +161,9 @@ class TrainingAdmin(admin.ModelAdmin):
         "training_class",
     )
 
-    readonly_fields = (
-        "custom_name",
-    )
-
     fields = (
         "group",
+        "custom_name"
         "schedule",
         "start",
         "end",
@@ -215,7 +212,7 @@ class TrainingAdmin(admin.ModelAdmin):
             (None, {
                 'fields': ('group', 'event_name', ('start_day', 'end_day'))
                 if 'add-extra' in request.path
-                else ('group' if obj is None or obj.custom_name is None else ('group', 'custom_name'), 'start', 'end')
+                else ('group', 'custom_name', 'start', 'end')
             }),
             ('Add attended students with same hours', {
                 'fields': ('attended_students', 'hours',)
