@@ -185,7 +185,7 @@ let students_in_table = {}; // <student_id: jquery selector of a row in the tabl
 
 function add_student_row(student_id, full_name, email, hours) {
     const row = $(`<tr id="student_${student_id}">
-                    <td class="trainer-table-width">${full_name}</td>
+                    <td class="trainer-table-width" onclick="if ($('.hide-email-in-trainer-table').first().css('display') === 'none') { if (this.innerHTML === '${full_name}') this.innerHTML = '${email}'; else this.innerHTML = '${full_name}'; }">${full_name}</td>
                     <td class="hide-email-in-trainer-table">${email}</td>
                     <td class="hours-in-trainer-table-right" style="cursor: pointer">
                         <form onsubmit="return false">
