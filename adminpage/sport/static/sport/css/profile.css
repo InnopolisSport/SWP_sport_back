@@ -118,6 +118,23 @@ a.help-link {
     .row {
         margin-top: 1%;
     }
+
+    /* Hide student email and correct columns within trainers' table */
+    .trainer-table-display {
+        display: block;
+    }
+
+    .trainer-table-width {
+        width: 100%;
+    }
+
+    .hide-email-in-trainer-table {
+        display: none;
+    }
+
+    .hours-in-trainer-table-right {
+        text-align: right;
+    }
 }
 
 @media only screen and (min-width: 577px) and (max-width: 768px) {
