@@ -9,7 +9,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL('''
-ALTER TABLE training DROP CONSTRAINT same_date;
-''')
+        migrations.RunSQL(
+            'ALTER TABLE training DROP CONSTRAINT same_date;',
+            reverse_sql='ALTER TABLE training ADD CONSTRAINT same_date CHECK (date(start) = date("end"));'
+        )
     ]
