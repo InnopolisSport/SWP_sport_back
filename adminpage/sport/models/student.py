@@ -36,7 +36,7 @@ class Student(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if type(self.telegram) == str and self.telegram[0] != '@':
+        if self.telegram is not None and self.telegram[0] != '@':
             self.telegram = '@' + self.telegram
         super().save(*args, **kwargs)
 

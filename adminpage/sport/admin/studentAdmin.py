@@ -31,9 +31,9 @@ class StudentResource(resources.ModelResource):
         user, _ = user_model.objects.get_or_create(
             email=row["email"],
             defaults={
-                "first_name": row["first_name"],
-                "last_name": row["last_name"],
-                "username": row["email"],
+                "first_name": row.get("first_name"),
+                "last_name": row.get("last_name"),
+                "username": row.get("email"),
             },
         )
 
@@ -139,7 +139,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     def write_to_telegram(self, obj):
         return None if obj.telegram is None else \
-            format_html(f"<a href=\"https://t.me/{obj.telegram[1:]}\">{obj.telegram}</a>")
+            format_html("<a href=\"https://t.me/{}\">{}</a>", obj.telegram[1:], obj.telegram)
 
     ordering = (
         "user__first_name",
