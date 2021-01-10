@@ -35,6 +35,11 @@ class Student(models.Model):
         blank=True
     )
 
+    def save(self, *args, **kwargs):
+        if type(self.telegram) == str and self.telegram[0] != '@':
+            self.telegram = '@' + self.telegram
+        super().save(*args, **kwargs)
+
     class Meta:
         db_table = "student"
         verbose_name_plural = "students"

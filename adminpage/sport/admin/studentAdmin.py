@@ -83,14 +83,22 @@ class StudentResource(resources.ModelResource):
 class StudentAdmin(ImportMixin, admin.ModelAdmin):
     resource_class = StudentResource
 
-    fields = (
-        "user",
-        "is_ill",
-        "medical_group",
-        "enrollment_year",
-        ("telegram", "write_to_telegram"),
-        "has_enrolled"
-    )
+    def get_fields(self, request, obj=None):
+        if obj is None:
+            return (
+                "user",
+                "medical_group",
+                "enrollment_year",
+                "telegram",
+            )
+        return (
+            "user",
+            "is_ill",
+            "medical_group",
+            "enrollment_year",
+            "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
+            "has_enrolled"
+        )
 
     autocomplete_fields = (
         "user",
@@ -116,7 +124,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "is_ill",
         "medical_group",
         "has_enrolled",
-        "telegram",
+        "write_to_telegram",
     )
 
     readonly_fields = (
@@ -130,7 +138,8 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     has_enrolled.boolean = True
 
     def write_to_telegram(self, obj):
-        return format_html(f"<a href=\"https://t.me/{obj.telegram[1:]}\">{obj.telegram}</a>")
+        return None if obj.telegram is None else \
+            format_html(f"<a href=\"https://t.me/{obj.telegram[1:]}\">{obj.telegram}</a>")
 
     ordering = (
         "user__first_name",
