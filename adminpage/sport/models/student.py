@@ -29,6 +29,12 @@ class Student(models.Model):
         default=get_current_study_year,
     )
 
+    telegram = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
     class Meta:
         db_table = "student"
         verbose_name_plural = "students"

@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.db.models import ForeignKey
 from django.db.models.expressions import RawSQL
+from django.utils.html import format_html
 from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 
@@ -64,6 +65,7 @@ class StudentResource(resources.ModelResource):
             "user__first_name",
             "user__last_name",
             "enrollment_year",
+            "telegram",
         )
         export_order = (
             "user",
@@ -72,6 +74,7 @@ class StudentResource(resources.ModelResource):
             "user__last_name",
             "medical_group",
             "enrollment_year",
+            "telegram",
         )
         import_id_fields = ("user",)
 
@@ -79,6 +82,15 @@ class StudentResource(resources.ModelResource):
 @admin.register(Student, site=site)
 class StudentAdmin(ImportMixin, admin.ModelAdmin):
     resource_class = StudentResource
+
+    fields = (
+        "user",
+        "is_ill",
+        "medical_group",
+        "enrollment_year",
+        ("telegram", "write_to_telegram"),
+        "has_enrolled"
+    )
 
     autocomplete_fields = (
         "user",
@@ -88,6 +100,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "user__first_name",
         "user__last_name",
         "user__email",
+        "telegram",
     )
 
     list_filter = (
@@ -103,9 +116,11 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "is_ill",
         "medical_group",
         "has_enrolled",
+        "telegram",
     )
 
     readonly_fields = (
+        "write_to_telegram",
         "has_enrolled",
     )
 
@@ -113,6 +128,9 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         return obj.has_enrolled
 
     has_enrolled.boolean = True
+
+    def write_to_telegram(self, obj):
+        return format_html(f"<a href=\"https://t.me/{obj.telegram[1:]}\">{obj.telegram}</a>")
 
     ordering = (
         "user__first_name",
