@@ -11,11 +11,15 @@ class SuggestionSerializer(serializers.Serializer):
     label = serializers.CharField()
 
 
-class GradeReportSerializer(serializers.Serializer):
+class StudentInfoSerializer(serializers.Serializer):
     student_id = serializers.IntegerField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
+    full_name = serializers.CharField()
     email = serializers.EmailField()
+
+
+class GradeReportSerializer(StudentInfoSerializer):
     hours = serializers.FloatField(default=None)
 
 
@@ -25,12 +29,8 @@ class TrainingGradesSerializer(serializers.Serializer):
     grades = GradeReportSerializer(many=True)
 
 
-class LastAttendedStat(serializers.Serializer):
-    student_id = serializers.IntegerField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    email = serializers.EmailField()
-    last_attended = serializers.FloatField(default=None)
+class LastAttendedStat(StudentInfoSerializer):
+    last_attended = serializers.CharField()
 
 
 class LastAttendedDatesSerializer(serializers.Serializer):
