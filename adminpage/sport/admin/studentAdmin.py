@@ -3,8 +3,10 @@ from django.contrib.auth import get_user_model
 from django.db.models import ForeignKey
 from django.db.models.expressions import RawSQL
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
+from import_export.results import RowResult
 
 from sport.models import Student, MedicalGroup
 from sport.signals import get_or_create_student_group
@@ -77,6 +79,34 @@ class StudentResource(resources.ModelResource):
             "telegram",
         )
         import_id_fields = ("user",)
+        skip_unchanged = False
+        report_skipped = True
+        raise_errors = False
+
+    def import_row(self, row, instance_loader, **kwargs):
+        # overriding import_row to ignore errors and skip rows that fail to import
+        # without failing the entire import
+        import_result = super().import_row(row, instance_loader, **kwargs)
+        if import_result.import_type == RowResult.IMPORT_TYPE_ERROR:
+            # Copy the values to display in the preview report
+            import_result.diff = [
+                None,
+                row.get('email'),
+                row.get('first_name'),
+                row.get('last_name'),
+                row.get('medical_group'),
+                row.get('enrollment_year'),
+                row.get('telegram'),
+            ]
+            # Add a column with the error message
+            import_result.diff.append(mark_safe(
+                f'''Errors:<ul>{''.join([f'<li>{err.error}</li>' for err in import_result.errors])}</ul>'''
+            ))
+            # clear errors and mark the record to skip
+            import_result.errors = []
+            import_result.import_type = RowResult.IMPORT_TYPE_SKIP
+
+        return import_result
 
 
 @admin.register(Student, site=site)
