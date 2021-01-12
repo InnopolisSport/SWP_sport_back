@@ -19,6 +19,7 @@ def get_attended_training_info(training_id: int, student: Student):
             'SELECT '
             'g.id AS group_id, '
             'g.name AS group_name, '
+            'tr.custom_name AS custom_name, '
             'g.description AS group_description, '
             'tc.name AS training_class, '
             'g.capacity AS capacity, '
@@ -27,16 +28,16 @@ def get_attended_training_info(training_id: int, student: Student):
             'd.last_name AS trainer_last_name, '
             'd.email AS trainer_email, '
             'COALESCE(a.hours, 0) AS hours, '
-            'COALESCE(bool_or(e.student_id = %s), false) AS is_enrolled, '
-            'COALESCE(bool_or(e.student_id = %s AND is_primary = TRUE), false) AS is_primary '
+            'COALESCE(bool_or(e.student_id = %(student_id)s), false) AS is_enrolled, '
+            'COALESCE(bool_or(e.student_id = %(student_id)s AND is_primary = TRUE), false) AS is_primary '
             'FROM training tr '
             'LEFT JOIN training_class tc ON tr.training_class_id = tc.id, "group" g '
             'LEFT JOIN enroll e ON e.group_id = g.id '
             'LEFT JOIN auth_user d ON g.trainer_id = d.id '
-            'LEFT JOIN attendance a ON a.training_id = %s AND a.student_id = %s '
+            'LEFT JOIN attendance a ON a.training_id = %(training_id)s AND a.student_id = %(student_id)s '
             'WHERE tr.group_id = g.id '
-            'AND tr.id = %s '
-            'GROUP BY g.id, d.id, a.id, tc.id', (student.pk, student.pk, training_id, student.pk, training_id))
+            'AND tr.id = %(training_id)s '
+            'GROUP BY g.id, d.id, a.id, tr.id, tc.id', {"student_id": student.pk, "training_id": training_id})
         return dictfetchone(cursor)
 
 
@@ -85,18 +86,34 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'g.id AS group_id, '
                        'g.name AS group_name, '
                        'tc.name AS training_class, '
-                       'COALESCE(a.hours, 0) AS hours, '
                        'FALSE AS can_grade '
                        'FROM enroll e, "group" g, sport s, training t '
-                       'LEFT JOIN attendance a ON a.student_id = %s AND a.training_id = t.id '
                        'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE t.start > %s AND t."end" < %s '
+                       'WHERE t.start > %(start)s AND t."end" < %(end)s '
                        'AND g.sport_id = s.id '
-                       'AND (hours > 0 OR s.name != %s) '
+                       'AND s.name != %(extra_sport)s '
                        'AND t.group_id = g.id '
                        'AND e.group_id = g.id '
-                       'AND e.student_id = %s '
-                       'AND g.semester_id = current_semester()', (student.pk, start, end, settings.OTHER_SPORT_NAME, student.pk))
+                       'AND e.student_id = %(student_id)s '
+                       'AND g.semester_id = current_semester() '
+                       'UNION DISTINCT '
+                       'SELECT '
+                       't.id AS id, '
+                       't.start AS start, '
+                       't."end" AS "end", '
+                       'g.id AS group_id, '
+                       'COALESCE(t.custom_name, g.name) AS group_name, '
+                       'tc.name AS training_class, '
+                       'FALSE AS can_grade '
+                       'FROM attendance a, "group" g, training t '
+                       'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
+                       'WHERE t.start > %(start)s AND t."end" < %(end)s '
+                       'AND a.student_id = %(student_id)s '
+                       'AND t.group_id = g.id '
+                       'AND a.training_id = t.id '
+                       'AND g.semester_id = current_semester()',
+                       {"start": start, "end": end, "extra_sport": settings.OTHER_SPORT_NAME, "student_id": student.pk}
+                       )
         return dictfetchall(cursor)
 
 

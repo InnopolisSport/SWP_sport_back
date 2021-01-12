@@ -45,14 +45,23 @@ async function openModal(id, apiUrl) {
 
 function renderGroupModalBody(body, data) {
     const {
-        group_description, trainer_first_name, trainer_last_name, trainer_email, capacity, current_load, training_class
+        group_description,
+        trainer_first_name,
+        trainer_last_name,
+        trainer_email,
+        capacity,
+        current_load,
+        training_class,
+        hours
     } = data;
     if (group_description) {
         body.append(`<p>${group_description}</p>`);
     }
 
     const p = body.append('<p>').children('p:last-child');
-    p.append(`<div>Available places: <strong>${capacity - current_load}/${capacity}</strong></div>`);
+    if (capacity) {
+        p.append(`<div>Available places: <strong>${capacity - current_load}/${capacity}</strong></div>`);
+    }
     if (training_class) {
         p.append(`<div>Class: <strong>${training_class}</strong></div>`);
     }
@@ -63,6 +72,9 @@ function renderGroupModalBody(body, data) {
                         <a href="mailto:${trainer_email}">${trainer_email}</a>
                      </p>`);
     }
+    if (hours) {
+        body.append(`<p>Marked hours: <strong>${hours.toFixed(2)}</strong></p>`);
+    }
 }
 
 function formatTime(time) {
@@ -71,7 +83,7 @@ function formatTime(time) {
 
 async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
     const {data, title, body, footer} = await openModal('#group-info-modal', apiUrl)
-    const {group_id, group_name, is_enrolled, capacity, current_load, is_primary, schedule} = data;
+    const {custom_name, group_id, group_name, is_enrolled, capacity, current_load, is_primary, schedule} = data;
 
     let disabled_attr;
 
@@ -98,7 +110,7 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
         `);
         footer.find('.btn-success').click(() => enroll(group_id, 'enroll', enrollErrorCb));
     }
-    title.text(`${group_name} group`);
+    title.text(custom_name || `${group_name} group`);
     renderGroupModalBody(body, data)
     if (schedule && schedule.length > 0) {
 
