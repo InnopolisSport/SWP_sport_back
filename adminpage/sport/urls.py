@@ -25,5 +25,5 @@ urlpatterns = [
         r'dashboard/(?P<path>.*)$',
         staff_member_required(GraphanaProxyView.as_view()),
         name='grafana-dashboard'
-    )
+    ),
 ]
