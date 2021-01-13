@@ -1,6 +1,5 @@
 from django.db import transaction, InternalError, IntegrityError
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -8,7 +7,6 @@ from rest_framework.response import Response
 
 from api.crud import (
     unenroll_student,
-    get_ongoing_semester,
     enroll_student,
 )
 from api.permissions import IsStudent
@@ -24,10 +22,13 @@ from sport.models import Group
 
 class EnrollErrors:
     GROUP_IS_FULL = (2, "Group you chosen is full")
-    TOO_MUCH_SECONDARY = (3, "You have too much secondary groups")
-    DOUBLE_ENROLL = (4, "You can't enroll to a group you have already enrolled to")
-    PRIMARY_UNENROLL = (5, "Can't unenroll from primary group")
-    MEDICAL_DISALLOWANCE = (6, "You can't enroll to the group due to your medical group")
+    TOO_MUCH_GROUPS = (3, "You have enrolled to too much groups")
+    DOUBLE_ENROLL = (4, "You can't enroll to a group "
+                        "you have already enrolled to"
+                     )
+    INCONSISTENT_UNENROLL = (5, "You are not enrolled to the group")
+    MEDICAL_DISALLOWANCE = (6, "You can't enroll to the group "
+                               "due to your medical group")
 
 
 @swagger_auto_schema(
@@ -60,8 +61,11 @@ def enroll(request, **kwargs):
     )
     student = request.user.student
     if group.minimum_medical_group_id is not None \
-            and student.medical_group_id * group.minimum_medical_group_id <= 0 \
-            and not (student.medical_group_id == 0 and group.minimum_medical_group_id == 0):
+            and student.medical_group_id * group.minimum_medical_group_id <= \
+            0 \
+            and not (
+            student.medical_group_id == 0 and group.minimum_medical_group_id
+            == 0):
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*EnrollErrors.MEDICAL_DISALLOWANCE)
@@ -80,7 +84,7 @@ def enroll(request, **kwargs):
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data=error_detail(
-                    *EnrollErrors.TOO_MUCH_SECONDARY
+                    *EnrollErrors.TOO_MUCH_GROUPS
                 )
             )
         else:
@@ -125,7 +129,7 @@ def unenroll(request, **kwargs):
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(
-                *EnrollErrors.PRIMARY_UNENROLL
+                *EnrollErrors.INCONSISTENT_UNENROLL
             )
         )
     return Response({})
