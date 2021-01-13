@@ -162,3 +162,26 @@ def get_students_grades(training_id: int):
                        'AND t.id = %(training_id)s '
                        'AND t.group_id = e.group_id ', {"training_id": training_id})
         return dictfetchall(cursor)
+
+
+def get_student_last_attended_dates(group_id: int):
+    """
+    Retrieves last attended dates for students
+    @param group_id - searched group id
+    @return list of students and their last attended training timestamp
+    """
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT '
+                       'd.id AS student_id, '
+                       'd.first_name AS first_name, '
+                       'd.last_name AS last_name, '
+                       'd.email AS email, '
+                       'max(t.start) AS last_attended, '
+                       'concat(d.first_name, \' \', d.last_name) as full_name '
+                       'FROM enroll e, auth_user d '
+                       'LEFT JOIN attendance a ON a.student_id = d.id '
+                       'LEFT JOIN training t ON a.training_id = t.id AND t.group_id = %(group_id)s '
+                       'WHERE e.group_id = %(group_id)s '
+                       'AND e.student_id = d.id '
+                       'GROUP BY d.id', {"group_id": group_id})
+        return dictfetchall(cursor)
