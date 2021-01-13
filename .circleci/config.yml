@@ -19,10 +19,10 @@ jobs:
             sleep 3
             docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py makemigrations
             docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate auth
-            docker-compose -f compose/docker-compose-test.yml exec db psql \
-              -U user -d database -c \
-              "INSERT INTO django_migrations (app, name, applied) VALUES ('accounts', '0001_initial', CURRENT_TIMESTAMP); \
-              UPDATE django_content_type SET app_label = 'accounts' WHERE app_label = 'auth' and model = 'user';"
+#            docker-compose -f compose/docker-compose-test.yml exec db psql \
+#              -U user -d database -c \
+#              "INSERT INTO django_migrations (app, name, applied) VALUES ('accounts', '0001_initial', CURRENT_TIMESTAMP); \
+#              UPDATE django_content_type SET app_label = 'accounts' WHERE app_label = 'auth' and model = 'user';"
             docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate
       - run:
           name: "Run tests"
