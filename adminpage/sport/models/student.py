@@ -29,6 +29,17 @@ class Student(models.Model):
         default=get_current_study_year,
     )
 
+    telegram = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
+    def save(self, *args, **kwargs):
+        if self.telegram is not None and self.telegram[0] != '@':
+            self.telegram = '@' + self.telegram
+        super().save(*args, **kwargs)
+
     class Meta:
         db_table = "student"
         verbose_name_plural = "students"
