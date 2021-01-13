@@ -11,14 +11,14 @@ User = get_user_model()
 
 @pytest.mark.django_db
 def test_student_create(student_factory):
-    student_factory("A")
+    student_factory("A@foo.bar")
     assert User.objects.count() == 1
     assert Student.objects.count() == 1
 
 
 @pytest.mark.django_db
 def test_student_delete(student_factory):
-    student_user = student_factory("A")
+    student_user = student_factory("A@foo.bar")
     assert User.objects.count() == 1
     assert Student.objects.count() == 1
     student_user.delete()
@@ -29,7 +29,7 @@ def test_student_delete(student_factory):
 @pytest.mark.django_db
 def test_get_email_name_like_students(student_factory, semester_factory,
                                       sport_factory, group_factory):
-    user = student_factory(username="a", first_name="Kirill",
+    user = student_factory(first_name="Kirill",
                            last_name="Fedoseev",
                            email="k.fedoseev@innopolis.university")
     assert get_email_name_like_students(0, "Kirill") == [{

@@ -40,7 +40,6 @@ def special_groups_create(sender, instance, created, **kwargs):
             email=settings.SPORT_DEPARTMENT_EMAIL,
             defaults={
                 "is_active": True,
-                "username": settings.SPORT_DEPARTMENT_EMAIL,
             }
         )
         sport_dep_user.groups.add(trainer_group)

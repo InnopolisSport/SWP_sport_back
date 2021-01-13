@@ -7,5 +7,5 @@ class GraphanaProxyView(ProxyView):
     def get_proxy_request_headers(self, request):
         headers = super(GraphanaProxyView, self).get_proxy_request_headers(
             request)
-        headers['X-WEBAUTH-USER'] = request.user.username
+        headers['X-WEBAUTH-USER'] = request.user.email
         return headers

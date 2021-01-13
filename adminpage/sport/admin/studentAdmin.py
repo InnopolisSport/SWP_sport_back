@@ -35,7 +35,6 @@ class StudentResource(resources.ModelResource):
             defaults={
                 "first_name": row.get("first_name"),
                 "last_name": row.get("last_name"),
-                "username": row.get("email"),
             },
         )
 
@@ -131,7 +130,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         )
 
     autocomplete_fields = (
-        "user",
+        # "user",
     )
 
     search_fields = (

@@ -36,18 +36,16 @@ def create_user_in_groups(
         predefined_groups: Tuple[Group] = (),
 ):
     def create_app_user(
-            username: str,
+            email: str,
             password: Optional[str] = None,
             first_name: Optional[str] = "first name",
             last_name: Optional[str] = "last name",
-            email: Optional[str] = "foo@bar.com",
             is_staff: str = False,
             is_superuser: str = False,
             is_active: str = True,
             groups: Tuple[Group] = (),
     ):
         user = get_user_model().objects.create_user(
-            username=username,
             password=password,
             first_name=first_name,
             last_name=last_name,

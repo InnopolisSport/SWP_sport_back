@@ -17,10 +17,10 @@ def test_reference_upload(
         semester_factory,
         freezer
 ):
-    username = "user"
+    email = "user@foo.bar"
     password = "pass"
     user = student_factory(
-        username=username,
+        email=email,
         password=password,
     )
     semester = semester_factory(
@@ -30,7 +30,7 @@ def test_reference_upload(
     )
     client = APIClient()
     client.login(
-        username=username,
+        email=email,
         password=password,
     )
     image_sm = Image.new('RGB', (600, 300))

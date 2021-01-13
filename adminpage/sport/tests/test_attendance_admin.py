@@ -19,7 +19,8 @@ training_end = datetime(2020, 1, 15, 20, 0, 0, tzinfo=timezone.utc)
 
 change_url = reverse("admin:sport_attendance_changelist")
 semester_filter_slug = "training__group__semester__id__exact={semester_id}"
-period_filter_slug = "training__start__range__gte={start}&training__start__range__lte={end}"
+period_filter_slug = "training__start__range__gte={" \
+                     "start}&training__start__range__lte={end}"
 
 
 def get_semester_filter(semester: Semester) -> dict:
@@ -57,7 +58,7 @@ def setup(
     )
 
     trainer_user = trainer_factory(
-        username="user",
+        email="user@foo.bar",
         password="pass"
     )
 
@@ -80,7 +81,6 @@ def setup(
     )
 
     student_user = student_factory(
-        username="student",
         password="student",
         email="student@example.com",
     )
@@ -104,13 +104,21 @@ def mark_attendance(
 @pytest.mark.django_db
 def test_empty_filters(
         setup,
-        admin_user,
+        user_factory,
 ):
     training, trainer_user, student_user, _ = setup
+    admin_password = 'password'
+    admin_email = 'admin@example.com'
+    user_factory(
+        email=admin_email,
+        password=admin_password,
+        is_staff=True,
+        is_superuser=True,
+    )
     client = APIClient()
     client.login(
-        username="admin",
-        password="password",
+        username=admin_email,
+        password=admin_password,
     )
 
     mark_attendance(
@@ -139,54 +147,5 @@ def test_empty_filters(
     content = response.content.decode().replace("\n", "")
 
     assert response.status_code == 200
-    assert "Please filter by semester or specify training start range" in content
-
-
-# @pytest.mark.django_db
-# def test_semester_filter(
-#         setup,
-#         admin_user,
-# ):
-#     # TODO: make test
-#     training, trainer_user, student_user, semester = setup
-#     client = APIClient()
-#     client.login(
-#         username="admin",
-#         password="password",
-#     )
-
-#     mark_attendance(
-#         training,
-#         [
-#             (student_user, 3),
-#         ]
-#     )
-
-#     qs = list(Attendance.objects.values_list(
-#         "id",
-#         flat=True,
-#     ))
-
-#     data = {
-#         'action': 'export_attendance_as_xlsx',
-#         ACTION_CHECKBOX_NAME: qs,
-#         **get_semester_filter(semester),
-#     }
-
-#     response = client.post(
-#         change_url,
-#         data,
-#         follow=True,
-
-#     )
-
-#     content = response.content
-#     print(type(response), file=stderr)
-
-#     print(response, file=stderr)
-#     # print(response['Content-Disposition'], file=stderr)
-
-#     assert False
-
-#     # assert response.status_code == 200
-#     # assert "Please filter by semester or specify training start range" in content
+    assert "Please filter by semester or specify training start range" in \
+           content

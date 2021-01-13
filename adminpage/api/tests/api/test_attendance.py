@@ -43,7 +43,7 @@ def setup(
     )
 
     trainer_user = trainer_factory(
-        username="user",
+        email="user@foo.bar",
         password="pass"
     )
 
@@ -66,7 +66,6 @@ def setup(
     )
 
     student_user = student_factory(
-        username="student",
         password="student",
         email="student@example.com",
     )
@@ -171,12 +170,10 @@ def test_attendance_during_training_outbound(setup, student_factory):
     hours_underflow = -1
 
     student_user_overflow = student_factory(
-        username="overflow",
         email="overflow@example.com"
     )
 
     student_user_underflow = student_factory(
-        username="underflow",
         email="underflow@example.com"
     )
 

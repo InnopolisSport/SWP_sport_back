@@ -42,17 +42,17 @@ def setup_group(
 
 @pytest.fixture
 def logged_in_student_general_med(student_factory) -> Tuple[APIClient, User]:
-    username = "user"
+    email = "user@foo.bar"
     password = "pass"
     student_user = student_factory(
-        username=username,
+        email=email,
         password=password,
     )
     student_user.student.medical_group_id = MedicalGroups.GENERAL
     student_user.save()
     client = APIClient()
     client.login(
-        username=username,
+        email=email,
         password=password,
     )
     return client, student_user

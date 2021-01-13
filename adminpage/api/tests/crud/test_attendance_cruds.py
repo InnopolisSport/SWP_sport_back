@@ -76,8 +76,8 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
 
 @pytest.mark.django_db
 def test_mark_hours(student_factory, sport_factory, semester_factory, group_factory, training_factory):
-    student1 = student_factory("A").student
-    student2 = student_factory("B").student
+    student1 = student_factory("A@foo.bar").student
+    student2 = student_factory("B@foo.bar").student
     sport = sport_factory(name="Sport")
     semester = semester_factory(name="S19", start=dummy_date, end=dummy_date)
     group = group_factory(name="G1", sport=sport, semester=semester, capacity=20)
@@ -101,7 +101,7 @@ def test_mark_hours(student_factory, sport_factory, semester_factory, group_fact
 
 @pytest.mark.django_db
 def test_toggle_illness(student_factory):
-    student = student_factory("A").student
+    student = student_factory("A@foo.bar").student
     assert not student.is_ill
     toggle_illness(student)
     assert student.is_ill

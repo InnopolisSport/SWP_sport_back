@@ -86,7 +86,7 @@ class Migration(migrations.Migration):
         ),
         # Allow select on some users
         migrations.RunSQL(
-            "grant select (id, username, first_name, last_name, email) "
+            "grant select (id, first_name, last_name, email) "
             f"on auth_user to {grafana_user};",
             reverse_sql=migrations.RunSQL.noop,
         )

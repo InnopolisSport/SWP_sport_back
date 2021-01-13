@@ -96,6 +96,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    'accounts',
     'adminpage.apps.SportAdminConfig',
     'django.contrib.auth',
     'revproxy',
@@ -146,7 +147,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'adminpage.wsgi.application'
 
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Authentication
 OAUTH_CLIENT_ID = os.getenv('oauth_appID')
@@ -177,7 +178,6 @@ AUTH_ADFS = {
     "CLAIM_MAPPING": {
         "first_name": "given_name",
         "last_name": "family_name",
-        "email": "email"
     },
 }
 
