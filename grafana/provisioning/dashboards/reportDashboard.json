@@ -17,112 +17,12 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1610468021405,
+  "id": 2,
+  "iteration": 1610561632068,
   "links": [],
   "panels": [
     {
       "datasource": "SportPostgres",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null,
-            "displayMode": "auto",
-            "filterable": false
-          },
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "",
-              "to": "",
-              "type": 1
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "id": 5,
-      "options": {
-        "frameIndex": 1,
-        "showHeader": true
-      },
-      "pluginVersion": "7.3.6",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "select * \nfrom (\n  select g.id,\n       g.name,\n       coalesce(sum(t.hours), 0)                   as total_hours,\n       coalesce(sum(t.attendance_per_training), 0) as attendance_count,\n       case\n          when g.name = 'Self training' then 'self'\n           when g.is_club then 'club'\n           else 'IU'\n       end                                         as status\nfrom \"group\" g\n         left join (select tr.id,\n                           tr.group_id,\n                           sum(a.hours)   as hours,\n                           count(a.hours) as attendance_per_training\n                    from training tr\n                             join attendance a on tr.id = a.training_id\n                    where $__timeFilter(tr.start)\n                    group by tr.id) t\n                   on g.id = t.group_id\ngroup by g.id\norder by total_hours desc, attendance_count desc\n) as x\nwhere x.status in ($groupType)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Group attendance report",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "status": true
-            },
-            "indexByName": {},
-            "renameByName": {
-              "attendance_count": "Attendance records",
-              "id": "Group ID",
-              "name": "Group name",
-              "status": "",
-              "total_hours": "Hours"
-            }
-          }
-        }
-      ],
-      "transparent": true,
-      "type": "table"
-    },
-    {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -161,8 +61,8 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
+        "w": 24,
+        "x": 0,
         "y": 0
       },
       "id": 4,
@@ -170,8 +70,8 @@
         "showHeader": true,
         "sortBy": [
           {
-            "desc": true,
-            "displayName": "hours"
+            "desc": false,
+            "displayName": "Email"
           }
         ]
       },
@@ -182,7 +82,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select au.first_name,\n       au.last_name,\n       au.email,\n       s.enrollment_year,\n       mg.id                 as medical_group_id,\n       mg.name               as medical_group,\n       coalesce(at.hours, 0) as hours,\n       pg.primary_group_name,\n       pg.primary_group_id\nfrom student s\n         join auth_user au on au.id = s.user_id\n         join medical_group mg on s.medical_group_id = mg.id\n         left join (select student_id,\n                           sum(hours) as hours\n                    from attendance\n                             join training\n                                  on attendance.training_id = training.id\n                    where $__timeFilter(start)\n                    group by student_id) at on s.user_id = at.student_id\n         left join (select e.student_id,\n                           g.name as primary_group_name,\n                           g.id   as primary_group_id\n                    from enroll e\n                             join \"group\" g on e.group_id = g.id\n                    where e.is_primary = true\n) pg on s.user_id = pg.student_id",
+          "rawSql": "select au.first_name,\n       au.last_name,\n       au.email,\n       s.enrollment_year,\n       mg.id                 as medical_group_id,\n       mg.name               as medical_group,\n       coalesce(at.hours, 0) as hours,\n       pg.name,\n       pg.id\nfrom student s\n         join auth_user au on au.id = s.user_id\n         join medical_group mg on s.medical_group_id = mg.id\n         left join (select student_id, pgg.id, pgg.name\n                    from get_primary_groups_in_semester(current_semester())\n                    join \"group\" pgg on group_id=pgg.id\n          ) pg on s.user_id = pg.student_id\n         left join (select student_id,\n                           sum(hours) as hours\n                    from attendance\n                             join training\n                                  on attendance.training_id = training.id\n                    where $__timeFilter(start)\n                    group by student_id) at on s.user_id = at.student_id\n         \n",
           "refId": "A",
           "select": [
             [
@@ -207,6 +107,166 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Students report",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "email": "Email",
+              "enrollment_year": "Enrollment Year",
+              "first_name": "First name",
+              "hours": "Hours for period",
+              "id": "Primary group id",
+              "last_name": "Last name",
+              "medical_group": "Medical group",
+              "medical_group_id": "",
+              "name": "Primary group name"
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "SportPostgres",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "displayMode": "auto",
+            "filterable": false
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "",
+              "to": "",
+              "type": 1
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Semester Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 119
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Semester"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 75
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Group ID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 83
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 5,
+      "options": {
+        "frameIndex": 1,
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.3.6",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select * \nfrom (\n  select\n       g.id,\n       g.name,\n       coalesce(sum(t.hours), 0)                   as total_hours,\n       coalesce(sum(t.attendance_per_training), 0) as attendance_count,\n       case\n          when g.name = 'Self training' then 'self'\n           when g.is_club then 'club'\n           else 'IU'\n       end                                         as status\n    from \"group\" g\n         join semester sem on sem.id = g.semester_id\n         left join (select tr.id,\n                           tr.group_id,\n                           sum(a.hours)   as hours,\n                           count(a.hours) as attendance_per_training\n                    from training tr\n                             join attendance a on tr.id = a.training_id\n                    where $__timeFilter(tr.start)\n                    group by tr.id) t\n                   on g.id = t.group_id\n  where sem.name = '$semesterName'\n  group by g.id, sem.id\n  order by total_hours desc, attendance_count desc\n  ) as x\nwhere x.status in ($groupType)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Group attendance report",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "status": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "attendance_count": "Attendance records",
+              "id": "Group ID",
+              "name": "Group name",
+              "name 1": "Semester",
+              "name 2": "Group Name",
+              "status": "",
+              "total_hours": "Hours"
+            }
+          }
+        }
+      ],
       "transparent": true,
       "type": "table"
     }
@@ -223,10 +283,10 @@
           "selected": true,
           "tags": [],
           "text": [
-            "All"
+            "self"
           ],
           "value": [
-            "$__all"
+            "self"
           ]
         },
         "error": null,
@@ -247,12 +307,12 @@
             "value": "self"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "IU",
             "value": "IU"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "club",
             "value": "club"
           }
@@ -261,6 +321,33 @@
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "F20",
+          "value": "F20"
+        },
+        "datasource": "SportPostgres",
+        "definition": "select name from semester;",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Semester",
+        "multi": false,
+        "name": "semesterName",
+        "options": [],
+        "query": "select name from semester;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 4,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allValue": null,
@@ -276,7 +363,7 @@
         "datasource": "SportPostgres",
         "definition": "select name from \"group\" where semester_id=current_semester()",
         "error": null,
-        "hide": 0,
+        "hide": 2,
         "includeAll": true,
         "label": "Group name",
         "multi": true,
@@ -296,8 +383,8 @@
     ]
   },
   "time": {
-    "from": "2020-12-06T21:00:00.000Z",
-    "to": "2020-12-13T20:59:59.000Z"
+    "from": "now-6M",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
