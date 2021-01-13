@@ -89,7 +89,7 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'FALSE AS can_grade '
                        'FROM enroll e, "group" g, sport s, training t '
                        'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE t.start > %(start)s AND t."end" < %(end)s '
+                       'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
                        'AND g.sport_id = s.id '
                        'AND s.name != %(extra_sport)s '
                        'AND t.group_id = g.id '
@@ -107,7 +107,7 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'FALSE AS can_grade '
                        'FROM attendance a, "group" g, training t '
                        'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE t.start > %(start)s AND t."end" < %(end)s '
+                       'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
                        'AND a.student_id = %(student_id)s '
                        'AND t.group_id = g.id '
                        'AND a.training_id = t.id '
@@ -135,10 +135,10 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
                        'tc.name AS training_class, '
                        'TRUE AS can_grade '
                        'FROM "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE t.start > %s AND t."end" < %s '
+                       'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
                        'AND t.group_id = g.id '
-                       'AND g.trainer_id = %s '
-                       'AND g.semester_id = current_semester()', (start, end, trainer.pk))
+                       'AND g.trainer_id = %(trainer_id)s '
+                       'AND g.semester_id = current_semester()', {"start": start, "end": end, "trainer_id": trainer.pk})
         return dictfetchall(cursor)
 
 
