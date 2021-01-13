@@ -36,7 +36,7 @@ def get_attended_training_info(training_id: int, student: Student):
             'LEFT JOIN attendance a ON a.training_id = %(training_pk)s AND a.student_id = %(student_pk)s '
             'WHERE tr.group_id = g.id '
             'AND tr.id = %(training_pk)s '
-            'GROUP BY g.id, d.id, a.id, tc.id',
+            'GROUP BY g.id, d.id, a.id, tc.id, tr.id',
             {
                 "student_pk": student.pk,
                 "training_pk": training_id
