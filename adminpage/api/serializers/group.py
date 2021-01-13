@@ -26,6 +26,5 @@ class GroupInfoSerializer(serializers.Serializer):
     trainer_email = serializers.CharField()
 
     is_enrolled = serializers.BooleanField()
-    is_primary = serializers.BooleanField()
 
     schedule = ScheduleSerializer(many=True)
