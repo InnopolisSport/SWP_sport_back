@@ -1,10 +1,12 @@
 from django.conf import settings
-from django.contrib.auth.models import User, Group
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.db.models.signals import m2m_changed
 from django.dispatch.dispatcher import receiver
 
 from sport.models import Student, Trainer
 
+User = get_user_model()
 
 def get_current_group_mapping():
     group_mapping = {}

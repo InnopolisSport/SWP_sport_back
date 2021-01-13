@@ -1,15 +1,17 @@
 from datetime import datetime, date
-from sys import stderr
 from typing import Tuple, Iterable, Optional
 
 import pytest
 from django.contrib.admin import ACTION_CHECKBOX_NAME
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APIClient
 
 from api.crud import mark_hours
-from sport.models import Training, User, Attendance, Semester
+from sport.models import Training, Attendance, Semester
+
+User = get_user_model()
 
 before_training = datetime(2020, 1, 15, 17, 0, 0, tzinfo=timezone.utc)
 training_start = datetime(2020, 1, 15, 18, 0, 0, tzinfo=timezone.utc)

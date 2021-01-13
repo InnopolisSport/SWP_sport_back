@@ -146,6 +146,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'adminpage.wsgi.application'
 
+AUTH_USER_MODEL = 'auth.User'
+
 # Authentication
 OAUTH_CLIENT_ID = os.getenv('oauth_appID')
 OAUTH_CLIENT_SECRET = os.getenv("oauth_shared_secret")

@@ -1,10 +1,12 @@
 from datetime import date
 
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from sport.models import Student
 from api.crud import get_email_name_like_students
+
+User = get_user_model()
 
 
 @pytest.mark.django_db
@@ -25,8 +27,11 @@ def test_student_delete(student_factory):
 
 
 @pytest.mark.django_db
-def test_get_email_name_like_students(student_factory, semester_factory, sport_factory, group_factory):
-    user = student_factory(username="a", first_name="Kirill", last_name="Fedoseev", email="k.fedoseev@innopolis.university")
+def test_get_email_name_like_students(student_factory, semester_factory,
+                                      sport_factory, group_factory):
+    user = student_factory(username="a", first_name="Kirill",
+                           last_name="Fedoseev",
+                           email="k.fedoseev@innopolis.university")
     assert get_email_name_like_students(0, "Kirill") == [{
         "id": user.student.pk,
         "first_name": user.first_name,
@@ -38,7 +43,8 @@ def test_get_email_name_like_students(student_factory, semester_factory, sport_f
     assert len(get_email_name_like_students(0, "Kirill Fed")) == 1
     assert len(get_email_name_like_students(0, "Kirill Fedoseev")) == 1
     assert len(get_email_name_like_students(0, "k.fedoseev")) == 1
-    assert len(get_email_name_like_students(0, "k.fedoseev@innopolis.university")) == 1
+    assert len(get_email_name_like_students(0,
+                                            "k.fedoseev@innopolis.university")) == 1
     assert len(get_email_name_like_students(0, "kfedoseev")) == 0
 
     start = date(2020, 1, 20)
@@ -61,10 +67,13 @@ def test_get_email_name_like_students(student_factory, semester_factory, sport_f
         semester=sem,
         minimum_medical_group_id=None
     )
-    assert len(get_email_name_like_students(group.id, "k.fedoseev@innopolis.university")) == 1
+    assert len(get_email_name_like_students(group.id,
+                                            "k.fedoseev@innopolis.university")) == 1
     group.minimum_medical_group_id = 0
     group.save()
-    assert len(get_email_name_like_students(group.id, "k.fedoseev@innopolis.university")) == 0
+    assert len(get_email_name_like_students(group.id,
+                                            "k.fedoseev@innopolis.university")) == 0
     user.student.medical_group_id = 0
     user.save()
-    assert len(get_email_name_like_students(group.id, "k.fedoseev@innopolis.university")) == 1
+    assert len(get_email_name_like_students(group.id,
+                                            "k.fedoseev@innopolis.university")) == 1

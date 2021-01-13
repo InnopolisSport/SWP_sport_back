@@ -1,9 +1,10 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+
+User = get_user_model()
 
 # add save button on top for all admins
-
 admin.ModelAdmin.save_on_top = True
 
 from .site import SportAdminSite, site

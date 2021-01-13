@@ -3,7 +3,7 @@ from typing import Tuple
 
 import pytest
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -11,13 +11,17 @@ from rest_framework.test import APIClient
 from api.views.attendance import AttendanceErrors
 from sport.models import Trainer, Training, Attendance
 
+User = get_user_model()
 before_training = datetime(2020, 1, 15, 17, 0, 0, tzinfo=timezone.utc)
 training_start = datetime(2020, 1, 15, 18, 0, 0, tzinfo=timezone.utc)
 during_training = datetime(2020, 1, 15, 19, 0, 0, tzinfo=timezone.utc)
 training_end = datetime(2020, 1, 15, 20, 0, 0, tzinfo=timezone.utc)
-long_after_training = training_start + settings.TRAINING_EDITABLE_INTERVAL + timedelta(hours=5)
+long_after_training = training_start + settings.TRAINING_EDITABLE_INTERVAL +\
+                      timedelta(
+    hours=5)
 
-assert before_training < training_start < during_training < training_end < long_after_training
+assert before_training < training_start < during_training < training_end < \
+       long_after_training
 
 
 @pytest.fixture

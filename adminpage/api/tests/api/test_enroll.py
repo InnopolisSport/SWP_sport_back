@@ -1,15 +1,16 @@
-from datetime import date, datetime
+from datetime import date
 from typing import Tuple
 
 import pytest
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.utils import timezone
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from api.views.enroll import EnrollErrors
 from sport.models import Enroll, Group, MedicalGroups
+
+User = get_user_model()
 
 start = date(2020, 1, 1)
 end = date(2020, 2, 20)
@@ -59,7 +60,8 @@ def logged_in_student_general_med(student_factory) -> Tuple[APIClient, User]:
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-01 10:00')
-def test_enroll_primary_success(setup_group: Group, logged_in_student_general_med):
+def test_enroll_primary_success(setup_group: Group,
+                                logged_in_student_general_med):
     client, student_user = logged_in_student_general_med
 
     response = client.post(
@@ -78,7 +80,8 @@ def test_enroll_primary_success(setup_group: Group, logged_in_student_general_me
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-01 10:00')
-def test_enroll_primary_full_group(setup_group: Group, logged_in_student_general_med):
+def test_enroll_primary_full_group(setup_group: Group,
+                                   logged_in_student_general_med):
     client, student_user = logged_in_student_general_med
     setup_group.capacity = 0
     setup_group.save()
@@ -97,7 +100,9 @@ def test_enroll_primary_full_group(setup_group: Group, logged_in_student_general
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-01 10:00')
-def test_enroll_secondary_success(setup_group: Group, logged_in_student_general_med, group_factory):
+def test_enroll_secondary_success(setup_group: Group,
+                                  logged_in_student_general_med,
+                                  group_factory):
     client, student_user = logged_in_student_general_med
 
     response = client.post(
@@ -138,7 +143,8 @@ def test_enroll_secondary_success(setup_group: Group, logged_in_student_general_
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-01 10:00')
-def test_enroll_secondary_full_group(setup_group: Group, logged_in_student_general_med):
+def test_enroll_secondary_full_group(setup_group: Group,
+                                     logged_in_student_general_med):
     client, student_user = logged_in_student_general_med
     setup_group.capacity = 0
     setup_group.save()
@@ -157,7 +163,8 @@ def test_enroll_secondary_full_group(setup_group: Group, logged_in_student_gener
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-01 10:00')
-def test_enroll_insufficient_medical(setup_group: Group, logged_in_student_general_med, freezer):
+def test_enroll_insufficient_medical(setup_group: Group,
+                                     logged_in_student_general_med, freezer):
     client, student_user = logged_in_student_general_med
 
     student_user.student.medical_group_id = MedicalGroups.SPECIAL2
@@ -223,7 +230,8 @@ def test_enroll_secondary_too_many_secondary_groups(
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-01 10:00')
-def test_unenroll_secondary(setup_group: Group, logged_in_student_general_med, enroll_factory):
+def test_unenroll_secondary(setup_group: Group, logged_in_student_general_med,
+                            enroll_factory):
     client, student_user = logged_in_student_general_med
     enroll_factory(
         student_user.student,
@@ -244,7 +252,8 @@ def test_unenroll_secondary(setup_group: Group, logged_in_student_general_med, e
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-01 10:00')
-def test_unenroll_primary(setup_group: Group, logged_in_student_general_med, enroll_factory):
+def test_unenroll_primary(setup_group: Group, logged_in_student_general_med,
+                          enroll_factory):
     client, student_user = logged_in_student_general_med
     enrollment = enroll_factory(
         student_user.student,
