@@ -169,7 +169,11 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     def write_to_telegram(self, obj):
         return None if obj.telegram is None else \
-            format_html("<a href=\"https://t.me/{}\">{}</a>", obj.telegram[1:], obj.telegram)
+            format_html(
+                '<a target="_blank" href="https://t.me/{}">{}</a>',
+                obj.telegram[1:],
+                obj.telegram
+            )
 
     ordering = (
         "user__first_name",
