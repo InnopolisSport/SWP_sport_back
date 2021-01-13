@@ -46,8 +46,8 @@ class Student(models.Model):
         verbose_name_plural = "students"
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name} (" \
-               f"{self.user.email})"
+        return f"{self.user.first_name} {self.user.last_name} " \
+               f"({self.user.email})"
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

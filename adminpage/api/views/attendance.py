@@ -140,8 +140,11 @@ def mark_attendance(request, **kwargs):
     try:
         training = Training.objects.select_related(
             "group"
-        ).only("group__trainer", "start", "end").get(
-            pk=serializer.validated_data["training_id"])
+        ).only(
+            "group__trainer", "start", "end"
+        ).get(
+            pk=serializer.validated_data["training_id"]
+        )
     except Training.DoesNotExist:
         raise NotFound()
 
@@ -171,10 +174,12 @@ def mark_attendance(request, **kwargs):
         hours_put = id_to_hours[student.pk]
         if hours_put < 0:
             negative_mark.append(
-                compose_bad_grade_report(student.email, hours_put))
+                compose_bad_grade_report(student.email, hours_put)
+            )
         elif hours_put > max_hours:
             overflow_mark.append(
-                compose_bad_grade_report(student.email, hours_put))
+                compose_bad_grade_report(student.email, hours_put)
+            )
         else:
             hours_to_mark.append((student, hours_put))
 

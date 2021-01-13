@@ -21,8 +21,8 @@ training_end = datetime(2020, 1, 15, 20, 0, 0, tzinfo=timezone.utc)
 long_after_training = training_start + settings.TRAINING_EDITABLE_INTERVAL + \
                       timedelta(hours=5)
 
-assert before_training < training_start < during_training < training_end < \
-       long_after_training
+assert before_training < training_start < during_training\
+       < training_end < long_after_training
 
 
 @pytest.fixture
@@ -234,11 +234,10 @@ def test_attendance_dates_trainer_report(
     attendance_factory(student_user.student, training, 1)
 
     response = client.get(
-        f"/{settings.PREFIX}api/attendance/{training.group.pk}/report")
+        f"/{settings.PREFIX}api/attendance/{training.group.pk}/report"
+    )
 
     assert response.status_code == status.HTTP_200_OK
-
-
     assertMembers(response.data['last_attended_dates'], [
         {
             'email': 'student@example.com',

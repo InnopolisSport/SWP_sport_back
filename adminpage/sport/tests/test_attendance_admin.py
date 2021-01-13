@@ -19,8 +19,8 @@ training_end = datetime(2020, 1, 15, 20, 0, 0, tzinfo=timezone.utc)
 
 change_url = reverse("admin:sport_attendance_changelist")
 semester_filter_slug = "training__group__semester__id__exact={semester_id}"
-period_filter_slug = "training__start__range__gte={" \
-                     "start}&training__start__range__lte={end}"
+period_filter_slug = "training__start__range__gte={start}&" \
+                     "training__start__range__lte={end}"
 
 
 def get_semester_filter(semester: Semester) -> dict:
