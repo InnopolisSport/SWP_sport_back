@@ -1,6 +1,5 @@
 from django.db import transaction, InternalError, IntegrityError
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -8,7 +7,6 @@ from rest_framework.response import Response
 
 from api.crud import (
     unenroll_student,
-    get_ongoing_semester,
     enroll_student,
 )
 from api.permissions import IsStudent
@@ -28,7 +26,7 @@ class EnrollErrors:
     DOUBLE_ENROLL = (4, "You can't enroll to a group "
                         "you have already enrolled to"
                      )
-    PRIMARY_UNENROLL = (5, "Can't unenroll from every group")
+    INCONSISTENT_UNENROLL = (5, "You are not enrolled to the group")
     MEDICAL_DISALLOWANCE = (6, "You can't enroll to the group "
                                "due to your medical group")
 
@@ -131,7 +129,7 @@ def unenroll(request, **kwargs):
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(
-                *EnrollErrors.PRIMARY_UNENROLL
+                *EnrollErrors.INCONSISTENT_UNENROLL
             )
         )
     return Response({})

@@ -36,11 +36,17 @@ def test_enroll(
     assert Enroll.objects.filter(student=student).count() == 3
 
     unenroll_student(g12, student)
-    assert Enroll.objects.filter(student=student).count() == 2
+    assert Enroll.objects.filter(
+        student=student, group__semester=s1
+    ).count() == 1
     unenroll_student(g11, student)
-    assert Enroll.objects.filter(student=student).count() == 2
+    assert Enroll.objects.filter(
+        student=student, group__semester=s1
+    ).count() == 0
     unenroll_student(g2, student)
-    assert Enroll.objects.filter(student=student).count() == 2
+    assert Enroll.objects.filter(
+        student=student, group__semester=s2
+    ).count() == 0
 
 
 @pytest.mark.django_db

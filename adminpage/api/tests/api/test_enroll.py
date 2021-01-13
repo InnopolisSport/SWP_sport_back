@@ -228,13 +228,13 @@ def test_unenroll_extra(
     )
 
     g2 = group_factory(
-            "G2",
-            capacity=1,
-            sport=setup_group.sport,
-            semester=setup_group.semester,
-            trainer=setup_group.trainer,
-            is_club=setup_group.is_club,
-        )
+        "G2",
+        capacity=1,
+        sport=setup_group.sport,
+        semester=setup_group.semester,
+        trainer=setup_group.trainer,
+        is_club=setup_group.is_club,
+    )
 
     enroll_factory(
         student_user.student,
@@ -271,6 +271,5 @@ def test_unenroll_only(
         }
     )
 
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["code"] == EnrollErrors.PRIMARY_UNENROLL[0]
-    assert Enroll.objects.count() == 1
+    assert response.status_code == status.HTTP_200_OK
+    assert Enroll.objects.count() == 0

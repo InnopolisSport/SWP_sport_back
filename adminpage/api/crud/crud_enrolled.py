@@ -16,18 +16,12 @@ def enroll_student(group: Group, student: Student):
 
 def unenroll_student(group: Group, student: Student) -> int:
     """
-    Unenroll given student from a group, leaving at least 1 enroll
+    Unenroll given student from a group
     """
-    enrollment_count = Enroll.objects.filter(
+    removed_count, _ = Enroll.objects.filter(
         student=student,
-        group__semester=group.semester
-    ).count()
-    removed_count = 0
-    if enrollment_count > 1:
-        removed_count, _ = Enroll.objects.filter(
-            student=student,
-            group=group,
-        ).delete()
+        group=group,
+    ).delete()
     return removed_count
 
 
