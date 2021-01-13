@@ -46,10 +46,21 @@ def create_student_profile(instance, action, reverse, pk_set, **kwargs):
                 Trainer.objects.get_or_create(pk=instance.pk)
 
 
+def update_group_verbose_names(sid_to_name_mapping: dict):
+    groups = Group.objects.filter(name__in=sid_to_name_mapping.keys())
+    for group in groups:
+        group.verbose_name = sid_to_name_mapping[group.name]
+    Group.objects.bulk_update(groups, ['verbose_name'])
+
+
 @receiver(post_authenticate)
 def verify_bachelor_role(user, claims, adfs_response, *args, **kwargs):
-    if user.role is not None:
-        is_active_student = user.role.startswith("B")
+    token_group_mapping = dict(zip(claims["groupsid"], claims["group"]))
+    update_group_verbose_names(token_group_mapping)
+
+    if settings.STUDENT_AUTH_GROUP_VERBOSE_NAME in claims["group"] and \
+            user.role is not None:
+        is_active_student = user.role.startswith(settings.BACHELOR_GROUPS_PREFIX)
         user.is_active = is_active_student
         if not is_active_student:
             group_mapping = get_current_group_mapping()

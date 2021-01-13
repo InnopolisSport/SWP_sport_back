@@ -65,6 +65,7 @@ TRAINING_EDITABLE_INTERVAL = timedelta(
 )
 
 BACHELOR_STUDY_PERIOD_YEARS = 4
+BACHELOR_GROUPS_PREFIX = "B"
 
 SCHEMA = os.getenv("SCHEMA", "http")
 HOSTNAME = os.getenv("HOSTNAME", "localhost")
@@ -174,7 +175,7 @@ AUTH_ADFS = {
     "USERNAME_CLAIM": "upn",
     # use group ids instead of name, because names are written in different languages
     "GROUPS_CLAIM": "groupsid",
-    "MIRROR_GROUPS": True,  # TODO: change when get info about all groups
+    "MIRROR_GROUPS": True,
     "CLAIM_MAPPING": {
         "first_name": "given_name",
         "last_name": "family_name",
