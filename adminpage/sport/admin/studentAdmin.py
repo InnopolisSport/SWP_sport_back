@@ -12,7 +12,7 @@ from sport.models import Student, MedicalGroup
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .site import site
-from .utils import user__email, has_enrolled_filter
+from .utils import user__email
 
 
 class MedicalGroupWidget(widgets.ForeignKeyWidget):
@@ -144,7 +144,6 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "is_ill",
         "enrollment_year",
         "medical_group",
-        has_enrolled_filter(),
     )
 
     list_display = (
@@ -152,19 +151,13 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         user__email,
         "is_ill",
         "medical_group",
-        "has_enrolled",
         "write_to_telegram",
     )
 
     readonly_fields = (
         "write_to_telegram",
-        "has_enrolled",
     )
 
-    def has_enrolled(self, obj):
-        return obj.has_enrolled
-
-    has_enrolled.boolean = True
 
     def write_to_telegram(self, obj):
         return None if obj.telegram is None else \
