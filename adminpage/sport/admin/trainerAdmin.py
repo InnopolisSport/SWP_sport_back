@@ -8,7 +8,7 @@ from .site import site
 @admin.register(Trainer, site=site)
 class TrainerAdmin(admin.ModelAdmin):
     autocomplete_fields = (
-        # "user",
+        "user",
     )
 
     search_fields = (

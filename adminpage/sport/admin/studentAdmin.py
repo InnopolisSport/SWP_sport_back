@@ -130,7 +130,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         )
 
     autocomplete_fields = (
-        # "user",
+        "user",
     )
 
     search_fields = (
