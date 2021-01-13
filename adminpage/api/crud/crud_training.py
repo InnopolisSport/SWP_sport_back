@@ -27,16 +27,20 @@ def get_attended_training_info(training_id: int, student: Student):
             'd.last_name AS trainer_last_name, '
             'd.email AS trainer_email, '
             'COALESCE(a.hours, 0) AS hours, '
-            'COALESCE(bool_or(e.student_id = %s), false) AS is_enrolled, '
-            'COALESCE(bool_or(e.student_id = %s AND is_primary = TRUE), false) AS is_primary '
+            'COALESCE(bool_or(e.student_id = %(student_pk)s), false) AS is_enrolled '
             'FROM training tr '
             'LEFT JOIN training_class tc ON tr.training_class_id = tc.id, "group" g '
             'LEFT JOIN enroll e ON e.group_id = g.id '
             'LEFT JOIN auth_user d ON g.trainer_id = d.id '
-            'LEFT JOIN attendance a ON a.training_id = %s AND a.student_id = %s '
+            'LEFT JOIN attendance a ON a.training_id = %(training_pk)s AND a.student_id = %(student_pk)s '
             'WHERE tr.group_id = g.id '
-            'AND tr.id = %s '
-            'GROUP BY g.id, d.id, a.id, tc.id', (student.pk, student.pk, training_id, student.pk, training_id))
+            'AND tr.id = %(training_pk)s '
+            'GROUP BY g.id, d.id, a.id, tc.id',
+            {
+                "student_pk": student.pk,
+                "training_pk": training_id
+            }
+        )
         return dictfetchone(cursor)
 
 
@@ -59,8 +63,7 @@ def get_group_info(group_id: int, student: Student):
             'd.first_name AS trainer_first_name, '
             'd.last_name AS trainer_last_name, '
             'd.email AS trainer_email, '
-            'COALESCE(bool_or(e.student_id = %(student_id)s), false) AS is_enrolled, '
-            'COALESCE(bool_or(e.student_id = %(student_id)s AND is_primary = TRUE), false) AS is_primary '
+            'COALESCE(bool_or(e.student_id = %(student_id)s), false) AS is_enrolled '
             'FROM "group" g '
             'LEFT JOIN enroll e ON e.group_id = %(group_id)s '
             'LEFT JOIN auth_user d ON g.trainer_id = d.id '
@@ -158,4 +161,27 @@ def get_students_grades(training_id: int):
                        'AND s.is_ill = FALSE '
                        'AND t.id = %(training_id)s '
                        'AND t.group_id = e.group_id ', {"training_id": training_id})
+        return dictfetchall(cursor)
+
+
+def get_student_last_attended_dates(group_id: int):
+    """
+    Retrieves last attended dates for students
+    @param group_id - searched group id
+    @return list of students and their last attended training timestamp
+    """
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT '
+                       'd.id AS student_id, '
+                       'd.first_name AS first_name, '
+                       'd.last_name AS last_name, '
+                       'd.email AS email, '
+                       'max(t.start) AS last_attended, '
+                       'concat(d.first_name, \' \', d.last_name) as full_name '
+                       'FROM enroll e, auth_user d '
+                       'LEFT JOIN attendance a ON a.student_id = d.id '
+                       'LEFT JOIN training t ON a.training_id = t.id AND t.group_id = %(group_id)s '
+                       'WHERE e.group_id = %(group_id)s '
+                       'AND e.student_id = d.id '
+                       'GROUP BY d.id', {"group_id": group_id})
         return dictfetchall(cursor)

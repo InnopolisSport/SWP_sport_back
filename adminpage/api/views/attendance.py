@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -8,12 +9,13 @@ from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.response import Response
 
 from api.crud import get_email_name_like_students, Training, \
-    get_students_grades, mark_hours
+    get_students_grades, mark_hours, get_student_last_attended_dates
 from api.permissions import IsTrainer
 from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
     TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, \
-    BadGradeReportGradeSerializer, BadGradeReport
+    BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer
+from sport.models import Group
 
 User = get_user_model()
 
@@ -27,8 +29,8 @@ class AttendanceErrors:
         3, "Some students received negative marks or more than maximum")
 
 
-def is_training_group(training, trainer):
-    if training.group.trainer_id != trainer.pk:
+def is_training_group(group, trainer):
+    if group.trainer_id != trainer.pk:
         raise PermissionDenied(
             detail="You are not a trainer of this group"
         )
@@ -88,13 +90,35 @@ def get_grades(request, training_id, **kwargs):
     except Training.DoesNotExist:
         raise NotFound()
 
-    is_training_group(training, trainer)
+    is_training_group(training.group, trainer)
 
     return Response({
         "group_id": training.group_id,
         "group_name": training.group.name,
         "start": training.start,
         "grades": get_students_grades(training_id)
+    })
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: LastAttendedDatesSerializer,
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer,
+        status.HTTP_403_FORBIDDEN: InbuiltErrorSerializer,
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsTrainer])
+def get_last_attended_dates(request, group_id, **kwargs):
+    trainer = request.user  # trainer.pk == trainer.user.pk
+
+    group = get_object_or_404(Group, pk=group_id)
+
+    is_training_group(group, trainer)
+
+    return Response({
+        "last_attended_dates": get_student_last_attended_dates(group_id)
     })
 
 
@@ -121,7 +145,7 @@ def mark_attendance(request, **kwargs):
     except Training.DoesNotExist:
         raise NotFound()
 
-    is_training_group(training, trainer)
+    is_training_group(training.group, trainer)
 
     now = timezone.now()
     if not training.start <= now <= training.start + \

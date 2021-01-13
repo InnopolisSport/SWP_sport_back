@@ -1,19 +1,42 @@
+from typing import List, Dict
+
+from django.db import transaction, connection
+
+from api.crud import dictfetchall
 from sport.models import Student, Enroll, Group
-from django.db import transaction
 
 
 @transaction.atomic
 def enroll_student(group: Group, student: Student):
     """
-    Enrolls given student in a primary group, removes all previous enrollments
+    Enrolls given student in a group
     """
-    has_primary = Enroll.objects.filter(student=student, group__semester=group.semester, is_primary=True).exists()
-    Enroll.objects.create(student=student, group=group, is_primary=not has_primary)
+    Enroll.objects.create(student=student, group=group)
 
 
 def unenroll_student(group: Group, student: Student) -> int:
     """
-    Unenrolls given student from a secondary group
+    Unenroll given student from a group
     """
-    removed_count, _ = Enroll.objects.filter(student=student, group=group, is_primary=False).delete()
+    removed_count, _ = Enroll.objects.filter(
+        student=student,
+        group=group,
+    ).delete()
     return removed_count
+
+
+def get_primary_groups(semester_id: int) -> Dict[int, int]:
+    if semester_id is None or not isinstance(semester_id, int):
+        raise ValueError("semester_id must be int")
+    with connection.cursor() as cursor:
+        cursor.execute(
+            'select * from get_primary_groups_in_semester(%s);',
+            [semester_id],
+        )
+        primary_groups_list = dictfetchall(cursor)
+    result = {}
+    for row in primary_groups_list:
+        result.update({
+            row['student_id']: row['group_id'],
+        })
+    return result
