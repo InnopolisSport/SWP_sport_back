@@ -6,9 +6,9 @@ function make_hours_table(trainings) {
         .children('tr')
         .append('<th scope="col">Group</th><th scope="col">Date</th><th scope="col">Hours</th>');
     const tbody = table.append('<tbody>').children('tbody');
-    trainings.forEach(({group, timestamp, hours}) => {
+    trainings.forEach(({group, custom_name, timestamp, hours}) => {
         tbody.append($(`<tr>
-                            <td>${group}</td>
+                            <td>${custom_name || group}</td>
                             <td>${timestamp.substr(0, 16)}</td>
                             <td>${hours}</td>
                         </tr>`))

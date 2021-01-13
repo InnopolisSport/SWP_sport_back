@@ -51,6 +51,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
     assert get_attended_training_info(t1.pk, student) == {
         "group_id": group.pk,
         "group_name": group.name,
+        "custom_name": None,
         "group_description": group.description,
         "training_class": training_class.name,
         "capacity": group.capacity,
@@ -106,6 +107,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
     assert get_attended_training_info(t2.pk, student) == {
         "group_id": group.pk,
         "group_name": group.name,
+        "custom_name": None,
         "group_description": group.description,
         "training_class": None,
         "capacity": group.capacity,
@@ -142,7 +144,6 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
                 "group_id": group.pk,
                 "group_name": group.name,
                 "training_class": training_class.name,
-                "hours": a1.hours,
                 "can_grade": False
             },
             {
@@ -152,7 +153,6 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
                 "group_id": group.pk,
                 "group_name": group.name,
                 "training_class": None,
-                "hours": 0,
                 "can_grade": False
             }
         ])

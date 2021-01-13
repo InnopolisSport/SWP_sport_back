@@ -1,15 +1,17 @@
 import io
 from collections import OrderedDict
+
+from django.urls import path
 from openpyxl import load_workbook
 
 from django.conf import settings
 from django.contrib import admin
 from django import forms
-from django.contrib.admin.widgets import AutocompleteSelectMultiple
+from django.contrib.admin.widgets import AutocompleteSelectMultiple, AdminDateWidget
 from django.db import transaction
-from django.http import HttpResponseRedirect
 from django.utils import timezone
 
+import datetime
 from api.crud import get_ongoing_semester, mark_hours
 from sport.models import Training, Student, Group
 from .inlines import ViewAttendanceInline, AddAttendanceInline
@@ -85,9 +87,36 @@ class ChangeTrainingForm(TrainingFormWithCSV):
 
 
 class CreateExtraTrainingForm(TrainingFormWithCSV):
+    event_name = forms.CharField(label='Event name', max_length=100, required=False)
+    start_day = forms.DateField(
+        label='Event start day',
+        initial=timezone.now().date(),
+        widget=AdminDateWidget(attrs={'size': 16})
+    )
+    end_day = forms.DateField(
+        label='Event end day',
+        required=False,
+        widget=AdminDateWidget(attrs={'size': 16})
+    )
+
     class Meta:
         model = Training
-        fields = ('group', 'start', 'end')
+        fields = ('group', 'event_name', 'start_day', 'end_day')
+
+    def save(self, commit=True):
+        self.instance.start = datetime.datetime.combine(
+            self.cleaned_data['start_day'],
+            datetime.time(0, 0, 0),
+            tzinfo=timezone.localtime().tzinfo
+        )
+        self.instance.end = datetime.datetime.combine(
+            self.cleaned_data['start_day' if self.cleaned_data['end_day'] is None else 'end_day'],
+            datetime.time(23, 59, 59),
+            tzinfo=timezone.localtime().tzinfo
+        )
+        if len(self.cleaned_data['event_name']) > 0:
+            self.instance.custom_name = self.cleaned_data['event_name']
+        return super().save(commit)
 
 
 CreateExtraTrainingForm.title = "Add extra training"
@@ -126,7 +155,7 @@ class TrainingAdmin(admin.ModelAdmin):
 
     list_display = (
         "group",
-        # "schedule",
+        "custom_name",
         "start",
         "end",
         "training_class",
@@ -134,6 +163,7 @@ class TrainingAdmin(admin.ModelAdmin):
 
     fields = (
         "group",
+        "custom_name"
         "schedule",
         "start",
         "end",
@@ -145,25 +175,22 @@ class TrainingAdmin(admin.ModelAdmin):
         "training_class",
     )
 
-    def response_add(self, request, obj, post_url_continue=None):
-        """Keep the same url on "Save and add one another"""
-        res = super().response_add(request, obj, post_url_continue)
-        if "_addanother" in request.POST:
-            redirect_url = request.path + ('?extra=' if 'extra' in request.GET else '')
-            return HttpResponseRedirect(redirect_url)
-        else:
-            return res
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('add-extra/', self.extra_add, name='sport_training_add_extra'),
+        ]
+        return custom_urls + urls
+
+    def extra_add(self, request):
+        return self.changeform_view(request, None, '', None)
 
     def get_form(self, request, obj=None, change=False, **kwargs):
-        """Return custom form on ?extra= URL"""
-        if obj is None and 'extra' in request.GET:
-            kwargs['form'] = CreateExtraTrainingForm
-        else:
-            kwargs['form'] = ChangeTrainingForm
+        kwargs['form'] = CreateExtraTrainingForm if 'add-extra' in request.path else ChangeTrainingForm
         return super().get_form(request, obj, change, **kwargs)
 
     def get_inlines(self, request, obj):
-        if obj is not None or 'extra' not in request.GET:
+        if obj is not None or 'add-extra' not in request.path:
             return (
                 ViewAttendanceInline,
                 AddAttendanceInline,
@@ -174,18 +201,18 @@ class TrainingAdmin(admin.ModelAdmin):
 
     def get_changeform_initial_data(self, request):
         """Custom form default values"""
-        if 'extra' in request.GET:
+        if 'add-extra' in request.path:
             return {
-                "group": Group.objects.get(semester=get_ongoing_semester(), name=settings.EXTRA_EVENTS_GROUP_NAME),
-                "start": timezone.now().replace(minute=0, second=0),
-                "end": timezone.now().replace(minute=30, second=0),
+                'group': Group.objects.get(semester=get_ongoing_semester(), name=settings.EXTRA_EVENTS_GROUP_NAME)
             }
         return {}
 
     def get_fieldsets(self, request, obj=None):
         return (
             (None, {
-                'fields': ('group', 'start', 'end')
+                'fields': ('group', 'event_name', ('start_day', 'end_day'))
+                if 'add-extra' in request.path
+                else ('group', 'custom_name', 'start', 'end')
             }),
             ('Add attended students with same hours', {
                 'fields': ('attended_students', 'hours',)
