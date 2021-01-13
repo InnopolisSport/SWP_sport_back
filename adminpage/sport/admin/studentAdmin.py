@@ -126,7 +126,6 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             "medical_group",
             "enrollment_year",
             "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
-            "has_enrolled"
         )
 
     autocomplete_fields = (
