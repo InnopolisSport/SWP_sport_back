@@ -21,18 +21,21 @@ as
 $$
 begin
     return query with ranked_attended_groups as (
-        select a.student_id                                                as student_id,
-               g.id                                                        as group_id,
-               count(a.id)                                                 as attendance_count,
-               row_number()
-               over (partition by a.student_id order by count(a.id) desc ) as rk
+        select a.student_id                     as student_id,
+               g.id                             as group_id,
+               count(a.id)                      as attendance_count,
+               row_number() over (
+                partition by a.student_id 
+                order by count(a.id) desc 
+                )                               as rk
         from "group" g
                  join training t on g.id = t.group_id
                  join attendance a on t.id = a.training_id
                  join sport s on g.sport_id = s.id
-        where s.special = FALSE                   -- IU groups
-           or (s.special = TRUE and g.is_club = TRUE) -- Clubs
-            and g.semester_id = query_semester_id -- In current semester
+        where (
+            s.special = FALSE                   -- IU groups
+            or (s.special = TRUE and g.is_club = TRUE) -- Clubs
+            ) and g.semester_id = query_semester_id -- In current semester
         group by a.student_id, g.id
     ),
          best_suit as (
