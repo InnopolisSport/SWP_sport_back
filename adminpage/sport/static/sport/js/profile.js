@@ -185,8 +185,8 @@ let students_in_table = {}; // <student_id: jquery selector of a row in the tabl
 
 function add_student_row(student_id, full_name, email, hours) {
     const row = $(`<tr id="student_${student_id}">
-                    <td class="trainer-table-width" onclick="if ($('.hide-email-in-trainer-table').first().css('display') === 'none') { if (this.innerHTML === '${full_name}') this.innerHTML = '${email}'; else this.innerHTML = '${full_name}'; }">${full_name}</td>
-                    <td class="hide-email-in-trainer-table">${email}</td>
+                    <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name}</td>
+                    <td class="trainer-table-width hide-email-in-trainer-table" onclick="show_name_hide_email()">${email}</td>
                     <td class="hours-in-trainer-table-right" style="cursor: pointer">
                         <form onsubmit="return false">
                             <input class="studentHourField trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
@@ -198,14 +198,36 @@ function add_student_row(student_id, full_name, email, hours) {
     students_in_table[student_id] = row;
 }
 
+/* The two functions are applied to the trainer table */
+function show_email_hide_name() {
+    $('.trainer-table-width.show-name-in-trainer-table').attr('class','trainer-table-width hide-name-in-trainer-table');
+    $('.trainer-table-width.hide-email-in-trainer-table').attr('class','trainer-table-width show-email-in-trainer-table');
+}
+
+function show_name_hide_email() {
+    $('.trainer-table-width.hide-name-in-trainer-table').attr('class','trainer-table-width show-name-in-trainer-table');
+    $('.trainer-table-width.show-email-in-trainer-table').attr('class','trainer-table-width hide-email-in-trainer-table');
+}
+
+/* Return classes back when resizing */
+window.addEventListener('resize', function(event){
+    const width = $(window).width()
+    const breakpoint = 576
+
+    if (width > breakpoint) {
+        show_name_hide_email()
+    }
+});
+
+
 function make_grades_table(grades) {
     students_in_table = {};
     const table = $('<table class="table table-hover table-responsive-md">');
-    table.append('<thead class="trainer-table-display">')
+    table.append('<thead class="trainer-table-width">')
         .children('thead')
         .append('<tr />')
         .children('tr')
-        .append('<th scope="col" class="trainer-table-width">Student</th><th scope="col" class="hide-email-in-trainer-table">Email</th><th scope="col" class="hours-in-trainer-table-right">Hours</th>');
+        .append('<th scope="col" class="trainer-table-width show-name-in-trainer-table">Student</th><th scope="col" class="trainer-table-width hide-email-in-trainer-table">Email</th><th scope="col" class="hours-in-trainer-table-right">Hours</th>');
     student_hours_tbody = table.append('<tbody>').children('tbody');
     grades.forEach(({student_id, full_name, email, hours}) => {
         add_student_row(student_id, full_name, email, hours);

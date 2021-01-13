@@ -120,12 +120,20 @@ a.help-link {
     }
 
     /* Hide student email and correct columns within trainers' table */
-    .trainer-table-display {
-        display: block;
-    }
-
     .trainer-table-width {
         width: 100%;
+    }
+
+    .show-name-in-trainer-table {
+        display: table-cell;
+    }
+
+    .hide-name-in-trainer-table {
+        display: none;
+    }
+
+    .show-email-in-trainer-table {
+        display: table-cell;
     }
 
     .hide-email-in-trainer-table {
