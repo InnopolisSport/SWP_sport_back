@@ -178,6 +178,7 @@ AUTH_ADFS = {
     "CLAIM_MAPPING": {
         "first_name": "given_name",
         "last_name": "family_name",
+        "role": "role",
     },
 }
 
