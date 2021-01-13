@@ -96,9 +96,9 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
-    'accounts',
     'adminpage.apps.SportAdminConfig',
     'django.contrib.auth',
+    'accounts',
     'revproxy',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
