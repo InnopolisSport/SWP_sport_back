@@ -11,7 +11,7 @@ async function  enroll(group_id, action, errorHandler=function(group_id){}) {
             } else
                 // When only two calendar steps are shown, and student has only one group (secondary - student cannot unenroll from primary group)
                 // e.g. calendar will be removed from page after reloading
-                if (!tour.ended() && $('.tour-step-choice-btn').text().includes('2 group choices left') &&
+                if (!tour.ended() && $('.tour-step-choice-btn').text().includes('group choices left') &&
                     (localStorage.getItem("main-tour_calendar") === "false")) {
                 tour.end();
             }
