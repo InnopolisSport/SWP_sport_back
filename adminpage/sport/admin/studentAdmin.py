@@ -191,11 +191,13 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.annotate(has_enrolled=RawSQL(
-            'SELECT count(*) > 0 FROM enroll, "group" '
-            'WHERE student_id = student.user_id '
-            'AND "group".semester_id = current_semester() '
-            'AND "group".id = enroll.group_id '
-            'AND enroll.is_primary = True',
-            ()
-        ))
+        # TODO: show current primary group
+        return qs
+        # return qs.annotate(has_enrolled=RawSQL(
+        #     'SELECT count(*) > 0 FROM enroll, "group" '
+        #     'WHERE student_id = student.user_id '
+        #     'AND "group".semester_id = current_semester() '
+        #     'AND "group".id = enroll.group_id '
+        #     'AND enroll.is_primary = True',
+        #     ()
+        # ))

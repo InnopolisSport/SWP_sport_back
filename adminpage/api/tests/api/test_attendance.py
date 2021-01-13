@@ -1,3 +1,4 @@
+import unittest
 from datetime import date, datetime, timedelta
 from typing import Tuple
 
@@ -12,13 +13,13 @@ from api.views.attendance import AttendanceErrors
 from sport.models import Trainer, Training, Attendance
 
 User = get_user_model()
+assertMembers = unittest.TestCase().assertCountEqual
 before_training = datetime(2020, 1, 15, 17, 0, 0, tzinfo=timezone.utc)
 training_start = datetime(2020, 1, 15, 18, 0, 0, tzinfo=timezone.utc)
 during_training = datetime(2020, 1, 15, 19, 0, 0, tzinfo=timezone.utc)
 training_end = datetime(2020, 1, 15, 20, 0, 0, tzinfo=timezone.utc)
-long_after_training = training_start + settings.TRAINING_EDITABLE_INTERVAL +\
-                      timedelta(
-    hours=5)
+long_after_training = training_start + settings.TRAINING_EDITABLE_INTERVAL + \
+                      timedelta(hours=5)
 
 assert before_training < training_start < during_training < training_end < \
        long_after_training
@@ -50,7 +51,7 @@ def setup(
     sport = sport_factory("sport1", False)
     group = group_factory(
         "G1",
-        capacity=1,
+        capacity=2,
         sport=sport,
         semester=sem,
         trainer=trainer_user.trainer,
@@ -212,3 +213,45 @@ def test_attendance_during_training_outbound(setup, student_factory):
         "hours": hours_overflow,
     }
     assert Attendance.objects.count() == 0
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time(during_training)
+def test_attendance_dates_trainer_report(setup, student_factory,
+                                         enroll_factory, attendance_factory):
+    training, trainer_user, student_user = setup
+    client = APIClient()
+    client.force_authenticate(trainer_user)
+
+    other_student_user = student_factory(
+        username="other",
+        email="student2@example.com"
+    )
+    enroll_factory(other_student_user.student, training.group)
+    attendance_factory(student_user.student, training, 1)
+
+    response = client.get(
+        f"/{settings.PREFIX}api/attendance/{training.group.pk}/report")
+
+    assert response.status_code == status.HTTP_200_OK
+
+    print(response)
+
+    assertMembers(response.data['last_attended_dates'], [
+        {
+            'email': 'student@example.com',
+            'first_name': 'first name',
+            'full_name': 'first name last name',
+            'last_attended': training.start,
+            'last_name': 'last name',
+            'student_id': student_user.pk
+        },
+        {
+            'email': 'student2@example.com',
+            'first_name': 'first name',
+            'full_name': 'first name last name',
+            'last_attended': None,
+            'last_name': 'last name',
+            'student_id': other_student_user.pk
+        },
+    ])

@@ -152,13 +152,11 @@ def training_factory():
 def enroll_factory():
     def create_enroll(
             student: Student,
-            group: Group,
-            is_primary: bool = False,
+            group: Group
     ):
         obj, _ = Enroll.objects.get_or_create(
             student=student,
-            group=group,
-            is_primary=is_primary
+            group=group
         )
         return obj
 

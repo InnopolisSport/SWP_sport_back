@@ -23,6 +23,7 @@ urlpatterns = [
     # enroll
     path(r"enrollment/enroll", enroll.enroll),
     path(r"enrollment/unenroll", enroll.unenroll),
+    path(r"enrollment/unenroll_by_trainer", enroll.unenroll_by_trainer),
 
     # group
     path(r"group/<int:group_id>", group.group_info_view),
@@ -33,6 +34,7 @@ urlpatterns = [
     # attendance
     path(r"attendance/suggest_student", attendance.suggest_student),
     path(r"attendance/<int:training_id>/grades", attendance.get_grades),
+    path(r"attendance/<int:group_id>/report", attendance.get_last_attended_dates),
     path(r"attendance/mark", attendance.mark_attendance),
 
     # calendar

@@ -65,6 +65,9 @@ TRAINING_EDITABLE_INTERVAL = timedelta(
 )
 
 BACHELOR_STUDY_PERIOD_YEARS = 4
+# When changing STUDENT_MAXIMUM_GROUP_COUNT
+# make sure to change the corresponding constraint in the DB
+STUDENT_MAXIMUM_GROUP_COUNT = 5
 
 SCHEMA = os.getenv("SCHEMA", "http")
 HOSTNAME = os.getenv("HOSTNAME", "localhost")
