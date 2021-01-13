@@ -19,7 +19,7 @@ def test_enroll(
         semester_factory,
         group_factory
 ):
-    student = student_factory("A").student
+    student = student_factory("A@foo.bar").student
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S19", start=dummy_date, end=dummy_date)
     s2 = semester_factory(name="S20", start=dummy_date, end=dummy_date)

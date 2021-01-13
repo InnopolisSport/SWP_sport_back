@@ -1,12 +1,11 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 # add save button on top for all admins
-
 admin.ModelAdmin.save_on_top = True
 
 from .site import SportAdminSite, site
+from .userAdmin import UserAdmin
 from .enrollAdmin import EnrollAdmin
 from .trainerAdmin import TrainerAdmin
 from .sportAdmin import SportAdmin
@@ -21,5 +20,3 @@ from .djangoGroupAdmin import DjangoGroupAdmin
 from .referenceAdmin import ReferenceAdmin
 from .medicalGroupAdmin import MedicalGroupAdmin
 from .medicalGroupReferenceAdmin import MedicalGroupReferenceAdmin
-
-site.register(User, UserAdmin)

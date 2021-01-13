@@ -4,7 +4,7 @@ from typing import Tuple
 
 import pytest
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -12,15 +12,17 @@ from rest_framework.test import APIClient
 from api.views.attendance import AttendanceErrors
 from sport.models import Trainer, Training, Attendance
 
+User = get_user_model()
 assertMembers = unittest.TestCase().assertCountEqual
-
 before_training = datetime(2020, 1, 15, 17, 0, 0, tzinfo=timezone.utc)
 training_start = datetime(2020, 1, 15, 18, 0, 0, tzinfo=timezone.utc)
 during_training = datetime(2020, 1, 15, 19, 0, 0, tzinfo=timezone.utc)
 training_end = datetime(2020, 1, 15, 20, 0, 0, tzinfo=timezone.utc)
-long_after_training = training_start + settings.TRAINING_EDITABLE_INTERVAL + timedelta(hours=5)
+long_after_training = training_start + settings.TRAINING_EDITABLE_INTERVAL + \
+                      timedelta(hours=5)
 
-assert before_training < training_start < during_training < training_end < long_after_training
+assert before_training < training_start < during_training\
+       < training_end < long_after_training
 
 
 @pytest.fixture
@@ -42,7 +44,7 @@ def setup(
     )
 
     trainer_user = trainer_factory(
-        username="user",
+        email="user@foo.bar",
         password="pass"
     )
 
@@ -65,7 +67,6 @@ def setup(
     )
 
     student_user = student_factory(
-        username="student",
         password="student",
         email="student@example.com",
     )
@@ -170,12 +171,10 @@ def test_attendance_during_training_outbound(setup, student_factory):
     hours_underflow = -1
 
     student_user_overflow = student_factory(
-        username="overflow",
         email="overflow@example.com"
     )
 
     student_user_underflow = student_factory(
-        username="underflow",
         email="underflow@example.com"
     )
 
@@ -218,24 +217,27 @@ def test_attendance_during_training_outbound(setup, student_factory):
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(during_training)
-def test_attendance_dates_trainer_report(setup, student_factory, enroll_factory, attendance_factory):
+def test_attendance_dates_trainer_report(
+        setup,
+        student_factory,
+        enroll_factory,
+        attendance_factory
+):
     training, trainer_user, student_user = setup
     client = APIClient()
     client.force_authenticate(trainer_user)
 
     other_student_user = student_factory(
-        username="other",
         email="student2@example.com"
     )
     enroll_factory(other_student_user.student, training.group)
     attendance_factory(student_user.student, training, 1)
 
-    response = client.get(f"/{settings.PREFIX}api/attendance/{training.group.pk}/report")
+    response = client.get(
+        f"/{settings.PREFIX}api/attendance/{training.group.pk}/report"
+    )
 
     assert response.status_code == status.HTTP_200_OK
-
-    print(response)
-
     assertMembers(response.data['last_attended_dates'], [
         {
             'email': 'student@example.com',

@@ -17,9 +17,9 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
                        group_factory,
                        schedule_factory,
                        attendance_factory):
-    student = student_factory("A1").student
-    other_student = student_factory("A2").student
-    trainer = trainer_factory("B").trainer
+    student = student_factory("A1@foo.bar").student
+    other_student = student_factory("A2@foo.bar").student
+    trainer = trainer_factory("B@foo.bar").trainer
     sport = sport_factory(name="Sport")
     semester = semester_factory(
         name="S19",

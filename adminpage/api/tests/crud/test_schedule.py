@@ -62,7 +62,7 @@ def test_get_sport_schedule(
         training_class_factory,
         schedule_factory,
 ):
-    student = student_factory("A").student
+    student = student_factory("A@foo.bar").student
     start = date(2020, 1, 20)
     end = date(2020, 1, 27)
     sem = semester_factory(

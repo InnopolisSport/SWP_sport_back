@@ -19,7 +19,7 @@ def test_club_for_student(
         semester_factory,
         group_factory,
 ):
-    student = student_factory("A").student
+    student = student_factory("A@foo.bar").student
     student.medical_group_id = MedicalGroups.NO_CHECKUP
 
     sport = sport_factory(name="Sport")
@@ -50,7 +50,7 @@ def test_sport(
         semester_factory,
         group_factory,
 ):
-    student_factory("A")
+    student_factory("A@foo.bar")
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3))
     group_factory(name="C1", sport=sport, semester=s1, capacity=20)
@@ -70,7 +70,7 @@ def test_sports_in_new_empty_semester(
         semester_factory,
         group_factory,
 ):
-    student_factory("A")
+    student_factory("A@foo.bar")
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S1", start=date(2020, 1, 1), end=date(2020, 1, 3))
     group_factory(name="C1", sport=sport, semester=s1, capacity=20)
@@ -90,7 +90,7 @@ def test_sports_in_new_filled_semester(
         semester_factory,
         group_factory,
 ):
-    student_factory("A")
+    student_factory("A@foo.bar")
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S1", start=date(2020, 1, 1), end=date(2020, 1, 3))
     group_factory(name="C1", sport=sport, semester=s1, capacity=20)
@@ -114,7 +114,7 @@ def test_sport_no_appropriate_group_in_sport(
         semester_factory,
         group_factory,
 ):
-    student = student_factory("A").student
+    student = student_factory("A@foo.bar").student
     student.medical_group_id = MedicalGroups.NO_CHECKUP
 
     sport = sport_factory(name="Sport")
@@ -135,7 +135,7 @@ def test_get_clubs(
         group_factory,
         enroll_factory
 ):
-    student = student_factory("A").student
+    student = student_factory("A@foo.bar").student
     sport = sport_factory(name="Sport")
     s1 = semester_factory(
         name="S19",
@@ -234,8 +234,8 @@ def test_get_student_trainer_groups(
         group_factory,
         enroll_factory
 ):
-    student = student_factory("A").student
-    trainer = trainer_factory("B").trainer
+    student = student_factory("A@foo.bar").student
+    trainer = trainer_factory("B@foo.bar").trainer
     sport = sport_factory(name="Sport")
     s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 1, 3))
     s2 = semester_factory(name="S20", start=date(2020, 1, 4), end=date(2020, 1, 24))

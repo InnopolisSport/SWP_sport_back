@@ -1,26 +1,32 @@
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, NotFound
+from rest_framework.response import Response
 
-from api.crud import get_email_name_like_students, Training, get_students_grades, mark_hours, \
-    get_student_last_attended_dates
+from api.crud import get_email_name_like_students, Training, \
+    get_students_grades, mark_hours, get_student_last_attended_dates
 from api.permissions import IsTrainer
-from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, NotFoundSerializer, InbuiltErrorSerializer, \
-    TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, BadGradeReportGradeSerializer, BadGradeReport, \
-    LastAttendedDatesSerializer
+from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
+    NotFoundSerializer, InbuiltErrorSerializer, \
+    TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, \
+    BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer
 from sport.models import Group
+
+User = get_user_model()
 
 
 class AttendanceErrors:
     TRAINING_NOT_EDITABLE = (
-        2, f"Training not editable before it or after {settings.TRAINING_EDITABLE_INTERVAL.days} days")
-    OUTBOUND_GRADES = (3, "Some students received negative marks or more than maximum")
+        2,
+        f"Training not editable before it or after "
+        f"{settings.TRAINING_EDITABLE_INTERVAL.days} days")
+    OUTBOUND_GRADES = (
+        3, "Some students received negative marks or more than maximum")
 
 
 def is_training_group(group, trainer):
@@ -115,6 +121,7 @@ def get_last_attended_dates(request, group_id, **kwargs):
         "last_attended_dates": get_student_last_attended_dates(group_id)
     })
 
+
 @swagger_auto_schema(
     method="POST",
     request_body=AttendanceMarkSerializer,
@@ -133,14 +140,19 @@ def mark_attendance(request, **kwargs):
     try:
         training = Training.objects.select_related(
             "group"
-        ).only("group__trainer", "start", "end").get(pk=serializer.validated_data["training_id"])
+        ).only(
+            "group__trainer", "start", "end"
+        ).get(
+            pk=serializer.validated_data["training_id"]
+        )
     except Training.DoesNotExist:
         raise NotFound()
 
     is_training_group(training.group, trainer)
 
     now = timezone.now()
-    if not training.start <= now <= training.start + settings.TRAINING_EDITABLE_INTERVAL:
+    if not training.start <= now <= training.start + \
+           settings.TRAINING_EDITABLE_INTERVAL:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*AttendanceErrors.TRAINING_NOT_EDITABLE)
@@ -161,9 +173,13 @@ def mark_attendance(request, **kwargs):
     for student in students:
         hours_put = id_to_hours[student.pk]
         if hours_put < 0:
-            negative_mark.append(compose_bad_grade_report(student.email, hours_put))
+            negative_mark.append(
+                compose_bad_grade_report(student.email, hours_put)
+            )
         elif hours_put > max_hours:
-            overflow_mark.append(compose_bad_grade_report(student.email, hours_put))
+            overflow_mark.append(
+                compose_bad_grade_report(student.email, hours_put)
+            )
         else:
             hours_to_mark.append((student, hours_put))
 

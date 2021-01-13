@@ -1,16 +1,18 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+
 from sport.utils import get_current_study_year
 
 
 class Student(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE,
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
         null=False,
-        limit_choices_to={'groups__verbose_name': settings.STUDENT_AUTH_GROUP_VERBOSE_NAME},
+        limit_choices_to={
+            'groups__verbose_name': settings.STUDENT_AUTH_GROUP_VERBOSE_NAME
+        },
         primary_key=True,
     )
 
@@ -23,7 +25,6 @@ class Student(models.Model):
         on_delete=models.DO_NOTHING,
         default=-2,
     )
-
 
     enrollment_year = models.PositiveSmallIntegerField(
         default=get_current_study_year,
@@ -45,10 +46,11 @@ class Student(models.Model):
         verbose_name_plural = "students"
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name} ({self.user.email})"
+        return f"{self.user.first_name} {self.user.last_name} " \
+               f"({self.user.email})"
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def save_student_profile(sender, instance, **kwargs):
     if Student.objects.filter(user=instance.pk).exists():
         instance.student.save()

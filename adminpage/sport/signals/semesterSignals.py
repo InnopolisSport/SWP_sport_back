@@ -1,9 +1,12 @@
-from django.contrib.auth.models import User, Group as AuthGroup
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group as AuthGroup
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
-from django.conf import settings
 
-from sport.models import Semester, Sport, Trainer, Group, Schedule, MedicalGroups
+from sport.models import Semester, Sport, Trainer, Group, Schedule
+
+User = get_user_model()
 
 
 def get_or_create_student_group():
@@ -28,7 +31,10 @@ def get_or_create_trainer_group():
 def special_groups_create(sender, instance, created, **kwargs):
     if created:
         # get_or_create returns (object: Model, created: bool)
-        other_sport, _ = Sport.objects.get_or_create(name=settings.OTHER_SPORT_NAME, special=True)
+        other_sport, _ = Sport.objects.get_or_create(
+            name=settings.OTHER_SPORT_NAME,
+            special=True
+        )
         trainer_group = get_or_create_trainer_group()
         sport_dep_user, _ = User.objects.get_or_create(
             first_name="Sport",
@@ -36,7 +42,6 @@ def special_groups_create(sender, instance, created, **kwargs):
             email=settings.SPORT_DEPARTMENT_EMAIL,
             defaults={
                 "is_active": True,
-                "username": settings.SPORT_DEPARTMENT_EMAIL,
             }
         )
         sport_dep_user.groups.add(trainer_group)
@@ -47,13 +52,39 @@ def special_groups_create(sender, instance, created, **kwargs):
             'semester': instance,
             'trainer': sport_dep
         }
-        Group.objects.create(name=settings.SC_TRAINERS_GROUP_NAME_FREE, capacity=9999, **kwargs)
-        Group.objects.create(name=settings.SC_TRAINERS_GROUP_NAME_PAID, capacity=9999, **kwargs)
-        Group.objects.create(name=settings.SELF_TRAINING_GROUP_NAME, capacity=9999, **kwargs)
-        Group.objects.create(name=settings.EXTRA_EVENTS_GROUP_NAME, capacity=0, **kwargs)
-        Group.objects.create(name=settings.MEDICAL_LEAVE_GROUP_NAME, capacity=0, **kwargs)
+        Group.objects.create(
+            name=settings.SC_TRAINERS_GROUP_NAME_FREE,
+            capacity=9999,
+            **kwargs
+        )
+        Group.objects.create(
+            name=settings.SC_TRAINERS_GROUP_NAME_PAID,
+            capacity=9999,
+            **kwargs
+        )
+        Group.objects.create(
+            name=settings.SELF_TRAINING_GROUP_NAME,
+            capacity=9999,
+            **kwargs
+        )
+        Group.objects.create(
+            name=settings.EXTRA_EVENTS_GROUP_NAME,
+            capacity=0,
+            **kwargs,
+        )
+        Group.objects.create(
+            name=settings.MEDICAL_LEAVE_GROUP_NAME,
+            capacity=0,
+            **kwargs
+        )
     else:
         # if semester changed, recalculate all future related schedules
-        semester_schedules = Schedule.objects.filter(group__semester=instance.pk)
+        semester_schedules = Schedule.objects.filter(
+            group__semester=instance.pk
+        )
         for schedule in semester_schedules:
-            post_save.send(sender=Schedule, instance=schedule, created=False)
+            post_save.send(
+                sender=Schedule,
+                instance=schedule,
+                created=False
+            )

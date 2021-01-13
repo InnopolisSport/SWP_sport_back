@@ -1,15 +1,16 @@
-from datetime import date, datetime
+from datetime import date
 from typing import Tuple
 
 import pytest
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.utils import timezone
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from api.views.enroll import EnrollErrors
 from sport.models import Enroll, Group, MedicalGroups
+
+User = get_user_model()
 
 start = date(2020, 1, 1)
 end = date(2020, 2, 20)
@@ -41,17 +42,17 @@ def setup_group(
 
 @pytest.fixture
 def logged_in_student_general_med(student_factory) -> Tuple[APIClient, User]:
-    username = "user"
+    email = "user@foo.bar"
     password = "pass"
     student_user = student_factory(
-        username=username,
+        email=email,
         password=password,
     )
     student_user.student.medical_group_id = MedicalGroups.GENERAL
     student_user.save()
     client = APIClient()
     client.login(
-        username=username,
+        email=email,
         password=password,
     )
     return client, student_user

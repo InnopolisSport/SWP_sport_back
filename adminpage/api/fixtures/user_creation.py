@@ -1,10 +1,11 @@
 from typing import Optional, Tuple
 
 import pytest
-from django.contrib.auth.models import (
-    User, Group
-)
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import (
+    Group
+)
 
 
 @pytest.fixture
@@ -35,18 +36,16 @@ def create_user_in_groups(
         predefined_groups: Tuple[Group] = (),
 ):
     def create_app_user(
-            username: str,
+            email: str,
             password: Optional[str] = None,
             first_name: Optional[str] = "first name",
             last_name: Optional[str] = "last name",
-            email: Optional[str] = "foo@bar.com",
             is_staff: str = False,
             is_superuser: str = False,
             is_active: str = True,
             groups: Tuple[Group] = (),
-    ) -> User:
-        user = User.objects.create_user(
-            username=username,
+    ):
+        user = get_user_model().objects.create_user(
             password=password,
             first_name=first_name,
             last_name=last_name,
