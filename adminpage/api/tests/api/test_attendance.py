@@ -217,14 +217,17 @@ def test_attendance_during_training_outbound(setup, student_factory):
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(during_training)
-def test_attendance_dates_trainer_report(setup, student_factory,
-                                         enroll_factory, attendance_factory):
+def test_attendance_dates_trainer_report(
+        setup,
+        student_factory,
+        enroll_factory,
+        attendance_factory
+):
     training, trainer_user, student_user = setup
     client = APIClient()
     client.force_authenticate(trainer_user)
 
     other_student_user = student_factory(
-        username="other",
         email="student2@example.com"
     )
     enroll_factory(other_student_user.student, training.group)
@@ -235,7 +238,6 @@ def test_attendance_dates_trainer_report(setup, student_factory,
 
     assert response.status_code == status.HTTP_200_OK
 
-    print(response)
 
     assertMembers(response.data['last_attended_dates'], [
         {
