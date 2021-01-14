@@ -60,6 +60,7 @@ class GroupAdmin(admin.ModelAdmin):
     fields = (
         "name",
         "description",
+        ("link_name", "link"),
         ("capacity", "free_places"),
         "is_club",
         "sport",
