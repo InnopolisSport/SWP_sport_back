@@ -5,8 +5,8 @@
             <div class="modal-content">
                 <form action="#" onsubmit="return false;">
                     <div class="modal-header">
-                        <h5 class="modal-header">
-                            SelfSport upload
+                        <h5 class="modal-title">
+                            Self Sport Upload
                         </h5>
                         <button type="button" class="close"
                                 data-dismiss="modal" aria-label="Close">
@@ -14,41 +14,35 @@
                         </button>
                     </div>
                     <div class="modal-body text-left">
-                        <p>Please submit an image of medical reference for
-                            illness period.
-                            Based on the reference you will be awarded
-                            additional hours.</p>
-                        <p>If you don't have a reference, press "Don't submit"
-                            button.</p>
+                        <p>Please submit <strong>either</strong> an image or a link to the video that confirm your activity.</p>
                         <input name="image" type="file"
                                accept="image/png, image/jpeg"
-                               id="reference-file-input">
+                               id="self-sport-file-input">
+                        <p></p>
+                        <input name="link" type="url"
+                               maxlength="100"
+                               placeholder="Link"
+                               id="self-sport-text-input">
                     </div>
-                    div class="modal-footer">
-                    <div class="container">
-                        <div class="row justify-content-between">
-                            <div>
-                                <button type="button" class="btn btn-secondary"
-                                        data-dismiss="modal">Close
-                                </button>
-                            </div>
-                            <div>
-                                <button type="button" class="btn btn-info"
-                                        onclick="toggle_ill(this)">
-                                    Don't Submit
-                                </button>
-                            </div>
-                            <div>
-                                <input type="submit" value="Submit"
-                                       class="btn btn-primary"
-                                       id="submit-reference-btn"
-                                       onclick="submit_reference()">
+                    <div class="modal-footer">
+                        <div class="container">
+                            <div class="row justify-content-between">
+                                <div>
+                                    <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close
+                                    </button>
+                                </div>
+                                <div>
+                                    <input type="submit" value="Submit"
+                                           class="btn btn-primary"
+                                           id="submit-self-sport-btn"
+                                           onclick="submit_self_sport()">
+                                </div>
                             </div>
                         </div>
                     </div>
+                </form>
             </div>
-            </form>
         </div>
-    </div>
     </div>
 {% endblock %}

@@ -405,6 +405,57 @@ async function submit_reference() {
     return false;
 }
 
+async function submit_self_sport() {
+    const formData = new FormData()
+
+    // Get file
+    const fileInput = $('#self-sport-file-input')[0];
+    const file = fileInput.files[0];
+
+    // Get link
+    const linkInput = $('#self-sport-text-input');
+    // const link = linkInput.serialize();
+    const link = linkInput.val();
+
+    if (!file && !link) {
+        toastr.error("You should submit at least an image or a link");
+        return false;
+    }
+
+    if (file) {
+        if (file.size > 1E7) {
+            toastr.error('Image file size too big, expected size <= 10 MB');
+            return false;
+        }
+
+        try {
+            const _URL = window.URL || window.webkitURL;
+            const img = await loadImage(_URL.createObjectURL(file));
+            if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
+                toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
+                return false;
+            }
+        } catch (e) {
+            toastr.error('Uploaded file is not an image');
+            return false;
+        }
+
+        formData.append(fileInput.name, file);
+    }
+
+    if (link) {
+        formData.append(linkInput[0].name, link);
+    }
+
+    try {
+        await sendResults('/api/selfsport/upload', formData, 'POST', false)
+        goto_profile()
+    } catch (error) {
+        toastr.error(error.message);
+    }
+    return false;
+}
+
 $(function () {
     prepareModal('#group-info-modal');
     prepareModal('#medical-group-info-modal');
