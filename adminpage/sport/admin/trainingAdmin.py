@@ -1,20 +1,21 @@
 import io
 from collections import OrderedDict
 
-from django.urls import path
+from django.http import HttpResponseRedirect
+from django.urls import path, reverse
 from openpyxl import load_workbook
 
 from django.conf import settings
 from django.contrib import admin
 from django import forms
-from django.contrib.admin.widgets import AutocompleteSelectMultiple, AdminDateWidget
+from django.contrib.admin.widgets import AutocompleteSelectMultiple, AdminDateWidget, AutocompleteSelect
 from django.db import transaction
 from django.utils import timezone
 
 import datetime
 from api.crud import get_ongoing_semester, mark_hours
-from sport.models import Training, Student, Group
-from .inlines import ViewAttendanceInline, AddAttendanceInline
+from sport.models import Training, Student, Group, Attendance
+from .inlines import ViewAttendanceInline, AddAttendanceInline, HackAttendanceInline
 from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter
 from .site import site
 
@@ -122,6 +123,20 @@ class CreateExtraTrainingForm(TrainingFormWithCSV):
 CreateExtraTrainingForm.title = "Add extra training"
 
 
+class MultiTrainingsForStudentForm(forms.ModelForm):
+    student = forms.ModelChoiceField(
+        Student.objects.all(),
+        widget=AutocompleteSelect(Attendance._meta.get_field('student').remote_field, site)
+    )
+
+    class Meta:
+        model = Training
+        fields = ('group',)
+
+
+MultiTrainingsForStudentForm.title = "Add multiple extra training records"
+
+
 @admin.register(Training, site=site)
 class TrainingAdmin(admin.ModelAdmin):
     search_fields = (
@@ -179,17 +194,32 @@ class TrainingAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path('add-extra/', self.extra_add, name='sport_training_add_extra'),
+            path('add-extra-multi/', self.extra_add_multi, name='sport_training_add_extra_multi'),
         ]
         return custom_urls + urls
 
     def extra_add(self, request):
         return self.changeform_view(request, None, '', None)
 
+    def extra_add_multi(self, request):
+        return self.changeform_view(request, None, '', {
+            'show_save_and_continue': False
+        })
+
     def get_form(self, request, obj=None, change=False, **kwargs):
-        kwargs['form'] = CreateExtraTrainingForm if 'add-extra' in request.path else ChangeTrainingForm
+        if 'add-extra-multi' in request.path:
+            kwargs['form'] = MultiTrainingsForStudentForm
+        elif 'add-extra' in request.path:
+            kwargs['form'] = CreateExtraTrainingForm
+        else:
+            kwargs['form'] = ChangeTrainingForm
         return super().get_form(request, obj, change, **kwargs)
 
     def get_inlines(self, request, obj):
+        if 'add-extra-multi' in request.path:
+            return (
+                HackAttendanceInline,
+            )
         if obj is not None or 'add-extra' not in request.path:
             return (
                 ViewAttendanceInline,
@@ -208,6 +238,12 @@ class TrainingAdmin(admin.ModelAdmin):
         return {}
 
     def get_fieldsets(self, request, obj=None):
+        if 'add-extra-multi' in request.path:
+            return (
+                (None, {
+                    'fields': ('group', 'student', )
+                }),
+            )
         return (
             (None, {
                 'fields': ('group', 'event_name', ('start_day', 'end_day'))
@@ -222,6 +258,30 @@ class TrainingAdmin(admin.ModelAdmin):
             }),
         )
 
+    def save_model(self, request, obj, form, change):
+        if 'add-extra-multi' in request.path:
+            return None
+        return super().save_model(request, obj, form, change)
+
+    def construct_change_message(self, request, form, formsets, add=False):
+        if 'add-extra-multi' in request.path:
+            return None
+        return super().construct_change_message(request, form, formsets, add)
+
+    def log_addition(self, request, object, message):
+        if 'add-extra-multi' in request.path:
+            return None
+        return super().log_addition(request, object, message)
+
+    def response_add(self, request, obj, post_url_continue=None):
+        if 'add-extra-multi' in request.path:
+            obj_url = reverse(
+                'admin:sport_training_changelist',
+                current_app=site.name,
+            )
+            return HttpResponseRedirect(obj_url)
+        return super().response_add(request, obj, post_url_continue)
+
     @transaction.atomic
     def save_related(self, request, form, formsets, change):
         """
@@ -230,6 +290,24 @@ class TrainingAdmin(admin.ModelAdmin):
         2) Use ModelMultipleChoiceField in ModelAdmin for training
         3) Change/add attendance records using inline
         """
+        if 'add-extra-multi' in request.path:
+            for attendance_form in formsets[0].forms:
+                attendance_form.instance.student = form.cleaned_data['student']
+                start = datetime.datetime.combine(
+                    datetime.date.fromisoformat(attendance_form['date'].value()),
+                    datetime.time(0, 0, 0),
+                    tzinfo=timezone.localtime().tzinfo
+                )
+                end = datetime.datetime.combine(
+                    datetime.date.fromisoformat(attendance_form['date'].value()),
+                    datetime.time(23, 59, 59),
+                    tzinfo=timezone.localtime().tzinfo
+                )
+                training = Training.objects.create(group=form.instance.group, start=start, end=end)
+                attendance_form.instance.training = training
+                training.save(False)
+                attendance_form.instance.save(False)
+            return None
         super().save_related(request, form, formsets, change)
         training = form.instance
         similar_student_hours = [

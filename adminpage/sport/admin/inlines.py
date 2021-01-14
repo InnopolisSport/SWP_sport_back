@@ -1,5 +1,8 @@
+from django import forms
 from django.contrib import admin
+from django.contrib.admin.widgets import AdminDateWidget
 from django.http import HttpRequest
+from django.utils import timezone
 
 from sport.models import Attendance, Schedule, Enroll, Group, Training
 
@@ -33,6 +36,36 @@ class AddAttendanceInline(ViewAttendanceInline):
 
     def has_add_permission(self, request, obj):
         return True
+
+
+class HackAttendanceForm(forms.ModelForm):
+    date = forms.DateField(
+        label='Day',
+        initial=timezone.now().date(),
+        widget=AdminDateWidget(attrs={'size': 16})
+    )
+
+    class Meta:
+        model = Attendance
+        fields = ('hours',)
+
+
+class HackAttendanceInline(ViewAttendanceInline):
+    extra = 1
+    verbose_name_plural = "Extra attendance records"
+    readonly_fields = ()
+
+    def has_view_or_change_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj):
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    form = HackAttendanceForm
+    fields = ('date', 'hours',)
 
 
 class ScheduleInline(admin.TabularInline):
