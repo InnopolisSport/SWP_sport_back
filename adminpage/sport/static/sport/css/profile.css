@@ -105,6 +105,20 @@ a.help-link {
     right: 3%;
 }
 
+/* Calendar */
+.fc-left {
+    visibility: hidden;
+    width: 0;
+}
+
+.fc-center {
+    /*display: none;*/
+}
+
+.fc-toolbar.fc-header-toolbar {
+    margin-bottom: 0;
+}
+
 @media only screen and (max-width: 576px) {
     .card {
         margin: 1%;

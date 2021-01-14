@@ -295,13 +295,21 @@ document.addEventListener('DOMContentLoaded', function () {
     let calendarEl = document.getElementById('calendar');
     let calendar;
     let calendar_setting = {
+        // SwipeCalendar
+        swipeEffect: 'slide',
+        swipeSpeed: 250,
+
+        // FullCalendar
         plugins: ['timeGrid'],
         defaultView: 'timeGridWeek',
-        header: {
+        titleFormat: {
+            month: 'short',
+            day: 'numeric'
+        },
+        headerToolbar: {
             left: '',
             center: '',
-            // right: '',
-            right: 'today, prev, next',
+            right: 'today, prev next',
         },
         views: {
             timeGridThreeDay: {
@@ -343,7 +351,8 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    calendar = new FullCalendar.Calendar(calendarEl, calendar_setting);
+    // calendar = new FullCalendar.Calendar(calendarEl, calendar_setting);
+    calendar = new SwipeCalendar(calendarEl, calendar_setting);
     calendar.render();
 });
 
