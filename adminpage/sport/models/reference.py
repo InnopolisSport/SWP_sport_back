@@ -21,7 +21,8 @@ class Reference(models.Model):
         verbose_name_plural = "medical references"
 
     def save(self, *args, **kwargs):
-        if not kwargs.get('force_insert', False):  # update flag and approval only when object is created via API
+        # update flag and approval only when object is created via API
+        if not kwargs.get('force_insert', False):
             self.hours = max(self.hours, 0)
             self.approval = self.hours > 0
         return super().save(*args, **kwargs)

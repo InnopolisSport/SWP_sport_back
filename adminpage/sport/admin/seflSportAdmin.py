@@ -3,9 +3,9 @@ from django.contrib import admin
 from django.db.models import F
 from django.utils.html import format_html
 
-from sport.admin.utils import custom_order_filter
-from sport.models import Reference
+from sport.models import SelfSportReport
 from .site import site
+from .utils import custom_order_filter
 
 
 class StudentTextFilter(AutocompleteFilter):
@@ -13,14 +13,16 @@ class StudentTextFilter(AutocompleteFilter):
     field_name = "student"
 
 
-@admin.register(Reference, site=site)
-class ReferenceAdmin(admin.ModelAdmin):
+@admin.register(SelfSportReport, site=site)
+class SelfSportAdmin(admin.ModelAdmin):
     list_display = (
-        "student",
-        "semester",
-        "image",
-        "uploaded",
-        "approval",
+        'student',
+        'semester',
+        'link',
+        'image',
+        'hours',
+        'uploaded',
+        'approval'
     )
 
     list_filter = (
@@ -34,6 +36,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         "semester",
         "uploaded",
         "hours",
+        "link",
         "reference_image",
     )
 
@@ -46,17 +49,20 @@ class ReferenceAdmin(admin.ModelAdmin):
         "student",
     )
 
-    ordering = (F("approval").asc(nulls_first=True), "uploaded")
-
     def reference_image(self, obj):
-        return format_html(
-            '<a href="{}"><img style="width: 50%" src="{}" /></a>',
-            obj.image.url,
-            obj.image.url
-        )
+        if obj.image is not None:
+            return format_html(
+                '<a href="{}"><img style="width: 50%" src="{}" /></a>',
+                obj.image.url,
+                obj.image.url
+            )
+        else:
+            return "None"
 
     reference_image.short_description = 'Reference'
     reference_image.allow_tags = True
+
+    ordering = (F("approval").asc(nulls_first=True), "uploaded")
 
     class Media:
         pass
