@@ -178,6 +178,13 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-6 col-sm-12 col-right mb-1">
+                                <a href="" class="btn btn-warning" onclick="open_med_group_modal()">
+                                    Self-sport upload
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 col-sm-12 mb-1">
                                 {% if student.group_choices_left > 1 %}
                                     <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
                                         {{ student.group_choices_left }} group choices left
@@ -197,6 +204,7 @@
                     </div>
                     {% include "reference.html" %}
                     {% include "med_group_reference.html" %}
+                    {% include "self_sport_reference.html" %}
                 {% endif %}
 
                 {% if student.sport_groups|length > 0 or trainer.sport_groups %}
@@ -262,6 +270,7 @@
 
     <div id="medical-group-info-modal"></div>
     <div id="group-info-modal"></div>
+
     <script>
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
