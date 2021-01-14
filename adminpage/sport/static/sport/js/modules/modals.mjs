@@ -53,10 +53,16 @@ function renderGroupModalBody(body, data) {
         capacity,
         current_load,
         training_class,
-        hours
+        hours,
+        link_name,
+        link
     } = data;
     if (group_description) {
         body.append(`<p>${group_description}</p>`);
+    }
+    if (link) {
+        const label = link_name ? `${link_name}: ` : '';
+        body.append(`<p>${label}<a href=${link}>${link}</a></p>`)
     }
 
     const p = body.append('<p>').children('p:last-child');
