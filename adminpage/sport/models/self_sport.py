@@ -50,15 +50,13 @@ class SelfSportReport(models.Model):
     class Meta:
         db_table = "self_sport_report"
         constraints = [
+            # empty image for some reason
+            # is saved as empty string instead of null
             models.CheckConstraint(
                 name="link_xor_image",
-                check=models.Q(
-                    link__isnull=False,
-                    image__isnull=True,
-                ) | models.Q(
-                    link__isnull=True,
-                    image__isnull=False,
-                )
+                check=
+                (models.Q(link__isnull=True, ) & ~models.Q(image__exact='')) |
+                models.Q(image__exact='', link__isnull=False, )
             )
         ]
 

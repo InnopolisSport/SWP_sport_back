@@ -47,6 +47,7 @@ def self_sport_upload(request, **kwargs):
             return error
 
     student = request.user  # user.pk == user.student.pk
+    print(image, link)
     serializer.save(
         image=image,
         link=link,
