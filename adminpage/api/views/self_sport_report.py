@@ -15,11 +15,28 @@ from api.serializers import (
     EmptySerializer,
     ErrorSerializer,
 )
+from api.serializers.self_sport_report import SelfSportTypes
 from api.views.utils import process_image
+from sport.models import SelfSportType
 
 
 class SelfSportErrors:
     pass
+
+
+@swagger_auto_schema(
+    method="Get",
+    responses={
+        status.HTTP_200_OK: SelfSportTypes(many=True),
+    }
+)
+@api_view(["GET"])
+def get_self_sport_types(request, **kwargs):
+    sport_types = SelfSportType.objects.filter(
+        is_active=True
+    ).all()
+    serializer = SelfSportTypes(sport_types, many=True)
+    return Response(serializer.data)
 
 
 @swagger_auto_schema(
@@ -47,7 +64,7 @@ def self_sport_upload(request, **kwargs):
             return error
 
     student = request.user  # user.pk == user.student.pk
-    print(image, link)
+
     serializer.save(
         image=image,
         link=link,

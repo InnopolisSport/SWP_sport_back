@@ -48,6 +48,7 @@ urlpatterns = [
 
     # self sport report
     path(r"selfsport/upload", self_sport_report.self_sport_upload),
+    path(r"selfsport/types", self_sport_report.get_self_sport_types)
 ]
 
 urlpatterns.extend([

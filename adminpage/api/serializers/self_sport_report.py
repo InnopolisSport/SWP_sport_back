@@ -1,11 +1,25 @@
 from rest_framework import serializers
 
-from sport.models import SelfSportReport
+from sport.models import SelfSportReport, SelfSportType
+
+
+class SelfSportTypes(serializers.ModelSerializer):
+    class Meta:
+        model = SelfSportType
+        fields = (
+            'name',
+            'application_rule',
+        )
 
 
 class SelfSportReportUploadSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(allow_empty_file=False, required=False)
     link = serializers.URLField(required=False)
+    training_type = serializers.PrimaryKeyRelatedField(
+        queryset=SelfSportType.objects.all()
+    )
+    # start = serializers.DateTimeField(required=True)
+    # end = serializers.DateTimeField(required=True)
 
     def validate(self, data):
         image_present = 'image' in data
@@ -19,4 +33,10 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SelfSportReport
-        fields = ('image', 'link')
+        fields = (
+            'image',
+            'link',
+            # 'start',
+            # 'end',
+            'training_type',
+        )

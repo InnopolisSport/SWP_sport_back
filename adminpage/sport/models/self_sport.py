@@ -34,6 +34,19 @@ class SelfSportReport(models.Model):
         null=True,
         blank=True,
     )
+    # start = models.DateTimeField(
+    #     null=True,
+    #     blank=False,
+    # )
+    # end = models.DateTimeField(
+    #     null=True,
+    #     blank=False,
+    # )
+    training_type = models.ForeignKey(
+        'sport.SelfSportType',
+        on_delete=models.SET_NULL,
+        null=True,
+    )
     hours = models.DecimalField(
         max_digits=5,
         decimal_places=2,

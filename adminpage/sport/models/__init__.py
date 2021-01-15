@@ -10,6 +10,7 @@ from .medical_group_reference import MedicalGroupReference
 from .reference import Reference
 from .schedule import Schedule
 from .self_sport import SelfSportReport
+from .self_sport_type import SelfSportType
 from .semester import Semester
 from .sport import Sport
 from .student import Student, save_student_profile

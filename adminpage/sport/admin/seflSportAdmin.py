@@ -18,6 +18,7 @@ class SelfSportAdmin(admin.ModelAdmin):
     list_display = (
         'student',
         'semester',
+        'training_type',
         'link',
         'image',
         'hours',
@@ -34,10 +35,15 @@ class SelfSportAdmin(admin.ModelAdmin):
     fields = (
         "student",
         "semester",
+        "training_type",
         "uploaded",
         "hours",
         "link",
         "reference_image",
+    )
+
+    list_select_related = (
+        'training_type',
     )
 
     readonly_fields = (
