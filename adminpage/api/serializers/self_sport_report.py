@@ -7,6 +7,7 @@ class SelfSportTypes(serializers.ModelSerializer):
     class Meta:
         model = SelfSportType
         fields = (
+            'pk',
             'name',
             'application_rule',
         )
@@ -16,7 +17,9 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(allow_empty_file=False, required=False)
     link = serializers.URLField(required=False)
     training_type = serializers.PrimaryKeyRelatedField(
-        queryset=SelfSportType.objects.all()
+        queryset=SelfSportType.objects.filter(
+            is_active=True,
+        ).all()
     )
     # start = serializers.DateTimeField(required=True)
     # end = serializers.DateTimeField(required=True)

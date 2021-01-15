@@ -35,7 +35,8 @@ def setup(
     selfsport_type, _ = SelfSportType.objects.get_or_create(
         name="self_sport",
         defaults={
-            "application_rule": "just apply"
+            "application_rule": "just apply",
+            "is_active": True,
         }
     )
     client = APIClient()
