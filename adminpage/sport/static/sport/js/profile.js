@@ -414,7 +414,6 @@ async function submit_self_sport() {
 
     // Get link
     const linkInput = $('#self-sport-text-input');
-    // const link = linkInput.serialize();
     const link = linkInput.val();
 
     if (!file && !link) {
@@ -444,7 +443,11 @@ async function submit_self_sport() {
     }
 
     if (link) {
-        formData.append(linkInput[0].name, link);
+        if (link.startsWith('http://') || link.startsWith('https://')) {
+            formData.append(linkInput[0].name, link);
+        } else {
+            return false;
+        }
     }
 
     try {
