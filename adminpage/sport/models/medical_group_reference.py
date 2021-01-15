@@ -18,19 +18,14 @@ class MedicalGroupReference(models.Model):
         upload_to=get_reference_path,
     )
 
-    resolved = models.BooleanField(
-        default=False,
-    )
+    resolved = models.BooleanField(null=True)
 
     semester = models.ForeignKey(
         "Semester",
         on_delete=models.CASCADE,
     )
 
-    def save(self, *args, **kwargs, ) -> None:
-        # fixme hardcoded bind to object
-        self.resolved = self.student.medical_group_id != -2
-        return super().save(*args, **kwargs)
+    comment = models.TextField(max_length=1024, null=True, blank=True)
 
     def __str__(self):
         return f'{self.student} - {self.semester}'

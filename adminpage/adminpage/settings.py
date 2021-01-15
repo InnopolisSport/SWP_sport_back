@@ -253,3 +253,14 @@ OPTIMIZED_IMAGE_METHOD = 'pillow'
 MAX_IMAGE_SIZE = 10_000_000  # 10MB
 MIN_IMAGE_DIMENSION = 400
 MAX_IMAGE_DIMENSION = 4500
+
+EMAIL_HOST = os.getenv("EMAIL_HOST", None)
+EMAIL_PORT = os.getenv("EMAIL_PORT", None)
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", None)
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", None)
+EMAIL_USE_TLS = True
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", None)
