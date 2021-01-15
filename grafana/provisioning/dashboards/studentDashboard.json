@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1610468897190,
+  "id": 1,
+  "iteration": 1610616015068,
   "links": [],
   "panels": [
     {
@@ -62,7 +62,7 @@
           "metricColumn": "none",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "select first_name, last_name, email from auth_user where email='$studentEmail'",
+          "rawSql": "select au.first_name, au.last_name, au.email, coalesce(s.telegram, '') as telegram from auth_user au join student s on s.user_id=au.id where email='$studentEmail'",
           "refId": "A",
           "select": [
             [
