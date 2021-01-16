@@ -325,57 +325,87 @@ async function open_trainer_modal({event}) {
 }
 
 
-document.addEventListener('DOMContentLoaded', function () {
-    const tabletWidth = 768; // if width is less than this, then week view renders poorly.
-    let calendarEl = document.getElementById('calendar');
-    let calendar;
-    let calendar_setting = {
-        // SwipeCalendar
-        swipeEffect: 'slide',
-        swipeSpeed: 250,
+const tabletWidth = 768; // if width is less than this, then week view renders poorly.
 
-        // FullCalendar
-        plugins: ['timeGrid'],
-        defaultView: 'timeGridWeek',
-        titleFormat: {
-            month: 'short',
-            day: 'numeric'
-        },
-        headerToolbar: {
-            left: '',
-            center: '',
-            right: 'today, prev next',
-        },
-        views: {
-            timeGridThreeDay: {
-                type: 'timeGrid',
-                duration: {
-                    days: 3
-                },
-                buttonText: '3 day',
-            }
-        },
-        height: 'auto',
-        timeZone: 'Europe/Moscow',
-        firstDay: 1,
-        allDaySlot: true,
-        slotDuration: '00:30:00',
-        minTime: '07:00:00',
-        maxTime: '23:00:00',
-        defaultTimedEventDuration: '01:30',
-        eventRender: render,
-        eventClick: open_modal,
-        windowResize: function (view) {
-            // change view on scree rotation
-            if (document.body.clientWidth < tabletWidth) {
-                calendar.changeView('timeGridThreeDay');
-            } else {
-                calendar.changeView('timeGridWeek');
-            }
-        },
-        // Event format: yyyy-mm-dd
-        events: '/api/calendar/trainings'
-    };
+let calendar_setting = {
+    // SwipeCalendar
+    swipeEffect: 'slide',
+    swipeSpeed: 250,
+
+    // FullCalendar
+    plugins: ['timeGrid'],
+    defaultView: 'timeGridWeek',
+    titleFormat: {
+        month: 'short',
+        day: 'numeric'
+    },
+    headerToolbar: {
+        left: '',
+        center: '',
+        right: 'today, prev next',
+    },
+    views: {
+        timeGridThreeDay: {
+            type: 'timeGrid',
+            duration: {
+                days: 3
+            },
+            buttonText: '3 day',
+        }
+    },
+    height: 'auto',
+    timeZone: 'Europe/Moscow',
+    firstDay: 1,
+    allDaySlot: true,
+    slotDuration: '00:30:00',
+    minTime: '07:00:00',
+    maxTime: '23:00:00',
+    defaultTimedEventDuration: '01:30',
+    eventRender: render,
+    eventClick: open_modal,
+    windowResize: function (view) {
+        // change view on scree rotation
+        if (document.body.clientWidth < tabletWidth) {
+            calendar.changeView('timeGridThreeDay');
+        } else {
+            calendar.changeView('timeGridWeek');
+        }
+    },
+    // Event format: yyyy-mm-dd
+    events: '/api/calendar/trainings'
+};
+
+let timeline_settings = {
+    // SwipeCalendar
+    swipeEffect: 'slide',
+    swipeSpeed: 250,
+
+    // FullCalendar
+    plugins: ['list', 'dayGrid'],
+    defaultView: 'listWeek',
+    titleFormat: {
+        month: 'short',
+        day: 'numeric'
+    },
+    header: {
+        left: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
+        center: '',
+        right: 'today prev,next',
+    },
+    height: 'auto',
+    timeZone: 'Europe/Moscow',
+    firstDay: 1,
+    eventRender: render,
+    eventClick: open_modal,
+    // Event format: yyyy-mm-dd
+    events: '/api/calendar/trainings'
+}
+
+let calendarEl;
+let calendar;
+
+document.addEventListener('DOMContentLoaded', function () {
+    calendarEl = document.getElementById('calendar');
 
     if (document.body.clientWidth < tabletWidth) {
         calendar_setting.defaultView = 'timeGridThreeDay';
@@ -386,10 +416,28 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    // calendar = new FullCalendar.Calendar(calendarEl, calendar_setting);
-    calendar = new SwipeCalendar(calendarEl, calendar_setting);
+    calendar = new SwipeCalendar(calendarEl, timeline_settings);
     calendar.render();
 });
+
+function change_calendar() {
+    // Check is done before function call
+    const is_checked = !($('#calendar-switch').prop('checked'));
+
+    calendarEl = document.getElementById('calendar');
+
+    if (is_checked) {
+        calendar = new SwipeCalendar(calendarEl, calendar_setting);
+
+        $('.fc-left').css({'visibility': 'hidden', 'width': 0})
+    } else {
+        calendar = new SwipeCalendar(calendarEl, timeline_settings);
+
+        $('.fc-left').css({'visibility': '', 'width': ''});
+    }
+
+    calendar.render();
+}
 
 
 function autocomplete_select(event, ui) {

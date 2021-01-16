@@ -106,15 +106,6 @@ a.help-link {
 }
 
 /* Calendar */
-.fc-left {
-    visibility: hidden;
-    width: 0;
-}
-
-.fc-center {
-    /*display: none;*/
-}
-
 .fc-toolbar.fc-header-toolbar {
     margin-bottom: 0;
 }
