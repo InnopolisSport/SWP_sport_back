@@ -21,7 +21,7 @@ def update_hours_for_self_sport(
     )
     training_custom_name = None
     if instance.training_type is not None:
-        training_custom_name = f'[Self]{instance.training_type.name}'
+        training_custom_name = f'[Self] {instance.training_type.name}'
     update_attendance_record(
         group=group,
         upload_date=instance.uploaded.date(),
