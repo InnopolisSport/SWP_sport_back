@@ -59,6 +59,7 @@ async function open_selfsport_modal() {
     const options = await fetch('/api/selfsport/types').then(res => res.json());
     const el = $('#self-sport-type');
     el.children().remove();
+    el.append('<option value="" disabled selected>Select your training type</option>')
     options.forEach(option => {
         el.append(`<option value="${option.pk}">${option.name} (${option.application_rule})</option>`)
     })
@@ -426,13 +427,13 @@ async function submit_self_sport() {
     const typeInput = $('#self-sport-type');
     const type = typeInput.val();
 
-    if (!file && !link) {
-        toastr.error("You should submit at least an image or a link");
+    if (!type) {
+        toastr.error("You should select the training type");
         return false;
     }
 
-    if (!type) {
-        toastr.error("You should select the training type");
+    if (!file && !link) {
+        toastr.error("You should submit at least an image or a link");
         return false;
     }
 
