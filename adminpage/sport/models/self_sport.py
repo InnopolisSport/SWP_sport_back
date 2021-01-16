@@ -1,5 +1,6 @@
 import uuid
 
+from django.core.validators import URLValidator
 from django.db import models
 from image_optimizer.fields import OptimizedImageField
 
@@ -33,6 +34,7 @@ class SelfSportReport(models.Model):
         max_length=100,
         null=True,
         blank=True,
+        validators=[URLValidator(schemes=['http', 'https'])]
     )
     # start = models.DateTimeField(
     #     null=True,
