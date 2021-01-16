@@ -65,6 +65,7 @@ function open_med_group_modal() {
 
 async function open_selfsport_modal() {
     $('#selfsport-modal').modal('show');
+    $('#self-sport-type-help').html('');
     $('#self-sport-file-input')
         .off('change')
         .val('')
