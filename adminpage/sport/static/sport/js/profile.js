@@ -48,6 +48,15 @@ function toggle_ill(elem) {
 
 function open_recovered_modal() {
     $('#recovered-modal').modal('show');
+    $('#reference-file-input')
+        .off('change')
+        .val('')
+        .on('change',function(){
+            const parts = $(this).val().split('\\')
+            $(this).prev('.custom-file-label').html(parts[parts.length - 1]);
+        })
+        .prev('.custom-file-label')
+        .html('Reference image');
 }
 
 function open_med_group_modal() {

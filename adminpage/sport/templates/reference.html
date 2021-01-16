@@ -16,7 +16,12 @@
                         <p>Please submit an image of medical reference for illness period.
                             Based on the reference you will be awarded additional hours.</p>
                         <p>If you don't have a reference, press "Don't submit" button.</p>
-                        <input name="image" type="file" accept="image/png, image/jpeg" id="reference-file-input">
+                        <div class="custom-file">
+                            <label for="reference-file-input" class="custom-file-label">Reference image</label>
+                            <input name="image" type="file" class="custom-file-input form-control-file"
+                                   accept="image/png, image/jpeg"
+                                   id="reference-file-input">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <div class="container">
