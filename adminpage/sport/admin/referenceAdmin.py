@@ -75,7 +75,11 @@ class ReferenceAdmin(admin.ModelAdmin):
             super().save_model(request, obj, form, change)
 
     def reference_image(self, obj):
-        return format_html('<a href="{}"><img style="width: 50%" src="{}" /></a>', obj.image.url, obj.image.url)
+        return format_html(
+            '<a href="{}"><img style="width: 50%" src="{}" /></a>',
+            obj.image.url,
+            obj.image.url
+        )
 
     reference_image.short_description = 'Reference'
     reference_image.allow_tags = True
