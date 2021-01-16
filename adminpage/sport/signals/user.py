@@ -59,6 +59,9 @@ def update_group_verbose_names(sid_to_name_mapping: dict):
 
 @receiver(post_authenticate)
 def verify_bachelor_role(user, claims, adfs_response, *args, **kwargs):
+    """
+    Remove student account from non-bachelor students
+    """
     token_group_mapping = dict(zip(claims["groupsid"], claims["group"]))
     update_group_verbose_names(token_group_mapping)
 
@@ -67,7 +70,8 @@ def verify_bachelor_role(user, claims, adfs_response, *args, **kwargs):
         is_active_student = user.role.startswith(
             settings.BACHELOR_GROUPS_PREFIX
         )
-        user.is_active = is_active_student
+        # To unban mistakenly banned people
+        user.is_active = True
         if not is_active_student:
             group_mapping = get_current_group_mapping()
             student_group = group_mapping.get(
