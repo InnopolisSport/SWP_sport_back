@@ -1,4 +1,5 @@
 from admin_auto_filters.filters import AutocompleteFilter
+from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.db.models import F, Sum
@@ -14,8 +15,28 @@ class StudentTextFilter(AutocompleteFilter):
     field_name = "student"
 
 
+class ReferenceAcceptRejectForm(forms.ModelForm):
+    def clean_comment(self):
+        if self.cleaned_data['hours'] == 0 and self.cleaned_data['comment'] == '':
+            raise forms.ValidationError('Please, specify reject reason in the comment field')
+        return self.cleaned_data['comment']
+
+    class Meta:
+        model = SelfSportReport
+        fields = (
+            "student",
+            "semester",
+            "training_type",
+            "hours",
+            "comment",
+            "link",
+        )
+
+
 @admin.register(SelfSportReport, site=site)
 class SelfSportAdmin(admin.ModelAdmin):
+    form = ReferenceAcceptRejectForm
+
     list_display = (
         'student',
         'semester',
@@ -38,7 +59,7 @@ class SelfSportAdmin(admin.ModelAdmin):
         "semester",
         "training_type",
         "uploaded",
-        ("hours", "obtained_hours",),
+        ("hours", "obtained_hours", "comment"),
         "link",
         "reference_image",
     )
@@ -48,6 +69,7 @@ class SelfSportAdmin(admin.ModelAdmin):
     )
 
     readonly_fields = (
+        "student",
         "uploaded",
         "reference_image",
         "obtained_hours",
@@ -79,7 +101,10 @@ class SelfSportAdmin(admin.ModelAdmin):
             return "None"
 
     def save_model(self, request, obj, form, change):
-        if 'comment' in form.changed_data or 'hours' in form.changed_data:
+        if 'comment' in form.changed_data or \
+                'hours' in form.changed_data or \
+                'semester' in form.changed_data or \
+                'training_type' in form.changed_data:
             super().save_model(request, obj, form, change)
 
     reference_image.short_description = 'Reference'
