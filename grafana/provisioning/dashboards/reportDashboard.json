@@ -18,7 +18,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1610561632068,
+  "iteration": 1610616206296,
   "links": [],
   "panels": [
     {
@@ -82,7 +82,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select au.first_name,\n       au.last_name,\n       au.email,\n       s.enrollment_year,\n       mg.id                 as medical_group_id,\n       mg.name               as medical_group,\n       coalesce(at.hours, 0) as hours,\n       pg.name,\n       pg.id\nfrom student s\n         join auth_user au on au.id = s.user_id\n         join medical_group mg on s.medical_group_id = mg.id\n         left join (select student_id, pgg.id, pgg.name\n                    from get_primary_groups_in_semester(current_semester())\n                    join \"group\" pgg on group_id=pgg.id\n          ) pg on s.user_id = pg.student_id\n         left join (select student_id,\n                           sum(hours) as hours\n                    from attendance\n                             join training\n                                  on attendance.training_id = training.id\n                    where $__timeFilter(start)\n                    group by student_id) at on s.user_id = at.student_id\n         \n",
+          "rawSql": "select au.first_name,\n       au.last_name,\n       au.email,\n       coalesce(s.telegram,'') as telegram,\n       s.enrollment_year,\n       mg.id                 as medical_group_id,\n       mg.name               as medical_group,\n       coalesce(at.hours, 0) as hours,\n       pg.name,\n       pg.id\nfrom student s\n         join auth_user au on au.id = s.user_id\n         join medical_group mg on s.medical_group_id = mg.id\n         left join (select student_id, pgg.id, pgg.name\n                    from get_primary_groups_in_semester(current_semester())\n                    join \"group\" pgg on group_id=pgg.id\n          ) pg on s.user_id = pg.student_id\n         left join (select student_id,\n                           sum(hours) as hours\n                    from attendance\n                             join training\n                                  on attendance.training_id = training.id\n                    where $__timeFilter(start)\n                    group by student_id) at on s.user_id = at.student_id\n         \n",
           "refId": "A",
           "select": [
             [
@@ -122,7 +122,8 @@
               "last_name": "Last name",
               "medical_group": "Medical group",
               "medical_group_id": "",
-              "name": "Primary group name"
+              "name": "Primary group name",
+              "telegram": "Telegram"
             }
           }
         }
@@ -325,7 +326,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "F20",
           "value": "F20"
         },
@@ -383,12 +384,12 @@
     ]
   },
   "time": {
-    "from": "now-6M",
-    "to": "now"
+    "from": "2020-12-06T21:00:00.000Z",
+    "to": "2020-12-13T20:59:59.000Z"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Report Dashboard",
   "uid": "oixcRlbGk",
-  "version": 9
+  "version": 10
 }

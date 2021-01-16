@@ -25,6 +25,9 @@ class GroupInfoSerializer(serializers.Serializer):
     trainer_last_name = serializers.CharField()
     trainer_email = serializers.CharField()
 
+    link = serializers.URLField()
+    link_name = serializers.CharField()
+
     is_enrolled = serializers.BooleanField()
 
     schedule = ScheduleSerializer(many=True)
