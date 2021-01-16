@@ -48,10 +48,45 @@ function toggle_ill(elem) {
 
 function open_recovered_modal() {
     $('#recovered-modal').modal('show');
+    $('#reference-file-input')
+        .off('change')
+        .val('')
+        .on('change',function(){
+            const parts = $(this).val().split('\\')
+            $(this).prev('.custom-file-label').html(parts[parts.length - 1]);
+        })
+        .prev('.custom-file-label')
+        .html('Reference image');
 }
 
 function open_med_group_modal() {
     $('#med-group-modal').modal('show');
+}
+
+async function open_selfsport_modal() {
+    $('#selfsport-modal').modal('show');
+    $('#self-sport-type-help').html('');
+    $('#self-sport-file-input')
+        .off('change')
+        .val('')
+        .on('change',function(){
+            const parts = $(this).val().split('\\')
+            $(this).prev('.custom-file-label').html(parts[parts.length - 1]);
+        })
+        .prev('.custom-file-label')
+        .html('Proof image');
+    const options = await fetch('/api/selfsport/types')
+        .then(res => res.json())
+        .then(arr => arr.sort((a, b) => a.name > b.name));
+    const el = $('#self-sport-type');
+    el.children().remove();
+    el.append('<option value="" disabled selected>Select your training type</option>')
+    el.off('change').change(function (e) {
+        $('#self-sport-type-help').html(options.find(option => option.pk.toString() === e.target.value).application_rule)
+    })
+    options.forEach(option => {
+        el.append(`<option value="${option.pk}">${option.name}</option>`)
+    })
 }
 
 
@@ -323,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
         height: 'auto',
         timeZone: 'Europe/Moscow',
         firstDay: 1,
-        allDaySlot: false,
+        allDaySlot: true,
         slotDuration: '00:30:00',
         minTime: '07:00:00',
         maxTime: '23:00:00',
@@ -403,6 +438,71 @@ async function submit_reference() {
     try {
         await sendResults('/api/reference/upload', formData, 'POST', false)
         await sendResults("/api/profile/sick/toggle", {})
+        goto_profile()
+    } catch (error) {
+        toastr.error(error.message);
+    }
+    return false;
+}
+
+async function submit_self_sport() {
+    const formData = new FormData()
+
+    // Get file
+    const fileInput = $('#self-sport-file-input')[0];
+    const file = fileInput.files[0];
+
+    // Get link
+    const linkInput = $('#self-sport-text-input');
+    const link = linkInput.val();
+
+    // Get training_type
+    const typeInput = $('#self-sport-type');
+    const type = typeInput.val();
+
+    if (!type) {
+        toastr.error("You should select the training type");
+        return false;
+    }
+
+    if (!file && !link || file && link) {
+        toastr.error("You should submit either an image or a link");
+        return false;
+    }
+
+    if (file) {
+        if (file.size > 1E7) {
+            toastr.error('Image file size too big, expected size <= 10 MB');
+            return false;
+        }
+
+        try {
+            const _URL = window.URL || window.webkitURL;
+            const img = await loadImage(_URL.createObjectURL(file));
+            if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
+                toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
+                return false;
+            }
+        } catch (e) {
+            toastr.error('Uploaded file is not an image');
+            return false;
+        }
+
+        formData.append(fileInput.name, file);
+    }
+
+    if (link) {
+        if (link.startsWith('http://') || link.startsWith('https://')) {
+            formData.append(linkInput[0].name, link);
+        } else {
+            return false;
+        }
+    }
+
+    formData.append(typeInput[0].name, type);
+
+    try {
+        await sendResults('/api/selfsport/upload', formData, 'POST', false)
         goto_profile()
     } catch (error) {
         toastr.error(error.message);

@@ -49,7 +49,11 @@ class ReferenceAdmin(admin.ModelAdmin):
     ordering = (F("approval").asc(nulls_first=True), "uploaded")
 
     def reference_image(self, obj):
-        return format_html('<a href="{}"><img style="width: 50%" src="{}" /></a>', obj.image.url, obj.image.url)
+        return format_html(
+            '<a href="{}"><img style="width: 50%" src="{}" /></a>',
+            obj.image.url,
+            obj.image.url
+        )
 
     reference_image.short_description = 'Reference'
     reference_image.allow_tags = True
