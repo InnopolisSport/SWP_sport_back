@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function () {
         height: 'auto',
         timeZone: 'Europe/Moscow',
         firstDay: 1,
-        allDaySlot: false,
+        allDaySlot: true,
         slotDuration: '00:30:00',
         minTime: '07:00:00',
         maxTime: '23:00:00',

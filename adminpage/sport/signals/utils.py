@@ -16,9 +16,9 @@ def update_attendance_record(
 ):
     tz = timezone.localtime().tzinfo
     if start is None:
-        start = datetime.combine(upload_date, time(9, 0, 0), tzinfo=tz)
+        start = datetime.combine(upload_date, time(7, 0, 0), tzinfo=tz)
     if end is None:
-        end = datetime.combine(upload_date, time(10, 0, 0), tzinfo=tz)
+        end = datetime.combine(upload_date, time(9, 0, 0), tzinfo=tz)
     training, _ = Training.objects.get_or_create(
         group=group,
         start=start,
