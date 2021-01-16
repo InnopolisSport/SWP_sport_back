@@ -231,7 +231,11 @@ class TrainingAdmin(admin.ModelAdmin):
 
     def get_changeform_initial_data(self, request):
         """Custom form default values"""
-        if 'add-extra' in request.path:
+        if 'add-extra-multi' in request.path:
+            return {
+                'group': Group.objects.get(semester=get_ongoing_semester(), name=settings.SELF_TRAINING_GROUP_NAME)
+            }
+        elif 'add-extra' in request.path:
             return {
                 'group': Group.objects.get(semester=get_ongoing_semester(), name=settings.EXTRA_EVENTS_GROUP_NAME)
             }
