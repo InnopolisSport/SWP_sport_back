@@ -56,7 +56,9 @@ function open_med_group_modal() {
 
 async function open_selfsport_modal() {
     $('#selfsport-modal').modal('show');
-    const options = await fetch('/api/selfsport/types').then(res => res.json());
+    const options = await fetch('/api/selfsport/types')
+        .then(res => res.json())
+        .then(arr => arr.sort((a, b) => a.name > b.name));
     const el = $('#self-sport-type');
     el.children().remove();
     el.append('<option value="" disabled selected>Select your training type</option>')
