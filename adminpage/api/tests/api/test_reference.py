@@ -8,7 +8,9 @@ from rest_framework.test import APIClient
 from PIL import Image
 
 from api.views.reference import ReferenceErrors
+from api.views.utils import ImageErrors
 from sport.models import Attendance, Reference, Training
+
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(date(2020, 1, 2))
@@ -51,14 +53,14 @@ def test_reference_upload(
         format='multipart'
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["code"] == ReferenceErrors.INVALID_IMAGE_SIZE[0]
+    assert response.data["code"] == ImageErrors.INVALID_IMAGE_SIZE[0]
     response = client.post(
         f"/{settings.PREFIX}api/reference/upload",
         data={"image": file_lg},
         format='multipart'
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["code"] == ReferenceErrors.INVALID_IMAGE_SIZE[0]
+    assert response.data["code"] == ImageErrors.INVALID_IMAGE_SIZE[0]
     settings.MAX_IMAGE_SIZE = 1000
     file_lg.seek(0)
     response = client.post(
@@ -67,7 +69,7 @@ def test_reference_upload(
         format='multipart'
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["code"] == ReferenceErrors.IMAGE_FILE_SIZE_TOO_BIG[0]
+    assert response.data["code"] == ImageErrors.IMAGE_FILE_SIZE_TOO_BIG[0]
     settings.MAX_IMAGE_SIZE = 5_000_000
     response = client.post(
         f"/{settings.PREFIX}api/reference/upload",

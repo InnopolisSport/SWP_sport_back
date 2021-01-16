@@ -1,13 +1,11 @@
-from django.conf import settings
 from django.db import transaction
 from drf_yasg.utils import swagger_auto_schema
-from image_optimizer.utils import image_optimizer
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes, parser_classes
+from rest_framework.decorators import api_view, permission_classes, \
+    parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
-from sport.models import Reference
 from api.crud import get_ongoing_semester
 from api.permissions import IsStudent
 from api.serializers import (
@@ -16,15 +14,15 @@ from api.serializers import (
     ErrorSerializer,
     error_detail,
 )
+from api.views.utils import process_image
+from sport.models import Reference
 
 
 class ReferenceErrors:
-    IMAGE_FILE_SIZE_TOO_BIG = (1, f"Image file size too big, expected <= {settings.MAX_IMAGE_SIZE} bytes")
-    INVALID_IMAGE_SIZE = (
-        2,
-        f"Invalid image width/height, expected them to be in range {settings.MIN_IMAGE_DIMENSION}px..{settings.MAX_IMAGE_DIMENSION}px"
+    TOO_MUCH_UPLOADS_PER_DAY = (
+        3,
+        "Only 1 reference upload per day is allowed"
     )
-    TOO_MUCH_UPLOADS_PER_DAY = (3, "Only 1 reference upload per day is allowed")
 
 
 @swagger_auto_schema(
@@ -42,31 +40,22 @@ def reference_upload(request, **kwargs):
     serializer = ReferenceUploadSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    image = image_optimizer(
-        serializer.validated_data['image'],
-        resize_method="thumbnail",
-    )
-    if image.size > settings.MAX_IMAGE_SIZE:
-        return Response(
-            status=status.HTTP_400_BAD_REQUEST,
-            data=error_detail(*ReferenceErrors.IMAGE_FILE_SIZE_TOO_BIG)
-        )
-    width, height = image.image.size
-    if not (
-            settings.MIN_IMAGE_DIMENSION <= width <= settings.MAX_IMAGE_DIMENSION and
-            settings.MIN_IMAGE_DIMENSION <= height <= settings.MAX_IMAGE_DIMENSION
-    ):
-        return Response(
-            status=status.HTTP_400_BAD_REQUEST,
-            data=error_detail(*ReferenceErrors.INVALID_IMAGE_SIZE)
-        )
+    image, error = process_image(serializer.validated_data['image'])
+    if error is not None:
+        return error
 
     student = request.user  # user.pk == user.student.pk
 
     try:
         with transaction.atomic():
-            ref = serializer.save(semester=get_ongoing_semester(), student_id=student.pk)
-            count = Reference.objects.filter(student_id=student.pk, uploaded__date=ref.uploaded.date()).count()
+            ref = serializer.save(
+                semester=get_ongoing_semester(),
+                student_id=student.pk
+            )
+            count = Reference.objects.filter(
+                student_id=student.pk,
+                uploaded__date=ref.uploaded.date()
+            ).count()
             assert count == 1
     except AssertionError:
         return Response(

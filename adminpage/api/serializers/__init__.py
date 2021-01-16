@@ -1,9 +1,49 @@
-from .common import *
-from .profile import *
-from .enroll import *
-from .group import *
-from .training import *
-from .attendance import *
-from .calendar import *
-from .tmp import *
-from .reference import *
+from .attendance import (
+    SuggestionQuerySerializer,
+    SuggestionSerializer,
+    StudentInfoSerializer,
+    GradeReportSerializer,
+    TrainingGradesSerializer,
+    LastAttendedStat,
+    LastAttendedDatesSerializer,
+    BadGradeReportGradeSerializer,
+    BadGradeReport,
+    AttendanceMarkSerializer,
+)
+from .calendar import (
+    CalendarRequestSerializer,
+    ScheduleExtendedPropsSerializer,
+    CalendarSerializer,
+)
+from .common import (
+    EmptySerializer,
+    NotFoundSerializer,
+    ErrorSerializer,
+    InbuiltErrorSerializer,
+    get_error_serializer,
+    error_detail,
+)
+from .enroll import (
+    EnrollSerializer,
+    UnenrollStudentSerializer,
+)
+from .group import (
+    ScheduleSerializer,
+    GroupInfoSerializer,
+)
+from .profile import (
+    IsIllSerializer,
+    TrainingHourSerializer,
+)
+from .reference import (
+    ReferenceUploadSerializer,
+)
+from .self_sport_report import (
+    SelfSportReportUploadSerializer,
+)
+from .tmp import (
+    TmpSerializer,
+)
+from .training import (
+    TrainingInfoSerializer,
+)
