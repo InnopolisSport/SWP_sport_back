@@ -54,8 +54,14 @@ function open_med_group_modal() {
     $('#med-group-modal').modal('show');
 }
 
-function open_selfsport_modal() {
+async function open_selfsport_modal() {
     $('#selfsport-modal').modal('show');
+    const options = await fetch('/api/selfsport/types').then(res => res.json());
+    const el = $('#self-sport-type');
+    el.children().remove();
+    options.forEach(option => {
+        el.append(`<option value="${option.pk}">${option.name} (${option.application_rule})</option>`)
+    })
 }
 
 
@@ -416,8 +422,17 @@ async function submit_self_sport() {
     const linkInput = $('#self-sport-text-input');
     const link = linkInput.val();
 
+    // Get training_type
+    const typeInput = $('#self-sport-type');
+    const type = typeInput.val();
+
     if (!file && !link) {
         toastr.error("You should submit at least an image or a link");
+        return false;
+    }
+
+    if (!type) {
+        toastr.error("You should select the training type");
         return false;
     }
 
@@ -449,6 +464,8 @@ async function submit_self_sport() {
             return false;
         }
     }
+
+    formData.append(typeInput[0].name, type);
 
     try {
         await sendResults('/api/selfsport/upload', formData, 'POST', false)

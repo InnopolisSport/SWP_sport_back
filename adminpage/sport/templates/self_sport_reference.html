@@ -15,16 +15,25 @@
                     </div>
                     <div class="modal-body text-left">
                         <p>Please submit <strong>either</strong> an image or a link to the video that confirm your activity.</p>
-                        <input name="image" type="file"
-                               accept="image/png, image/jpeg"
-                               id="self-sport-file-input">
-                        <p></p>
-                        <input name="link" type="url"
-                               maxlength="100"
-                               placeholder="Link"
-                               pattern="^(http|https):\/\/.*"
-                               title="Invalid format of the link. Must start with &quot;http://\&quot; or &quot;https://\&quot;"
-                               id="self-sport-text-input">
+                        <div class="form-group">
+                            <label for="self-sport-type">Select training type:</label>
+                            <select name="training_type" class="form-control" id="self-sport-type">
+                              <option disabled>Loading...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input name="image" type="file" class="form-control-file"
+                                   accept="image/png, image/jpeg"
+                                   id="self-sport-file-input">
+                        </div>
+                        <div class="form-group">
+                            <input name="link" type="url" class="form-control"
+                                   maxlength="100"
+                                   placeholder="Link to the video"
+                                   pattern="^(http|https):\/\/.*"
+                                   title="Invalid format of the link. Must start with &quot;http://\&quot; or &quot;https://\&quot;"
+                                   id="self-sport-text-input">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <div class="container">
