@@ -455,7 +455,7 @@ async function submit_self_sport() {
         return false;
     }
 
-    if (!file && !link) {
+    if (!file && !link || file && link) {
         toastr.error("You should submit either an image or a link");
         return false;
     }
