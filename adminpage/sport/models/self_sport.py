@@ -62,6 +62,8 @@ class SelfSportReport(models.Model):
         null=True
     )
 
+    comment = models.TextField(max_length=1024, null=True, blank=True)
+
     class Meta:
         db_table = "self_sport_report"
         constraints = [

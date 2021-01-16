@@ -12,7 +12,7 @@ from .trainingAdmin import TrainingAdmin
 from .groupAdmin import GroupAdmin
 from .attendanceAdmin import AttendanceAdmin
 from .scheduleAdmin import ScheduleAdmin
-from .seflSportAdmin import SelfSportAdmin
+from .selfSportAdmin import SelfSportAdmin
 from .selfsportTypeAdmin import SelfSportTypeAdmin
 from .semesterAdmin import SemesterAdmin
 from .studentAdmin import StudentAdmin

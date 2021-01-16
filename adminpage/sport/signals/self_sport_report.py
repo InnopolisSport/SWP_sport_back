@@ -29,3 +29,18 @@ def update_hours_for_self_sport(
         hours=instance.hours,
         training_name=training_custom_name,
     )
+
+    if instance.hours > 0:
+        instance.student.notify(
+            *settings.EMAIL_TEMPLATES['self_sport_success'],
+            training_type=instance.training_type.name,
+            date=instance.uploaded.date(),
+            hours=instance.hours
+        )
+    else:
+        instance.student.notify(
+            *settings.EMAIL_TEMPLATES['self_sport_reject'],
+            training_type=instance.training_type.name,
+            date=instance.uploaded.date(),
+            comment=instance.comment
+        )

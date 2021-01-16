@@ -37,10 +37,10 @@ class Student(models.Model):
         blank=True
     )
 
-    def notify(self, subject, message):
+    def notify(self, subject, message, **kwargs):
         send_mail(
             subject,
-            message,
+            message.format(**kwargs),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.user.email]
         )

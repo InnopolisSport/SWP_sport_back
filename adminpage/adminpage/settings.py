@@ -260,6 +260,40 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", None)
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", None)
 EMAIL_USE_TLS = True
 
+EMAIL_TEMPLATES = {
+    'medical_leave_success': (
+        '[IU Sport] Reference Accepted',
+        'Your reference from {date} was accepted.\n'
+        'You got {hours} hours for it.'
+    ),
+    'medical_leave_reject': (
+        '[IU Sport] Reference Rejected',
+        'Your reference from {date} was rejected.\n'
+        'Comment:\n{comment}'
+    ),
+    'medical_group_success': (
+        '[IU Sport] Medical Group Reference Processed',
+        'Your medical group reference for semester {semester} was processed.\n'
+        'You were assigned a medical group "{medical_group}".'
+    ),
+    'medical_group_reject': (
+        '[IU Sport] Medical Group Reference Rejected',
+        'Your medical group reference for semester {semester} was rejected.\n'
+        'Please, submit a new reference or contact the course support.\n'
+        'Comment:\n{comment}'
+    ),
+    'self_sport_success': (
+        '[IU Sport] Self-training Proof Accepted',
+        'Your self-training proof for {training_type} from {date} was accepted.\n'
+        'You got {hours} hours for it.'
+    ),
+    'self_sport_reject': (
+        '[IU Sport] Self-training Proof Rejected',
+        'Your self-training proof for {training_type} from {date} was rejected.\n'
+        'Comment:\n{comment}'
+    )
+}
+
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

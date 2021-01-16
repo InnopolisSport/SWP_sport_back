@@ -26,13 +26,15 @@ def update_hours_for_reference(sender, instance: Reference, created, **kwargs):
 
     if instance.hours > 0:
         instance.student.notify(
-            '[IU Sport] Reference Accepted',
-            f'Your reference from {instance.uploaded.date()} got accepted. You got {instance.hours} hours for it.',
+            *settings.EMAIL_TEMPLATES['medical_leave_success'],
+            date=instance.uploaded.date(),
+            hours=instance.hours
         )
     else:
         instance.student.notify(
-            '[IU Sport] Reference Rejected',
-            f'Your reference from {instance.uploaded.date()} got rejected.\nComment:\n{instance.comment}',
+            *settings.EMAIL_TEMPLATES['medical_leave_reject'],
+            date=instance.uploaded.date(),
+            comment=instance.comment
         )
 
 
@@ -43,15 +45,13 @@ def medical_group_updated(sender, instance: MedicalGroupReference, created, **kw
 
     if instance.resolved:
         instance.student.notify(
-            '[IU Sport] Medical Group Reference Processed',
-            f'Your medical group reference for semester {instance.semester} was processed.\n'
-            f'You were assigned a medical group "{instance.student.medical_group.name}".' +
-            ('' if len(instance.comment) == 0 else f'\nComment: {instance.comment}'),
+            *settings.EMAIL_TEMPLATES['medical_group_success'],
+            semester=instance.semester,
+            medical_group=instance.student.medical_group.name
         )
     else:
         instance.student.notify(
-            '[IU Sport] Medical Group Reference Rejected',
-            f'Your medical group reference for semester {instance.semester} was rejected.\n'
-            f'Please, submit a new reference or contact the course support.\n'
-            f'Comment: {instance.comment}'
+            *settings.EMAIL_TEMPLATES['medical_group_reject'],
+            semester=instance.semester,
+            comment=instance.comment
         )
