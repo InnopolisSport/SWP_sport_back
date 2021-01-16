@@ -1,9 +1,10 @@
 from admin_auto_filters.filters import AutocompleteFilter
+from django.conf import settings
 from django.contrib import admin
-from django.db.models import F
+from django.db.models import F, Sum
 from django.utils.html import format_html
 
-from sport.models import SelfSportReport
+from sport.models import SelfSportReport, Attendance
 from .site import site
 from .utils import custom_order_filter
 
@@ -37,7 +38,7 @@ class SelfSportAdmin(admin.ModelAdmin):
         "semester",
         "training_type",
         "uploaded",
-        "hours",
+        ("hours", "obtained_hours",),
         "link",
         "reference_image",
     )
@@ -49,11 +50,23 @@ class SelfSportAdmin(admin.ModelAdmin):
     readonly_fields = (
         "uploaded",
         "reference_image",
+        "obtained_hours",
     )
 
     autocomplete_fields = (
         "student",
     )
+
+    def obtained_hours(self, obj: SelfSportReport):
+        return Attendance.objects.filter(
+            student=obj.student,
+            training__group__semester=obj.semester,
+            training__group__name=settings.SELF_TRAINING_GROUP_NAME,
+        ).aggregate(
+            Sum('hours')
+        )['hours__sum']
+
+    obtained_hours.short_description = "Self sport hours in semester"
 
     def reference_image(self, obj):
         if obj.image is not None:
