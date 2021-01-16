@@ -16,25 +16,30 @@
                     <div class="modal-body text-left">
                         <p>Please submit <strong>either</strong> an image or a link to the video that confirm your activity.</p>
                         <div class="form-group">
-                            <label for="self-sport-type">Select training type:</label>
                             <select name="training_type" class="form-control" id="self-sport-type">
                               <option disabled selected>Loading...</option>
                             </select>
+                            <small id="self-sport-type-help" class="form-text text-muted"></small>
                         </div>
                         <div class="form-group">
-                            <label for="self-sport-file-input">Proof file:</label>
-                            <input name="image" type="file" class="form-control-file"
-                                   accept="image/png, image/jpeg"
-                                   id="self-sport-file-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="self-sport-text-input">Proof link:</label>
+                            <div class="row">
+                            <div class="col">
+                            <div class="custom-file">
+                                <label for="self-sport-file-input" class="custom-file-label">Proof image</label>
+                                <input name="image" type="file" class="custom-file-input form-control-file"
+                                       accept="image/png, image/jpeg"
+                                       id="self-sport-file-input">
+                            </div>
+                            </div>
+                            <div class="col">
                             <input name="link" type="url" class="form-control"
                                    maxlength="100"
-                                   placeholder="Link to the video"
+                                   placeholder="Video link"
                                    pattern="^(http|https):\/\/.*"
                                    title="Invalid format of the link. Must start with &quot;http://\&quot; or &quot;https://\&quot;"
                                    id="self-sport-text-input">
+                            </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">

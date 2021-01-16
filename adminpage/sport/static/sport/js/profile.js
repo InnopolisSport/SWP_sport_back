@@ -56,14 +56,26 @@ function open_med_group_modal() {
 
 async function open_selfsport_modal() {
     $('#selfsport-modal').modal('show');
+    $('#self-sport-file-input')
+        .off('change')
+        .val('')
+        .on('change',function(){
+            const parts = $(this).val().split('\\')
+            $(this).prev('.custom-file-label').html(parts[parts.length - 1]);
+        })
+        .prev('.custom-file-label')
+        .html('Proof image');
     const options = await fetch('/api/selfsport/types')
         .then(res => res.json())
         .then(arr => arr.sort((a, b) => a.name > b.name));
     const el = $('#self-sport-type');
     el.children().remove();
     el.append('<option value="" disabled selected>Select your training type</option>')
+    el.off('change').change(function (e) {
+        $('#self-sport-type-help').html(options.find(option => option.pk.toString() === e.target.value).application_rule)
+    })
     options.forEach(option => {
-        el.append(`<option value="${option.pk}">${option.name} (${option.application_rule})</option>`)
+        el.append(`<option value="${option.pk}">${option.name}</option>`)
     })
 }
 
