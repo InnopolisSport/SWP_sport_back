@@ -411,7 +411,7 @@ $(function () {
     // For all
     tour.addStep(
         {
-            element: ".fc-toolbar.fc-header-toolbar",
+            element: ".fc-toolbar.fc-header-toolbar.swc-toolbar",
             placement: "top",
             title: "Calendar",
             content: "You can choose between two views (calendar or list) and navigate through the calendar by swiping or using &quot;<&quot; and &quot;>&quot;.",
