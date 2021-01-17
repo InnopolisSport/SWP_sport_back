@@ -211,11 +211,6 @@
                 {% endif %}
 
                 {% if student.sport_groups|length > 0 or trainer.sport_groups %}
-                    <p></p>
-                    <div class="custom-control custom-switch text-right">
-                        <input type="checkbox" class="custom-control-input" id="calendar-switch" onchange="change_calendar()" checked>
-                        <label class="custom-control-label" for="calendar-switch">Timeline</label>
-                    </div>
                     <div id='calendar'></div>
                 {% endif %}
             </div>
