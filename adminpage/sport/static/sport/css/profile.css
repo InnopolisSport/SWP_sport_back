@@ -114,6 +114,11 @@ a.help-link {
     margin-bottom: 0;
 }
 
+.fc-list-item {
+    color: white;
+    font-weight: bold;
+}
+
 @media only screen and (max-width: 576px) {
     .card {
         margin: 1%;

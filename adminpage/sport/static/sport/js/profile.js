@@ -116,10 +116,16 @@ function render(info) {
     element.style.backgroundColor = get_color(event.title);
     element.style.cursor = 'pointer';
     if (props.can_grade) {
-        element.style.backgroundImage = 'url("/static/sport/images/categories/sc_trainer.png")';
-        element.style.backgroundPosition = 'right bottom';
-        element.style.backgroundRepeat = 'no-repeat';
-        element.style.backgroundSize = '40%';
+        let dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
+        if (dotEl) {
+            dotEl.style.visibility = 'visible';
+            dotEl.style.backgroundColor = 'white';
+        } else {
+            element.style.backgroundImage = 'url("/static/sport/images/categories/sc_trainer.png")';
+            element.style.backgroundPosition = 'right bottom';
+            element.style.backgroundRepeat = 'no-repeat';
+            element.style.backgroundSize = '40%';
+        }
     }
 }
 
