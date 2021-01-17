@@ -56,6 +56,10 @@ body.profile {
     color: #fff;
 }
 
+.fc-event-dot {
+    visibility: hidden;
+}
+
 .fc-time {
     font-size: 0.78em;
 }
