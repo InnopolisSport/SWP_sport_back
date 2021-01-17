@@ -349,10 +349,22 @@ document.addEventListener('DOMContentLoaded', function () {
         height: 'auto',
         timeZone: 'Europe/Moscow',
         firstDay: 1,
+        allDaySlot: true,
+        slotDuration: '00:30:00',
+        minTime: '07:00:00',
+        maxTime: '23:00:00',
         eventRender: render,
         eventClick: open_modal,
         // Event format: yyyy-mm-dd
-        events: '/api/calendar/trainings'
+        events: '/api/calendar/trainings',
+        windowResize: function (view) {
+            // change view on scree rotation
+            if (document.body.clientWidth < tabletWidth) {
+                calendar.changeView('listWeek');
+            } else {
+                calendar.changeView('timeGridWeek');
+            }
+        },
     }
 
     let calendar = new SwipeCalendar(calendarEl, calendar_settings);
