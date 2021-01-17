@@ -335,14 +335,14 @@ document.addEventListener('DOMContentLoaded', function () {
         swipeSpeed: 250,
 
         // FullCalendar
-        plugins: ['list', 'dayGrid'],
+        plugins: ['list', 'timeGrid'],
         defaultView: 'listWeek',
         titleFormat: {
             month: 'short',
             day: 'numeric'
         },
         header: {
-            left: 'dayGridWeek,listWeek',
+            left: 'timeGridWeek,listWeek',
             center: '',
             right: 'today prev,next',
         },
