@@ -116,10 +116,16 @@ function render(info) {
     element.style.backgroundColor = get_color(event.title);
     element.style.cursor = 'pointer';
     if (props.can_grade) {
-        element.style.backgroundImage = 'url("/static/sport/images/categories/sc_trainer.png")';
-        element.style.backgroundPosition = 'right bottom';
-        element.style.backgroundRepeat = 'no-repeat';
-        element.style.backgroundSize = '40%';
+        let dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
+        if (dotEl) {
+            dotEl.style.visibility = 'visible';
+            dotEl.style.backgroundColor = 'white';
+        } else {
+            element.style.backgroundImage = 'url("/static/sport/images/categories/sc_trainer.png")';
+            element.style.backgroundPosition = 'right bottom';
+            element.style.backgroundRepeat = 'no-repeat';
+            element.style.backgroundSize = '40%';
+        }
     }
 }
 
@@ -324,28 +330,29 @@ async function open_trainer_modal({event}) {
     }
 }
 
-
 document.addEventListener('DOMContentLoaded', function () {
-    const tabletWidth = 768; // if width is less than this, then week view renders poorly.
     let calendarEl = document.getElementById('calendar');
-    let calendar;
-    let calendar_setting = {
-        plugins: ['timeGrid'],
-        defaultView: 'timeGridWeek',
-        header: {
-            left: '',
-            center: '',
-            // right: '',
-            right: 'today, prev, next',
+
+    const tabletWidth = 768; // if width is less than this, then week view renders poorly.
+
+    let defaultView = (document.body.clientWidth < tabletWidth) ? 'listWeek' : "timeGridWeek"
+
+    let calendar_settings = {
+        // SwipeCalendar
+        swipeEffect: 'slide',
+        swipeSpeed: 250,
+
+        // FullCalendar
+        plugins: ['list', 'timeGrid'],
+        defaultView: defaultView,
+        titleFormat: {
+            month: 'short',
+            day: 'numeric'
         },
-        views: {
-            timeGridThreeDay: {
-                type: 'timeGrid',
-                duration: {
-                    days: 3
-                },
-                buttonText: '3 day',
-            }
+        header: {
+            left: 'timeGridWeek,listWeek',
+            center: '',
+            right: 'today prev,next',
         },
         height: 'auto',
         timeZone: 'Europe/Moscow',
@@ -354,31 +361,21 @@ document.addEventListener('DOMContentLoaded', function () {
         slotDuration: '00:30:00',
         minTime: '07:00:00',
         maxTime: '23:00:00',
-        defaultTimedEventDuration: '01:30',
         eventRender: render,
         eventClick: open_modal,
+        // Event format: yyyy-mm-dd
+        events: '/api/calendar/trainings',
         windowResize: function (view) {
             // change view on scree rotation
             if (document.body.clientWidth < tabletWidth) {
-                calendar.changeView('timeGridThreeDay');
+                calendar.changeView('listWeek');
             } else {
                 calendar.changeView('timeGridWeek');
             }
         },
-        // Event format: yyyy-mm-dd
-        events: '/api/calendar/trainings'
-    };
-
-    if (document.body.clientWidth < tabletWidth) {
-        calendar_setting.defaultView = 'timeGridThreeDay';
-        calendar_setting.views.timeGridThreeDay = {
-            type: 'timeGrid',
-            duration: {days: 3},
-            buttonText: '3 day'
-        };
     }
 
-    calendar = new FullCalendar.Calendar(calendarEl, calendar_setting);
+    let calendar = new SwipeCalendar(calendarEl, calendar_settings);
     calendar.render();
 });
 

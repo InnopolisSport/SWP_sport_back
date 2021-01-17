@@ -56,6 +56,10 @@ body.profile {
     color: #fff;
 }
 
+.fc-event-dot {
+    visibility: hidden;
+}
+
 .fc-time {
     font-size: 0.78em;
 }
@@ -103,6 +107,16 @@ a.help-link {
     position: fixed;
     bottom: 3%;
     right: 3%;
+}
+
+/* Calendar */
+.fc-toolbar.fc-header-toolbar {
+    margin-bottom: 0;
+}
+
+.fc-list-item {
+    color: white;
+    font-weight: bold;
 }
 
 @media only screen and (max-width: 576px) {
