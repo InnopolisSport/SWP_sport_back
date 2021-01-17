@@ -329,6 +329,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const tabletWidth = 768; // if width is less than this, then week view renders poorly.
 
+    let defaultView = (document.body.clientWidth < tabletWidth) ? 'listWeek' : "timeGridWeek"
+
     let calendar_settings = {
         // SwipeCalendar
         swipeEffect: 'slide',
@@ -336,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // FullCalendar
         plugins: ['list', 'timeGrid'],
-        defaultView: 'listWeek',
+        defaultView: defaultView,
         titleFormat: {
             month: 'short',
             day: 'numeric'
