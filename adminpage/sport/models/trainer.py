@@ -1,13 +1,11 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 
 
 class Trainer(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE,
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
         null=False,
-        limit_choices_to={'groups__verbose_name': settings.TRAINER_AUTH_GROUP_VERBOSE_NAME},
         primary_key=True,
     )
 

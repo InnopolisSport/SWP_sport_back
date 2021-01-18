@@ -18,4 +18,3 @@ class TrainingInfoSerializer(serializers.Serializer):
     hours = serializers.FloatField(default=None)
 
     is_enrolled = serializers.BooleanField()
-    is_primary = serializers.BooleanField()

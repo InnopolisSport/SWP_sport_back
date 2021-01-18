@@ -1,6 +1,6 @@
 body.profile {
     font-family: sans-serif;
-    margin: 0px;
+    margin: 0;
     width: 100%;
     height: 100%;
     background-color: #f0f0f0;
@@ -56,6 +56,10 @@ body.profile {
     color: #fff;
 }
 
+.fc-event-dot {
+    visibility: hidden;
+}
+
 .fc-time {
     font-size: 0.78em;
 }
@@ -105,6 +109,16 @@ a.help-link {
     right: 3%;
 }
 
+/* Calendar */
+.fc-toolbar.fc-header-toolbar {
+    margin-bottom: 0;
+}
+
+.fc-list-item {
+    color: white;
+    font-weight: bold;
+}
+
 @media only screen and (max-width: 576px) {
     .card {
         margin: 1%;
@@ -117,6 +131,31 @@ a.help-link {
 
     .row {
         margin-top: 1%;
+    }
+
+    /* Hide student email and correct columns within trainers' table */
+    .trainer-table-width {
+        width: 100%;
+    }
+
+    .show-name-in-trainer-table {
+        display: table-cell;
+    }
+
+    .hide-name-in-trainer-table {
+        display: none;
+    }
+
+    .show-email-in-trainer-table {
+        display: table-cell;
+    }
+
+    .hide-email-in-trainer-table {
+        display: none;
+    }
+
+    .hours-in-trainer-table-right {
+        text-align: right;
     }
 }
 

@@ -6,9 +6,9 @@ function make_hours_table(trainings) {
         .children('tr')
         .append('<th scope="col">Group</th><th scope="col">Date</th><th scope="col">Hours</th>');
     const tbody = table.append('<tbody>').children('tbody');
-    trainings.forEach(({group, timestamp, hours}) => {
+    trainings.forEach(({group, custom_name, timestamp, hours}) => {
         tbody.append($(`<tr>
-                            <td>${group}</td>
+                            <td>${custom_name || group}</td>
                             <td>${timestamp.substr(0, 16)}</td>
                             <td>${hours}</td>
                         </tr>`))
@@ -48,10 +48,45 @@ function toggle_ill(elem) {
 
 function open_recovered_modal() {
     $('#recovered-modal').modal('show');
+    $('#reference-file-input')
+        .off('change')
+        .val('')
+        .on('change',function(){
+            const parts = $(this).val().split('\\')
+            $(this).prev('.custom-file-label').html(parts[parts.length - 1]);
+        })
+        .prev('.custom-file-label')
+        .html('Reference image');
 }
 
 function open_med_group_modal() {
     $('#med-group-modal').modal('show');
+}
+
+async function open_selfsport_modal() {
+    $('#selfsport-modal').modal('show');
+    $('#self-sport-type-help').html('');
+    $('#self-sport-file-input')
+        .off('change')
+        .val('')
+        .on('change',function(){
+            const parts = $(this).val().split('\\')
+            $(this).prev('.custom-file-label').html(parts[parts.length - 1]);
+        })
+        .prev('.custom-file-label')
+        .html('Proof image');
+    const options = await fetch('/api/selfsport/types')
+        .then(res => res.json())
+        .then(arr => arr.sort((a, b) => a.name > b.name));
+    const el = $('#self-sport-type');
+    el.children().remove();
+    el.append('<option value="" disabled selected>Select your training type</option>')
+    el.off('change').change(function (e) {
+        $('#self-sport-type-help').html(options.find(option => option.pk.toString() === e.target.value).application_rule)
+    })
+    options.forEach(option => {
+        el.append(`<option value="${option.pk}">${option.name}</option>`)
+    })
 }
 
 
@@ -81,10 +116,16 @@ function render(info) {
     element.style.backgroundColor = get_color(event.title);
     element.style.cursor = 'pointer';
     if (props.can_grade) {
-        element.style.backgroundImage = 'url("/static/sport/images/categories/sc_trainer.png")';
-        element.style.backgroundPosition = 'right bottom';
-        element.style.backgroundRepeat = 'no-repeat';
-        element.style.backgroundSize = '40%';
+        let dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
+        if (dotEl) {
+            dotEl.style.visibility = 'visible';
+            dotEl.style.backgroundColor = 'white';
+        } else {
+            element.style.backgroundImage = 'url("/static/sport/images/categories/sc_trainer.png")';
+            element.style.backgroundPosition = 'right bottom';
+            element.style.backgroundRepeat = 'no-repeat';
+            element.style.backgroundSize = '40%';
+        }
     }
 }
 
@@ -185,9 +226,9 @@ let students_in_table = {}; // <student_id: jquery selector of a row in the tabl
 
 function add_student_row(student_id, full_name, email, hours) {
     const row = $(`<tr id="student_${student_id}">
-                    <td>${full_name}</td>
-                    <td>${email}</td>
-                    <td style="cursor: pointer">
+                    <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name}</td>
+                    <td class="trainer-table-width hide-email-in-trainer-table" onclick="show_name_hide_email()">${email}</td>
+                    <td class="hours-in-trainer-table-right" style="cursor: pointer">
                         <form onsubmit="return false">
                             <input class="studentHourField trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
                             onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"
@@ -198,14 +239,36 @@ function add_student_row(student_id, full_name, email, hours) {
     students_in_table[student_id] = row;
 }
 
+/* The two functions are applied to the trainer table */
+function show_email_hide_name() {
+    $('.trainer-table-width.show-name-in-trainer-table').attr('class','trainer-table-width hide-name-in-trainer-table');
+    $('.trainer-table-width.hide-email-in-trainer-table').attr('class','trainer-table-width show-email-in-trainer-table');
+}
+
+function show_name_hide_email() {
+    $('.trainer-table-width.hide-name-in-trainer-table').attr('class','trainer-table-width show-name-in-trainer-table');
+    $('.trainer-table-width.show-email-in-trainer-table').attr('class','trainer-table-width hide-email-in-trainer-table');
+}
+
+/* Return classes back when resizing */
+window.addEventListener('resize', function(event){
+    const width = $(window).width()
+    const breakpoint = 576
+
+    if (width > breakpoint) {
+        show_name_hide_email()
+    }
+});
+
+
 function make_grades_table(grades) {
     students_in_table = {};
     const table = $('<table class="table table-hover table-responsive-md">');
-    table.append('<thead>')
+    table.append('<thead class="trainer-table-width">')
         .children('thead')
         .append('<tr />')
         .children('tr')
-        .append('<th scope="col">Student</th><th scope="col">Email</th><th scope="col">Hours</th>');
+        .append('<th scope="col" class="trainer-table-width show-name-in-trainer-table">Student</th><th scope="col" class="trainer-table-width hide-email-in-trainer-table">Email</th><th scope="col" class="hours-in-trainer-table-right">Hours</th>');
     student_hours_tbody = table.append('<tbody>').children('tbody');
     grades.forEach(({student_id, full_name, email, hours}) => {
         add_student_row(student_id, full_name, email, hours);
@@ -267,61 +330,52 @@ async function open_trainer_modal({event}) {
     }
 }
 
-
 document.addEventListener('DOMContentLoaded', function () {
-    const tabletWidth = 768; // if width is less than this, then week view renders poorly.
     let calendarEl = document.getElementById('calendar');
-    let calendar;
-    let calendar_setting = {
-        plugins: ['timeGrid'],
-        defaultView: 'timeGridWeek',
-        header: {
-            left: '',
-            center: '',
-            // right: '',
-            right: 'today, prev, next',
+
+    const tabletWidth = 768; // if width is less than this, then week view renders poorly.
+
+    let defaultView = (document.body.clientWidth < tabletWidth) ? 'listWeek' : "timeGridWeek"
+
+    let calendar_settings = {
+        // SwipeCalendar
+        swipeEffect: 'slide',
+        swipeSpeed: 250,
+
+        // FullCalendar
+        plugins: ['list', 'timeGrid'],
+        defaultView: defaultView,
+        titleFormat: {
+            month: 'short',
+            day: 'numeric'
         },
-        views: {
-            timeGridThreeDay: {
-                type: 'timeGrid',
-                duration: {
-                    days: 3
-                },
-                buttonText: '3 day',
-            }
+        header: {
+            left: 'timeGridWeek,listWeek',
+            center: '',
+            right: 'today prev,next',
         },
         height: 'auto',
         timeZone: 'Europe/Moscow',
         firstDay: 1,
-        allDaySlot: false,
+        allDaySlot: true,
         slotDuration: '00:30:00',
         minTime: '07:00:00',
         maxTime: '23:00:00',
-        defaultTimedEventDuration: '01:30',
         eventRender: render,
         eventClick: open_modal,
+        // Event format: yyyy-mm-dd
+        events: '/api/calendar/trainings',
         windowResize: function (view) {
             // change view on scree rotation
             if (document.body.clientWidth < tabletWidth) {
-                calendar.changeView('timeGridThreeDay');
+                calendar.changeView('listWeek');
             } else {
                 calendar.changeView('timeGridWeek');
             }
         },
-        // Event format: yyyy-mm-dd
-        events: '/api/calendar/trainings'
-    };
-
-    if (document.body.clientWidth < tabletWidth) {
-        calendar_setting.defaultView = 'timeGridThreeDay';
-        calendar_setting.views.timeGridThreeDay = {
-            type: 'timeGrid',
-            duration: {days: 3},
-            buttonText: '3 day'
-        };
     }
 
-    calendar = new FullCalendar.Calendar(calendarEl, calendar_setting);
+    let calendar = new SwipeCalendar(calendarEl, calendar_settings);
     calendar.render();
 });
 
@@ -372,6 +426,71 @@ async function submit_reference() {
     try {
         await sendResults('/api/reference/upload', formData, 'POST', false)
         await sendResults("/api/profile/sick/toggle", {})
+        goto_profile()
+    } catch (error) {
+        toastr.error(error.message);
+    }
+    return false;
+}
+
+async function submit_self_sport() {
+    const formData = new FormData()
+
+    // Get file
+    const fileInput = $('#self-sport-file-input')[0];
+    const file = fileInput.files[0];
+
+    // Get link
+    const linkInput = $('#self-sport-text-input');
+    const link = linkInput.val();
+
+    // Get training_type
+    const typeInput = $('#self-sport-type');
+    const type = typeInput.val();
+
+    if (!type) {
+        toastr.error("You should select the training type");
+        return false;
+    }
+
+    if (!file && !link || file && link) {
+        toastr.error("You should submit either an image or a link");
+        return false;
+    }
+
+    if (file) {
+        if (file.size > 1E7) {
+            toastr.error('Image file size too big, expected size <= 10 MB');
+            return false;
+        }
+
+        try {
+            const _URL = window.URL || window.webkitURL;
+            const img = await loadImage(_URL.createObjectURL(file));
+            if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
+                toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
+                return false;
+            }
+        } catch (e) {
+            toastr.error('Uploaded file is not an image');
+            return false;
+        }
+
+        formData.append(fileInput.name, file);
+    }
+
+    if (link) {
+        if (link.startsWith('http://') || link.startsWith('https://')) {
+            formData.append(linkInput[0].name, link);
+        } else {
+            return false;
+        }
+    }
+
+    formData.append(typeInput[0].name, type);
+
+    try {
+        await sendResults('/api/selfsport/upload', formData, 'POST', false)
         goto_profile()
     } catch (error) {
         toastr.error(error.message);

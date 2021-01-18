@@ -1,3 +1,5 @@
+from datetime import time
+
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -29,12 +31,14 @@ def convert_personal_training(t) -> dict:
     start_time = timezone.localtime(
         t["start"],
     )
+    end_time = timezone.localtime(
+            t["end"],
+        )
     return {
         "title": t["group_name"],
         "start": start_time,
-        "end": timezone.localtime(
-            t["end"],
-        ),
+        "end": end_time,
+        "allDay": start_time.time() == time(0, 0, 0) and end_time.time() == time(23, 59, 59),
         "extendedProps": {
             "id": t["id"],
             "can_edit":

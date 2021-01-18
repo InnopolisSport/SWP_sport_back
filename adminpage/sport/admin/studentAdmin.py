@@ -2,14 +2,17 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.db.models import ForeignKey
 from django.db.models.expressions import RawSQL
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
+from import_export.results import RowResult
 
 from sport.models import Student, MedicalGroup
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .site import site
-from .utils import user__email, has_enrolled_filter
+from .utils import user__email
 
 
 class MedicalGroupWidget(widgets.ForeignKeyWidget):
@@ -30,9 +33,8 @@ class StudentResource(resources.ModelResource):
         user, _ = user_model.objects.get_or_create(
             email=row["email"],
             defaults={
-                "first_name": row["first_name"],
-                "last_name": row["last_name"],
-                "username": row["email"],
+                "first_name": row.get("first_name"),
+                "last_name": row.get("last_name"),
             },
         )
 
@@ -64,6 +66,7 @@ class StudentResource(resources.ModelResource):
             "user__first_name",
             "user__last_name",
             "enrollment_year",
+            "telegram",
         )
         export_order = (
             "user",
@@ -72,13 +75,58 @@ class StudentResource(resources.ModelResource):
             "user__last_name",
             "medical_group",
             "enrollment_year",
+            "telegram",
         )
         import_id_fields = ("user",)
+        skip_unchanged = False
+        report_skipped = True
+        raise_errors = False
+
+    def import_row(self, row, instance_loader, **kwargs):
+        # overriding import_row to ignore errors and skip rows that fail to import
+        # without failing the entire import
+        import_result = super().import_row(row, instance_loader, **kwargs)
+        if import_result.import_type == RowResult.IMPORT_TYPE_ERROR:
+            # Copy the values to display in the preview report
+            import_result.diff = [
+                None,
+                row.get('email'),
+                row.get('first_name'),
+                row.get('last_name'),
+                row.get('medical_group'),
+                row.get('enrollment_year'),
+                row.get('telegram'),
+            ]
+            # Add a column with the error message
+            import_result.diff.append(mark_safe(
+                f'''Errors:<ul>{''.join([f'<li>{err.error}</li>' for err in import_result.errors])}</ul>'''
+            ))
+            # clear errors and mark the record to skip
+            import_result.errors = []
+            import_result.import_type = RowResult.IMPORT_TYPE_SKIP
+
+        return import_result
 
 
 @admin.register(Student, site=site)
 class StudentAdmin(ImportMixin, admin.ModelAdmin):
     resource_class = StudentResource
+
+    def get_fields(self, request, obj=None):
+        if obj is None:
+            return (
+                "user",
+                "medical_group",
+                "enrollment_year",
+                "telegram",
+            )
+        return (
+            "user",
+            "is_ill",
+            "medical_group",
+            "enrollment_year",
+            "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
+        )
 
     autocomplete_fields = (
         "user",
@@ -88,13 +136,13 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "user__first_name",
         "user__last_name",
         "user__email",
+        "telegram",
     )
 
     list_filter = (
         "is_ill",
         "enrollment_year",
         "medical_group",
-        has_enrolled_filter(),
     )
 
     list_display = (
@@ -102,17 +150,21 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         user__email,
         "is_ill",
         "medical_group",
-        "has_enrolled",
+        "write_to_telegram",
     )
 
     readonly_fields = (
-        "has_enrolled",
+        "write_to_telegram",
     )
 
-    def has_enrolled(self, obj):
-        return obj.has_enrolled
 
-    has_enrolled.boolean = True
+    def write_to_telegram(self, obj):
+        return None if obj.telegram is None else \
+            format_html(
+                '<a target="_blank" href="https://t.me/{}">{}</a>',
+                obj.telegram[1:],
+                obj.telegram
+            )
 
     ordering = (
         "user__first_name",
@@ -131,11 +183,13 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.annotate(has_enrolled=RawSQL(
-            'SELECT count(*) > 0 FROM enroll, "group" '
-            'WHERE student_id = student.user_id '
-            'AND "group".semester_id = current_semester() '
-            'AND "group".id = enroll.group_id '
-            'AND enroll.is_primary = True',
-            ()
-        ))
+        # TODO: show current primary group
+        return qs
+        # return qs.annotate(has_enrolled=RawSQL(
+        #     'SELECT count(*) > 0 FROM enroll, "group" '
+        #     'WHERE student_id = student.user_id '
+        #     'AND "group".semester_id = current_semester() '
+        #     'AND "group".id = enroll.group_id '
+        #     'AND enroll.is_primary = True',
+        #     ()
+        # ))

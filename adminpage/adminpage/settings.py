@@ -65,6 +65,10 @@ TRAINING_EDITABLE_INTERVAL = timedelta(
 )
 
 BACHELOR_STUDY_PERIOD_YEARS = 4
+BACHELOR_GROUPS_PREFIX = "B"
+# When changing STUDENT_MAXIMUM_GROUP_COUNT
+# make sure to change the corresponding constraint in the DB
+STUDENT_MAXIMUM_GROUP_COUNT = 5
 
 SCHEMA = os.getenv("SCHEMA", "http")
 HOSTNAME = os.getenv("HOSTNAME", "localhost")
@@ -98,6 +102,8 @@ else:
 INSTALLED_APPS = [
     'adminpage.apps.SportAdminConfig',
     'django.contrib.auth',
+    'accounts',
+    'revproxy',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -145,6 +151,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'adminpage.wsgi.application'
 
+AUTH_USER_MODEL = 'accounts.User'
+
 # Authentication
 OAUTH_CLIENT_ID = os.getenv('oauth_appID')
 OAUTH_CLIENT_SECRET = os.getenv("oauth_shared_secret")
@@ -170,11 +178,11 @@ AUTH_ADFS = {
     "USERNAME_CLAIM": "upn",
     # use group ids instead of name, because names are written in different languages
     "GROUPS_CLAIM": "groupsid",
-    "MIRROR_GROUPS": True,  # TODO: change when get info about all groups
+    "MIRROR_GROUPS": True,
     "CLAIM_MAPPING": {
         "first_name": "given_name",
         "last_name": "family_name",
-        "email": "email"
+        "role": "role",
     },
 }
 

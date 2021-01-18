@@ -1,11 +1,14 @@
+from django import forms
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django import forms
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view, permission_classes
 
-from api.crud import get_ongoing_semester, get_student_groups, get_brief_hours, get_trainer_groups
+from api.crud import get_ongoing_semester, get_student_groups, \
+    get_brief_hours, \
+    get_trainer_groups
 from api.permissions import IsStudent
 from sport.models import Student, MedicalGroupReference
 from sport.utils import set_session_notification
@@ -18,7 +21,6 @@ class MedicalGroupReferenceForm(forms.Form):
 def parse_group(group: dict) -> dict:
     return {
         "id": group["id"],
-        "is_primary": group.get("is_primary", None),
         'qualified_name': f'{group["name"]} ({group["sport_name"]})',
         "name": group["name"],
         "sport": group["sport_name"]
@@ -29,7 +31,9 @@ def parse_group(group: dict) -> dict:
 def profile_view(request, **kwargs):
     user = request.user
 
-    student = Student.objects.filter(pk=user.pk).select_related("medical_group").first()  # type: Optional[Student]
+    student = Student.objects.filter(pk=user.pk).select_related(
+        "medical_group"
+    ).first()  # type: Optional[Student]
     trainer = getattr(user, "trainer", None)  # type: Optional[Trainer]
 
     current_semester = get_ongoing_semester()
@@ -68,17 +72,16 @@ def profile_view(request, **kwargs):
             semester=current_semester,
         ).exists()
 
-        secondary_groups = len([
-            group
-            for group in student_groups_parsed
-            if not group["is_primary"]
-        ])
         context.update({
             "student": {
                 "student_id": student.pk,
                 "sport_groups": student_groups_parsed,
-                "no_primary_group": secondary_groups == len(student_groups_parsed),
-                "secondary_group_left": 2 - secondary_groups,
+                "group_choices_left": max(
+                    0,
+                    settings.STUDENT_MAXIMUM_GROUP_COUNT - len(
+                        student_groups_parsed
+                    )
+                ),
                 "semesters": student_brief_hours_info,
                 "obj": student,
                 "has_med_group_submission": has_med_group_submission,

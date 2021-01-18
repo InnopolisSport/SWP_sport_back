@@ -21,7 +21,7 @@
 
                                 {% if model.add_url %}
                                     {% if model.object_name|lower == "training" %}
-                                        <td><a href="{{ model.add_url }}?extra="
+                                        <td><a href="{{ model.admin_url }}add-extra/"
                                                class="addlink">{% trans 'Add extra training' %}</a></td>
                                     {% else %}
                                         <td></td>
