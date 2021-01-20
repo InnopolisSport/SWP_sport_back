@@ -364,15 +364,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventRender: render,
         eventClick: open_modal,
         // Event format: yyyy-mm-dd
-        events: '/api/calendar/trainings',
-        windowResize: function (view) {
-            // change view on scree rotation
-            if (document.body.clientWidth < tabletWidth) {
-                calendar.changeView('listWeek');
-            } else {
-                calendar.changeView('timeGridWeek');
-            }
-        },
+        events: '/api/calendar/trainings'
     }
 
     let calendar = new SwipeCalendar(calendarEl, calendar_settings);
