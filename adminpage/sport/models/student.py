@@ -38,12 +38,13 @@ class Student(models.Model):
     )
 
     def notify(self, subject, message, **kwargs):
+        msg = message.format(**kwargs)
         send_mail(
             subject,
-            message.format(**kwargs),
+            msg,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.user.email],
-            html_message=message,
+            html_message=msg,
         )
 
     def save(self, *args, **kwargs):
