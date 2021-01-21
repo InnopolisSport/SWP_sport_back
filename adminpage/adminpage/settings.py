@@ -269,7 +269,7 @@ EMAIL_TEMPLATES = {
     'medical_leave_reject': (
         '[IU Sport] Reference Rejected',
         'Your reference from {date} was rejected.\n'
-        'Comment:\n{comment}'
+        'Comment: {comment}'
     ),
     'medical_group_success': (
         '[IU Sport] Medical Group Reference Processed',
@@ -280,17 +280,19 @@ EMAIL_TEMPLATES = {
         '[IU Sport] Medical Group Reference Rejected',
         'Your medical group reference for semester {semester} was rejected.\n'
         'Please, submit a new reference or contact the course support.\n'
-        'Comment:\n{comment}'
+        'Comment: {comment}'
     ),
     'self_sport_success': (
-        '[IU Sport] Self-training Proof Accepted',
-        'Your self-training proof for {training_type} from {date} was accepted.\n'
+        '[IU Sport] Self-training Report Accepted',
+        'Your self-training proof for {training_type} '
+        'from {date} was accepted.\n'
         'You got {hours} hours for it.'
     ),
     'self_sport_reject': (
-        '[IU Sport] Self-training Proof Rejected',
-        'Your self-training proof for {training_type} from {date} was rejected.\n'
-        'Comment:\n{comment}'
+        '[IU Sport] Self-training Report Rejected',
+        'Your self-training proof for {training_type} '
+        ' from {date} was rejected.\n'
+        'Comment: {comment}'
     )
 }
 
