@@ -122,14 +122,14 @@ def process_med_group_form(request, *args, **kwargs):
         if created:
             set_session_notification(
                 request,
-                "Successful submit",
+                "Medical group reference successfully submitted",
                 "success",
             )
             return redirect('profile')
         else:
             set_session_notification(
                 request,
-                "You have already submitted reference",
+                "You have already submitted medical group reference",
                 "error",
             )
     else:
