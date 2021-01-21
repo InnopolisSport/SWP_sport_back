@@ -264,7 +264,7 @@ EMAIL_TEMPLATES = {
     'medical_leave_success': (
         '[IU Sport] Reference Accepted',
         'Your reference from {date} was accepted.\n'
-        'You got {hours} hours for it.\n\n'
+        'You received {hours} hour(-s) for it.\n\n'
         'Your submission:\n{submission}'
     ),
     'medical_leave_reject': (
@@ -287,10 +287,10 @@ EMAIL_TEMPLATES = {
         'Your submission:\n{submission}'
     ),
     'self_sport_success': (
-        '[IU Sport] Self-training Report Accepted',
+        '[IU Sport] Self-training Proof Accepted',
         'Your self-training proof for {training_type} '
         'from {date} was accepted.\n'
-        'You got {hours} hours for it.\n\n'
+        'You received {hours} hour(-s) for it.\n\n'
         'Your submission:\n{submission}'
     ),
     'self_sport_reject': (
