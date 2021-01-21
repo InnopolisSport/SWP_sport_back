@@ -41,7 +41,7 @@ def compose_base_url(schema, hostname, port) -> str:
     base_url = f"{schema}://{hostname}"
     if port is not None and int(port) != 80:
         base_url += f":{port}"
-    return base_url + '/'
+    return base_url
 
 
 DATE_FORMAT = "%Y-%m-%d"
@@ -264,36 +264,42 @@ EMAIL_TEMPLATES = {
     'medical_leave_success': (
         '[IU Sport] Reference Accepted',
         'Your reference from {date} was accepted.\n'
-        'You got {hours} hours for it.'
+        'You got {hours} hours for it.\n\n'
+        'Your submission:\n{submission}'
     ),
     'medical_leave_reject': (
         '[IU Sport] Reference Rejected',
         'Your reference from {date} was rejected.\n'
-        'Comment: {comment}'
+        'Comment: {comment}\n\n'
+        'Your submission:\n{submission}'
     ),
     'medical_group_success': (
         '[IU Sport] Medical Group Reference Processed',
         'Your medical group reference for semester {semester} was processed.\n'
-        'You were assigned a medical group "{medical_group}".'
+        'You were assigned a medical group "{medical_group}".\n\n'
+        'Your submission:\n{submission}'
     ),
     'medical_group_reject': (
         '[IU Sport] Medical Group Reference Rejected',
         'Your medical group reference for semester {semester} was rejected.\n'
         'Please, submit a new reference or contact the course support.\n'
-        'Comment: {comment}'
+        'Comment: {comment}\n\n'
+        'Your submission:\n{submission}'
     ),
     'self_sport_success': (
         '[IU Sport] Self-training Report Accepted',
         'Your self-training proof for {training_type} '
         'from {date} was accepted.\n'
-        'You got {hours} hours for it.'
+        'You got {hours} hours for it.\n\n'
+        'Your submission:\n{submission}'
     ),
     'self_sport_reject': (
         '[IU Sport] Self-training Report Rejected',
         'Your self-training proof for {training_type} '
         ' from {date} was rejected.\n'
-        'Comment: {comment}'
-    )
+        'Comment: {comment}\n\n'
+        'Your submission:\n{submission}'
+    ),
 }
 
 if DEBUG:

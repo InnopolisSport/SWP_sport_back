@@ -4,6 +4,7 @@ from django.dispatch.dispatcher import receiver
 
 from sport.models import Group, SelfSportReport
 from sport.signals.utils import update_attendance_record
+from sport.utils import format_submission_html
 
 
 @receiver(post_save, sender=SelfSportReport)
@@ -35,12 +36,18 @@ def update_hours_for_self_sport(
             *settings.EMAIL_TEMPLATES['self_sport_success'],
             training_type=instance.training_type.name,
             date=instance.uploaded.date(),
-            hours=instance.hours
+            hours=instance.hours,
+            submission=format_submission_html(
+                *instance.get_submission_url()
+            )
         )
     else:
         instance.student.notify(
             *settings.EMAIL_TEMPLATES['self_sport_reject'],
             training_type=instance.training_type.name,
             date=instance.uploaded.date(),
-            comment=instance.comment
+            comment=instance.comment,
+            submission=format_submission_html(
+                *instance.get_submission_url()
+            )
         )

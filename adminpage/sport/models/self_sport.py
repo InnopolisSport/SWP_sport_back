@@ -1,8 +1,11 @@
 import uuid
+from typing import Tuple
 
 from django.core.validators import URLValidator
 from django.db import models
 from image_optimizer.fields import OptimizedImageField
+
+from sport.utils import SubmissionType
 
 
 def get_report_path(instance, filename):
@@ -76,6 +79,17 @@ class SelfSportReport(models.Model):
                 models.Q(image__exact='', link__isnull=False, )
             )
         ]
+
+    def get_submission_url(self) -> Tuple[SubmissionType, str]:
+        if self.link is not None:
+            submission_type = SubmissionType.LINK
+            submission = self.link
+        elif self.image is not None:
+            submission_type = SubmissionType.IMAGE
+            submission = self.image.url
+        else:
+            raise ValueError("Invalid object was provided")
+        return submission_type, submission
 
     def save(self, *args, **kwargs):
         # update flag and approval only when object is created via API

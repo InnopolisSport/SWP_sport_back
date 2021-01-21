@@ -42,7 +42,8 @@ class Student(models.Model):
             subject,
             message.format(**kwargs),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[self.user.email]
+            recipient_list=[self.user.email],
+            html_message=message,
         )
 
     def save(self, *args, **kwargs):
