@@ -228,15 +228,19 @@ let student_hours_tbody = null;
 let current_duration_academic_hours = 0;
 let students_in_table = {}; // <student_id: jquery selector of a row in the table>
 
-function add_student_row(student_id, full_name, email, hours) {
+function add_student_row(student_id, full_name, email, hours, maxHours) {
     const row = $(`<tr id="student_${student_id}">
                     <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name}</td>
                     <td class="trainer-table-width hide-email-in-trainer-table" onclick="show_name_hide_email()">${email}</td>
                     <td class="hours-in-trainer-table-right" style="cursor: pointer">
                         <form onsubmit="return false">
-                            <input class="studentHourField trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
+                        <div class="btn-group">
+                            <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).next().val(0).change()">0</a>
+                            <input class="studentHourField form-control trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
                             onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"
                             />
+                            <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</a>
+                        </div>
                      </form></td>
                 </tr>`);
     student_hours_tbody.prepend(row);
@@ -265,7 +269,7 @@ window.addEventListener('resize', function (event) {
 });
 
 
-function make_grades_table(grades) {
+function make_grades_table(grades, maxHours) {
     students_in_table = {};
     const table = $('<table class="table table-hover table-responsive-md">');
     table.append('<thead class="trainer-table-width">')
@@ -275,7 +279,7 @@ function make_grades_table(grades) {
         .append('<th scope="col" class="trainer-table-width show-name-in-trainer-table">Student</th><th scope="col" class="trainer-table-width hide-email-in-trainer-table">Email</th><th scope="col" class="hours-in-trainer-table-right">Hours</th>');
     student_hours_tbody = table.append('<tbody>').children('tbody');
     grades.forEach(({student_id, full_name, email, hours}) => {
-        add_student_row(student_id, full_name, email, hours);
+        add_student_row(student_id, full_name, email, hours, maxHours);
     });
     return table;
 }
@@ -319,12 +323,13 @@ async function open_trainer_modal({event}) {
     const mark_all_btn = $('#put-default-hours-btn');
     mark_all_btn.attr('data-hours', current_duration_academic_hours)
     $('#mark-all-hours-value').text(current_duration_academic_hours)
-    modal.append(make_grades_table(grades));
+    modal.append(make_grades_table(grades, current_duration_academic_hours));
 
     const editable_inputs = $(".trainer-editable");
     save_btn.prop('disabled', !event.extendedProps.can_edit);
     mark_all_btn.prop('disabled', !event.extendedProps.can_edit);
     editable_inputs.prop('disabled', !event.extendedProps.can_edit);
+    editable_inputs.toggleClass('disabled');
 
     if (!event.extendedProps.can_edit) {
         show_alert(
@@ -385,7 +390,8 @@ function autocomplete_select(event, ui) {
     const hours = 0;
     const student_row = students_in_table[student_id];
     if (student_row == null) { // check if current student is in the table
-        add_student_row(student_id, full_name, email, hours); // add if student isn't present
+        const maxHours = $('#put-default-hours-btn').attr('data-hours');
+        add_student_row(student_id, full_name, email, hours, maxHours); // add if student isn't present
     } else {
         student_row[0].scrollIntoView(); // scroll to the row with student
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
