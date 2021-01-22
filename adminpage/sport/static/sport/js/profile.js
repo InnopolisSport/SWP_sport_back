@@ -235,11 +235,11 @@ function add_student_row(student_id, full_name, email, hours, maxHours) {
                     <td class="hours-in-trainer-table-right" style="cursor: pointer">
                         <form onsubmit="return false">
                         <div class="btn-group">
-                            <a href="#" class="btn btn-outline-primary" onclick="$(this).next().val(0).change()">0</a>
+                            <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).next().val(0).change()">0</a>
                             <input class="studentHourField form-control trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
                             onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"
                             />
-                            <a href="#" class="btn btn-outline-primary" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</a>
+                            <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</a>
                         </div>
                      </form></td>
                 </tr>`);
@@ -329,6 +329,7 @@ async function open_trainer_modal({event}) {
     save_btn.prop('disabled', !event.extendedProps.can_edit);
     mark_all_btn.prop('disabled', !event.extendedProps.can_edit);
     editable_inputs.prop('disabled', !event.extendedProps.can_edit);
+    editable_inputs.toggleClass('disabled');
 
     if (!event.extendedProps.can_edit) {
         show_alert(
