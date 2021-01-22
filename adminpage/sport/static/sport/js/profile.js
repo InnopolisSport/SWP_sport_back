@@ -329,7 +329,7 @@ async function open_trainer_modal({event}) {
     save_btn.prop('disabled', !event.extendedProps.can_edit);
     mark_all_btn.prop('disabled', !event.extendedProps.can_edit);
     editable_inputs.prop('disabled', !event.extendedProps.can_edit);
-    editable_inputs.toggleClass('disabled');
+    editable_inputs.toggleClass('disabled', !event.extendedProps.can_edit);
 
     if (!event.extendedProps.can_edit) {
         show_alert(
