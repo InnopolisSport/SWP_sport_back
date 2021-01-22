@@ -265,7 +265,20 @@ $(function () {
                 "Do not forget to change the status back when you recover.<br />" +
                 "Additionally, you can submit a reference to get hours.",
             path: "/profile/",
-            // preventInteraction: true
+            preventInteraction: true
+        }
+    );
+
+    // Self-upload button
+    tour.addStep(
+        {
+            element: ".tour-step-self-sport-btn",
+            placement: "bottom",
+            title: "Self Sport",
+            content: "If you exercise by yourself, you can get hours by submitting image or link to the video " +
+                "that confirm your activity.",
+            path: "/profile/",
+            preventInteraction: true
         }
     );
 
@@ -278,10 +291,10 @@ $(function () {
                 placement: "auto",
                 title: "Calendar",
                 content: "It is your schedule. You can find all your sports classes there.<br />" +
-                    "There are <strong>two types of events - with and without the trainer icon.</strong><br /><br />" +
-                    "Events <strong>without the trainer icon</strong> are the ones you joined. " +
+                    "There are <strong>two types of events - with and without the trainer icon (or a dot).</strong><br /><br />" +
+                    "Events <strong>without the trainer icon (or a dot)</strong> are the ones you joined. " +
                     "You can click on the training to check out details such as trainer contacts or location.<br /><br />" +
-                    "Events <strong>with the trainer icon</strong> are the ones you train. You can click on the training to mark attendance.",
+                    "Events <strong>with the trainer icon (or a dot)</strong> are the ones you train. You can click on the training to mark attendance.",
                 path: "/profile/",
                 onShown: function (tour) {
                     // Show only calendar steps in the tour (used in conjunction with calendar restart() below)
@@ -398,10 +411,10 @@ $(function () {
     // For all
     tour.addStep(
         {
-            element: ".fc-right",
+            element: ".fc-toolbar.fc-header-toolbar.swc-toolbar",
             placement: "top",
             title: "Calendar",
-            content: "You can navigate through the calendar using these buttons.",
+            content: "You can choose between two views (calendar or list) and navigate through the calendar by swiping or using &quot;<&quot; and &quot;>&quot;.",
             path: "/profile/",
             onShown: function (tour) {
                 // Show only calendar steps in the tour (can be accessed only from previous step)
@@ -478,9 +491,9 @@ $(function () {
             tour.ended() && localStorage.getItem("main-tour_calendar") === "false") {
         // Show calendar steps if it was skipped previously
         if ($('.tour-step-choice-btn').text().includes('No group choices left')) {
-            tour.restart(7);
+            tour.restart(8);
         } else {
-            tour.restart(15);
+            tour.restart(16);
         }
     } else {
         tour.start();
