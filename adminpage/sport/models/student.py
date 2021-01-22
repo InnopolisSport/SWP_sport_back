@@ -44,7 +44,7 @@ class Student(models.Model):
             msg,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.user.email],
-            html_message=msg,
+            html_message=msg.replace("\n", "<br>"),
         )
 
     def save(self, *args, **kwargs):
