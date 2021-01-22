@@ -1,4 +1,30 @@
 from datetime import date
+from enum import IntEnum
+
+from django.conf import settings
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
+
+
+class SubmissionType(IntEnum):
+    LINK = 1
+    IMAGE = 0
+
+
+def format_submission_html(
+        submission_type: SubmissionType,
+        submission_url: str
+) -> str:
+    if submission_type == SubmissionType.LINK:
+        return format_html('<a href="{}">link</a>', submission_url)
+    elif submission_type == SubmissionType.IMAGE:
+        return format_html(
+            '<img src="{}{}">',
+            mark_safe(settings.BASE_URL),
+            submission_url,
+        )
+    else:
+        raise ValueError(f"Got unknown submission type: {submission_type}")
 
 
 def get_study_year_from_date(in_date: date) -> int:

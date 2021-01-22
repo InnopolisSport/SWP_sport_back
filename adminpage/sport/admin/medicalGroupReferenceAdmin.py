@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from sport.admin import site
-from sport.models import MedicalGroupReference, MedicalGroup
+from sport.models import MedicalGroupReference, MedicalGroup, MedicalGroups
 
 
 class StudentTextFilter(AutocompleteFilter):
@@ -20,6 +20,12 @@ class MedicalGroupReferenceForm(forms.ModelForm):
 
     medical_group = forms.ModelChoiceField(MedicalGroup.objects.all(), initial=-2)
 
+    def clean_comment(self):
+        if self.cleaned_data['medical_group'].pk < 1 and \
+                self.cleaned_data['comment'] == '':
+            raise forms.ValidationError('Please, specify reject reason in the comment field')
+        return self.cleaned_data['comment']
+
     def save(self, commit=True):
         instance = super().save(commit)
         instance.student.medical_group_id = self.cleaned_data['medical_group'].pk
@@ -30,12 +36,14 @@ class MedicalGroupReferenceForm(forms.ModelForm):
         model = MedicalGroupReference
         fields = (
             'student',
+            'comment'
         )
 
 
 @admin.register(MedicalGroupReference, site=site)
 class MedicalGroupReferenceAdmin(admin.ModelAdmin):
     form = MedicalGroupReferenceForm
+
     list_display = (
         "student",
         "image",
@@ -54,7 +62,7 @@ class MedicalGroupReferenceAdmin(admin.ModelAdmin):
 
     fields = (
         "student",
-        "medical_group",
+        ("medical_group", "comment"),
         "reference_image",
     )
 
@@ -62,6 +70,11 @@ class MedicalGroupReferenceAdmin(admin.ModelAdmin):
         "student",
         "reference_image",
     )
+
+    def save_model(self, request, obj, form, change):
+        if obj.resolved is None or 'comment' in form.changed_data or 'medical_group' in form.changed_data:
+            obj.resolved = form.cleaned_data['medical_group'].pk > -2
+            super().save_model(request, obj, form, change)
 
     def has_add_permission(self, request):
         return False
