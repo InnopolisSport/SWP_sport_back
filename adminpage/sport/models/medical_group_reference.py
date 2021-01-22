@@ -1,11 +1,15 @@
 import uuid
+from typing import Tuple
 
 from django.db import models
+
+from sport.utils import SubmissionType
 
 
 def get_reference_path(instance, filename):
     ext = filename.split('.')[-1]
-    return f'medical_group_references/{instance.student.pk}/{uuid.uuid4()}.{ext}'
+    return f'medical_group_references/{instance.student.pk}/{uuid.uuid4()}.' \
+           f'{ext}'
 
 
 class MedicalGroupReference(models.Model):
@@ -18,22 +22,20 @@ class MedicalGroupReference(models.Model):
         upload_to=get_reference_path,
     )
 
-    resolved = models.BooleanField(
-        default=False,
-    )
+    resolved = models.BooleanField(null=True)
 
     semester = models.ForeignKey(
         "Semester",
         on_delete=models.CASCADE,
     )
 
-    def save(self, *args, **kwargs, ) -> None:
-        # fixme hardcoded bind to object
-        self.resolved = self.student.medical_group_id != -2
-        return super().save(*args, **kwargs)
+    comment = models.TextField(max_length=1024, null=True, blank=True)
 
     def __str__(self):
         return f'{self.student} - {self.semester}'
+
+    def get_submission_url(self) -> Tuple[SubmissionType, str]:
+        return SubmissionType.IMAGE, self.image.url
 
     class Meta:
         db_table = "medical_group_reference"

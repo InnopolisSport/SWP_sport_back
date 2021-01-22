@@ -23,11 +23,15 @@
                                     {% if model.object_name|lower == "training" %}
                                         <td><a href="{{ model.admin_url }}add-extra/"
                                                class="addlink">{% trans 'Add extra training' %}</a></td>
+                                        <td><a href="{{ model.admin_url }}add-extra-multi/"
+                                               class="addlink">{% trans 'Add multiple extra trainings' %}</a></td>
                                     {% else %}
+                                        <td></td>
                                         <td></td>
                                     {% endif %}
                                     <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
                                 {% else %}
+                                    <td>&nbsp;</td>
                                     <td>&nbsp;</td>
                                     <td>&nbsp;</td>
                                 {% endif %}

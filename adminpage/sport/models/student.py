@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.mail import send_mail
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
@@ -35,6 +36,16 @@ class Student(models.Model):
         null=True,
         blank=True
     )
+
+    def notify(self, subject, message, **kwargs):
+        msg = message.format(**kwargs)
+        send_mail(
+            subject,
+            msg,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[self.user.email],
+            html_message=msg.replace("\n", "<br>"),
+        )
 
     def save(self, *args, **kwargs):
         if self.telegram is not None and self.telegram[0] != '@':
