@@ -97,3 +97,6 @@ class SelfSportReport(models.Model):
             self.hours = max(self.hours, 0)
             self.approval = self.hours > 0
         return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.student} {self.uploaded.strftime('%Y-%m-%d %H:%M:%S')} for {self.semester}"

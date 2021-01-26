@@ -18,12 +18,17 @@ def update_hours_for_reference(sender, instance: Reference, created, **kwargs):
         name=settings.MEDICAL_LEAVE_GROUP_NAME
     )
 
-    update_attendance_record(
-        group=group,
-        upload_date=instance.uploaded.date(),
-        student=instance.student,
-        hours=instance.hours
-    )
+    if not hasattr(instance, 'attendance'):
+        instance.attendance = update_attendance_record(
+            group=group,
+            upload_date=instance.uploaded.date(),
+            student=instance.student,
+            hours=instance.hours,
+            cause_reference=instance
+        )
+    else:
+        instance.attendance.hours = instance.hours
+        instance.attendance.save()
 
     if instance.hours > 0:
         instance.student.notify(

@@ -12,6 +12,8 @@ class Attendance(models.Model):
     training = models.ForeignKey('Training', on_delete=models.SET_NULL, null=True)
     student = models.ForeignKey("Student", on_delete=models.CASCADE)
     hours = models.DecimalField(max_digits=5, decimal_places=2, default=1, validators=[validate_hours])
+    cause_report = models.OneToOneField('SelfSportReport', null=True, blank=True, on_delete=models.CASCADE, related_name='attendance')
+    cause_reference = models.OneToOneField('Reference', null=True, blank=True, on_delete=models.CASCADE, related_name='attendance')
 
     class Meta:
         db_table = "attendance"
