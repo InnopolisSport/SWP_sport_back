@@ -3,7 +3,9 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.db.models import F, Sum
+from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from sport.models import SelfSportReport, Attendance
 from .site import site
@@ -62,6 +64,7 @@ class SelfSportAdmin(admin.ModelAdmin):
         ("hours", "obtained_hours", "comment"),
         "link",
         "reference_image",
+        "attendance_link",
     )
 
     list_select_related = (
@@ -73,7 +76,14 @@ class SelfSportAdmin(admin.ModelAdmin):
         "uploaded",
         "reference_image",
         "obtained_hours",
+        "attendance_link"
     )
+
+    def attendance_link(self, obj):
+        change_url = reverse('admin:sport_attendance_change', args=(obj.attendance.pk,))
+        return mark_safe('<a href="%s">%s</a>' % (change_url, obj.attendance))
+
+    attendance_link.short_description = 'Attendance'
 
     autocomplete_fields = (
         "student",
