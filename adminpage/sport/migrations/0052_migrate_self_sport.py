@@ -12,28 +12,29 @@ def migrate(apps, schema_editor):
     Group = apps.get_model("sport", "Group")
     SelfSportReport = apps.get_model("sport", "SelfSportReport")
     Training = apps.get_model("sport", "Training")
-    semester = Semester.objects.raw('SELECT * FROM semester WHERE id = current_semester()')[0]
-    group = Group.objects.get(semester=semester, name="Self training")
-    Attendance.objects.filter(training__group=group).delete()
-    for instance in SelfSportReport.objects.filter(approval=True):
-        training_custom_name = f'[Self] {instance.training_type.name}'
+    semesters = Semester.objects.raw('SELECT * FROM semester WHERE id = current_semester()')
+    if len(semesters) > 0:
+        group = Group.objects.get(semester=semesters[0], name="Self training")
+        Attendance.objects.filter(training__group=group).delete()
+        for instance in SelfSportReport.objects.filter(approval=True):
+            training_custom_name = f'[Self] {instance.training_type.name}'
 
-        tz = timezone.localtime().tzinfo
-        start = datetime.combine(instance.uploaded, time(0, 0, 0), tzinfo=tz)
-        end = datetime.combine(instance.uploaded, time(23, 59, 59), tzinfo=tz)
-        training = Training.objects.create(
-            group_id=group.pk,
-            start=start,
-            end=end,
-            custom_name=training_custom_name,
-        )
-        instance.attendance_id = Attendance.objects.create(
-            training_id=training.pk,
-            student_id=instance.student.pk,
-            hours=instance.hours,
-            cause_report_id=instance.pk,
-        ).pk
-        instance.save()
+            tz = timezone.localtime().tzinfo
+            start = datetime.combine(instance.uploaded, time(0, 0, 0), tzinfo=tz)
+            end = datetime.combine(instance.uploaded, time(23, 59, 59), tzinfo=tz)
+            training = Training.objects.create(
+                group_id=group.pk,
+                start=start,
+                end=end,
+                custom_name=training_custom_name,
+            )
+            instance.attendance_id = Attendance.objects.create(
+                training_id=training.pk,
+                student_id=instance.student.pk,
+                hours=instance.hours,
+                cause_report_id=instance.pk,
+            ).pk
+            instance.save()
 
 class Migration(migrations.Migration):
 
