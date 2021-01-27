@@ -5,7 +5,7 @@ from django.utils import timezone
 from sport.models import Training, Attendance, Group
 
 
-def update_attendance_record(
+def create_attendance_record(
         group,
         upload_date,
         student,
