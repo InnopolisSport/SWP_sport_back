@@ -4,11 +4,12 @@ from datetime import date
 import pytest
 from PIL import Image
 from django.conf import settings
+from django.db.models import Sum
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from api.views.self_sport_report import SelfSportErrors
-from sport.models import SelfSportReport, SelfSportType, MedicalGroup
+from sport.models import SelfSportReport, SelfSportType, MedicalGroup, Attendance, Group
 
 frozen_time = date(2020, 1, 2)
 semester_start = date(2020, 1, 1)
@@ -198,3 +199,40 @@ def test_reference_upload_image_invalid_size(
         format='multipart'
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time(frozen_time)
+def test_self_sport_same_type_same_day(
+        setup,
+        freezer
+):
+    student, semester, selfsport_type, client = setup
+    self_sport_group = Group.objects.get(
+        semester=semester,
+        name=settings.SELF_TRAINING_GROUP_NAME
+    )
+    report1 = SelfSportReport.objects.create(
+        student_id=student.pk,
+        semester=semester,
+        link="https://example.com",
+        training_type=selfsport_type
+    )
+    report1.save()
+    report2 = SelfSportReport.objects.create(
+        student_id=student.pk,
+        semester=semester,
+        link="https://example.ru",
+        training_type=selfsport_type
+    )
+    report2.save()
+
+    report1.hours = 5
+    report1.save()
+
+    report2.hours = 7
+    report2.save()
+    assert Attendance.objects.filter(
+        student_id=student.pk,
+        training__group=self_sport_group,
+    ).aggregate(Sum("hours"))["hours__sum"] == report1.hours + report2.hours

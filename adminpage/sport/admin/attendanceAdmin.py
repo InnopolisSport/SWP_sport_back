@@ -7,6 +7,8 @@ from django.contrib import admin, messages
 from django.db.models import Sum, Subquery, OuterRef
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 from openpyxl import Workbook
 from rangefilter.filter import DateRangeFilter
 
@@ -105,6 +107,31 @@ class AttendanceAdmin(admin.ModelAdmin):
         "training",
         "hours",
     )
+
+    fields = (
+        "student",
+        "training",
+        "hours",
+        "cause_report_link",
+        "cause_reference_link",
+    )
+
+    readonly_fields = (
+        "cause_report_link",
+        "cause_reference_link",
+    )
+
+    def cause_report_link(self, obj):
+        change_url = reverse('admin:sport_selfsportreport_change', args=(obj.cause_report.pk,))
+        return mark_safe('<a href="%s">%s</a>' % (change_url, obj.cause_report))
+
+    cause_report_link.short_description = 'Self sport report'
+
+    def cause_reference_link(self, obj):
+        change_url = reverse('admin:sport_reference_change', args=(obj.cause_reference.pk,))
+        return mark_safe('<a href="%s">%s</a>' % (change_url, obj.cause_reference))
+
+    cause_reference_link.short_description = 'Medical leave reference'
 
     ordering = (
         "-training__start",

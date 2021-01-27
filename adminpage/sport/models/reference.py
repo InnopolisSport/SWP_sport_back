@@ -44,4 +44,4 @@ class Reference(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.student}{self.uploaded} for {self.semester}"
+        return f"{self.student} {self.uploaded.date()} for {self.semester}"
