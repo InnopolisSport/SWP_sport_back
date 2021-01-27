@@ -2,7 +2,9 @@ from admin_auto_filters.filters import AutocompleteFilter
 from django import forms
 from django.contrib import admin
 from django.db.models import F
+from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from sport.admin.utils import custom_order_filter
 from sport.models import Reference
@@ -55,6 +57,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         "uploaded",
         ("hours", "comment"),
         "reference_image",
+        "attendance_link"
     )
 
     readonly_fields = (
@@ -62,7 +65,14 @@ class ReferenceAdmin(admin.ModelAdmin):
         "semester",
         "uploaded",
         "reference_image",
+        "attendance_link",
     )
+
+    def attendance_link(self, obj):
+        change_url = reverse('admin:sport_attendance_change', args=(obj.attendance.pk,))
+        return mark_safe('<a href="%s">%s</a>' % (change_url, obj.attendance))
+
+    attendance_link.short_description = 'Attendance'
 
     autocomplete_fields = (
         "student",

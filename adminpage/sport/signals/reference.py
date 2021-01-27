@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 
 from sport.models import Reference, Group, MedicalGroupReference
-from sport.signals.utils import update_attendance_record
+from sport.signals.utils import create_attendance_record
 from sport.utils import format_submission_html
 
 
@@ -18,12 +18,17 @@ def update_hours_for_reference(sender, instance: Reference, created, **kwargs):
         name=settings.MEDICAL_LEAVE_GROUP_NAME
     )
 
-    update_attendance_record(
-        group=group,
-        upload_date=instance.uploaded.date(),
-        student=instance.student,
-        hours=instance.hours
-    )
+    if not hasattr(instance, 'attendance'):
+        instance.attendance = create_attendance_record(
+            group=group,
+            upload_date=instance.uploaded.date(),
+            student=instance.student,
+            hours=instance.hours,
+            cause_reference=instance,
+        )
+    else:
+        instance.attendance.hours = instance.hours
+        instance.attendance.save()
 
     if instance.hours > 0:
         instance.student.notify(
