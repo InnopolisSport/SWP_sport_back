@@ -1,3 +1,4 @@
+from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import (
@@ -14,6 +15,7 @@ from api.serializers import (
     SelfSportReportUploadSerializer,
     EmptySerializer,
     ErrorSerializer,
+    error_detail,
 )
 from api.serializers.self_sport_report import SelfSportTypes
 from api.views.utils import process_image
@@ -21,7 +23,10 @@ from sport.models import SelfSportType
 
 
 class SelfSportErrors:
-    pass
+    MEDICAL_DISALLOWANCE = (
+        6, "You can't submit self-sport reports "
+           "unless you pass a medical checkup"
+    )
 
 
 @swagger_auto_schema(
@@ -55,6 +60,14 @@ def self_sport_upload(request, **kwargs):
     serializer = SelfSportReportUploadSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
+    student = request.user  # user.pk == user.student.pk
+    if request.user.student.medical_group_id \
+            < settings.SELFSPORT_MINIMUM_MEDICAL_GROUP_ID:
+        return Response(
+            status=400,
+            data=error_detail(*SelfSportErrors.MEDICAL_DISALLOWANCE),
+        )
+
     image = None
     link = serializer.validated_data.get('link', None)
 
@@ -63,7 +76,6 @@ def self_sport_upload(request, **kwargs):
         if error is not None:
             return error
 
-    student = request.user  # user.pk == user.student.pk
 
     serializer.save(
         image=image,

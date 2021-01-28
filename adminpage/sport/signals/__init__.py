@@ -11,4 +11,4 @@ from .user import (
     verify_bachelor_role,
 )
 from .reference import update_hours_for_reference
-from .self_sport_report import update_attendance_record
+from .self_sport_report import create_attendance_record
