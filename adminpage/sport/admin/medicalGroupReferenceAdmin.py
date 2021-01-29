@@ -21,7 +21,7 @@ class MedicalGroupReferenceForm(forms.ModelForm):
     medical_group = forms.ModelChoiceField(MedicalGroup.objects.all(), initial=-2)
 
     def clean_comment(self):
-        if self.cleaned_data['medical_group'].pk < 1 and \
+        if self.cleaned_data['medical_group'].pk == -2 and \
                 self.cleaned_data['comment'] == '':
             raise forms.ValidationError('Please, specify reject reason in the comment field')
         return self.cleaned_data['comment']
