@@ -6,7 +6,7 @@ jobs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v2
-  
+
     - name: Build docker images
       run: docker-compose -f compose/docker-compose-test.yml build
 
