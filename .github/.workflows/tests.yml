@@ -1,8 +1,12 @@
 name: tests
-on: push
+on: [push, workflow_dispatch]
 jobs:
   name: run_tests
+  runs-on: self-hosted
   steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+  
     - name: Build docker images
       run: docker-compose -f compose/docker-compose-test.yml build
 
