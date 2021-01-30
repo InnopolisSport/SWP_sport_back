@@ -12,11 +12,16 @@ jobs:
         run: docker-compose -p test_sport -f compose/docker-compose-test.yml build
 
       - name: Run app in docker
+        run: docker-compose -p test_sport -f compose/docker-compose-test.yml up -d
+
+      - name: Wait for database startup
+        run: docker-compose -p test_sport -f compose/docker-compose-test.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
+
+      - name: Migrate database
         run: |
-          docker-compose -p test_sport -f compose/docker-compose-test.yml up -d
-          docker-compose -p test_sport -f compose/docker-compose-test.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
           docker-compose -p test_sport -f compose/docker-compose-test.yml exec adminpanel python manage.py makemigrations
           docker-compose -p test_sport -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate auth
           docker-compose -p test_sport -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate
+
       - name: Run tests
         run: docker-compose -p test_sport -f compose/docker-compose-test.yml exec adminpanel pytest
