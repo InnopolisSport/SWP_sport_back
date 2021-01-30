@@ -24,4 +24,4 @@ jobs:
           docker-compose -p test_sport -f compose/docker-compose-test.yml exec -T adminpanel python manage.py migrate
 
       - name: Run tests
-        run: docker-compose -p test_sport -f compose/docker-compose-test.yml -T exec adminpanel pytest
+        run: docker-compose -p test_sport -f compose/docker-compose-test.yml exec -T adminpanel pytest
