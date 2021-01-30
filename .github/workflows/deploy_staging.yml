@@ -10,7 +10,9 @@ jobs:
   deploy:
     name: Deploy to staging server
     runs-on: self-hosted
-    environment: development
+    environment:
+      name: development
+      url: https://stage.sport.innopolis.university
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master

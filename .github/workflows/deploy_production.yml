@@ -10,7 +10,9 @@ jobs:
   deploy:
     name: Deploy to production server
     runs-on: self-hosted
-    environment: production
+    environment:
+      name: production
+      url: https://sport.innopolis.university
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
