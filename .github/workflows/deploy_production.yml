@@ -10,7 +10,7 @@ jobs:
   deploy:
     name: Deploy to production server
     runs-on: self-hosted
-    environment: prodcution
+    environment: production
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
