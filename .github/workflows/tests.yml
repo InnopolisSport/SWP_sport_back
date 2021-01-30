@@ -1,22 +1,23 @@
 name: tests
 on: [push, workflow_dispatch]
 jobs:
-  name: run_tests
-  runs-on: self-hosted
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+  run_tests:
+    name: Run tests
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Build docker images
-      run: docker-compose -f compose/docker-compose-test.yml build
+      - name: Build docker images
+        run: docker-compose -f compose/docker-compose-test.yml build
 
-    - name: Run app in docker
-      run: |
-        docker-compose -f compose/docker-compose-test.yml up -d
-        docker-compose -f compose/docker-compose-test.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
-        docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py makemigrations
-        docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate auth
-        docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate
-    - name: Run tests
-      run: docker-compose -f compose/docker-compose-test.yml exec adminpanel pytest
+      - name: Run app in docker
+        run: |
+          docker-compose -f compose/docker-compose-test.yml up -d
+          docker-compose -f compose/docker-compose-test.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
+          docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py makemigrations
+          docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate auth
+          docker-compose -f compose/docker-compose-test.yml exec adminpanel python manage.py migrate
+      - name: Run tests
+        run: docker-compose -f compose/docker-compose-test.yml exec adminpanel pytest
   
