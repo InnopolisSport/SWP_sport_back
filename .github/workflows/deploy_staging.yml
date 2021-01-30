@@ -6,8 +6,6 @@ on:
     branches: [development]
     types:
       - completed
-  push:
-    branches: [feature/github_actions]
 jobs:
   deploy:
     name: Deploy to staging server
