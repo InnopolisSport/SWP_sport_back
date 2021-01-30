@@ -1,5 +1,8 @@
 # [SWP] SportComplex service
 
+![Tests](https://github.com/WinnerOK/SWP_sport_back/workflows/Tests/badge.svg)
+![Production deploy](https://github.com/WinnerOK/SWP_sport_back/workflows/Production%20deploy/badge.svg?branch=master)
+
 ## Requirements:
 * Python3
 * Docker

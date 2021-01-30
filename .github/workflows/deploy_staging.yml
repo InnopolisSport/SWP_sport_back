@@ -23,8 +23,9 @@ jobs:
             cd ${{ secrets.REPOSITORY_PATH }}/compose
             git checkout development
             git pull
+            docker-compose -f docker-compose-prod.yml build
             docker-compose -f docker-compose-prod.yml down
-            docker-compose -f docker-compose-prod.yml up --build -d
+            docker-compose -f docker-compose-prod.yml up -d
             docker-compose -f docker-compose-prod.yml exec adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
             docker-compose -f docker-compose-prod.yml exec adminpanel bash -c './manage.py collectstatic --noinput && ./manage.py migrate'
             docker-compose -f docker-compose-prod.yml build nginx
