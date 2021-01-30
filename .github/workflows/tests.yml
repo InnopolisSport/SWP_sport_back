@@ -4,6 +4,7 @@ jobs:
   run_tests:
     name: Run tests
     runs-on: self-hosted
+    timeout-minutes: 5
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -16,6 +17,7 @@ jobs:
 
       - name: Wait for database startup
         run: docker-compose -p test_sport -f compose/docker-compose-test.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
+        timeout-minutes: 1
 
       - name: Migrate database
         run: |
