@@ -1,0 +1,34 @@
+name: Production deploy
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Tests"]
+    branches: [master]
+    types:
+      - completed
+jobs:
+  deploy:
+    name: Deploy to production server
+    runs-on: self-hosted
+    environment: production
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ secrets.REPOSITORY_PATH }}/compose
+            git reset --hard
+            git checkout master
+            git pull
+            python3 {{ secrets.BACKUP_SCRIPT }}
+            docker-compose -f docker-compose-prod.yml down
+            docker-compose -f docker-compose-prod.yml up --build -d
+            docker-compose -f docker-compose-prod.yml exec adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
+            docker-compose -f docker-compose-prod.yml exec adminpanel bash -c './manage.py collectstatic --noinput && ./manage.py migrate'
+            docker-compose -f docker-compose-prod.yml build nginx
+            docker-compose -f docker-compose-prod.yml restart nginx
+            python3 {{ secrets.BACKUP_SCRIPT }}
