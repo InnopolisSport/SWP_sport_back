@@ -42,9 +42,6 @@ class SelfSportAdmin(admin.ModelAdmin):
     list_display = (
         'student',
         'semester',
-        'training_type',
-        'link',
-        'image',
         'hours',
         'uploaded',
         'approval'
