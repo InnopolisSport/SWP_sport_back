@@ -32,7 +32,12 @@ class Student(models.Model):
     @property
     def medical_group(self):
         return MedicalGroup.objects.raw(
-            'SELECT * FROM medical_group, student_medical_group WHERE student_medical_group.medical_group_id = medical_group.id AND semester_id = current_semester() AND student_id = %s',
+            'SELECT * FROM medical_group, student_medical_group '
+            'WHERE student_medical_group.medical_group_id = medical_group.id '
+            'AND semester_id <= current_semester() '
+            'AND student_id = %s '
+            'ORDER BY semester_id DESC '
+            'LIMIT 1 ',
             (self.pk,)
         )[0]
 

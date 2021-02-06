@@ -3,7 +3,6 @@ from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 
-from api.crud import get_ongoing_semester
 from sport.admin import site
 from sport.models import MedicalGroupReference, MedicalGroup, StudentMedicalGroup
 
@@ -28,8 +27,14 @@ class MedicalGroupReferenceForm(forms.ModelForm):
         return self.cleaned_data['comment']
 
     def save(self, commit=True):
-        obj, _ = StudentMedicalGroup.objects.get_or_create(student=self.instance.student, semester=get_ongoing_semester())
-        obj.medical_group_id = self.cleaned_data['medical_group'].pk
+        medical_group_id = self.cleaned_data['medical_group'].pk
+        obj, created = StudentMedicalGroup.objects.get_or_create(
+            student=self.instance.student,
+            semester=self.instance.semester,
+            defaults={ 'medical_group_id': medical_group_id }
+        )
+        if not created:
+            obj.medical_group_id = self.cleaned_data['medical_group'].pk
         obj.save()
         return self.instance
 
