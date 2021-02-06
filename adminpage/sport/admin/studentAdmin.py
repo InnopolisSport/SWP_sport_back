@@ -116,14 +116,13 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         if obj is None:
             return (
                 "user",
-                "medical_group",
                 "enrollment_year",
                 "telegram",
             )
         return (
             "user",
             "is_ill",
-            "medical_group",
+            "medical_group_name",
             "enrollment_year",
             "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
         )
@@ -142,19 +141,20 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     list_filter = (
         "is_ill",
         "enrollment_year",
-        "medical_group",
+        #"medical_group",
     )
 
     list_display = (
         "__str__",
         user__email,
         "is_ill",
-        "medical_group",
+        "medical_group_name",
         "write_to_telegram",
     )
 
     readonly_fields = (
         "write_to_telegram",
+        "medical_group_name",
     )
 
 
@@ -178,18 +178,21 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     list_select_related = (
         "user",
-        "medical_group",
+        #"medical_group",
     )
+
+    def medical_group_name(self, obj):
+        return obj.medical_group_name
+
+    medical_group_name.short_description = 'Last medical group'
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         # TODO: show current primary group
-        return qs
-        # return qs.annotate(has_enrolled=RawSQL(
-        #     'SELECT count(*) > 0 FROM enroll, "group" '
-        #     'WHERE student_id = student.user_id '
-        #     'AND "group".semester_id = current_semester() '
-        #     'AND "group".id = enroll.group_id '
-        #     'AND enroll.is_primary = True',
-        #     ()
-        # ))
+        return qs.annotate(medical_group_name=RawSQL(
+            'SELECT medical_group.name FROM medical_group, student_medical_group '
+            'WHERE student_medical_group.student_id = student.user_id '
+            'AND student_medical_group.semester_id = current_semester() '
+            'AND medical_group.id = student_medical_group.medical_group_id',
+            ()
+        ))

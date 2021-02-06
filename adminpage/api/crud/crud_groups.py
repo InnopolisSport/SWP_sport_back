@@ -16,9 +16,10 @@ def get_sports(all=False, student: Optional[Student] = None):
     @return list of all sport types
     """
     # w/o distinct returns a lot of duplicated
-    if student is None or student.medical_group_id > 0:
+    medical_group_id = student.medical_group_id
+    if student is None or medical_group_id > 0:
         qs = Sport.objects.filter(group__minimum_medical_group_id__gt=0).distinct()
-    elif student.medical_group_id < 0:
+    elif medical_group_id < 0:
         qs = Sport.objects.filter(group__minimum_medical_group_id__lt=0).distinct()
     else:
         qs = Sport.objects.filter(group__minimum_medical_group_id=0).distinct()

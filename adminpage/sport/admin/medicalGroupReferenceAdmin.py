@@ -3,8 +3,9 @@ from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 
+from api.crud import get_ongoing_semester
 from sport.admin import site
-from sport.models import MedicalGroupReference, MedicalGroup, MedicalGroups
+from sport.models import MedicalGroupReference, MedicalGroup, StudentMedicalGroup
 
 
 class StudentTextFilter(AutocompleteFilter):
@@ -27,10 +28,13 @@ class MedicalGroupReferenceForm(forms.ModelForm):
         return self.cleaned_data['comment']
 
     def save(self, commit=True):
-        instance = super().save(commit)
-        instance.student.medical_group_id = self.cleaned_data['medical_group'].pk
-        instance.student.save()
-        return instance
+        obj, _ = StudentMedicalGroup.objects.get_or_create(student=self.instance.student, semester=get_ongoing_semester())
+        obj.medical_group_id = self.cleaned_data['medical_group'].pk
+        obj.save()
+        return self.instance
+
+    def save_m2m(self):
+        pass
 
     class Meta:
         model = MedicalGroupReference

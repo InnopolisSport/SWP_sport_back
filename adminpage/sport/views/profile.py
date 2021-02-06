@@ -31,13 +31,10 @@ def parse_group(group: dict) -> dict:
 def profile_view(request, **kwargs):
     user = request.user
 
-    student = Student.objects.filter(pk=user.pk).select_related(
-        "medical_group"
-    ).first()  # type: Optional[Student]
+    student = Student.objects.filter(pk=user.pk).first()  # type: Optional[Student]
     trainer = getattr(user, "trainer", None)  # type: Optional[Trainer]
 
     current_semester = get_ongoing_semester()
-    utc_date = timezone.localdate(timezone=timezone.utc)
 
     context = {
         "user": request.user,
@@ -113,9 +110,9 @@ def process_med_group_form(request, *args, **kwargs):
     if form.is_valid():
         obj, created = MedicalGroupReference.objects.get_or_create(
             student_id=request.user.pk,
+            semester=get_ongoing_semester(),
             defaults={
                 "image": form.cleaned_data["reference"],
-                "semester": get_ongoing_semester(),
             },
         )
 
