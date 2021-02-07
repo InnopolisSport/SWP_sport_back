@@ -10,7 +10,11 @@ from import_export.results import RowResult
 
 from sport.models import Student, MedicalGroup
 from sport.signals import get_or_create_student_group
-from .inlines import ViewAttendanceInline, AddAttendanceInline
+from .inlines import (
+    ViewAttendanceInline,
+    AddAttendanceInline,
+    ViewMedicalGroupInline,
+)
 from .site import site
 from .utils import user__email
 
@@ -172,8 +176,9 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     )
 
     inlines = (
-        ViewAttendanceInline,
+        ViewMedicalGroupInline,
         AddAttendanceInline,
+        ViewAttendanceInline,
     )
 
     list_select_related = (
