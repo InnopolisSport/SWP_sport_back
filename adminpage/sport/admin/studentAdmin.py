@@ -8,7 +8,8 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 from import_export.results import RowResult
 
-from sport.models import Student, MedicalGroup
+from api.crud import get_ongoing_semester
+from sport.models import Student, MedicalGroup, StudentMedicalGroup, Semester
 from sport.signals import get_or_create_student_group
 from .inlines import (
     ViewAttendanceInline,
@@ -87,8 +88,21 @@ class StudentResource(resources.ModelResource):
         raise_errors = False
 
     def import_row(self, row, instance_loader, **kwargs):
-        # overriding import_row to ignore errors and skip rows that fail to import
+        # overriding import_row to ignore errors
+        # and skip rows that fail to import
         # without failing the entire import
+        if not kwargs["dry_run"]:
+            medical_group_id = row["medical_group"]
+            del row["medical_group"]
+            student, _ = self.get_or_init_instance(instance_loader, row)
+            StudentMedicalGroup.objects.update_or_create(
+                student=student,
+                semester=get_ongoing_semester(),
+                defaults={
+                    "medical_group_id": medical_group_id
+                }
+            )
+
         import_result = super().import_row(row, instance_loader, **kwargs)
         if import_result.import_type == RowResult.IMPORT_TYPE_ERROR:
             # Copy the values to display in the preview report
