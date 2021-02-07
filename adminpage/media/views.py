@@ -14,12 +14,12 @@ def download_student_object(
         **kwargs
 ):
     user = request.user
-    requested_entry = get_object_or_404(
-        klass,
-        student_id=student_id,
-        **kwargs,
-    )
     if user.is_staff or user.pk == student_id:
+        requested_entry = get_object_or_404(
+            klass,
+            student_id=student_id,
+            **kwargs,
+        )
         return sendfile(request, requested_entry.image.path)
     else:
         raise Http404()
