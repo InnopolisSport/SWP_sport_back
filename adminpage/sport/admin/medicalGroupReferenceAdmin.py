@@ -20,8 +20,7 @@ class MedicalGroupReferenceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.student_id is not None:
-            self.fields[
-                'medical_group'].initial = \
+            self.fields['medical_group'].initial = \
                 self.instance.student.medical_group_id
 
     medical_group = forms.ModelChoiceField(

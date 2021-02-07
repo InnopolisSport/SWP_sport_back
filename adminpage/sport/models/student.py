@@ -23,17 +23,13 @@ class Student(models.Model):
         default=False,
     )
 
-    # medical_group = models.ForeignKey(
-    #     'MedicalGroup',
-    #     on_delete=models.DO_NOTHING,
-    #     default=-2,
-    # )
-
     @cached_property
     def medical_group(self):
         return MedicalGroup.objects.raw(
-            'SELECT * FROM medical_group LEFT JOIN student_medical_group ON semester_id <= current_semester() AND student_id = %s '
-            'WHERE medical_group.id = COALESCE(student_medical_group.medical_group_id, -2) '
+            'SELECT * FROM medical_group LEFT JOIN student_medical_group ON '
+            'semester_id <= current_semester() AND student_id = %s '
+            'WHERE medical_group.id = COALESCE('
+            'student_medical_group.medical_group_id, -2) '
             'ORDER BY semester_id DESC '
             'LIMIT 1 ',
             (self.pk,)
