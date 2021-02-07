@@ -71,4 +71,3 @@ volumes:
   # since Innopolis adfs provides groupsid as universal identifier
   # (group - can be either in Russian or English)
   django-auth-preserve:
-  uploaded_media:

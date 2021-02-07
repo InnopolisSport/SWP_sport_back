@@ -2,13 +2,14 @@ import uuid
 from typing import Tuple
 
 from django.db import models
+from django.conf import settings
 
 from sport.utils import SubmissionType
 
 
 def get_reference_path(instance, filename):
     ext = filename.split('.')[-1]
-    return f'medical_references/{instance.semester.name}/' \
+    return f'{settings.MEDICAL_REFERENCE_FOLDER}/{instance.semester.name}/' \
            f'{instance.student.pk}/{uuid.uuid4()}.{ext}'
 
 
