@@ -32,16 +32,14 @@ class Student(models.Model):
     @cached_property
     def medical_group(self):
         return MedicalGroup.objects.raw(
-            'SELECT * FROM medical_group, student_medical_group '
-            'WHERE student_medical_group.medical_group_id = medical_group.id '
-            'AND semester_id <= current_semester() '
-            'AND student_id = %s '
+            'SELECT * FROM medical_group LEFT JOIN student_medical_group ON semester_id <= current_semester() AND student_id = %s '
+            'WHERE medical_group.id = COALESCE(student_medical_group.medical_group_id, -2) '
             'ORDER BY semester_id DESC '
             'LIMIT 1 ',
             (self.pk,)
         )[0]
 
-    @cached_property
+    @property
     def medical_group_id(self):
         return self.medical_group.pk
 

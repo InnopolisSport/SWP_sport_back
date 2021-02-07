@@ -24,7 +24,7 @@ def get_email_name_like_students(group_id: int, pattern: str, limit: int = 5):
                        'AND NULLIF('
                        '    sign(g.minimum_medical_group_id),'
                        '    (SELECT sign(medical_group_id) FROM student_medical_group '
-                       '     WHERE semester_id <= g.semester_id '
+                       '     WHERE semester_id <= g.semester_id ' # assuming id2 > id1 => start2 > start1
                        '     AND student_id = s.user_id '
                        '     ORDER BY semester_id DESC '
                        '     LIMIT 1)'
