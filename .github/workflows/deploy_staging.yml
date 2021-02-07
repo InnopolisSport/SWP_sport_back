@@ -24,7 +24,7 @@ jobs:
           script: |
             cd ${{ secrets.REPOSITORY_PATH }}/compose
             git reset --hard
-            git checkout development
+            git checkout ${{ GITHUB_REF }}
             git pull
             docker-compose -f docker-compose-prod.yml build
             docker-compose -f docker-compose-prod.yml down
