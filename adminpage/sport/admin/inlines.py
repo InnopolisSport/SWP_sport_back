@@ -128,15 +128,14 @@ class GroupInline(admin.TabularInline):
 
 class TrainingInline(admin.TabularInline):
     model = Training
-    fields = ("start", "end", "training_class")
-    autocomplete_fields = ("training_class",)
+    fields = ("start", "end")
     extra = 0
     ordering = ("-start",)
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related(
-            "training_class",
             "group__semester",
+            "training_class",
         )
 
 
