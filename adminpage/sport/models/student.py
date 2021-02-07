@@ -3,9 +3,9 @@ from django.core.mail import send_mail
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from django.utils.functional import cached_property
 
 from sport.models import MedicalGroup
-from sport.models.student_medical_group import StudentMedicalGroup
 from sport.utils import get_current_study_year
 
 
@@ -29,7 +29,7 @@ class Student(models.Model):
     #     default=-2,
     # )
 
-    @property
+    @cached_property
     def medical_group(self):
         return MedicalGroup.objects.raw(
             'SELECT * FROM medical_group, student_medical_group '
@@ -41,7 +41,7 @@ class Student(models.Model):
             (self.pk,)
         )[0]
 
-    @property
+    @cached_property
     def medical_group_id(self):
         return self.medical_group.pk
 
