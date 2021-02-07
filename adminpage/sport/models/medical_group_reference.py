@@ -1,6 +1,7 @@
 import uuid
 from typing import Tuple
 
+from django.conf import settings
 from django.db import models
 
 from sport.utils import SubmissionType
@@ -8,8 +9,8 @@ from sport.utils import SubmissionType
 
 def get_reference_path(instance, filename):
     ext = filename.split('.')[-1]
-    return f'medical_group_references/{instance.student.pk}/{uuid.uuid4()}.' \
-           f'{ext}'
+    return f'{settings.MEDICAL_GROUP_REFERENCE_FOLDER}/' \
+           f'{instance.student.pk}/{uuid.uuid4()}.{ext}'
 
 
 class MedicalGroupReference(models.Model):

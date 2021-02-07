@@ -111,6 +111,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_sendfile',
     'import_export',
     'rangefilter',
     'image_optimizer',
@@ -120,6 +121,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'sport.apps.SportConfig',
     'api',
+    'media',
 ]
 
 MIDDLEWARE = [
@@ -250,6 +252,15 @@ else:
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/uploaded_media'
+
+# Sendfile settings
+SENDFILE_BACKEND = "django_sendfile.backends.nginx"
+SENDFILE_ROOT = MEDIA_ROOT
+SENDFILE_URL = "/files/"
+
+MEDICAL_REFERENCE_FOLDER = "medical_references"
+SELF_SPORT_FOLDER = "self_sport_reports"
+MEDICAL_GROUP_REFERENCE_FOLDER = "medical_group_references"
 
 OPTIMIZED_IMAGE_METHOD = 'pillow'
 

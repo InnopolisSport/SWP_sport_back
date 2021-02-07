@@ -1,6 +1,7 @@
 import uuid
 from typing import Tuple
 
+from django.conf import settings
 from django.core.validators import URLValidator
 from django.db import models
 from image_optimizer.fields import OptimizedImageField
@@ -10,7 +11,7 @@ from sport.utils import SubmissionType
 
 def get_report_path(instance, filename):
     ext = filename.split('.')[-1]
-    return f'self_sport_reports/{instance.semester.name}/' \
+    return f'{settings.SELF_SPORT_FOLDER}/{instance.semester.name}/' \
            f'{instance.student.pk}/{uuid.uuid4()}.{ext}'
 
 
