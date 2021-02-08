@@ -26,11 +26,14 @@ class Student(models.Model):
     @cached_property
     def medical_group(self):
         return MedicalGroup.objects.raw(
-            'SELECT * FROM medical_group LEFT JOIN student_medical_group ON '
+            'SELECT * FROM medical_group '
+            'LEFT JOIN student_medical_group ON '
             'semester_id <= current_semester() AND student_id = %s '
+            'LEFT JOIN semester ON '
+            'semester.id = semester_id '
             'WHERE medical_group.id = COALESCE('
             'student_medical_group.medical_group_id, -2) '
-            'ORDER BY semester_id DESC '
+            'ORDER BY semester.start DESC '
             'LIMIT 1 ',
             (self.pk,)
         )[0]
