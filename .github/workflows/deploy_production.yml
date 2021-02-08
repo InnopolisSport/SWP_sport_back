@@ -24,7 +24,7 @@ jobs:
           script: |
             cd ${{ secrets.REPOSITORY_PATH }}/compose
             git reset --hard
-            git checkout master
+            git checkout ${{ GITHUB_REF }}
             git pull
             python3 ${{ secrets.BACKUP_SCRIPT }}
             docker-compose -f docker-compose-prod.yml build

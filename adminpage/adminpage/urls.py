@@ -42,7 +42,7 @@ urlpatterns = [
                       path('oauth2/', include('django_auth_adfs.urls')),
 
                       url(r"api/", include("api.urls")),
+                      url(r"media/", include('media.urls')),
                   ]))
               ] \
-              + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
-              + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
