@@ -113,9 +113,9 @@ def process_med_group_form(request, *args, **kwargs):
     if form.is_valid():
         obj, created = MedicalGroupReference.objects.get_or_create(
             student_id=request.user.pk,
+            semester=get_ongoint_semester(),
             defaults={
                 "image": form.cleaned_data["reference"],
-                "semester": get_ongoing_semester(),
             },
         )
 
