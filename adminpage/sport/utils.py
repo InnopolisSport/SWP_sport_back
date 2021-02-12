@@ -19,7 +19,7 @@ def format_submission_html(
         return format_html('<a href="{}">link</a>', submission_url)
     elif submission_type == SubmissionType.IMAGE:
         return format_html(
-            '<img src="{}{}">',
+            '<a href="{}{}">image</a>',
             mark_safe(settings.BASE_URL),
             submission_url,
         )

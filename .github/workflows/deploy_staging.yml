@@ -23,7 +23,8 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ${{ secrets.REPOSITORY_PATH }}/compose
-            git checkout development
+            git reset --hard
+            git checkout ${{ GITHUB_REF }}
             git pull
             docker-compose -f docker-compose-prod.yml build
             docker-compose -f docker-compose-prod.yml down

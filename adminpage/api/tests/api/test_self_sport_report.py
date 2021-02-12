@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from api.views.self_sport_report import SelfSportErrors
-from sport.models import SelfSportReport, SelfSportType, MedicalGroup, Attendance, Group
+from sport.models import SelfSportReport, SelfSportType, Attendance, Group
 
 frozen_time = date(2020, 1, 2)
 semester_start = date(2020, 1, 1)
