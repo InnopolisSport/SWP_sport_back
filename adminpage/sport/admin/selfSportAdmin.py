@@ -58,7 +58,7 @@ class SelfSportAdmin(admin.ModelAdmin):
         "semester",
         "training_type",
         "uploaded",
-        ("hours", "obtained_hours", "comment"),
+        ("hours", "obtained_hours", "medical_group", "comment"),
         "link",
         "reference_image",
         "attendance_link",
@@ -73,7 +73,8 @@ class SelfSportAdmin(admin.ModelAdmin):
         "uploaded",
         "reference_image",
         "obtained_hours",
-        "attendance_link"
+        "attendance_link",
+        "medical_group",
     )
 
     def attendance_link(self, obj):
@@ -96,6 +97,11 @@ class SelfSportAdmin(admin.ModelAdmin):
         )['hours__sum']
 
     obtained_hours.short_description = "Self sport hours in semester"
+
+    def medical_group(self, obj: SelfSportReport):
+        return obj.student.medical_group.name
+
+    medical_group.short_description = "Student medical group"
 
     def reference_image(self, obj):
         if obj.image is not None:
