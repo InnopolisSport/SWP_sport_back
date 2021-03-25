@@ -2,7 +2,7 @@ from datetime import datetime, date
 from typing import Tuple, Iterable, Optional
 
 import pytest
-from django.contrib.admin import ACTION_CHECKBOX_NAME
+from django.contrib.admin.helpers import ACTION_CHECKBOX_NAME
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
