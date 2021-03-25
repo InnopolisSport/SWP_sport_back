@@ -1,7 +1,5 @@
-from django.conf.urls import url
-
 from adminpage.swagger import schema_view
-from django.urls import path
+from django.urls import path, re_path
 
 from api.views import (
     tmp,
@@ -52,17 +50,17 @@ urlpatterns = [
 ]
 
 urlpatterns.extend([
-    url(
+    re_path(
         r'swagger(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(cache_timeout=0),
         name='schema-json'
     ),
-    url(
+    re_path(
         r'swagger/$',
         schema_view.with_ui('swagger', cache_timeout=0),
         name='schema-swagger-ui'
     ),
-    url(
+    re_path(
         r'redoc/$',
         schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'

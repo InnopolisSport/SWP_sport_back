@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.urls import path, include
 from sport.admin.site import site
@@ -41,8 +40,8 @@ urlpatterns = [
                       path('admin/', site.urls),
                       path('oauth2/', include('django_auth_adfs.urls')),
 
-                      url(r"api/", include("api.urls")),
-                      url(r"media/", include('media.urls')),
+                      path("api/", include("api.urls")),
+                      path("media/", include('media.urls')),
                   ]))
               ] \
               + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
