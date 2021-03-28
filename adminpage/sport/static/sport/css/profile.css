@@ -132,31 +132,6 @@ a.help-link {
     .row {
         margin-top: 1%;
     }
-
-    /* Hide student email and correct columns within trainers' table */
-    .trainer-table-width {
-        width: 100%;
-    }
-
-    .show-name-in-trainer-table {
-        display: table-cell;
-    }
-
-    .hide-name-in-trainer-table {
-        display: none;
-    }
-
-    .show-email-in-trainer-table {
-        display: table-cell;
-    }
-
-    .hide-email-in-trainer-table {
-        display: none;
-    }
-
-    .hours-in-trainer-table-right {
-        text-align: right;
-    }
 }
 
 @media only screen and (min-width: 577px) and (max-width: 768px) {
@@ -211,3 +186,29 @@ a.help-link {
     }
 }
 
+@media only screen and (max-width: 992px) {
+    /* Hide student email and correct columns within trainers' table */
+    .trainer-table-width {
+        width: 100%;
+    }
+
+    .show-name-in-trainer-table {
+        display: table-cell;
+    }
+
+    .hide-name-in-trainer-table {
+        display: none;
+    }
+
+    .show-email-in-trainer-table {
+        display: table-cell;
+    }
+
+    .hide-email-in-trainer-table {
+        display: none;
+    }
+
+    .hours-in-trainer-table-right {
+        text-align: right;
+    }
+}
