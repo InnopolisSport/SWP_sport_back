@@ -261,9 +261,9 @@ function show_name_hide_email() {
 /* Return classes back when resizing */
 window.addEventListener('resize', function (event) {
     const width = $(window).width()
-    const breakpoint = 576
+    const breakpoint = 992
 
-    if (width > breakpoint) {
+    if (width >= breakpoint) {
         show_name_hide_email()
     }
 });
