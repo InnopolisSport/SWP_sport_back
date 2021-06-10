@@ -37,6 +37,12 @@ class Student(models.Model):
         blank=True
     )
 
+    student_status = models.ForeignKey(
+        'StudentStatus',
+        on_delete=models.DO_NOTHING,
+        default=0
+    )
+
     def notify(self, subject, message, **kwargs):
         msg = message.format(**kwargs)
         send_mail(
