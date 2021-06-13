@@ -14,6 +14,7 @@ from .self_sport_type import SelfSportType
 from .semester import Semester
 from .sport import Sport
 from .student import Student, save_student_profile
+from .student_status import StudentStatus
 from .trainer import Trainer
 from .training import Training
 from .training_class import TrainingClass

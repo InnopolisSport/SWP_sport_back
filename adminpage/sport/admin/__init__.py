@@ -21,3 +21,4 @@ from .djangoGroupAdmin import DjangoGroupAdmin
 from .referenceAdmin import ReferenceAdmin
 from .medicalGroupAdmin import MedicalGroupAdmin
 from .medicalGroupReferenceAdmin import MedicalGroupReferenceAdmin
+from .studentStatusAdmin import StudentStatusAdmin
