@@ -13,22 +13,10 @@ jobs:
       name: new-sport-env
       url: https://new.sport.innopolis.university
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy via Ansible
+        uses: dawidd6/action-ansible-playbook@v2
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cd ${{ secrets.REPOSITORY_PATH }}/compose
-            git reset --hard
-            git checkout ${GITHUB_REF}
-            git pull
-            docker-compose -f docker-compose-prod.yml build
-            docker-compose -f docker-compose-prod.yml down
-            docker-compose -f docker-compose-prod.yml up -d
-            docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
-            docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c './manage.py collectstatic --noinput && ./manage.py migrate'
-            docker-compose -f docker-compose-prod.yml build nginx
-            docker-compose -f docker-compose-prod.yml restart nginx
+          playbook: start.yml
+          directory: ./ansible
