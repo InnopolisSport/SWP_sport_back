@@ -125,6 +125,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             "is_ill",
             "medical_group",
             "enrollment_year",
+            "student_status",
             "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
         )
 
@@ -143,6 +144,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "is_ill",
         "enrollment_year",
         "medical_group",
+        'student_status'
     )
 
     list_display = (
@@ -151,6 +153,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "is_ill",
         "medical_group",
         "write_to_telegram",
+        "student_status"
     )
 
     readonly_fields = (
