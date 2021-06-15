@@ -5,23 +5,21 @@
     project_src: ..
     yml_file: ./compose/docker-compose.yml
   tasks:
-    - name: Build new services
-      community.docker.docker_compose:
-        project_src: "{{ project_src }}"
-        files: [ "{{ yml_file }}" ]
-        build: yes
     - name: Tear down existing services
       community.docker.docker_compose:
         project_src: "{{ project_src }}"
         files: [ "{{ yml_file }}" ]
         state: absent
-    - name: Tear up new services
+    - name: Build new services
       community.docker.docker_compose:
         project_src: "{{ project_src }}"
         files: [ "{{ yml_file }}" ]
+        build: yes
       register: output
+
     - ansible.builtin.debug:
         var: output
+
     - name: Wait for db
       community.docker.docker_container_exec:
         container: adminpanel
@@ -30,3 +28,13 @@
       community.docker.docker_container_exec:
         container: adminpanel
         command: /bin/bash -c './manage.py collectstatic --noinput && ./manage.py migrate'
+    
+    - name: Tear down existing services
+      community.docker.docker_compose:
+        project_src: "{{ project_src }}"
+        files: [ "{{ yml_file }}" ]
+        state: absent
+    - name: Tear up existing services
+      community.docker.docker_compose:
+        project_src: "{{ project_src }}"
+        files: [ "{{ yml_file }}" ]
