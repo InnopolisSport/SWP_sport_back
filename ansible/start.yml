@@ -10,6 +10,7 @@
         project_src: "{{ project_src }}"
         files: [ "{{ yml_file }}" ]
         state: absent
+
     - name: Build new services
       community.docker.docker_compose:
         project_src: "{{ project_src }}"
@@ -17,16 +18,13 @@
         build: yes
       register: output
 
-    - ansible.builtin.debug:
-        var: output
-
     - name: Wait for db
       community.docker.docker_container_exec:
-        container: adminpanel
+        container: "{{output.services.adminpanel.keys()|list|first}}"
         command: /bin/bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
     - name: Apply migrations
       community.docker.docker_container_exec:
-        container: adminpanel
+        container: "{{output.services.adminpanel.keys()|list|first}}"
         command: /bin/bash -c './manage.py collectstatic --noinput && ./manage.py migrate'
     
     - name: Tear down existing services
