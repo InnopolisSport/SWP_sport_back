@@ -1,0 +1,32 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    project_src: ..
+    yml_file: ./compose/docker-compose.yml
+  tasks:
+    - name: Build new services
+      community.docker.docker_compose:
+        project_src: {{ project_src }}
+        files: [ {{ yml_file }} ]
+        build: yes
+    - name: Tear down existing services
+        community.docker.docker_compose:
+          project_src: { { project_src } }
+          files: [ { { yml_file } } ]
+          state: absent
+    - name: Tear up new services
+        community.docker.docker_compose:
+          project_src: { { project_src } }
+          files: [ { { yml_file } } ]
+      register: output
+    - ansible.builtin.debug:
+        var: output
+    - name: Wait for db
+      community.docker.docker_container_exec:
+        container: adminpanel
+        command: /bin/bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
+    - name: Apply migrations
+        community.docker.docker_container_exec:
+          container: adminpanel
+          command: /bin/bash -c './manage.py collectstatic --noinput && ./manage.py migrate'
