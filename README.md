@@ -38,10 +38,10 @@ following environment variables:
 ## How to start coding
 1. Clone the repository
 1. Go to repo folder
-1. `pip3 install -r ./backend/requirements.txt`
-1. Mark `./backend/app` as a Source root
+1. `pip3 install -r ./adminpage/requirements.txt`
 1. To start server 
-    1. From repo folder: `docker-compose up -f ./compose/docker-compose.yml`
+    1. Rename file: `example.env` to `.env`
+    1. From repo folder: `docker-compose -f ./compose/docker-compose.yml up`
 1. To create superuser and make migrations
     1. `docker exec -it compose_adminpanel_1 sh`
     1. `python manage.py makemigrations`
