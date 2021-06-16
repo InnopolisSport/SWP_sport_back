@@ -96,12 +96,13 @@ ALLOWED_HOSTS = [HOSTNAME, ]
 
 if DEBUG:
     ALLOWED_HOSTS.append('localhost')
-else:
+
+if os.getenv('SCHEMA') == 'https':
     # make django think it is using https
     # WARNING: make sure, only trusted connections are possible
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# Application definition
 
+# Application definition
 INSTALLED_APPS = [
     'adminpage.apps.SportAdminConfig',
     'django.contrib.auth',
