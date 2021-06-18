@@ -18,4 +18,4 @@ class StudentStatuses(models.IntegerChoices):
     NORMAL = 0, "normal"
     DROPPED = 1, "dropped"
     ACADEMIC_LEAVE = 2, "academic leave"
-    ALUMNI = 3, "alumni"
+    ALUMNI = 3, "alumnus"

@@ -28,6 +28,6 @@ class Migration(migrations.Migration):
         (0, 'Normal', 'Normal student'),
         (1, 'Dropped', 'Dropped student'),
         (2, 'Academic leave', 'Student has academic leave'),
-        (3, 'Alumni', 'Alumni student');
+        (3, 'Alumnus', 'Alumnus student');
         ''', '')
     ]
