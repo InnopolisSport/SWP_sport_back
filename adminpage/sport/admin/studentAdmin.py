@@ -8,7 +8,7 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 from import_export.results import RowResult
 
-from sport.models import Student, MedicalGroup
+from sport.models import Student, MedicalGroup, StudentStatus
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .site import site
@@ -20,11 +20,22 @@ class MedicalGroupWidget(widgets.ForeignKeyWidget):
         return str(value)
 
 
+class StudentStatusWidget(widgets.ForeignKeyWidget):
+    def render(self, value: StudentStatus, obj=None):
+        return str(value)
+
+
 class StudentResource(resources.ModelResource):
     medical_group = fields.Field(
         column_name="medical_group",
         attribute="medical_group",
         widget=MedicalGroupWidget(MedicalGroup, "pk"),
+    )
+
+    student_status = fields.Field(
+        column_name="student_status",
+        attribute="student_status",
+        widget=StudentStatusWidget(StudentStatus, "pk"),
     )
 
     def get_or_init_instance(self, instance_loader, row):
@@ -76,6 +87,7 @@ class StudentResource(resources.ModelResource):
             "medical_group",
             "enrollment_year",
             "telegram",
+            "student_status"
         )
         import_id_fields = ("user",)
         skip_unchanged = False
@@ -118,6 +130,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
                 "user",
                 "medical_group",
                 "enrollment_year",
+                "student_status",
                 "telegram",
             )
         return (
