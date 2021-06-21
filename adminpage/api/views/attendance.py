@@ -15,7 +15,7 @@ from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
     TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, \
     BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer
-from sport.models import Group
+from sport.models import Group, Student
 
 User = get_user_model()
 
@@ -180,6 +180,8 @@ def mark_attendance(request, **kwargs):
             overflow_mark.append(
                 compose_bad_grade_report(student.email, hours_put)
             )
+        elif str(Student.objects.filter(user=get_user_model().objects.filter(email=student.email)[0])[0].student_status) != 'Normal':
+            pass
         else:
             hours_to_mark.append((student, hours_put))
 
