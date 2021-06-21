@@ -137,6 +137,7 @@
                                 </thead>
                                 <tbody>
                                 {% for sem in student.semesters %}
+                                    {% if student.obj.student_status != 'Dropped' and sem.semester_name != common.semester_name %}
                                     <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
                                         onclick="fetch_detailed_hours(this)" data-toggle="modal"
                                         data-target="#hours-modal-{{ sem.semester_id }}">
@@ -145,6 +146,7 @@
                                         <td>{{ sem.semester_end }}</td>
                                         <td>{{ sem.hours }}</td>
                                     </tr>
+                                    {% endif %}
                                     <!-- Modal -->
                                     <div class="modal fade" id="hours-modal-{{ sem.semester_id }}" tabindex="-1"
                                          role="dialog"
