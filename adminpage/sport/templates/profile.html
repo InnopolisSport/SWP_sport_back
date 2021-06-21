@@ -137,7 +137,7 @@
                                 </thead>
                                 <tbody>
                                 {% for sem in student.semesters %}
-                                    {% if student.obj.student_status != 'Dropped' and sem.semester_name != common.semester_name %}
+                                    {% if student.obj.student_status != 'Dropped' or sem.semester_name != common.semester_name %}
                                     <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
                                         onclick="fetch_detailed_hours(this)" data-toggle="modal"
                                         data-target="#hours-modal-{{ sem.semester_id }}">
