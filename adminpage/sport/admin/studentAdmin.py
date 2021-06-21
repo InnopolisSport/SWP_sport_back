@@ -87,7 +87,7 @@ class StudentResource(resources.ModelResource):
             "medical_group",
             "enrollment_year",
             "telegram",
-            "student_status"
+            "student_status",
         )
         import_id_fields = ("user",)
         skip_unchanged = False
@@ -136,6 +136,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         return (
             "user",
             "is_ill",
+            "is_online",
             "medical_group",
             "enrollment_year",
             "student_status",
@@ -155,6 +156,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     list_filter = (
         "is_ill",
+        "is_online",
         "enrollment_year",
         "medical_group",
         'student_status'
@@ -164,6 +166,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "__str__",
         user__email,
         "is_ill",
+        "is_online",
         "medical_group",
         "write_to_telegram",
         "student_status"

@@ -21,6 +21,10 @@ class Student(models.Model):
         default=False,
     )
 
+    is_online = models.BooleanField(
+        default=False,
+    )
+
     medical_group = models.ForeignKey(
         'MedicalGroup',
         on_delete=models.DO_NOTHING,
