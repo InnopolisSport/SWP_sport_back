@@ -101,17 +101,17 @@
                     >
                         {{ student.obj.student_status.name }}
                     </span></p>
-
-                    <p id="medical-group">Your medical group is <span
+                    {% if student.obj.student_status.name == 'Normal' %}
+                        <p id="medical-group">Your medical group is <span
                             class="badge badge-pill badge-{% if student.medical_group_id < 0 %}danger{% elif student.medical_group_id == 0 %}warning{% else %}success{% endif %}"
                             onclick="openMedicalInfoModal(
                                     `{{ student.obj.medical_group.name }}`,
                                     `{{ student.obj.medical_group.description }}`
                                     )"
-                    >
+                            >
                         {{ student.obj.medical_group.name }}
                     </span></p>
-
+                    {% endif %}
                     <div id="medical-group-info-modal"></div>
 
                     {% if student.semesters|length > 0 %}
@@ -127,6 +127,7 @@
                                 </thead>
                                 <tbody>
                                 {% for sem in student.semesters %}
+                                    {% if student.obj.student_status != 'Dropped' or sem.semester_name != common.semester_name %}
                                     <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
                                         onclick="fetch_detailed_hours(this)" data-toggle="modal"
                                         data-target="#hours-modal-{{ sem.semester_id }}">
@@ -135,6 +136,7 @@
                                         <td>{{ sem.semester_end }}</td>
                                         <td>{{ sem.hours }}</td>
                                     </tr>
+                                    {% endif %}
                                     <!-- Modal -->
                                     <div class="modal fade" id="hours-modal-{{ sem.semester_id }}" tabindex="-1"
                                          role="dialog"
@@ -217,12 +219,13 @@
                 {% endif %}
 
                 {% if student.sport_groups|length > 0 or trainer.sport_groups %}
+                    {% if student.obj.student_status.name != 'Dropped' %}
                     <div id='calendar'></div>
+                    {% endif%}
                 {% endif %}
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="grading-modal" tabindex="-1" role="dialog" aria-labelledby="grading-modal"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
