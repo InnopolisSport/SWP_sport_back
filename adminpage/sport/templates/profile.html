@@ -96,19 +96,18 @@
                         </p>
                     {% endif %}
                     {% if student.is_online %}
-                    <p id="medical-group">You are <span
-                            class="badge badge-pill badge-danger">
-                        Online Student
-                    </span></p>
-                    {% else %}
-                         <p id="medical-group">You are <span
-                            class="badge badge-pill badge-danger">
-                        Ofline Student
+                        <p id="online-student">You are <span
+                                class="badge badge-pill badge-primary text-light">
+                            Online student
                         </span></p>
+                    {% else %}
+                            <p id="offline-student">You are <span
+                                class="badge badge-pill badge-secondary text-light">
+                            Offline student
+                            </span></p>
                     {% endif %}
-                     <p id="medical-group">Your status is <span
-                            class="badge badge-pill badge-danger"
-                    >
+                     <p id="student-status">Your status is <span
+                            class="badge badge-pill badge-danger">
                         {{ student.obj.student_status.name }}
                     </span></p>
 
