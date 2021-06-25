@@ -1,14 +1,10 @@
 from django.urls import path, re_path
-from django.contrib.auth.views import LoginView
 from django.contrib.admin.views.decorators import staff_member_required
 
 from .views import *
 
 urlpatterns = [
-    path('', LoginView.as_view(
-        redirect_authenticated_user=True,
-    ), name="login"),
-
+    path('', login_redirect, name="login"),
     path('profile/', profile_view, name='profile'),
     path('category/', category_view, name='category'),
     path(
