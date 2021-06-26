@@ -95,10 +95,19 @@
                             You have no groups selected for semester <b>{{ common.semester_name }}</b>
                         </p>
                     {% endif %}
-
-                     <p id="medical-group">Your status is <span
-                            class="badge badge-pill badge-danger"
-                    >
+                    {% if student.is_online %}
+                        <p id="online-student">You are <span
+                                class="badge badge-pill badge-primary text-light">
+                            Online student
+                        </span></p>
+                    {% else %}
+                            <p id="offline-student">You are <span
+                                class="badge badge-pill badge-secondary text-light">
+                            Offline student
+                            </span></p>
+                    {% endif %}
+                     <p id="student-status">Your status is <span
+                            class="badge badge-pill badge-danger">
                         {{ student.obj.student_status.name }}
                     </span></p>
                     {% if student.obj.student_status.name == 'Normal' %}
