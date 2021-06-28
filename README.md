@@ -43,7 +43,7 @@ following environment variables:
     1. Rename file: `example.env` to `.env`
     1. From repo folder: `docker-compose -f ./compose/docker-compose.yml up`
 1. To create superuser and make migrations
-    1. `docker exec -it compose_adminpanel_1 sh`
+    1. `docker exec -it compose_adminpanel_1 bash`
     1. `python manage.py makemigrations`
     1. `python manage.py migrate`
     1. `python manage.py createsuperuser`
