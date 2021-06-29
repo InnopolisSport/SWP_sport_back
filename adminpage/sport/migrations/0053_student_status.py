@@ -25,9 +25,9 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL('''
         INSERT INTO student_status (id, name, description) VALUES 
-        (0, 'Normal', 'Normal student'),
-        (1, 'Dropped', 'Dropped student'),
-        (2, 'Academic leave', 'Student has academic leave'),
-        (3, 'Alumnus', 'Alumnus student');
+        (0, 'Normal', 'Everything is ok'),
+        (1, 'Dropped', 'Sorry, you are dropped'),
+        (2, 'Academic leave', 'You are on academic leave'),
+        (3, 'Alumnus', 'Congratulations, you are graduated!');
         ''', '')
     ]
