@@ -1,6 +1,9 @@
 {% extends "admin/index.html" %}
 {% load i18n static %}
 {% block content %}
+    <div align="right" style="margin-bottom: 1em;">
+        <a href="../dashboard/" target="_blank" rel="noopener noreferrer"><strong>Open Grafana dashboard</strong></a>
+    </div>
     <div id="content-main">
 
         {% if app_list %}
