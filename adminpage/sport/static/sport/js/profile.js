@@ -70,15 +70,6 @@ function open_med_group_modal() {
 async function open_selfsport_modal() {
     $('#selfsport-modal').modal('show');
     $('#self-sport-type-help').html('');
-    $('#self-sport-file-input')
-        .off('change')
-        .val('')
-        .on('change', function () {
-            const parts = $(this).val().split('\\')
-            $(this).prev('.custom-file-label').html(parts[parts.length - 1]);
-        })
-        .prev('.custom-file-label')
-        .html('Proof image');
     const options = await fetch('/api/selfsport/types')
         .then(res => res.json())
         .then(arr => arr.sort((a, b) => a.name > b.name));
@@ -440,9 +431,9 @@ async function submit_reference() {
 async function submit_self_sport() {
     const formData = new FormData()
 
-    // Get file
-    const fileInput = $('#self-sport-file-input')[0];
-    const file = fileInput.files[0];
+    // // Get file
+    // const fileInput = $('#self-sport-file-input')[0];
+    // const file = fileInput.files[0];
 
     // Get link
     const linkInput = $('#self-sport-text-input');
@@ -457,31 +448,31 @@ async function submit_self_sport() {
         return false;
     }
 
-    if (!file && !link || file && link) {
-        toastr.error("You should submit either an image or a link");
+    if (!link) {
+        toastr.error("You should submit a link to your Strava activity");
         return false;
     }
 
-    if (file) {
-        if (file.size > 1E7) {
-            toastr.error('Image file size too big, expected size <= 10 MB');
-            return false;
-        }
+    // if (file) {
+    //     if (file.size > 1E7) {
+    //         toastr.error('Image file size too big, expected size <= 10 MB');
+    //         return false;
+    //     }
 
-        try {
-            const _URL = window.URL || window.webkitURL;
-            const img = await loadImage(_URL.createObjectURL(file));
-            if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
-                toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
-                return false;
-            }
-        } catch (e) {
-            toastr.error('Uploaded file is not an image');
-            return false;
-        }
+    //     try {
+    //         const _URL = window.URL || window.webkitURL;
+    //         const img = await loadImage(_URL.createObjectURL(file));
+    //         if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
+    //             toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
+    //             return false;
+    //         }
+    //     } catch (e) {
+    //         toastr.error('Uploaded file is not an image');
+    //         return false;
+    //     }
 
-        formData.append(fileInput.name, file);
-    }
+    //     formData.append(fileInput.name, file);
+    // }
 
     if (link) {
         if (link.startsWith('http://') || link.startsWith('https://')) {
