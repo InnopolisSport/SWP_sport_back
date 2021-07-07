@@ -1,3 +1,5 @@
+{% load static %}
+
 {% block content %}
     <div class="modal fade" id="selfsport-modal" tabindex="-1" role="dialog"
          aria-labelledby="selfsport-modal" aria-hidden="true">
@@ -14,7 +16,9 @@
                         </button>
                     </div>
                     <div class="modal-body text-left">
-                        <p>Please submit <strong>either</strong> an image or a link to the video that confirm your activity.</p>
+                        <p>Please submit a link to your
+                        <a href="https://www.strava.com/"><img src="{% static "sport/images/strava.png" %}" alt="strava.com" style="height: 0.7em;" ></a>
+                        activity.</p>
                         <div class="form-group">
                             <select name="training_type" class="form-control" id="self-sport-type">
                               <option disabled selected>Loading...</option>
