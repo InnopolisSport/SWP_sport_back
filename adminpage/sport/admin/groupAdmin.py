@@ -66,12 +66,15 @@ class GroupAdmin(admin.ModelAdmin):
         "sport",
         "semester",
         "trainer",
+        "trainers",
         "minimum_medical_group",
     )
 
     readonly_fields = (
         "free_places",
     )
+
+    filter_horizontal = ('trainers',)
 
     def free_places(self, obj):
         return obj.capacity - obj.enroll_count

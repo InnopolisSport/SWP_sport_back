@@ -11,6 +11,7 @@ class Group(models.Model):
     sport = models.ForeignKey('Sport', on_delete=models.CASCADE, null=True, blank=True)
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, null=False)
     trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True)
+    trainers = models.ManyToManyField('Trainer', related_name='m2m', blank=True)
 
     minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, null=True, blank=True)
 

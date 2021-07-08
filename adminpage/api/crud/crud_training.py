@@ -2,10 +2,10 @@ from datetime import datetime
 
 from django.conf import settings
 from django.db import connection
+from django.db.models import F
 
-from api.crud.utils import dictfetchone, dictfetchall
-from sport.models import Student, Trainer
-
+from api.crud.utils import dictfetchone, dictfetchall, get_trainers
+from sport.models import Student, Trainer, Group, Training
 
 def get_attended_training_info(training_id: int, student: Student):
     """
@@ -44,7 +44,11 @@ def get_attended_training_info(training_id: int, student: Student):
                 "training_pk": training_id
             }
         )
-        return dictfetchone(cursor)
+
+        info = dictfetchone(cursor)
+        info['trainers'] = get_trainers(training_id)
+
+        return info
 
 
 def get_group_info(group_id: int, student: Student):
@@ -75,6 +79,29 @@ def get_group_info(group_id: int, student: Student):
             'WHERE g.id = %(group_id)s '
             'GROUP BY g.id, d.id', {"group_id": group_id, "student_id": student.pk})
         return dictfetchone(cursor)
+
+    info = dictfetchone(cursor)
+    info['trainers'] = get_trainers(training_id)
+
+    return info
+
+    # query = Group.objects.filter(
+    #     id=group_id,
+    # ).values(
+    #     'id',
+    #     'name',
+    #     'description',
+    #     'link_name',
+    #     'link',
+    #     'capacity',
+    #     'is_club',
+    # ).annotate(
+    #     group_id=F('id'),
+    #     group_name=F('name'),
+    #     group_desctiption=F('description'),
+    # )
+    #
+    # return query
 
 
 def get_trainings_for_student(student: Student, start: datetime, end: datetime):
