@@ -23,13 +23,13 @@ def get_trainers(training_id: int):
     query = Training.objects.filter(
         id=training_id,
     ).values(
-        'group__trainers__first_name',
-        'group__trainers__last_name',
-        'group__trainers__email',
+        'group__trainers__user__first_name',
+        'group__trainers__user__last_name',
+        'group__trainers__user__email',
     ).annotate(
-        trainer_first_name=F('group__trainers__first_name'),
-        trainer_last_name=F('group__trainers__last_name'),
-        trainer_email=F('group__trainers__email'),
+        trainer_first_name=F('group__trainers__user__first_name'),
+        trainer_last_name=F('group__trainers__user__last_name'),
+        trainer_email=F('group__trainers__user__email'),
     )
 
     return query
