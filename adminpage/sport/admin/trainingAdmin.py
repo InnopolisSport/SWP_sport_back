@@ -27,7 +27,7 @@ class AutocompleteStudent:
 class TrainingFormWithCSV(forms.ModelForm):
     attended_students = forms.ModelMultipleChoiceField(
         required=False,
-        queryset=Student.objects.all(),
+        queryset=Student.objects.exclude(medical_group__name='Medical checkup not passed'),
         widget=AutocompleteSelectMultiple(
             rel=AutocompleteStudent,
             admin_site=site,
