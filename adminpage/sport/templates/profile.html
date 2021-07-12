@@ -194,7 +194,7 @@
                                 </thead>
                                 <tbody>
                                 {% for sem in student.semesters %}
-                                    {% if student.obj.student_status != 'Dropped' or sem.semester_name != common.semester_name %}
+                                    {% if sem.semester_name != common.semester_name %}
                                     <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
                                         onclick="fetch_detailed_hours(this)" data-toggle="modal"
                                         data-target="#hours-modal-{{ sem.semester_id }}">
@@ -243,10 +243,8 @@
                     {% include "self_sport_reference.html" %}
                 {% endif %}
 
-                {% if student.sport_groups|length > 0 or trainer.sport_groups %}
-                    {% if student.obj.student_status.name != 'Dropped' %}
+                {% if student.sport_groups|length > 0 and student.obj.student_status.id == 0 or trainer.sport_groups %}
                     <div id='calendar'></div>
-                    {% endif%}
                 {% endif %}
             </div>
         </div>
