@@ -11,12 +11,10 @@ class Attendance(models.Model):
     training = models.ForeignKey('Training', on_delete=models.SET_NULL, null=True)
     student = models.ForeignKey(
         "Student",
-        limit_choices_to={
-            'medical_group__name': 'General',
-            'medical_group__name': 'Preparative',
-            'medical_group__name': 'Special 1',
-            'medical_group__name': 'Special 2',
-        },
+        limit_choices_to=Q(medical_group__name='General') |
+                         Q(medical_group__name='Preparative') |
+                         Q(medical_group__name='Special 1') |
+                         Q(medical_group__name='Special 2'),
         on_delete=models.CASCADE,
     )
     hours = models.DecimalField(max_digits=5, decimal_places=2, default=1, validators=[validate_hours])
