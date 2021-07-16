@@ -18,7 +18,7 @@ from api.serializers import (
     error_detail,
 )
 from api.serializers.self_sport_report import SelfSportTypes
-from api.views.utils import process_image
+# from api.views.utils import process_image
 from sport.models import SelfSportType
 
 
@@ -46,7 +46,7 @@ def get_self_sport_types(request, **kwargs):
 
 @swagger_auto_schema(
     method="POST",
-    operation_description="One of image or link required",
+    operation_description="One link to Strava required (begins with http(s)://)",
     request_body=SelfSportReportUploadSerializer,
     responses={
         status.HTTP_200_OK: EmptySerializer,
@@ -68,17 +68,17 @@ def self_sport_upload(request, **kwargs):
             data=error_detail(*SelfSportErrors.MEDICAL_DISALLOWANCE),
         )
 
-    image = None
+    # image = None
     link = serializer.validated_data.get('link', None)
 
-    if 'image' in serializer.validated_data:
-        image, error = process_image(serializer.validated_data['image'])
-        if error is not None:
-            return error
+    # if 'image' in serializer.validated_data:
+    #     image, error = process_image(serializer.validated_data['image'])
+    #     if error is not None:
+    #         return error
 
 
     serializer.save(
-        image=image,
+        # image=image,
         link=link,
         semester=get_ongoing_semester(),
         student_id=student.pk

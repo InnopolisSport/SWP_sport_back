@@ -14,7 +14,7 @@ class SelfSportTypes(serializers.ModelSerializer):
 
 
 class SelfSportReportUploadSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(allow_empty_file=False, required=False)
+    # image = serializers.ImageField(allow_empty_file=False, required=False)
     link = serializers.URLField(required=False)
     training_type = serializers.PrimaryKeyRelatedField(
         queryset=SelfSportType.objects.filter(
@@ -25,19 +25,23 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
     # end = serializers.DateTimeField(required=True)
 
     def validate(self, data):
-        image_present = 'image' in data
+        # image_present = 'image' in data
         link_present = 'link' in data
-        if (image_present and link_present) or \
-                (not image_present and not link_present):
+        # if (image_present and link_present) or \
+        #         (not image_present and not link_present):
+        #     raise serializers.ValidationError(
+        #         "Must include either image or link"
+        #     )
+        if (not link_present):
             raise serializers.ValidationError(
-                "Must include either image or link"
+                "Must include a link to Strava activity"
             )
         return data
 
     class Meta:
         model = SelfSportReport
         fields = (
-            'image',
+            # 'image',
             'link',
             # 'start',
             # 'end',

@@ -194,15 +194,24 @@
                                 </thead>
                                 <tbody>
                                 {% for sem in student.semesters %}
-                                    {% if sem.semester_name != common.semester_name %}
-                                    <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
-                                        onclick="fetch_detailed_hours(this)" data-toggle="modal"
-                                        data-target="#hours-modal-{{ sem.semester_id }}">
-                                        <th scope="row">{{ sem.semester_name }}</th>
-                                        <td>{{ sem.semester_start }}</td>
-                                        <td>{{ sem.semester_end }}</td>
-                                        <td>{{ sem.hours }}</td>
-                                    </tr>
+                                    {% if student.obj.student_status.id == 0 %}
+                                        <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
+                                            onclick="fetch_detailed_hours(this)" data-toggle="modal"
+                                            data-target="#hours-modal-{{ sem.semester_id }}">
+                                            <th scope="row">{{ sem.semester_name }}</th>
+                                            <td>{{ sem.semester_start }}</td>
+                                            <td>{{ sem.semester_end }}</td>
+                                            <td>{{ sem.hours }}</td>
+                                        </tr>
+                                    {% elif sem.semester_name != common.semester_name %}
+                                        <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
+                                            onclick="fetch_detailed_hours(this)" data-toggle="modal"
+                                            data-target="#hours-modal-{{ sem.semester_id }}">
+                                            <th scope="row">{{ sem.semester_name }}</th>
+                                            <td>{{ sem.semester_start }}</td>
+                                            <td>{{ sem.semester_end }}</td>
+                                            <td>{{ sem.hours }}</td>
+                                        </tr>
                                     {% endif %}
                                     <!-- Modal -->
                                     <div class="modal fade" id="hours-modal-{{ sem.semester_id }}" tabindex="-1"

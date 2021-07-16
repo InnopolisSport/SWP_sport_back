@@ -60,7 +60,7 @@ class SelfSportAdmin(admin.ModelAdmin):
         "uploaded",
         ("hours", "obtained_hours", "medical_group", "comment"),
         "link",
-        "reference_image",
+        # "reference_image",
         "attendance_link",
     )
 
@@ -71,7 +71,7 @@ class SelfSportAdmin(admin.ModelAdmin):
     readonly_fields = (
         "student",
         "uploaded",
-        "reference_image",
+        # "reference_image",
         "obtained_hours",
         "attendance_link",
         "medical_group",
