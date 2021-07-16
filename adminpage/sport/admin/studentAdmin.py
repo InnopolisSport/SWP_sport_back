@@ -8,11 +8,12 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 from import_export.results import RowResult
 
+from api.crud import get_brief_hours, get_ongoing_semester
 from sport.models import Student, MedicalGroup, StudentStatus
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .site import site
-from .utils import user__email
+from .utils import user__email, user__role
 
 
 class MedicalGroupWidget(widgets.ForeignKeyWidget):
@@ -140,6 +141,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             "medical_group",
             "enrollment_year",
             "student_status",
+            "hours",
             "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
         )
 
@@ -155,24 +157,24 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     )
 
     list_filter = (
-        "is_ill",
         "is_online",
         "enrollment_year",
         "medical_group",
-        'student_status'
+        'student_status',
     )
 
     list_display = (
         "__str__",
-        user__email,
-        "is_ill",
+        user__role,
         "is_online",
         "medical_group",
+        "hours",
+        "student_status",
         "write_to_telegram",
-        "student_status"
     )
 
     readonly_fields = (
+        "hours",
         "write_to_telegram",
     )
 
@@ -184,6 +186,13 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
                 obj.telegram[1:],
                 obj.telegram
             )
+
+    def hours(self, obj):
+        hours_info = list(filter(lambda x: x['semester_id'] == get_ongoing_semester().id, get_brief_hours(obj)))
+        if len(hours_info) == 0:
+            return 0
+        hours_info = hours_info[0]
+        return hours_info['hours']
 
     ordering = (
         "user__first_name",
