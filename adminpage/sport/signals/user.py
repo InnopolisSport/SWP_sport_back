@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.db.models.signals import m2m_changed
+from django.core.exceptions import ValidationError
+from django.db.models.signals import m2m_changed, post_save
 from django.dispatch.dispatcher import receiver
 from django_auth_adfs.signals import post_authenticate
 
@@ -48,6 +49,25 @@ def create_student_profile(instance, action, reverse, pk_set, **kwargs):
         ) in pk_set:
             if action == "post_add":
                 Trainer.objects.get_or_create(pk=instance.pk)
+
+@receiver(
+    m2m_changed,
+    sender=User.groups.through
+)
+# TODO implement in admin User form
+def check_2_status_groups(instance, action, **kwargs):
+    if action == 'pre_add':
+        print(action)
+        if instance.groups.filter(name__startswith="STUDENT_STATUS").exists():
+            raise ValidationError("There could be only one STUDENT_STATUS group")
+
+
+@receiver(post_save, sender=Student)
+def add_group_for_student_status(instance: Student, sender, using, **kwargs):
+    instance.user.groups.remove(*instance.user.groups.filter(name__startswith="STUDENT_STATUS"))
+    new_group, created = Group.objects.get_or_create(name="STUDENT_STATUS_{}".format(instance.student_status.id),
+                                            defaults={'verbose_name': "[Student status] {}".format(instance.student_status.name)})
+    instance.user.groups.add(new_group)
 
 
 def update_group_verbose_names(sid_to_name_mapping: dict):
