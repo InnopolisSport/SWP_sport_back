@@ -41,7 +41,7 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = SelfSportReport
         fields = (
-            'image',
+            # 'image',
             'link',
             # 'start',
             # 'end',
