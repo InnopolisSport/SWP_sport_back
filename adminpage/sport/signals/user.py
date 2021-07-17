@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed, post_save, pre_save
 from django.dispatch.dispatcher import receiver
@@ -67,6 +67,9 @@ def add_group_for_student_status(instance: Student, sender, using, **kwargs):
     instance.user.groups.remove(*instance.user.groups.filter(name__startswith="STUDENT_STATUS"))
     new_group, created = Group.objects.get_or_create(name="STUDENT_STATUS_{}".format(instance.student_status.id),
                                             defaults={'verbose_name': "[Student status] {}".format(instance.student_status.name)})
+    if instance.student_status.name == "Normal":
+        new_group.permissions.add(Permission.objects.get(codename='go_to_another_group'))
+
     instance.user.groups.add(new_group)
 
 

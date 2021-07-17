@@ -165,7 +165,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "enrollment_year",
         "course",
         "medical_group",
-        'student_status'
+        'student_status',
     )
 
     list_display = (
@@ -182,7 +182,6 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     readonly_fields = (
         "write_to_telegram",
     )
-
 
     def write_to_telegram(self, obj):
         return None if obj.telegram is None else \
