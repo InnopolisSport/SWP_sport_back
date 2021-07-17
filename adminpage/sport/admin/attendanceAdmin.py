@@ -77,9 +77,9 @@ def export_attendance_as_xlsx(modeladmin, request, queryset):
     wb = Workbook(write_only=True)
     ws = wb.create_sheet(export_period)
     ws.append(["Exported attendance for", export_period])
-    ws.append(["enrollment_year", "email", "hours"])
+    ws.append(["enrollment_year", "course", "email", "hours"])
     for student in student_data:
-        ws.append([student.enrollment_year, student.user.email, student.collected_hours])
+        ws.append([student.enrollment_year, student.course, student.user.email, student.collected_hours])
     with NamedTemporaryFile() as tmp:
         wb.save(tmp.name)
         tmp.seek(0)
