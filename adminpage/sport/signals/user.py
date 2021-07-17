@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
-from django.db.models.signals import m2m_changed, post_save
+from django.db.models.signals import m2m_changed, post_save, pre_save
 from django.dispatch.dispatcher import receiver
 from django_auth_adfs.signals import post_authenticate
 
@@ -68,6 +68,12 @@ def add_group_for_student_status(instance: Student, sender, using, **kwargs):
     new_group, created = Group.objects.get_or_create(name="STUDENT_STATUS_{}".format(instance.student_status.id),
                                             defaults={'verbose_name': "[Student status] {}".format(instance.student_status.name)})
     instance.user.groups.add(new_group)
+
+
+@receiver(pre_save, sender=Student)
+def validate_student_course(instance: Student, *args, **kwargs):
+    if instance.course < 1 or instance.course > 4:
+        raise ValidationError("Wrong number of course")
 
 
 def update_group_verbose_names(sid_to_name_mapping: dict):

@@ -25,6 +25,10 @@ class Student(models.Model):
         default=False,
     )
 
+    course = models.PositiveSmallIntegerField(
+        default=1
+    )
+
     medical_group = models.ForeignKey(
         'MedicalGroup',
         on_delete=models.DO_NOTHING,

@@ -77,6 +77,7 @@ class StudentResource(resources.ModelResource):
             "user__first_name",
             "user__last_name",
             "enrollment_year",
+            "course",
             "telegram",
         )
         export_order = (
@@ -86,6 +87,7 @@ class StudentResource(resources.ModelResource):
             "user__last_name",
             "medical_group",
             "enrollment_year",
+            "course",
             "telegram",
             "student_status",
         )
@@ -107,6 +109,7 @@ class StudentResource(resources.ModelResource):
                 row.get('last_name'),
                 row.get('medical_group'),
                 row.get('enrollment_year'),
+                row.get('course'),
                 row.get('telegram'),
             ]
             # Add a column with the error message
@@ -130,6 +133,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
                 "user",
                 "medical_group",
                 "enrollment_year",
+                "course"
                 "student_status",
                 "telegram",
             )
@@ -139,6 +143,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             "is_online",
             "medical_group",
             "enrollment_year",
+            "course",
             "student_status",
             "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
         )
@@ -158,6 +163,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "is_ill",
         "is_online",
         "enrollment_year",
+        "course",
         "medical_group",
         'student_status'
     )
@@ -167,6 +173,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         user__email,
         "is_ill",
         "is_online",
+        "course",
         "medical_group",
         "write_to_telegram",
         "student_status"
