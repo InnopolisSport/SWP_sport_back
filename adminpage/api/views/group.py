@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -6,8 +7,9 @@ from rest_framework.response import Response
 
 from api.crud import get_group_info, get_sports
 from api.permissions import IsStudent
-from api.serializers import GroupInfoSerializer, NotFoundSerializer, SportsSerializer
-from sport.models import Group, Schedule
+from api.serializers import GroupInfoSerializer, NotFoundSerializer, SportsSerializer, EmptySerializer, ErrorSerializer
+from api.serializers.group import SportEnrollSerializer
+from sport.models import Group, Schedule, Student, Sport
 
 
 @swagger_auto_schema(
@@ -42,3 +44,30 @@ def sports_view(request, **kwargs):
     print(get_sports())
     serializer = SportsSerializer({'sports': get_sports()})
     return Response(serializer.data)
+
+
+@swagger_auto_schema(
+    method="POST",
+    request_body=SportEnrollSerializer,
+    responses={
+        status.HTTP_200_OK: EmptySerializer,
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer,
+        status.HTTP_400_BAD_REQUEST: ErrorSerializer,
+    },
+)
+@api_view(["POST"])
+@permission_classes([IsStudent])
+@transaction.atomic
+def select_sport(request, **kwargs):
+    serializer = SportEnrollSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    sport = get_object_or_404(
+        Sport,
+        pk=serializer.validated_data["sport_id"]
+    )
+
+    student: Student = request.user.student
+    student.sport = sport
+    student.save()
+    print(sport, student)
+    return Response({})

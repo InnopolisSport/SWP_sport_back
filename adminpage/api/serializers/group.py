@@ -13,6 +13,8 @@ class ScheduleSerializer(serializers.ModelSerializer):
             "training_class",
         )
 
+class SportEnrollSerializer(serializers.Serializer):
+    sport_id = serializers.IntegerField()
 
 class SportSerializer(serializers.Serializer):
     id = serializers.IntegerField()
