@@ -13,6 +13,13 @@ def user__email(obj):
 user__email.short_description = 'user email'
 
 
+def user__role(obj):
+    return obj.user.role
+
+
+user__role.short_description = 'group'
+
+
 def custom_order_filter(ordering: Tuple, cls=admin.RelatedFieldListFilter):
     class Wrapper(cls):
         def field_admin_ordering(self, field, request, model_admin):
