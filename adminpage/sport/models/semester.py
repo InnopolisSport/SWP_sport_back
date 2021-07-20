@@ -17,11 +17,11 @@ class Semester(models.Model):
     name = models.CharField(max_length=50, null=False, unique=True)
     start = models.DateField(null=False, default=today)
     end = models.DateField(null=False, default=today)
+    hours = models.IntegerField(default=30)
 
     class Meta:
         db_table = "semester"
         verbose_name_plural = "semesters"
-        get_latest_by = 'id'
         constraints = [
             models.CheckConstraint(check=Q(start__lte=F('end')), name='semester_start_before_end')
         ]

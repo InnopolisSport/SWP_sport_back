@@ -73,12 +73,6 @@ def add_group_for_student_status(instance: Student, sender, using, **kwargs):
     instance.user.groups.add(new_group)
 
 
-@receiver(pre_save, sender=Student)
-def validate_student_course(instance: Student, *args, **kwargs):
-    if instance.course < 1 or instance.course > 4:
-        raise ValidationError("Wrong number of course")
-
-
 def update_group_verbose_names(sid_to_name_mapping: dict):
     groups = Group.objects.filter(name__in=sid_to_name_mapping.keys())
     for group in groups:

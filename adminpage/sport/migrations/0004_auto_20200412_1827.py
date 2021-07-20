@@ -27,4 +27,9 @@ class Migration(migrations.Migration):
             name='start',
             field=models.DateTimeField(default=functools.partial(sport.models.semester.now_offset, *(0,), **{})),
         ),
+        migrations.AddField(
+            model_name='semester',
+            name='hours',
+            field=models.IntegerField(default=30),
+        ),
     ]

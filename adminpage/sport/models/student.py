@@ -1,10 +1,16 @@
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 
 from sport.utils import get_current_study_year
+
+
+def validate_course(course):
+    if course < 1 or course > 4:
+        raise ValidationError('Course is bounded by 1 and 4')
 
 
 class Student(models.Model):
@@ -26,7 +32,8 @@ class Student(models.Model):
     )
 
     course = models.PositiveSmallIntegerField(
-        default=1
+        default=1,
+        validators=[validate_course]
     )
 
     medical_group = models.ForeignKey(
@@ -69,6 +76,9 @@ class Student(models.Model):
     class Meta:
         db_table = "student"
         verbose_name_plural = "students"
+        permissions = [
+            ("see_calendar", "Can see calendar")
+        ]
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} " \

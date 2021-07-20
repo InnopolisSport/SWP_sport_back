@@ -194,8 +194,12 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             )
 
     def hours(self, obj):
-        hours_info = min(get_detailed_hours(obj, Semester.objects.latest())[0]['hours'] - 30, 0)\
-                     + get_detailed_hours(obj, get_ongoing_semester())[0]['hours']
+        last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
+        hours_current_semester = sum([i['hours'] for i in get_detailed_hours(obj, get_ongoing_semester())])
+        if len(last_semesters) == 0:
+            return hours_current_semester
+        hours_last_semester = sum([i['hours'] for i in get_detailed_hours(obj, last_semesters[0])])
+        hours_info = min(hours_last_semester - last_semesters[0].hours, 0) + hours_current_semester
         return hours_info
 
     ordering = (

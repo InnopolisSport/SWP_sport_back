@@ -8,7 +8,7 @@ from django.dispatch.dispatcher import receiver
 
 from sport.models import Semester, Sport, Trainer, Group, Schedule, Student
 
-from api.crud import get_brief_hours, get_detailed_hours
+from api.crud import get_brief_hours, get_detailed_hours, get_ongoing_semester
 
 User = get_user_model()
 
@@ -96,5 +96,9 @@ def special_groups_create(sender, instance, created, **kwargs):
 
 @receiver(pre_save, sender=Semester)
 def validate_semester(sender, instance, *args, **kwargs):
-    if Semester.objects.latest().end > instance.start:
-        raise ValueError("Last semester has a intersection with this semester")
+    for i in Semester.objects.all():
+        if (i.start < instance.start and i.end < instance.start) or \
+                (i.start > instance.end and i.end > instance.end):
+            pass
+        else:
+            raise ValueError("Last semester has a intersection with other semester")
