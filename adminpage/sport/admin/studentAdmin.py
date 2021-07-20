@@ -8,8 +8,8 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 from import_export.results import RowResult
 
-from api.crud import get_brief_hours, get_ongoing_semester
-from sport.models import Student, MedicalGroup, StudentStatus
+from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours
+from sport.models import Student, MedicalGroup, StudentStatus, Semester
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline
 from .site import site
@@ -194,11 +194,9 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             )
 
     def hours(self, obj):
-        hours_info = list(filter(lambda x: x['semester_id'] == get_ongoing_semester().id, get_brief_hours(obj)))
-        if len(hours_info) == 0:
-            return 0
-        hours_info = hours_info[0]
-        return hours_info['hours']
+        hours_info = min(get_detailed_hours(obj, Semester.objects.latest())[0]['hours'] - 30, 0)\
+                     + get_detailed_hours(obj, get_ongoing_semester())[0]['hours']
+        return hours_info
 
     ordering = (
         "user__first_name",

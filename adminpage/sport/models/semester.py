@@ -21,6 +21,7 @@ class Semester(models.Model):
     class Meta:
         db_table = "semester"
         verbose_name_plural = "semesters"
+        get_latest_by = 'id'
         constraints = [
             models.CheckConstraint(check=Q(start__lte=F('end')), name='semester_start_before_end')
         ]
