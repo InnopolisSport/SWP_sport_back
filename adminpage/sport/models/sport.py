@@ -14,7 +14,7 @@ class Sport(models.Model):
         ]
         permissions = [
             ('choose_sport', "Can choose type of sport"),
-            ("go_to_another_sport", "Can got to group of the another type of sport")
+            ("go_to_another_sport", "Can go to group of the another type of sport")
         ]
 
     def __str__(self):

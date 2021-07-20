@@ -19,5 +19,5 @@ class SemesterAdmin(admin.ModelAdmin):
         "name",
         "start",
         "end",
-        "hours"
+        "hours",
     )

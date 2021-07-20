@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.AlterModelOptions(
             name='sport',
             options={'permissions': [('choose_sport', 'Can choose type of sport'),
-                                     ('go_to_another_sport', 'Can got to group of the another type of sport')],
+                                     ('go_to_another_sport', 'Can go to group of the another type of sport')],
                      'verbose_name': 'sport type', 'verbose_name_plural': 'sport types'},
         ),
     ]
