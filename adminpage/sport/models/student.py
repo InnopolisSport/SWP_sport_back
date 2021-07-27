@@ -61,7 +61,8 @@ class Student(models.Model):
     sport = models.ForeignKey(
         'Sport',
         on_delete=models.DO_NOTHING,
-        default=1
+        null=True,
+        blank=True
     )
 
     def notify(self, subject, message, **kwargs):
