@@ -50,17 +50,6 @@ def create_student_profile(instance, action, reverse, pk_set, **kwargs):
             if action == "post_add":
                 Trainer.objects.get_or_create(pk=instance.pk)
 
-@receiver(
-    m2m_changed,
-    sender=User.groups.through
-)
-# TODO implement in admin User form
-def check_2_status_groups(instance, action, **kwargs):
-    if action == 'pre_add':
-        print(action)
-        if instance.groups.filter(name__startswith="STUDENT_STATUS").exists():
-            raise ValidationError("There could be only one STUDENT_STATUS group")
-
 
 @receiver(post_save, sender=Student)
 def add_group_for_student_status(instance: Student, sender, using, **kwargs):
