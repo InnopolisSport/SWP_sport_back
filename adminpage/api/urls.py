@@ -26,6 +26,8 @@ urlpatterns = [
 
     # group
     path(r"group/<int:group_id>", group.group_info_view),
+    path(r"select_sport", group.select_sport),
+    path(r"sports", group.sports_view),
 
     # training
     path(r"training/<int:training_id>", training.training_info),
