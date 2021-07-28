@@ -1,10 +1,14 @@
+import datetime
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group as AuthGroup
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch.dispatcher import receiver
 
-from sport.models import Semester, Sport, Trainer, Group, Schedule
+from sport.models import Semester, Sport, Trainer, Group, Schedule, Student
+
+from api.crud import get_brief_hours, get_detailed_hours, get_ongoing_semester
 
 User = get_user_model()
 
@@ -88,3 +92,13 @@ def special_groups_create(sender, instance, created, **kwargs):
                 instance=schedule,
                 created=False
             )
+
+
+@receiver(pre_save, sender=Semester)
+def validate_semester(sender, instance, *args, **kwargs):
+    for i in Semester.objects.all():
+        if (i.start < instance.start and i.end < instance.start) or \
+                (i.start > instance.end and i.end > instance.end):
+            pass
+        else:
+            raise ValueError("Last semester has a intersection with other semester")

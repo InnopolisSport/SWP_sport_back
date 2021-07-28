@@ -17,6 +17,7 @@ class Semester(models.Model):
     name = models.CharField(max_length=50, null=False, unique=True)
     start = models.DateField(null=False, default=today)
     end = models.DateField(null=False, default=today)
+    hours = models.IntegerField(default=30)
 
     class Meta:
         db_table = "semester"
