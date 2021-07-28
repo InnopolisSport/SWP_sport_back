@@ -7,7 +7,7 @@ import sport.models.student
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sport', '0055_student_is_online'),
+        ('sport', '0055_auto_20210728_0818'),
     ]
 
     operations = [
