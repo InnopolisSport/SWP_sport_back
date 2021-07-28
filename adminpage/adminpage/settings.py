@@ -92,7 +92,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_boolean("DEBUG")
 PROJECT_ROOT = "/src/"
-ALLOWED_HOSTS = ["0.0.0.0", ]
+ALLOWED_HOSTS = [HOSTNAME, ]
 
 if DEBUG:
     ALLOWED_HOSTS.append('localhost')
