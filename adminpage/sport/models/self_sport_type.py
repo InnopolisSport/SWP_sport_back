@@ -22,6 +22,3 @@ class SelfSportType(models.Model):
 
     class Meta:
         db_table = "self_sport_group"
-        permissions = [
-            ("more_than_10_hours_of_self_sport", "Can have more then 10 hours of self sport"),
-        ]

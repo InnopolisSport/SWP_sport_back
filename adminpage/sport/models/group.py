@@ -20,10 +20,6 @@ class Group(models.Model):
         indexes = [
             models.Index(fields=("name",)),
         ]
-        permissions = [
-            ("go_to_another_group", "Can go to another group in the same type of sport"),
-            ("choose_group", "Can choose group")
-        ]
 
     def __str__(self):
         return f"[{self.semester}] {self.name}"

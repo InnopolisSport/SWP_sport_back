@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sport', '0057_permissions'),
+        ('sport', '0056_student_course'),
     ]
 
     operations = [
