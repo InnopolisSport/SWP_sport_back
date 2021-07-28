@@ -205,10 +205,15 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "user__last_name"
     )
 
-    inlines = (
-        ViewAttendanceInline,
-        AddAttendanceInline,
-    )
+    def get_inlines(self, request, obj):
+        if obj.medical_group.name == 'Medical checkup not passed':
+            return [ViewAttendanceInline,]
+        return [ViewAttendanceInline, AddAttendanceInline,]
+
+    # inlines = (
+    #     ViewAttendanceInline,
+    #     AddAttendanceInline,
+    # )
 
     list_select_related = (
         "user",
