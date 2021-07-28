@@ -25,9 +25,39 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{ sport.name }}</h1>
-    <div id='calendar' data-sport={{ sport.id }}></div>
-    <div class="container">
-        <div id="group-info-modal"></div>
+    <div class="card">
+        <div class="card-body">
+            <div class="container-xl">
+                <h1 class="mt-3">
+                    <span class="badge badge-dark text-uppercase">{{ sport.name }}</span>
+                    {% if sport.id == student.sport.id %}
+                        <small class="text-primary">chosen</small>
+                    {% endif %}
+                </h1>
+                {% if not student.sport %}
+                    <div class="my-3">
+                        <div class="alert alert-danger" role="alert">
+                        <strong>Be careful!</strong> You can choose <strong>only one</strong> <span class="badge badge-dark">SPORT TYPE</span>
+                            for the whole semester. It also <strong>can't be changed</strong> during the semester.
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="my-3">
+                        <div class="alert alert-success" role="alert">
+                            <h5 class="alert-heading">Remember!</h5>
+                            <p>In order to <strong>keep students distributed</strong> among <span class="badge badge-info">SPORT GROUPS</span> you should attend <strong>only chosen</strong>
+                            <span class="badge badge-info">SPORT GROUP</span> for the whole semester.</p>
+                            <hr>
+                            <p class="mb-0"> Under circumstances of force majeure it is possible to attend other <span class="badge badge-info">SPORT GROUP</span>.</p>
+                        </div>
+                    </div>
+                {% endif %}
+                <hr>
+                <div id='calendar' data-sport={{ sport.id }}></div>
+                <div class="container">
+                    <div id="group-info-modal"></div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

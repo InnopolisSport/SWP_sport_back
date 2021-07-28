@@ -50,8 +50,8 @@ $(function () {
         eventClick: openGroupInfoModal,
         eventRender: render,
         // Event format: yyyy-mm-dd
-        events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
-
+        events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule',
+        eventTimeFormat: { hour: 'numeric', minute: '2-digit', meridiem: 'short'}
     });
 
     calendar.render();

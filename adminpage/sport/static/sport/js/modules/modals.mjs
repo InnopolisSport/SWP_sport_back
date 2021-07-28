@@ -28,7 +28,8 @@ async function openModal(id, apiUrl) {
     body.empty();
     footer.empty();
     body.append($('<div class="spinner-border" role="status"></div>'));
-    title.text('Loading...');
+    // title.text('Loading...');
+    // title.append('Loading...');
     modal.modal('show');
     let data;
     if (apiUrl) {
@@ -73,8 +74,8 @@ function renderGroupModalBody(body, data) {
         p.append(`<div>Class: <strong>${training_class}</strong></div>`);
     }
 
-    if (trainer_first_name || trainer_last_name || trainer_email) {
-        body.append(`<p>Trainer: 
+    if (trainer_first_name || trainer_last_name || trainer_email) { // TODO multiple trainers
+        body.append(`<p>Trainer(s): 
                         <strong>${trainer_first_name} ${trainer_last_name}</strong> 
                         <a href="mailto:${trainer_email}">${trainer_email}</a>
                      </p>`);
@@ -117,7 +118,13 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
         `);
         footer.find('.btn-success').click(() => enroll(group_id, 'enroll', enrollErrorCb));
     }
-    title.text(custom_name || `${group_name} group`);
+    if (title[0].innerHTML.length == 0) {
+        if (custom_name != undefined) {
+            title.append(`<h2> <span class="badge badge-info text-uppercase">${custom_name}</span></h2>`);
+        } else {
+            title.append(`<h2> <span class="badge badge-info text-uppercase">${group_name}</span></h2>`);
+        }
+    }
     renderGroupModalBody(body, data)
     if (schedule && schedule.length > 0) {
 
