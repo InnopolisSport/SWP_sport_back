@@ -19,6 +19,7 @@ from .student_status import StudentStatus
 from .trainer import Trainer
 from .training import Training
 from .training_class import TrainingClass
+from .custom_permission import CustomPermission
 
 DjangoGroup.add_to_class(
     'verbose_name',

@@ -76,9 +76,6 @@ class Student(models.Model):
     class Meta:
         db_table = "student"
         verbose_name_plural = "students"
-        permissions = [
-            ("see_calendar", "Can see calendar")
-        ]
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} " \
