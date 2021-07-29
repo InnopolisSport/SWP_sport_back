@@ -134,7 +134,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
                 "user",
                 "medical_group",
                 "enrollment_year",
-                "course"
+                "course",
                 "student_status",
                 "telegram",
             )
@@ -208,6 +208,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "user__first_name",
         "user__last_name"
     )
+
 
     inlines = (
         ViewAttendanceInline,

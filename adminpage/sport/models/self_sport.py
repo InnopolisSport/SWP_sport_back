@@ -53,6 +53,11 @@ class SelfSportReport(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    debt = models.BooleanField(
+        null=False,
+        default=False
+    )
+
     hours = models.DecimalField(
         max_digits=5,
         decimal_places=2,

@@ -21,6 +21,7 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
             is_active=True,
         ).all()
     )
+    debt = serializers.BooleanField(required=True)
     # start = serializers.DateTimeField(required=True)
     # end = serializers.DateTimeField(required=True)
 

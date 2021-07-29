@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed, post_save, pre_save
 from django.dispatch.dispatcher import receiver
 from django_auth_adfs.signals import post_authenticate
 
-from sport.models import Student, Trainer
+from sport.models import Student, Trainer, CustomPermission
 
 User = get_user_model()
 
@@ -56,10 +57,26 @@ def add_group_for_student_status(instance: Student, sender, using, **kwargs):
     instance.user.groups.remove(*instance.user.groups.filter(name__startswith="STUDENT_STATUS"))
     new_group, created = Group.objects.get_or_create(name="STUDENT_STATUS_{}".format(instance.student_status.id),
                                             defaults={'verbose_name': "[Student status] {}".format(instance.student_status.name)})
+    content_type = ContentType.objects.get_for_model(CustomPermission)
     if instance.student_status.name == "Normal":
-        new_group.permissions.add(Permission.objects.get(codename='go_to_another_group'))
+        new_group.permissions.add(Permission.objects.get(codename='go_to_another_group', content_type=content_type))
+        new_group.permissions.add(Permission.objects.get(codename='choose_sport', content_type=content_type))
+        new_group.permissions.add(Permission.objects.get(codename='choose_group', content_type=content_type))
+        new_group.permissions.add(Permission.objects.get(codename='see_calendar', content_type=content_type))
+    elif instance.student_status.name == "Academic leave":
+        new_group.permissions.add(Permission.objects.get(codename='see_calendar', content_type=content_type))
 
     instance.user.groups.add(new_group)
+
+
+@receiver(post_save, sender=Student)
+def change_online_status(instance: Student, sender, using, **kwargs):
+    user = User.objects.get(id=instance.user_id)
+    content_type = ContentType.objects.get_for_model(CustomPermission)
+    if instance.is_online is True:
+        user.user_permissions.add(Permission.objects.get(codename='more_than_10_hours_of_self_sport', content_type=content_type))
+    else:
+        user.user_permissions.remove(Permission.objects.get(codename='more_than_10_hours_of_self_sport', content_type=content_type))
 
 
 def update_group_verbose_names(sid_to_name_mapping: dict):

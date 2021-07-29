@@ -9,13 +9,13 @@ from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.response import Response
 
 from api.crud import get_email_name_like_students, Training, \
-    get_students_grades, mark_hours, get_student_last_attended_dates
+    get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester
 from api.permissions import IsTrainer
 from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
     TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, \
-    BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer
-from sport.models import Group, Student
+    BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer, HoursInfoSerializer
+from sport.models import Group, Student, Semester, SelfSportReport, Attendance
 
 User = get_user_model()
 
@@ -123,6 +123,51 @@ def get_last_attended_dates(request, group_id, **kwargs):
 
 
 @swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: HoursInfoSerializer,
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer,
+        status.HTTP_403_FORBIDDEN: InbuiltErrorSerializer,
+    }
+)
+@api_view(["GET"])
+def get_student_hours_info(request, student_id, **kwargs):
+    hours_current_sem = {"hours_not_self_current": 0.0, "hours_self_not_debt_current": 0.0, "hours_self_debt_current": 0.0}
+    hours_last_sem = {"hours_not_self_last": 0.0, "hours_self_not_debt_last": 0.0, "hours_self_debt_last": 0.0}
+    last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
+
+    query_attend_current_semester = Attendance.objects.filter(student_id=student_id,
+                                                              training__group__semester=get_ongoing_semester())
+    query_attend_last_semester = Attendance.objects.filter(student_id=student_id,
+                                                           training__group__semester=last_semesters[0])
+    for i in query_attend_current_semester:
+        if i['cause_report'] is None:
+            hours_current_sem['hours_not_self'] += i['hours']
+        elif i['cause_report']['debt'] is True:
+            hours_current_sem['hours_self_debt'] += i['hours']
+        else:
+            hours_current_sem['hours_self_not_debt'] += i['hours']
+
+    for i in query_attend_last_semester:
+        if i['cause_report'] is None:
+            hours_last_sem['hours_not_self'] += i['hours']
+        elif i['cause_report']['debt'] is True:
+            hours_last_sem['hours_self_debt'] += i['hours']
+        else:
+            hours_last_sem['hours_self_not_debt'] += i['hours']
+    return Response({
+        "hours_not_self_current": hours_current_sem['hours_not_self_current'],
+        "hours_self_not_debt_current": hours_current_sem['hours_self_not_debt_current'],
+        "hours_self_debt_current": hours_current_sem['hours_self_debt_current'],
+        "hours_sem_max_current": get_ongoing_semester()['hours'],
+        "hours_not_self_last": hours_last_sem['hours_not_self_last'],
+        'hours_self_not_debt_last': hours_last_sem['hours_self_not_debt_last'],
+        "hours_self_debt_last": hours_last_sem['hours_self_debt_last'],
+        "hours_sem_max_last": last_semesters[0]['hours']
+    })
+
+
+@swagger_auto_schema(
     method="POST",
     request_body=AttendanceMarkSerializer,
     responses={
@@ -180,7 +225,8 @@ def mark_attendance(request, **kwargs):
             overflow_mark.append(
                 compose_bad_grade_report(student.email, hours_put)
             )
-        elif str(Student.objects.filter(user=get_user_model().objects.filter(email=student.email)[0])[0].student_status) != 'Normal':
+        elif str(Student.objects.filter(user=get_user_model().objects.filter(email=student.email)[0])[
+                     0].student_status) != 'Normal':
             pass
         else:
             hours_to_mark.append((student, hours_put))
