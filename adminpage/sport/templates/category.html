@@ -49,31 +49,31 @@
                             </thead>
                             <tbody>
                             {% for sport in sports %}
-                                    <tr style="cursor: pointer" onclick="location.href='{% url "sport_schedule_calendar" sport.id %}'"
-                                    {% if student.sport.id == sport.id %}class="table-primary"{% endif %}>
-                                        <th scope="row" class="align-middle">
-                                            <span class="badge badge-dark text-uppercase">
-                                            {{ sport.name }}
-                                            </span>
-                                        </th>
-                                        <td class="align-middle">
-                                            <div class="d-flex justify-content-around align-content-between flex-wrap">
-                                                {% if sport.trainers %}
-                                                    {% for trainer in sport.trainers%}
-                                                        {# <span class="badge badge-pill badge-light my-1 mx-1">{{ trainer }}</span> #}
-                                                    {% endfor %}
-                                                {% else %}
-                                                    <span class="badge badge-warning">No trainers yet</span>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-                                        <td class="align-middle">Requires num_of_trainers field in sport{# {{ sport.num_of_trainings }} #}</td>
-                                        <td class="align-middle">
-                                            <a href="{% url "sport_schedule_calendar" sport.id %}" class="btn btn-outline-dark">
-                                                >
-                                            </a>
-                                        </td>
-                                    </tr>
+                                <tr style="cursor: pointer" onclick="location.href='{% url "sport_schedule_calendar" sport.id %}'"
+                                {% if student.sport.id == sport.id %}class="table-primary"{% endif %}>
+                                    <th scope="row" class="align-middle">
+                                        <span class="badge badge-dark text-uppercase">
+                                        {{ sport.name }}
+                                        </span>
+                                    </th>
+                                    <td class="align-middle">
+                                        <div class="d-flex justify-content-around align-content-between flex-wrap">
+                                            {% if sport.trainers %}
+                                                {% for trainer in sport.trainers%}
+                                                    {# <span class="badge badge-pill badge-light my-1 mx-1">{{ trainer }}</span> #}
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="badge badge-warning">No trainers yet</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">Requires num_of_trainers field in sport{# {{ sport.num_of_trainings }} #}</td>
+                                    <td class="align-middle">
+                                        <a href="{% url "sport_schedule_calendar" sport.id %}" class="btn btn-outline-dark">
+                                            >
+                                        </a>
+                                    </td>
+                                </tr>
                             {% endfor %}
                             </tbody>
                         </table>
