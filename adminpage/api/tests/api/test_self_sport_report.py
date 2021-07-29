@@ -89,37 +89,6 @@ def setup(
 
 
 @pytest.mark.django_db
-@pytest.mark.freeze_time(frozen_time)
-def test_reference_upload_link(
-        setup,
-        freezer
-):
-    student, semester, selfsport_type, client = setup
-
-    response = client.post(
-        f"/{settings.PREFIX}api/selfsport/upload",
-        data={
-            "link": "http://example.com/",
-            "training_type": selfsport_type.pk,
-        },
-        format='multipart'
-    )
-
-    assert response.status_code == status.HTTP_200_OK
-    assert SelfSportReport.objects.filter(
-        semester=semester,
-        student__pk=student.pk,
-    ).count() == 1
-    report = SelfSportReport.objects.filter(
-        semester=semester,
-        student__pk=student.pk,
-    ).first()
-
-    assert report.link is not None
-    # assert report.image == ''
-
-
-@pytest.mark.django_db
 def test_reference_upload_medical_disalowance(
         setup,
 ):
