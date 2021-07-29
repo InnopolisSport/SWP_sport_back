@@ -109,10 +109,6 @@ def toggle_illness(student: Student):
     student.save()
 
 
-class Response:
-    pass
-
-
 def get_student_hours(student_id, **kwargs):
     hours_current_sem = {"hours_not_self_current": 0.0, "hours_self_not_debt_current": 0.0, "hours_self_debt_current": 0.0}
     hours_last_sem = {"hours_not_self_last": 0.0, "hours_self_not_debt_last": 0.0, "hours_self_debt_last": 0.0}
