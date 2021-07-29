@@ -18,6 +18,7 @@ urlpatterns = [
     # profile
     path(r"profile/sick/toggle", profile.toggle_sick),
     path(r"profile/history/<int:semester_id>", profile.get_history),
+    path(r"profile/history_with_self/<int:semester_id>", profile.get_history_with_self),
 
     # enroll
     path(r"enrollment/enroll", enroll.enroll),

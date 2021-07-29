@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from api.crud.crud_attendance import (
     toggle_illness,
-    get_detailed_hours,
+    get_detailed_hours, get_detailed_hours_and_self,
 )
 from api.permissions import (
     IsStudent,
@@ -57,6 +57,7 @@ def get_history(request, semester_id: int, **kwargs):
     """
     semester = get_object_or_404(Semester, pk=semester_id)
     student = request.user  # user.pk == user.student.pk
+    print(get_detailed_hours(student, semester))
     return Response({
         "trainings": list(map(
             lambda g: {
@@ -64,5 +65,35 @@ def get_history(request, semester_id: int, **kwargs):
                 "timestamp": timezone.localtime(g["timestamp"]).strftime("%b %d %H:%M"),
             },
             get_detailed_hours(student, semester)
+        ))
+    })
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: TrainingHourSerializer(many=True),
+        status.HTTP_404_NOT_FOUND: get_error_serializer(
+            "training_history",
+            error_code=404,
+            error_description="Not found",
+        )
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsStudent])
+def get_history_with_self(request, semester_id: int, **kwargs):
+    """
+    Get student's trainings per_semester
+    """
+    semester = get_object_or_404(Semester, pk=semester_id)
+    student = request.user  # user.pk == user.student.pk
+    print(get_detailed_hours_and_self(student, semester))
+    return Response({
+        "trainings": list(map(
+            lambda g: {
+                **g,
+                "timestamp": timezone.localtime(g["timestamp"]).strftime("%b %d %H:%M"),
+            },
+            get_detailed_hours_and_self(student, semester)
         ))
     })

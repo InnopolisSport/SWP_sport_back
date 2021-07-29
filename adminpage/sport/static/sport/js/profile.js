@@ -4,13 +4,14 @@ function make_hours_table(trainings) {
         .children('thead')
         .append('<tr />')
         .children('tr')
-        .append('<th scope="col">Group</th><th scope="col">Date</th><th scope="col">Hours</th>');
+        .append('<th scope="col">Group</th><th scope="col">Date</th><th scope="col">Hours</th><th scope="col">Approved</th>');
     const tbody = table.append('<tbody>').children('tbody');
-    trainings.forEach(({group, custom_name, timestamp, hours}) => {
+    trainings.forEach(({group, custom_name, timestamp, hours, approved}) => {
         tbody.append($(`<tr>
                             <td>${custom_name || group}</td>
                             <td>${timestamp.substr(0, 16)}</td>
                             <td>${hours}</td>
+                            <td>${approved === null ? 'Awaiting' : (approved ? 'Yes' : 'No')}</td>
                         </tr>`))
     });
     return table;
@@ -21,13 +22,14 @@ const loaded_hours = {};
 async function fetch_detailed_hours(e) {
     const semester_id = parseInt(e.getAttribute('data-semester-id'), 10);
     if (loaded_hours[semester_id]) return;
-    const response = await fetch(`/api/profile/history/${semester_id}`, {
+    const response = await fetch(`/api/profile/history_with_self/${semester_id}`, {
         method: 'GET',
         "X-CSRFToken": csrf_token,
     });
     const history = await response.json();
     const table = $(`#hours-modal-${semester_id} .modal-body`);
     table.empty();
+    console.log(history.trainings)
     table.append(make_hours_table(history.trainings));
     loaded_hours[semester_id] = true;
 }
