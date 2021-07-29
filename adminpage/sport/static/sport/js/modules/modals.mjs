@@ -107,7 +107,7 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
         `);
         footer.find('.btn-danger').click(() => enroll(group_id, 'unenroll'));
     } else {
-        disabled_attr = current_load >= capacity ? 'disabled' : ''
+        disabled_attr = (current_load >= capacity) ? 'disabled' : ''
         footer.html(`
             <div class="container">
                 <div class="row justify-content-between">

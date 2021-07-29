@@ -86,6 +86,7 @@ def profile_view(request, **kwargs):
                 "obj": student,
                 "has_med_group_submission": has_med_group_submission,
                 **student_data,
+                "sport": student.sport,
             },
         })
 

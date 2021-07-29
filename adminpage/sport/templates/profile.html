@@ -47,6 +47,7 @@
         <div class="card text-center">
             <div class="card-body">
                 <h1 class="card-title">{{ user.get_full_name }}</h1>
+                <hr>
 {#                            <h4 class="card-title">{{ user.role }}</h4>#}
 
                 {% if user.is_staff or user.is_superuser %}
@@ -85,13 +86,13 @@
 {#                        close your debt (make number of hours positive)</span>#}
 {#                    {% endif %}#}
                     {% if student.obj.student_status.id != 0 %}
-                     <h5> <span class="badge bg-{% if student.obj.student_status.id == 1 %}danger
-                                                {% elif student.obj.student_status.id == 2 %}primary
-                                                {% else %}success
-                                                {% endif %}text-light">
-                         {{ student.obj.student_status.description }}
-                     </span>
-                    </h5>
+                        <h5> <span class="badge bg-{% if student.obj.student_status.id == 1 %}danger
+                                                    {% elif student.obj.student_status.id == 2 %}primary
+                                                    {% else %}success
+                                                    {% endif %}text-light">
+                            {{ student.obj.student_status.description }}
+                        </span>
+                        </h5>
                     {% endif %}
 
                     <meta id="illness-data" data-ill="{{ student.is_ill }}">
@@ -138,9 +139,8 @@
                         <div id="medical-group-info-modal"></div>
 
                         <div class="container" id="control-buttons">
-                            <div class="row justify-content-center">
-                                <div class="col-md-6 col-sm-12 col-left mb-1">
-
+                            <div class="row justify-content-around align-content-between flex-wrap">
+                                <div class="my-2 mx-2">
                                     {% if student.is_ill %}
                                         <button type="button" class="btn btn-dark tour-step-ill-btn" id="recovered-btn"
                                                 onclick="toggle_ill(this)">Recovered
@@ -154,29 +154,40 @@
                                         </button>
                                     {% endif %}
                                 </div>
-                                <div class="col-md-6 col-sm-12 col-right mb-1">
+                                <div class="my-2 mx-2">
+                                    {% if not student.sport %}
+                                        <a href="{% url 'category' %}" class="btn btn-danger">
+                                            Choose sport type & group
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'category' %}" class="btn btn-primary">
+                                            Sports & Schedule
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="my-2 mx-2">
                                     <button type="button" class="btn btn-warning tour-step-self-sport-btn" onclick="open_selfsport_modal()">
                                         Self-sport upload
                                     </button>
                                 </div>
-                            </div>
-                            <div class="row justify-content-center">
-                                <div class="col-md-12 col-sm-12 mb-1">
-                                    {% if student.group_choices_left > 1 %}
-                                        <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
-                                            {{ student.group_choices_left }} group choices left
-                                        </a>
-                                    {% elif student.group_choices_left == 1 %}
-                                        <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
-                                            1 group choice left
-                                        </a>
-                                    {% else %}
-                                        <a href="{% url 'category' %}" class="btn btn-primary disabled tour-step-choice-btn"
-                                           disabled>
-                                            No group choices left
-                                        </a>
-                                    {% endif %}
-                                </div>
+                                {% comment %} <div class="row justify-content-center">
+                                        <div class="col-md-12 col-sm-12 mb-1">
+                                            {% if student.group_choices_left > 1 %}
+                                                <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
+                                                    {{ student.group_choices_left }} group choices left
+                                                </a>
+                                            {% elif student.group_choices_left == 1 %}
+                                                <a href="{% url 'category' %}" class="btn btn-primary tour-step-choice-btn">
+                                                    1 group choice left
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'category' %}" class="btn btn-primary disabled tour-step-choice-btn"
+                                                disabled>
+                                                    No group choices left
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div> {% endcomment %}
                             </div>
                         </div>
                     {% endif %}
@@ -198,7 +209,7 @@
                                         <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
                                             onclick="fetch_detailed_hours(this)" data-toggle="modal"
                                             data-target="#hours-modal-{{ sem.semester_id }}">
-                                            <th scope="row">{{ sem.semester_name }}</th>
+                                            <th scope="row"><span class="badge badge-primary text-uppercase">{{ sem.semester_name }}</span></th>
                                             <td>{{ sem.semester_start }}</td>
                                             <td>{{ sem.semester_end }}</td>
                                             <td>{{ sem.hours }}</td>
@@ -207,7 +218,7 @@
                                         <tr style="cursor: pointer" data-semester-id="{{ sem.semester_id }}"
                                             onclick="fetch_detailed_hours(this)" data-toggle="modal"
                                             data-target="#hours-modal-{{ sem.semester_id }}">
-                                            <th scope="row">{{ sem.semester_name }}</th>
+                                            <th scope="row"><span class="badge badge-primary text-uppercase">{{ sem.semester_name }}</span>}</th>
                                             <td>{{ sem.semester_start }}</td>
                                             <td>{{ sem.semester_end }}</td>
                                             <td>{{ sem.hours }}</td>

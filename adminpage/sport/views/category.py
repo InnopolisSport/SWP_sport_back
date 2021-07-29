@@ -21,4 +21,5 @@ def category_view(request, **kwargs):
         "sports": sports,
         "clubs": clubs,
         "sc_training_groups": sc_training_groups,
+        "student": student,
     })

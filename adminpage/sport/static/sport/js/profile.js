@@ -1,5 +1,5 @@
 function make_hours_table(trainings) {
-    const table = $('<table class="table table-hover">');
+    const table = $('<table class="table table-hover table-sm table-borderless">');
     table.append('<thead>')
         .children('thead')
         .append('<tr />')
@@ -8,7 +8,7 @@ function make_hours_table(trainings) {
     const tbody = table.append('<tbody>').children('tbody');
     trainings.forEach(({group, custom_name, timestamp, hours, approved}) => {
         tbody.append($(`<tr>
-                            <td>${custom_name || group}</td>
+                            <td><span class="badge badge-info text-uppercase">${custom_name || group}</span></td>
                             <td>${timestamp.substr(0, 16)}</td>
                             <td>${hours}</td>
                             <td>${approved === null ? 'Awaiting' : (approved ? 'Yes' : 'No')}</td>

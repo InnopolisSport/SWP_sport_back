@@ -6,7 +6,9 @@ from sport.models import Sport
 
 @login_required
 def calendar_view(request, sport_id, **kwargs):
+    student = getattr(request.user, "student", None)
     sport = get_object_or_404(Sport, pk=sport_id)
     return render(request, "calendar.html", {
         "sport": sport,
+        "student": student,
     })
