@@ -24,7 +24,8 @@ def get_sports(all=False, student: Optional[Student] = None):
         qs = Sport.objects.filter(group__minimum_medical_group_id=0).distinct()
     # Return those objects for which exists at least 1 group in current semester
     qs = qs.filter(group__semester__pk=api.crud.get_ongoing_semester().pk)
-    return qs.all().values() if all else qs.filter(special=False).values()
+    return [{'id': sport.id, 'name': sport.name, 'special': sport.special, 'trainers': sport.trainers, 'num_of_groups': len(sport.groups)}
+            for sport in (qs.all() if all else qs.filter(special=False))]
 
 
 def get_clubs(student: Optional[Student] = None):

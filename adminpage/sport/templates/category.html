@@ -43,7 +43,7 @@
                             <tr>
                                 <th scope="col">Sport type</th>
                                 <th scope="col" width=50%>Trainer(s)</th>
-                                <th scope="col"># of trainings</th>
+                                <th scope="col"># of sport groups</th>
                                 <th scope="col">Schedule</th>
                             </tr>
                             </thead>
@@ -59,15 +59,15 @@
                                     <td class="align-middle">
                                         <div class="d-flex justify-content-around align-content-between flex-wrap">
                                             {% if sport.trainers %}
-                                                {% for trainer in sport.trainers%}
-                                                    {# <span class="badge badge-pill badge-light my-1 mx-1">{{ trainer }}</span> #}
+                                                {% for trainer in sport.trainers %}
+                                                     <span class="badge badge-pill badge-light my-1 mx-1">{{ trainer }}</span>
                                                 {% endfor %}
                                             {% else %}
                                                 <span class="badge badge-warning">No trainers yet</span>
                                             {% endif %}
                                         </div>
                                     </td>
-                                    <td class="align-middle">Requires num_of_trainers field in sport{# {{ sport.num_of_trainings }} #}</td>
+                                    <td class="align-middle">{{ sport.num_of_groups }}</td>
                                     <td class="align-middle">
                                         <a href="{% url "sport_schedule_calendar" sport.id %}" class="btn btn-outline-dark">
                                             >
