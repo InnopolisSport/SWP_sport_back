@@ -80,7 +80,7 @@ class GroupAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if 'extra' in request.META.get('HTTP_REFERER', []):
-            return qs.filter(semester=get_ongoing_semester(), sport__name=settings.OTHER_SPORT_NAME).order_by('name')
+            return qs.filter(semester=get_ongoing_semester(), sport=None).order_by('name')
         return qs.annotate(enroll_count=RawSQL('select count(*) from enroll where group_id = "group".id', ()))
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
