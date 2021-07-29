@@ -209,30 +209,23 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "user__last_name"
     )
 
-    def get_inlines(self, request, obj):
-        if obj.medical_group.name == 'Medical checkup not passed':
-            return [ViewAttendanceInline,]
-        return [ViewAttendanceInline, AddAttendanceInline,]
+    inlines = (
+        ViewAttendanceInline,
+        AddAttendanceInline,
+    )
 
-    # inlines = (
-    #     ViewAttendanceInline,
-    #     AddAttendanceInline,
-    # )
+    # https://stackoverflow.com/a/66730984
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        try:
+            obj = self.model.objects.get(pk=object_id)
+        except self.model.DoesNotExist:
+            pass
+        else:
+            if obj.medical_group.name == 'Medical checkup not passed':
+                self.inlines = (ViewAttendanceInline, )
+        return super().change_view(request, object_id, form_url, extra_context)
 
     list_select_related = (
         "user",
         "medical_group",
     )
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        # TODO: show current primary group
-        return qs
-        # return qs.annotate(has_enrolled=RawSQL(
-        #     'SELECT count(*) > 0 FROM enroll, "group" '
-        #     'WHERE student_id = student.user_id '
-        #     'AND "group".semester_id = current_semester() '
-        #     'AND "group".id = enroll.group_id '
-        #     'AND enroll.is_primary = True',
-        #     ()
-        # ))
