@@ -9,7 +9,7 @@ from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.response import Response
 
 from api.crud import get_email_name_like_students, Training, \
-    get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester
+    get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, get_student_hours
 from api.permissions import IsTrainer
 from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
@@ -132,39 +132,7 @@ def get_last_attended_dates(request, group_id, **kwargs):
 )
 @api_view(["GET"])
 def get_student_hours_info(request, student_id, **kwargs):
-    hours_current_sem = {"hours_not_self_current": 0.0, "hours_self_not_debt_current": 0.0, "hours_self_debt_current": 0.0}
-    hours_last_sem = {"hours_not_self_last": 0.0, "hours_self_not_debt_last": 0.0, "hours_self_debt_last": 0.0}
-    last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
-
-    query_attend_current_semester = Attendance.objects.filter(student_id=student_id,
-                                                              training__group__semester=get_ongoing_semester())
-    query_attend_last_semester = Attendance.objects.filter(student_id=student_id,
-                                                           training__group__semester=last_semesters[0])
-    for i in query_attend_current_semester:
-        if i['cause_report'] is None:
-            hours_current_sem['hours_not_self'] += i['hours']
-        elif i['cause_report']['debt'] is True:
-            hours_current_sem['hours_self_debt'] += i['hours']
-        else:
-            hours_current_sem['hours_self_not_debt'] += i['hours']
-
-    for i in query_attend_last_semester:
-        if i['cause_report'] is None:
-            hours_last_sem['hours_not_self'] += i['hours']
-        elif i['cause_report']['debt'] is True:
-            hours_last_sem['hours_self_debt'] += i['hours']
-        else:
-            hours_last_sem['hours_self_not_debt'] += i['hours']
-    return Response({
-        "hours_not_self_current": hours_current_sem['hours_not_self_current'],
-        "hours_self_not_debt_current": hours_current_sem['hours_self_not_debt_current'],
-        "hours_self_debt_current": hours_current_sem['hours_self_debt_current'],
-        "hours_sem_max_current": get_ongoing_semester()['hours'],
-        "hours_not_self_last": hours_last_sem['hours_not_self_last'],
-        'hours_self_not_debt_last': hours_last_sem['hours_self_not_debt_last'],
-        "hours_self_debt_last": hours_last_sem['hours_self_debt_last'],
-        "hours_sem_max_last": last_semesters[0]['hours']
-    })
+    return Response(get_student_hours(student_id))
 
 
 @swagger_auto_schema(

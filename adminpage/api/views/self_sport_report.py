@@ -9,8 +9,7 @@ from rest_framework.decorators import (
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
-from api.views import get_student_hours_info
-from api.crud import get_ongoing_semester
+from api.crud import get_ongoing_semester, get_student_hours
 from api.permissions import IsStudent
 from api.serializers import (
     SelfSportReportUploadSerializer,
@@ -71,13 +70,8 @@ def self_sport_upload(request, **kwargs):
             status=400,
             data=error_detail(*SelfSportErrors.MEDICAL_DISALLOWANCE),
         )
-    hours_info = get_student_hours_info(student.id)
-    hours_cur_sem = hours_info['hours_self_debt_current'] \
-                    + hours_info['hours_self_not_debt_current'] \
-                    + hours_info['hours_not_self_current']
-    hours_last_sem = hours_info['hours_not_self_last'] \
-                     + hours_info['hours_self_not_debt_last']
-    if hours_info['hours_self_not_debt_current'] >= 10 and not student['user'].has_perm('sport.more_than_10_hours_of_self_sport'):
+    hours_info = get_student_hours(student.id)
+    if hours_info['hours_self_not_debt_current'] >= 10 and not student.has_perm('sport.more_than_10_hours_of_self_sport'):
         return Response(
             status=400,
             data=error_detail(*SelfSportErrors.MAX_NUMBER_SELFSPORT),

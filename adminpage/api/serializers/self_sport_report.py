@@ -47,4 +47,5 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
             # 'start',
             # 'end',
             'training_type',
+            'debt'
         )
