@@ -45,6 +45,29 @@ def get_detailed_hours(student: Student, semester: Semester):
         return dictfetchall(cursor)
 
 
+def get_detailed_hours_and_self(student: Student, semester: Semester):
+    """
+    Retrieves statistics of hours in one semester
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(
+            'SELECT g.name AS "group", t.custom_name AS custom_name, t.start AS "timestamp", a.hours AS hours, true AS "approved" '
+            'FROM training t, "group" g, attendance a, "self_sport_report" r '
+            'WHERE a.student_id = %(student)s '
+            'AND a.training_id = t.id '
+            'AND t.group_id = g.id '
+            'AND r.id = a.cause_report_id '
+            'AND g.semester_id = %(semester)s '
+            'UNION '
+            'SELECT \'Self training\' AS "group", CONCAT(\'[Self] \', g.name) AS custom_name, r.uploaded as timestamp, r.hours, r.approval AS "approved" '
+            'FROM "self_sport_report" r, "self_sport_group" g '
+            'WHERE r.semester_id = %(semester)s '
+            'AND r.student_id = %(student)s '
+            'AND (r.approval IS NULL OR r.approval = false) '
+            'AND g.id = r.training_type_id '
+            'ORDER BY timestamp', {'student': student.pk, 'semester': semester.pk})
+        return dictfetchall(cursor)
+
 def mark_hours(training: Training, student_hours: Iterable[Tuple[int, float]]):
     """
     Puts hours for one training session to one student. If hours for session were already put, updates it

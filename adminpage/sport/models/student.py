@@ -58,6 +58,13 @@ class Student(models.Model):
         default=0
     )
 
+    sport = models.ForeignKey(
+        'Sport',
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True
+    )
+
     def notify(self, subject, message, **kwargs):
         msg = message.format(**kwargs)
         send_mail(

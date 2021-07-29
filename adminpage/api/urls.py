@@ -18,6 +18,7 @@ urlpatterns = [
     # profile
     path(r"profile/sick/toggle", profile.toggle_sick),
     path(r"profile/history/<int:semester_id>", profile.get_history),
+    path(r"profile/history_with_self/<int:semester_id>", profile.get_history_with_self),
 
     # enroll
     path(r"enrollment/enroll", enroll.enroll),
@@ -26,6 +27,8 @@ urlpatterns = [
 
     # group
     path(r"group/<int:group_id>", group.group_info_view),
+    path(r"select_sport", group.select_sport),
+    path(r"sports", group.sports_view),
 
     # training
     path(r"training/<int:training_id>", training.training_info),
