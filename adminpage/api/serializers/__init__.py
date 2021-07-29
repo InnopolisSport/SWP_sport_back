@@ -9,6 +9,7 @@ from .attendance import (
     BadGradeReportGradeSerializer,
     BadGradeReport,
     AttendanceMarkSerializer,
+    HoursInfoSerializer,
 )
 from .calendar import (
     CalendarRequestSerializer,

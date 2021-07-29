@@ -134,7 +134,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
                 "user",
                 "medical_group",
                 "enrollment_year",
-                "course"
+                "course",
                 "student_status",
                 "telegram",
             )
@@ -208,6 +208,8 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     )
 
     def get_inlines(self, request, obj):
+        if obj is None:
+            return [ViewAttendanceInline,]
         if obj.medical_group.name == 'Medical checkup not passed':
             return [ViewAttendanceInline,]
         return [ViewAttendanceInline, AddAttendanceInline,]

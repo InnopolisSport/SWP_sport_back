@@ -57,3 +57,14 @@ class GradeSetSerializer(serializers.Serializer):
 class AttendanceMarkSerializer(serializers.Serializer):
     training_id = serializers.IntegerField()
     students_hours = GradeSetSerializer(many=True)
+
+
+class HoursInfoSerializer(serializers.Serializer):
+    hours_not_self_current = serializers.FloatField()
+    hours_self_not_debt_current = serializers.FloatField()
+    hours_self_debt_current = serializers.FloatField()
+    hours_sem_max_current = serializers.FloatField()
+    hours_not_self_last = serializers.FloatField()
+    hours_self_not_debt_last = serializers.FloatField()
+    hours_self_debt_last = serializers.FloatField()
+    hours_sem_max_last = serializers.FloatField()

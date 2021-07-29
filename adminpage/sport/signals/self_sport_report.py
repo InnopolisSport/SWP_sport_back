@@ -23,7 +23,6 @@ def update_hours_for_self_sport(
     training_custom_name = None
     if instance.training_type is not None:
         training_custom_name = f'[Self] {instance.training_type.name}'
-
     if not hasattr(instance, 'attendance'):
         instance.attendance = create_attendance_record(
             group=group,
@@ -33,6 +32,7 @@ def update_hours_for_self_sport(
             training_name=training_custom_name,
             cause_report=instance,
         )
+
     else:
         instance.attendance.hours = instance.hours
         instance.attendance.save()
