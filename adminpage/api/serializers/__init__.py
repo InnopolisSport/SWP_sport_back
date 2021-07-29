@@ -30,6 +30,8 @@ from .enroll import (
 )
 from .group import (
     ScheduleSerializer,
+    SportSerializer,
+    SportsSerializer,
     GroupInfoSerializer,
 )
 from .profile import (
