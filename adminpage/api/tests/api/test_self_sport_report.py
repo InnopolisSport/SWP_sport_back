@@ -88,27 +88,6 @@ def setup(
 #     # assert report.image is not None
 
 
-@pytest.mark.django_db
-def test_reference_upload_medical_disalowance(
-        setup,
-):
-    student, semester, selfsport_type, client = setup
-    student.student.medical_group_id = -2
-    student.save()
-
-    response = client.post(
-        f"/{settings.PREFIX}api/selfsport/upload",
-        data={
-            "link": "http://example.com/",
-            "training_type": selfsport_type.pk,
-        },
-        format='multipart'
-    )
-
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["code"] == SelfSportErrors.MEDICAL_DISALLOWANCE[0]
-
-
 # @pytest.mark.django_db
 # @pytest.mark.freeze_time(frozen_time)
 # def test_reference_upload_image_link(
