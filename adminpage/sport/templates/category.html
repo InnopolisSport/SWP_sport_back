@@ -42,7 +42,7 @@
                             <thead>
                             <tr>
                                 <th scope="col">Sport type</th>
-                                <th scope="col" width=50%>Trainer(s)</th>
+                                <th scope="col" width=50%>Teacher(s)</th>
                                 <th scope="col"># of sport groups</th>
                                 <th scope="col">Schedule</th>
                             </tr>
@@ -59,11 +59,11 @@
                                     <td class="align-middle">
                                         <div class="d-flex justify-content-around align-content-between flex-wrap">
                                             {% if sport.trainers %}
-                                                {% for trainer in sport.trainers %}
-                                                     <span class="badge badge-pill badge-light my-1 mx-1">{{ trainer }}</span>
+                                                {% for teacher in sport.trainers %}
+                                                     <span class="badge badge-pill badge-light my-1 mx-1">{{ teacher }}</span>
                                                 {% endfor %}
                                             {% else %}
-                                                <span class="badge badge-warning">No trainers yet</span>
+                                                <span class="badge badge-warning">No teachers yet</span>
                                             {% endif %}
                                         </div>
                                     </td>
@@ -79,7 +79,9 @@
                         </table>
                     </div>
                 {% else %}
-                    <a>No sports are available</a>
+                <div class="text-center">
+                    <h5><span class="badge badge-warning">No sport types are available</span></h5>
+                </div>
                 {% endif %}
             </div>
         </div>
