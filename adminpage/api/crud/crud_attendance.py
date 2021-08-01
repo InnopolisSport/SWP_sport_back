@@ -162,14 +162,8 @@ def get_student_hours(student_id, **kwargs):
             clear_sem_info(sem_info)
 
     return {
-        "hours_not_self_current": sem_info['hours_not_self_current'],
-        "hours_self_not_debt_current": sem_info['hours_self_not_debt_current'],
-        "hours_self_debt_current": sem_info['hours_self_debt_current'],
-        "hours_sem_max_current": get_ongoing_semester().hours,
-        "hours_not_self_last": hours_last_sem['hours_not_self_last'],
-        'hours_self_not_debt_last': hours_last_sem['hours_self_not_debt_last'],
-        "hours_self_debt_last": hours_last_sem['hours_self_debt_last'],
-        "hours_sem_max_last": last_semesters[0].hours if len(last_semesters) != 0 else 0
+        "last_semesters_hours": last_sem_info_arr,
+        "ongoing_semester": sem_info_cur
     }
 
 
