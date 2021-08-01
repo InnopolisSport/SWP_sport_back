@@ -86,7 +86,6 @@ def change_status_to_academic_leave(instance: Student, sender, using, **kwargs):
     semester = get_ongoing_semester()
     if instance.student_status.name == "Academic leave":
         semester.academic_leave_students.add(instance)
-        semester.save()
 
 
 def update_group_verbose_names(sid_to_name_mapping: dict):
