@@ -36,12 +36,12 @@ def get_detailed_hours(student: Student, semester: Semester):
     """
     with connection.cursor() as cursor:
         cursor.execute('SELECT g.name AS "group", t.custom_name AS custom_name, t.start AS "timestamp", a.hours AS hours '
-                       'FROM training t, "group" g, attendance a '
-                       'WHERE a.student_id = %s '
-                       'AND a.training_id = t.id '
-                       'AND t.group_id = g.id '
-                       'AND g.semester_id = %s '
-                       'ORDER BY t.start', (student.pk, semester.pk))
+                        'FROM training t, "group" g, attendance a '
+                        'WHERE a.student_id = %s '
+                        'AND a.training_id = t.id '
+                        'AND t.group_id = g.id '
+                        'AND g.semester_id = %s '
+                        'ORDER BY t.start', (student.pk, semester.pk))
         return dictfetchall(cursor)
 
 
@@ -67,6 +67,7 @@ def get_detailed_hours_and_self(student: Student, semester: Semester):
             'AND g.id = r.training_type_id '
             'ORDER BY timestamp', {'student': student.pk, 'semester': semester.pk})
         return dictfetchall(cursor)
+
 
 def mark_hours(training: Training, student_hours: Iterable[Tuple[int, float]]):
     """
@@ -110,33 +111,54 @@ def toggle_illness(student: Student):
 
 
 def get_student_hours(student_id, **kwargs):
-    hours_current_sem = {"hours_not_self_current": 0.0, "hours_self_not_debt_current": 0.0, "hours_self_debt_current": 0.0}
-    hours_last_sem = {"hours_not_self_last": 0.0, "hours_self_not_debt_last": 0.0, "hours_self_debt_last": 0.0}
-    last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
+    def clear_sem_info(dict_sem):
+        dict_sem["id_sem"] = 0
+        dict_sem["hours_not_self_current"] = 0.0
+        dict_sem["hours_self_not_debt_current"] = 0.0
+        dict_sem["hours_self_not_debt_current"] = 0.0
+        dict_sem["hours_sem_max_current"] = 0.0
+
+    student = Student.objects.get(user_id=student_id)
+    sem_info_cur = {"id_sem": 0, "hours_not_self_current": 0.0, "hours_self_not_debt_current": 0.0,
+                    "hours_self_debt_current": 0.0, "hours_sem_max_current": 0.0}
 
     query_attend_current_semester = Attendance.objects.filter(student_id=student_id,
                                                               training__group__semester=get_ongoing_semester())
-
-    query_attend_last_semester = Attendance.objects.filter(student_id=student_id).exclude(training__group__semester=get_ongoing_semester()) if len(last_semesters) != 0 else []
+    sem_info_cur['id_sem'] = get_ongoing_semester().id
+    sem_info_cur['hours_sem_max_current'] = get_ongoing_semester().hours
     for i in query_attend_current_semester:
         if i.cause_report is None:
-            hours_current_sem['hours_not_self_current'] += float(i.hours)
+            sem_info_cur['hours_not_self_current'] += float(i.hours)
         elif i.cause_report.debt is True:
-            hours_current_sem['hours_self_debt_current'] += float(i.hours)
+            sem_info_cur['hours_self_debt_current'] += float(i.hours)
         else:
-            hours_current_sem['hours_self_not_debt_current'] += float(i.hours)
+            sem_info_cur['hours_self_not_debt_current'] += float(i.hours)
 
-    for i in query_attend_last_semester:
-        if i.cause_report is None:
-            hours_last_sem['hours_not_self_last'] += float(i.hours)
-        elif i.cause_report.debt is True:
-            hours_last_sem['hours_self_debt_last'] += float(i.hours)
-        else:
-            hours_last_sem['hours_self_not_debt_last'] += float(i.hours)
+    sem_info = {"id_sem": 0, "hours_not_self_current": 0.0, "hours_self_not_debt_current": 0.0,
+                "hours_self_debt_current": 0.0, "hours_sem_max_current": 0.0}
+    last_sem_info_arr = []
+
+    last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
+
+    for i in last_semesters:
+        if i.end.split('-')[0] >= student.enrollment_year:
+            query_attend_last_semester = Attendance.objects.filter(student_id=student_id,
+                                                                   training__group__semester=last_semesters[i]) if len(
+                last_semesters) != 0 else []
+
+            for j in query_attend_last_semester:
+                if j.cause_report is None:
+                    sem_info['hours_not_self_last'] += float(i.hours)
+                elif j.cause_report.debt is True:
+                    sem_info['hours_self_debt_last'] += float(i.hours)
+                else:
+                    sem_info['hours_self_not_debt_last'] += float(i.hours)
+
+
     return {
-        "hours_not_self_current": hours_current_sem['hours_not_self_current'],
-        "hours_self_not_debt_current": hours_current_sem['hours_self_not_debt_current'],
-        "hours_self_debt_current": hours_current_sem['hours_self_debt_current'],
+        "hours_not_self_current": sem_info['hours_not_self_current'],
+        "hours_self_not_debt_current": sem_info['hours_self_not_debt_current'],
+        "hours_self_debt_current": sem_info['hours_self_debt_current'],
         "hours_sem_max_current": get_ongoing_semester().hours,
         "hours_not_self_last": hours_last_sem['hours_not_self_last'],
         'hours_self_not_debt_last': hours_last_sem['hours_self_not_debt_last'],
