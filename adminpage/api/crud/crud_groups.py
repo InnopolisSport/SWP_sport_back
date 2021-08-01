@@ -2,9 +2,11 @@ from typing import Optional
 
 from django.conf import settings
 from django.db import connection
+from django.db.models import F
 
 import api.crud
 from api.crud.utils import dictfetchall
+from api.crud.crud_semester import get_ongoing_semester
 from sport.models import Sport, Student, Trainer, Group
 
 
@@ -95,13 +97,28 @@ def get_trainer_groups(trainer: Trainer):
     For a given trainer return all groups he/she is training in current semester
     @return list of group trainer is trainings in current semester
     """
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT '
-                       'g.id AS id, '
-                       'g.name AS name, '
-                       's.name AS sport_name '
-                       'FROM "group" g, sport s '
-                       'WHERE g.semester_id = current_semester() '
-                       'AND g.sport_id = s.id '
-                       'AND g.trainer_id = %s', (trainer.pk,))
-        return dictfetchall(cursor)
+    # with connection.cursor() as cursor:
+    #     cursor.execute('SELECT '
+    #                    'g.id AS id, '
+    #                    'g.name AS name, '
+    #                    's.name AS sport_name '
+    #                    'FROM "group" g, sport s '
+    #                    'WHERE g.semester_id = current_semester() '
+    #                    'AND g.sport_id = s.id '
+    #                    'AND g.trainer_id = %s', (trainer.pk,))
+    #     return dictfetchall(cursor)
+
+    query = Group.objects.filter(
+        semester__id=get_ongoing_semester().id,
+        trainers__pk=trainer.pk,
+    ).values(
+        'id',
+        'name',
+        'sport',
+    ).annotate(
+        sport_name=F('sport'),
+
+    )
+    return query
+    # Currently query is a list of one dictionary
+    # Will it be converted to a dictionary?

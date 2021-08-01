@@ -2,6 +2,7 @@ from admin_auto_filters.filters import AutocompleteFilter
 from django.conf import settings
 from django.contrib import admin
 from django.db.models.expressions import RawSQL
+from django.utils.html import format_html
 
 from api.crud import get_ongoing_semester
 from sport.models import Group, MedicalGroup
@@ -12,7 +13,7 @@ from .site import site
 
 class TrainerTextFilter(AutocompleteFilter):
     title = "trainer"
-    field_name = "trainer"
+    field_name = "trainers"
 
 
 @admin.register(Group, site=site)
@@ -23,7 +24,8 @@ class GroupAdmin(admin.ModelAdmin):
 
     autocomplete_fields = (
         "sport",
-        "trainer",
+        # "trainer",
+        'trainers',
     )
 
     list_filter = (
@@ -39,7 +41,7 @@ class GroupAdmin(admin.ModelAdmin):
         "__str__",
         "sport",
         "is_club",
-        "trainer",
+        "teachers",  # check function below
         "minimum_medical_group",
         "free_places",
     )
@@ -65,13 +67,19 @@ class GroupAdmin(admin.ModelAdmin):
         "is_club",
         "sport",
         "semester",
-        "trainer",
+        # "trainer",
+        "trainers",
         "minimum_medical_group",
     )
 
     readonly_fields = (
         "free_places",
     )
+
+    # filter_horizontal = ('trainers',)
+
+    def teachers(self, obj):
+        return format_html(";<br>".join([t.user.first_name + ' ' + t.user.last_name for t in obj.trainers.all()]))
 
     def free_places(self, obj):
         return obj.capacity - obj.enroll_count

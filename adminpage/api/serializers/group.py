@@ -25,6 +25,12 @@ class SportsSerializer(serializers.Serializer):
     sports = serializers.ListField(child=SportSerializer())
 
 
+class TrainerSerializer(serializers.Serializer):
+    trainer_first_name = serializers.CharField()
+    trainer_last_name = serializers.CharField()
+    trainer_email = serializers.CharField()
+
+
 class GroupInfoSerializer(serializers.Serializer):
     group_id = serializers.IntegerField()
     group_name = serializers.CharField()
@@ -35,6 +41,8 @@ class GroupInfoSerializer(serializers.Serializer):
     trainer_first_name = serializers.CharField()
     trainer_last_name = serializers.CharField()
     trainer_email = serializers.CharField()
+
+    trainers = TrainerSerializer(many=True)
 
     link = serializers.URLField()
     link_name = serializers.CharField()
