@@ -180,7 +180,7 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
         'training_class',
     ).filter(
         Q(group__semester__id=get_ongoing_semester().id) &
-        Q(group__trainer=trainer) & (
+        Q(group__trainers=trainer) & (
                 Q(start__gt=start) & Q(start__lt=end) |
                 Q(end__gt=start) & Q(end__lt=end) |
                 Q(start__lt=start) & Q(end__gt=end)
