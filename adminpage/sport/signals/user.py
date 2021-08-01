@@ -83,9 +83,8 @@ def change_online_status(instance: Student, sender, using, **kwargs):
 
 @receiver(post_save, sender=Student)
 def change_status_to_academic_leave(instance: Student, sender, using, **kwargs):
-    semester = get_ongoing_semester()
     if instance.student_status.name == "Academic leave":
-        semester.academic_leave_students.add(instance)
+        get_ongoing_semester().academic_leave_students.add(instance)
 
 
 def update_group_verbose_names(sid_to_name_mapping: dict):
