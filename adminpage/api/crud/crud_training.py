@@ -2,9 +2,10 @@ from datetime import datetime
 
 from django.conf import settings
 from django.db import connection
-from django.db.models import F
+from django.db.models import Q, F
 
 from api.crud.utils import dictfetchone, dictfetchall, get_trainers, get_trainers_group
+from api.crud.crud_semester import get_ongoing_semester
 from sport.models import Student, Trainer, Group, Training
 
 # def get_attended_training_info(training_id: int, student: Student):
@@ -150,7 +151,7 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
         return dictfetchall(cursor)
 
 
-def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
+def get_trainings_for_trainer(trainer: Trainer, start_val: datetime, end_val: datetime):
     """
     Retrieves existing trainings in the given range for given student
     @param trainer - searched trainer
@@ -158,21 +159,48 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
     @param end - range end date
     @return list of trainings for trainer
     """
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT '
-                       't.id AS id, '
-                       't.start AS start, '
-                       't."end" AS "end", '
-                       'g.id AS group_id, '
-                       'g.name AS group_name, '
-                       'tc.name AS training_class, '
-                       'TRUE AS can_grade '
-                       'FROM "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
-                       'AND t.group_id = g.id '
-                       'AND g.trainer_id = %(trainer_id)s '
-                       'AND g.semester_id = current_semester()', {"start": start, "end": end, "trainer_id": trainer.pk})
-        return dictfetchall(cursor)
+    # with connection.cursor() as cursor:
+    #     cursor.execute('SELECT '
+    #                    't.id AS id, '
+    #                    't.start AS start, '
+    #                    't."end" AS "end", '
+    #                    'g.id AS group_id, '
+    #                    'g.name AS group_name, '
+    #                    'tc.name AS training_class, '
+    #                    'TRUE AS can_grade '
+    #                    'FROM "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
+    #                    'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
+    #                    'AND t.group_id = g.id '
+    #                    'AND g.trainer_id = %(trainer_id)s ''WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."
+    #                    'AND g.semester_id = current_semester()', {"start": start, "end": end, "trainer_id": trainer.pk})
+    #     return dictfetchall(cursor)
+
+    query = Training.objects.select_related(
+        'group',
+        'training_class',
+    ).filter(
+        Q(group__semester__id=get_ongoing_semester().id) & (
+            Q(start__gt=start_val) & Q(start__lt=end_val) |
+            Q(end__gt=start_val)   & Q(end__lt=end_val)   |
+            Q(start__lt=start_val) & Q(end__gt=end_val)
+        )
+    ).values(
+        'id',
+        'start',
+        'end',
+        'group__id',
+        'group__name',
+        'training_class__name',
+    ).annotate(
+        group_id=F('group__id'),
+        group_name=F('group__name'),
+        training_class=F('training_class__name'),
+    )
+
+    for entry in query:
+        entry["can_grade"] = True
+
+    return query
 
 
 def get_students_grades(training_id: int):
