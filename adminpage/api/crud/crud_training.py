@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import connection
 from django.db.models import F
 
-from api.crud.utils import dictfetchone, dictfetchall, get_trainers
+from api.crud.utils import dictfetchone, dictfetchall, get_trainers, get_trainers_group
 from sport.models import Student, Trainer, Group, Training
 
 def get_attended_training_info(training_id: int, student: Student):
@@ -78,12 +78,11 @@ def get_group_info(group_id: int, student: Student):
             'LEFT JOIN auth_user d ON g.trainer_id = d.id '
             'WHERE g.id = %(group_id)s '
             'GROUP BY g.id, d.id', {"group_id": group_id, "student_id": student.pk})
-        return dictfetchone(cursor)
 
-    info = dictfetchone(cursor)
-    info['trainers'] = get_trainers(training_id)
+        info = dictfetchone(cursor)
+        info['trainers'] = get_trainers_group(group_id)
 
-    return info
+        return info
 
     # query = Group.objects.filter(
     #     id=group_id,

@@ -48,9 +48,7 @@ async function openModal(id, apiUrl) {
 function renderGroupModalBody(body, data) {
     const {
         group_description,
-        trainer_first_name,
-        trainer_last_name,
-        trainer_email,
+        trainers,
         capacity,
         current_load,
         training_class,
@@ -74,11 +72,14 @@ function renderGroupModalBody(body, data) {
         p.append(`<div>Class: <strong>${training_class}</strong></div>`);
     }
 
-    if (trainer_first_name || trainer_last_name || trainer_email) { // TODO multiple trainers
-        body.append(`<p>Trainer(s): 
-                        <strong>${trainer_first_name} ${trainer_last_name}</strong> 
-                        <a href="mailto:${trainer_email}">${trainer_email}</a>
-                     </p>`);
+    if (trainers.length) {
+        const trainers_html = trainers.map((t) => (`<li>
+                                 ${t.trainer_first_name} ${t.trainer_last_name}
+                                 <a href="mailto:${t.trainer_email}">${t.trainer_email}</a>
+                             </li>`))
+        body.append(`<strong>Trainer(s)</strong>: 
+                            ${trainers_html.join('\n')}
+                     <p></p>`);
     }
     if (hours) {
         body.append(`<p>Marked hours: <strong>${hours.toFixed(2)}</strong></p>`);
