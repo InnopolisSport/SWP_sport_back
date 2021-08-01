@@ -16,7 +16,10 @@ class MedicalGroupReferenceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.student_id is not None:
-            self.fields['medical_group'].initial = self.instance.student.medical_group_id
+            if MedicalGroupHistory.objects.filter(medical_group_reference=self.instance).exists():
+                self.fields['medical_group'].initial = MedicalGroupHistory.objects.get(medical_group_reference=self.instance).medical_group
+            else:
+                self.fields['medical_group'].initial = self.instance.student.medical_group_id
 
     medical_group = forms.ModelChoiceField(MedicalGroup.objects.all(), initial=-2)
 
@@ -30,9 +33,11 @@ class MedicalGroupReferenceForm(forms.ModelForm):
         instance = super().save(commit)
         instance.student.medical_group_id = self.cleaned_data['medical_group'].pk
         instance.student.save()
-        MedicalGroupHistory.objects.create(student=instance.student,
-                                           medical_group=self.cleaned_data['medical_group'],
-                                           medical_group_reference=instance)
+
+        last_med_hist: MedicalGroupHistory = MedicalGroupHistory.objects.filter(student=instance.student).latest('changed')
+        last_med_hist.medical_group_reference=instance
+        last_med_hist.save()
+
         return instance
 
     class Meta:
