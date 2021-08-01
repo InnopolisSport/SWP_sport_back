@@ -8,7 +8,7 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 from import_export.results import RowResult
 
-from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours, get_student_hours
+from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours, get_negative_hours
 from sport.models import Student, MedicalGroup, StudentStatus, Semester
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline
@@ -196,13 +196,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             )
 
     def hours(self, obj):
-        student_hours = get_student_hours(obj.user_id)
-        sem_now = student_hours['ongoing_semester']
-        res = 0.0
-        for i in student_hours['last_semesters_hours']:
-            res += i['hours_self_debt'] + min(i['hours_not_self'] + i['hours_self_not_debt'] - i['hours_sem_max'], 0)
-        res += sem_now['hours_self_debt'] + sem_now['hours_not_self'] + sem_now['hours_self_not_debt']
-        return res
+        return get_negative_hours(obj.user_id)
 
     ordering = (
         "user__first_name",

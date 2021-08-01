@@ -171,3 +171,13 @@ def get_student_hours(student_id, **kwargs):
         "hours_self_debt_last": hours_last_sem['hours_self_debt_last'],
         "hours_sem_max_last": last_semesters[0].hours if len(last_semesters) != 0 else 0
     }
+
+
+def get_negative_hours(student_id, **kwargs):
+    student_hours = get_student_hours(student_id)
+    sem_now = student_hours['ongoing_semester']
+    res = 0.0
+    for i in student_hours['last_semesters_hours']:
+        res += i['hours_self_debt'] + min(i['hours_not_self'] + i['hours_self_not_debt'] - i['hours_sem_max'], 0)
+    res += sem_now['hours_self_debt'] + sem_now['hours_not_self'] + sem_now['hours_self_not_debt']
+    return res
