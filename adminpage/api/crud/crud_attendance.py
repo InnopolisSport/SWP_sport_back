@@ -116,9 +116,8 @@ def get_student_hours(student_id, **kwargs):
 
     query_attend_current_semester = Attendance.objects.filter(student_id=student_id,
                                                               training__group__semester=get_ongoing_semester())
-    print(get_ongoing_semester())
-    query_attend_last_semester = Attendance.objects.filter(student_id=student_id,
-                                                           training__group__semester=last_semesters[0]) if len(last_semesters) != 0 else []
+
+    query_attend_last_semester = Attendance.objects.filter(student_id=student_id).exclude(training__group__semester=get_ongoing_semester()) if len(last_semesters) != 0 else []
     for i in query_attend_current_semester:
         if i.cause_report is None:
             hours_current_sem['hours_not_self_current'] += float(i.hours)
