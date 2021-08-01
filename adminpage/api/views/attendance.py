@@ -30,9 +30,9 @@ class AttendanceErrors:
 
 
 def is_training_group(group, trainer):
-    if group.trainer_id != trainer.pk:
+    if not group.trainers.filter(pk=trainer.pk).exists():
         raise PermissionDenied(
-            detail="You are not a trainer of this group"
+            detail="You are not a teacher of this group"
         )
 
 
