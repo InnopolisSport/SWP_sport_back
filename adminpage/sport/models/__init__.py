@@ -8,6 +8,7 @@ from .enums import StudentStatuses
 from .group import Group
 from .medical_group import MedicalGroup
 from .medical_group_reference import MedicalGroupReference
+from .medical_group_history import MedicalGroupHistory
 from .reference import Reference
 from .schedule import Schedule
 from .self_sport import SelfSportReport
