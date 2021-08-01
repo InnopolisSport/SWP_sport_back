@@ -114,8 +114,8 @@ def get_trainer_groups(trainer: Trainer):
     ).values(
         'id',
         'name',
-    ).annotate(
         'sport',
+    ).annotate(
         sport_name=F('sport'),
 
     )
