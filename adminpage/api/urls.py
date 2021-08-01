@@ -39,6 +39,7 @@ urlpatterns = [
     path(r"attendance/<int:group_id>/report",
          attendance.get_last_attended_dates),
     path(r"attendance/mark", attendance.mark_attendance),
+    path(r"attendance/hours", attendance.hours),
 
     # calendar
     path(r"calendar/<int:sport_id>/schedule", calendar.get_schedule),
