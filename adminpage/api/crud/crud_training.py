@@ -151,7 +151,7 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
         return dictfetchall(cursor)
 
 
-def get_trainings_for_trainer(trainer: Trainer, start_val: datetime, end_val: datetime):
+def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
     """
     Retrieves existing trainings in the given range for given student
     @param trainer - searched trainer
@@ -171,7 +171,7 @@ def get_trainings_for_trainer(trainer: Trainer, start_val: datetime, end_val: da
     #                    'FROM "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
     #                    'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
     #                    'AND t.group_id = g.id '
-    #                    'AND g.trainer_id = %(trainer_id)s ''WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."
+    #                    'AND g.trainer_id = %(trainer_id)s WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."
     #                    'AND g.semester_id = current_semester()', {"start": start, "end": end, "trainer_id": trainer.pk})
     #     return dictfetchall(cursor)
 
@@ -179,10 +179,11 @@ def get_trainings_for_trainer(trainer: Trainer, start_val: datetime, end_val: da
         'group',
         'training_class',
     ).filter(
-        Q(group__semester__id=get_ongoing_semester().id) & (
-            Q(start__gt=start_val) & Q(start__lt=end_val) |
-            Q(end__gt=start_val)   & Q(end__lt=end_val)   |
-            Q(start__lt=start_val) & Q(end__gt=end_val)
+        Q(group__semester__id=get_ongoing_semester().id) &
+        Q(group__trainer=trainer) & (
+                Q(start__gt=start) & Q(start__lt=end) |
+                Q(end__gt=start) & Q(end__lt=end) |
+                Q(start__lt=start) & Q(end__gt=end)
         )
     ).values(
         'id',
@@ -200,7 +201,8 @@ def get_trainings_for_trainer(trainer: Trainer, start_val: datetime, end_val: da
     for entry in query:
         entry["can_grade"] = True
 
-    return query
+    print(list(query))
+    return list(query)
 
 
 def get_students_grades(training_id: int):
