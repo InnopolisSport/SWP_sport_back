@@ -10,8 +10,8 @@ class Group(models.Model):
     is_club = models.BooleanField(default=False, null=False)
     sport = models.ForeignKey('Sport', on_delete=models.CASCADE, null=True, blank=True)
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, null=False)
-    trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True)
-    trainers = models.ManyToManyField('Trainer', related_name='m2m', blank=True)
+    trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='teacher')
+    trainers = models.ManyToManyField('Trainer', related_name='m2m', blank=True, verbose_name='teachers')
 
     minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, null=True, blank=True)
 

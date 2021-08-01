@@ -77,7 +77,7 @@ function renderGroupModalBody(body, data) {
                                  ${t.trainer_first_name} ${t.trainer_last_name}
                                  <a href="mailto:${t.trainer_email}">${t.trainer_email}</a>
                              </li>`))
-        body.append(`<strong>Trainer(s)</strong>: 
+        body.append(`<strong>Teacher(s)</strong>: 
                             ${trainers_html.join('\n')}
                      <p></p>`);
     }
