@@ -14,15 +14,10 @@ class SemesterAdmin(admin.ModelAdmin):
     ordering = (
         "-start",
     )
+
     list_display = (
         "name",
         "start",
         "end",
         "hours",
-        "academic_students"
     )
-
-    filter_horizontal = ('academic_leave_students',)
-
-    def academic_students(self, obj):
-        return "\n".join([p.user.email for p in obj.academic_leave_students.all()])

@@ -3,7 +3,6 @@ from datetime import timedelta, date
 from django.db import models
 from django.db.models import Q, F
 from django.utils import timezone
-from .student import Student
 
 
 def now_offset(offset=0):
@@ -18,7 +17,6 @@ class Semester(models.Model):
     name = models.CharField(max_length=50, null=False, unique=True)
     start = models.DateField(null=False, default=today)
     end = models.DateField(null=False, default=today)
-    academic_leave_students = models.ManyToManyField(Student, blank=True)
     hours = models.IntegerField(default=30)
 
     class Meta:

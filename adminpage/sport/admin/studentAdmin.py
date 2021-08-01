@@ -8,7 +8,7 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 from import_export.results import RowResult
 
-from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours, get_negative_hours
+from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours
 from sport.models import Student, MedicalGroup, StudentStatus, Semester
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
@@ -196,12 +196,19 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             )
 
     def hours(self, obj):
-        return get_negative_hours(obj.user_id)
+        last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
+        hours_current_semester = sum([i['hours'] for i in get_detailed_hours(obj, get_ongoing_semester())])
+        if len(last_semesters) == 0:
+            return hours_current_semester
+        hours_last_semester = sum([i['hours'] for i in get_detailed_hours(obj, last_semesters[0])])
+        hours_info = min(hours_last_semester - last_semesters[0].hours, 0) + hours_current_semester
+        return hours_info
 
     ordering = (
         "user__first_name",
         "user__last_name"
     )
+
 
     inlines = (
         ViewMedicalGroupHistoryInline,
@@ -217,7 +224,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             pass
         else:
             if obj.medical_group.name == 'Medical checkup not passed':
-                self.inlines = (ViewAttendanceInline,)
+                self.inlines = (ViewAttendanceInline, )
         return super().change_view(request, object_id, form_url, extra_context)
 
     list_select_related = (
