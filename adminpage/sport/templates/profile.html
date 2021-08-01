@@ -40,15 +40,11 @@
             toastr["{{ notify.type }}"]("{{ notify.msg }}")
         </script>
     {% endif %}
-    {% if user.is_authenticated %}
-        <a class="help-link fa fa-question-circle fa-2x" id="help-btn" onclick="start_tour()"></a>
-    {% endif %}
     <div class="container-fluid">
         <div class="card text-center">
             <div class="card-body">
                 <h1 class="card-title">{{ user.get_full_name }}</h1>
-                <hr>
-{#                            <h4 class="card-title">{{ user.role }}</h4>#}          
+                <hr style="margin-bottom: 2px;">    
                 {% if trainer.sport_groups is not None  %}
                     {% if trainer.sport_groups|length > 0 %}
                         <p id="trainer-list">
@@ -66,36 +62,60 @@
                 {% endif %}
 
                 {% if student %}
-{#                    Debtor status draft:#}
-{#                    {% if student.hours < 0 %}#}
-{#                        <h5 class="badge badge-pill badge-danger">DEBTOR</h5><span> To remove this badge you should#}
-{#                        close your debt (make number of hours positive)</span>#}
-{#                    {% endif %}#}
                     {% if student.obj.student_status.id != 0 %}
-                        <h5> <span class="badge bg-{% if student.obj.student_status.id == 1 %}danger
+                        <h5>
+                            <span class="badge bg-{% if student.obj.student_status.id == 1 %}danger
                                                     {% elif student.obj.student_status.id == 2 %}primary
                                                     {% else %}success
                                                     {% endif %}text-light">
-                            {{ student.obj.student_status.description }}
-                        </span>
+                                {{ student.obj.student_status.description }}
+                            </span>
                         </h5>
                     {% endif %}
-
                     <meta id="illness-data" data-ill="{{ student.is_ill }}">
                     {% if student.obj.student_status.id == 0 %}
-                        {% if student.is_online %}
-                            <p>You are 
-                                <span class="badge badge-pill badge-primary text-light text-uppercase" style="cursor: defalut;">
+                        <p>
+                            {% if student.is_online %}
+                                <span class="badge badge-pill badge-primary text-light text-uppercase">
                                     Online student
                                 </span>
-                            </p>
-                        {% else %}
-                            <p>You are 
-                                <span class="badge badge-pill badge-secondary text-light text-uppercase" style="cursor: defalut;">
+                            {% else %}
+                                <span class="badge badge-pill badge-secondary text-light text-uppercase">
                                     Offline student
                                 </span>
-                            </p>
-                        {% endif %}
+                            {% endif %}
+                            {% comment %} <script type="text/javascript">
+                                const student_id = "{{ student.student_id }}";
+                                const apiUrl = `/api/attendance/${student_id}/hours`;
+                                fetch(apiUrl).then(response => {
+                                return response.json();
+                                    }).then(data => {
+                                        console.log(data);
+                                        document.getElementById('hours').innerHTML = data['hours_sem_max_current'];
+                                    }).catch(err => {
+                                    // Do something for an error here
+                                    });
+                            </script>
+                            <span id="hours"></span>
+                            {% if student.hours > 0 %}
+                                <span class="badge badge-pill badge-danger">DEBTOR</span>
+                            {% endif %} {% endcomment %}
+                            {% if student.obj.medical_group.id != -2 %}
+                                <span id="medical-group" class="badge badge-pill badge-success text-uppercase"
+                                    onclick="openMedicalInfoModal(
+                                            `{{ student.obj.medical_group.name }}`,
+                                            `{{ student.obj.medical_group.description }}`
+                                            )"
+                                    style="cursor: pointer;">
+                                    {{ student.obj.medical_group.name }} medical group
+                                </span>
+                            {% endif %}
+                        </p>
+                        {% comment %} {% if student is debtor %}
+                        <div class="alert alert-danger" role="alert">
+                            <!-- Reminder for debtors-->
+                        </div>
+                        {% endif %} {% endcomment %}
                         {% if student.sport %}
                             <p id="student-list">
                                 Your sport type for the 
@@ -124,18 +144,6 @@
                             <p id="student-list">
                                 You have not enroll to any <span class="badge badge-info">SPORT GROUP</span> for the 
                                 <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> semester yet
-                            </p>
-                        {% endif %}
-                        {% if student.obj.medical_group.id != -2 %}
-                            <p id="medical-group">Your medical group is 
-                                <span class="badge badge-pill badge-success text-uppercase"
-                                    onclick="openMedicalInfoModal(
-                                            `{{ student.obj.medical_group.name }}`,
-                                            `{{ student.obj.medical_group.description }}`
-                                            )"
-                                        style="cursor: pointer;">
-                                {{ student.obj.medical_group.name }}
-                                </span>
                             </p>
                         {% endif %}
                         <div id="medical-group-info-modal"></div>
@@ -219,7 +227,7 @@
                                         <button type="button" class="btn btn-danger"
                                             onclick="open_med_group_modal()"
                                             style="cursor: pointer;">
-                                            Submit medical checkup
+                                            Submit medical reference
                                         </button>
                                     {% else %}
                                         <button type="button" class="btn btn-primary" onclick="open_selfsport_modal()">
@@ -228,7 +236,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="my-2 mx-2">
-                                    {% if not student.sport%}
+                                    {% if not student.sport %}
                                         <a href="{% url 'category' %}" class="btn btn-danger">
                                             Choose sport type
                                         </a>
@@ -259,12 +267,12 @@
                             </div>
                         </div>
                     {% endif %}
-                    <hr>
                     {% include "reference.html" %}
                     {% include "med_group_reference.html" %}
                     {% include "self_sport_reference.html" %}
                 {% endif %}
                 {% if student.sport_groups|length > 0 and student.obj.student_status.id == 0 or trainer.sport_groups %}
+                    <hr>
                     <h2>Schedule</h2>
                     <div id='calendar'></div>
                 {% endif %}
@@ -327,10 +335,4 @@
 
     <div id="medical-group-info-modal"></div>
     <div id="group-info-modal"></div>
-
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
 {% endblock %}
