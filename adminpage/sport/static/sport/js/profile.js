@@ -486,9 +486,11 @@ async function submit_self_sport() {
     // }
 
     if (link) {
+        // TODO: regexp for strava
         if (link.startsWith('http://') || link.startsWith('https://')) {
             formData.append(linkInput[0].name, link);
         } else {
+            toastr.error("You should submit a link to your Strava activity");
             return false;
         }
     }
