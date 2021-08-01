@@ -19,10 +19,10 @@ class SemesterAdmin(admin.ModelAdmin):
         "start",
         "end",
         "hours",
-        "get_students"
+        "academic_students"
     )
 
     filter_horizontal = ('academic_leave_students',)
 
-    def get_students(self, obj):
+    def academic_students(self, obj):
         return "\n".join([p.user.email for p in obj.academic_leave_students.all()])
