@@ -16,7 +16,7 @@
                         </button>
                     </div>
                     <div class="modal-body text-left">
-                        <p>Please submit a link to your
+                        <p>Please submit <strong>a link</strong> to your
                         <a href="https://www.strava.com/" target="_blank" rel="noopener noreferrer"><img src="{% static "sport/images/strava.png" %}" alt="strava.com" style="height: 0.7em;" ></a>
                         activity.</p>
                         <div class="form-group">
@@ -24,18 +24,18 @@
                               <option disabled selected>Loading...</option>
                             </select>
                             <small id="self-sport-type-help" class="form-text text-muted"></small>
+                            <input name="link" type="url" class="form-control"
+                                    maxlength="100"
+                                    placeholder="Strava activity link"
+                                    pattern="^(http|https):\/\/.*"
+                                    title="The link must start with &quot;http://&quot; or &quot;https://&quot;"
+                                    id="self-sport-text-input">
                         </div>
+                        <p>Specify the <strong>number of hours</strong> you have accumulated during the training.</p>
                         <div class="form-group">
-                            <div class="row">
-                                <div class="col">
-                                    <input name="link" type="url" class="form-control"
-                                           maxlength="100"
-                                           placeholder="Strava activity link"
-                                           pattern="^(http|https):\/\/.*"
-                                           title="The link must start with &quot;http://&quot; or &quot;https://&quot;"
-                                           id="self-sport-text-input">
-                                </div>
-                            </div>
+                            <input type="number" class="form-control" maxlength="10" placeholder="Number of hours"
+                                    title="The number format: NN or NN.NN"
+                                    id="self-sport-number-input">
                         </div>
                     </div>
                     <div class="modal-footer">

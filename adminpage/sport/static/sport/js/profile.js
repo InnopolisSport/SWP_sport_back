@@ -445,6 +445,10 @@ async function submit_self_sport() {
     const typeInput = $('#self-sport-type');
     const type = typeInput.val();
 
+    // Get training_type
+    const hoursInput = $('#self-sport-number-input');
+    const hours = hoursInput.val();
+
     if (!type) {
         toastr.error("You should select the training type");
         return false;
@@ -452,6 +456,11 @@ async function submit_self_sport() {
 
     if (!link) {
         toastr.error("You should submit a link to your Strava activity");
+        return false;
+    }
+
+    if (!hours) {
+        toastr.error("You should input hours");
         return false;
     }
 
@@ -477,14 +486,17 @@ async function submit_self_sport() {
     // }
 
     if (link) {
+        // TODO: regexp for strava
         if (link.startsWith('http://') || link.startsWith('https://')) {
             formData.append(linkInput[0].name, link);
         } else {
+            toastr.error("You should submit a link to your Strava activity");
             return false;
         }
     }
 
     formData.append(typeInput[0].name, type);
+    formData.append('hours', hours);
 
     try {
         await sendResults('/api/selfsport/upload', formData, 'POST', false)

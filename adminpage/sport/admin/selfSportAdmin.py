@@ -114,11 +114,8 @@ class SelfSportAdmin(admin.ModelAdmin):
             return "None"
 
     def save_model(self, request, obj, form, change):
-        if 'comment' in form.changed_data or \
-                'hours' in form.changed_data or \
-                'semester' in form.changed_data or \
-                'training_type' in form.changed_data:
-            super().save_model(request, obj, form, change)
+        obj.approval = obj.hours > 0
+        super().save_model(request, obj, form, change)
 
     reference_image.short_description = 'Reference'
     reference_image.allow_tags = True
