@@ -31,7 +31,7 @@ urlpatterns = [
     path(r"sports", group.sports_view),
 
     # training
-    # path(r"training/<int:training_id>", training.training_info),
+    path(r"training/<int:training_id>", training.training_info),
 
     # attendance
     path(r"attendance/suggest_student", attendance.suggest_student),
