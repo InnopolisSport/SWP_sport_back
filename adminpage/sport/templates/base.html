@@ -11,9 +11,12 @@
 </head>
 <body>
 <header class="head">
-    <a class="head" href="/profile">
-        <img class="head" src="{% static "sport/images/Inno.png" %}" alt="IU logo">
-    </a>
+    <div>
+        <a class="head" href="/profile"><img class="head" src="{% static "sport/images/Inno.png" %}" alt="IU logo"></a>
+        {% if user.is_staff or user.is_superuser %}
+            <a href="{% url 'admin:index' %}" class="btn btn-outline-light">Admin panel</a>
+        {% endif %}
+    </div>
     <div>
         {% if user.is_authenticated %}
             <a class="head" href="/profile">{{ user.first_name }} {{ user.last_name }}</a>
