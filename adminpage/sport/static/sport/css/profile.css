@@ -31,14 +31,6 @@ body.profile {
     color: #ffffff;
 }
 
-.badge:hover {
-    cursor: pointer;
-}
-
-.badge-secondary:hover {
-    background-color: #dc3545;
-}
-
 .badge-training {
     background-color: #ffa500;
 }
