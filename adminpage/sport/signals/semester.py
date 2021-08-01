@@ -83,7 +83,9 @@ def special_groups_create(sender, instance, created, **kwargs):
 @receiver(pre_save, sender=Semester)
 def validate_semester(sender, instance, *args, **kwargs):
     for i in Semester.objects.all():
-        if (i.start < instance.start and i.end < instance.start) or \
+        if i.name == instance.name:
+            pass
+        elif (i.start < instance.start and i.end < instance.start) or \
                 (i.start > instance.end and i.end > instance.end):
             pass
         else:
