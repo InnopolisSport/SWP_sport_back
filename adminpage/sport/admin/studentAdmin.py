@@ -11,7 +11,7 @@ from import_export.results import RowResult
 from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours, get_negative_hours
 from sport.models import Student, MedicalGroup, StudentStatus, Semester
 from sport.signals import get_or_create_student_group
-from .inlines import ViewAttendanceInline, AddAttendanceInline
+from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
 from .utils import user__email, user__role
 
@@ -204,6 +204,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     )
 
     inlines = (
+        ViewMedicalGroupHistoryInline,
         ViewAttendanceInline,
         AddAttendanceInline,
     )
