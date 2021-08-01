@@ -1,5 +1,5 @@
 body {
-    background-color: #f0f0f0; /* Цвет фона веб-страницы */
+    background-color: #fff; /* Цвет фона веб-страницы */
 }
 
 .card {
@@ -107,7 +107,6 @@ a.help-link {
         min-width: 300px;
     }
 }
-
 
 .dropdown {
     position: relative;
