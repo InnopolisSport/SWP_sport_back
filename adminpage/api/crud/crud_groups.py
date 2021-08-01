@@ -5,7 +5,7 @@ from django.db import connection
 
 import api.crud
 from api.crud.utils import dictfetchall
-from sport.models import Sport, Student, Trainer
+from sport.models import Sport, Student, Trainer, Group
 
 
 def get_sports(all=False, student: Optional[Student] = None):
@@ -15,17 +15,34 @@ def get_sports(all=False, student: Optional[Student] = None):
     @param student - if student passed, get sports applicable for student
     @return list of all sport types
     """
-    # w/o distinct returns a lot of duplicated
+
     if student is None or student.medical_group_id > 0:
-        qs = Sport.objects.filter(group__minimum_medical_group_id__gt=0).distinct()
+        groups = Group.objects.filter(minimum_medical_group_id__gt=0, semester__pk=api.crud.get_ongoing_semester().pk)
     elif student.medical_group_id < 0:
-        qs = Sport.objects.filter(group__minimum_medical_group_id__lt=0).distinct()
+        groups = Group.objects.filter(minimum_medical_group_id__lt=0, semester__pk=api.crud.get_ongoing_semester().pk)
     else:
-        qs = Sport.objects.filter(group__minimum_medical_group_id=0).distinct()
-    # Return those objects for which exists at least 1 group in current semester
-    qs = qs.filter(group__semester__pk=api.crud.get_ongoing_semester().pk)
-    return [{'id': sport.id, 'name': sport.name, 'special': sport.special, 'trainers': sport.trainers, 'num_of_groups': len(sport.groups)}
-            for sport in (qs.all() if all else qs.filter(special=False))]
+        groups = Group.objects.filter(minimum_medical_group_id=0, semester__pk=api.crud.get_ongoing_semester().pk)
+
+    # w/o distinct returns a lot of duplicated
+    sports = Sport.objects.filter(id__in=groups.values_list('sport')).distinct()
+    if not all:
+        sports = sports.filter(special=False)
+
+    sports_list = []
+    for sport in sports.all().values():
+        sport_groups = groups.filter(sport=sport['id'])
+
+        trainers = set()
+        for group_trainers in sport_groups.values_list('trainer'):
+            trainers |= set(group_trainers)
+        trainers = list(map(lambda t: Trainer.objects.get(user_id=t), trainers))
+
+        sport['trainers'] = trainers
+        sport['num_of_groups'] = sport_groups.count()
+
+        sports_list.append(sport)
+
+    return sports_list
 
 
 def get_clubs(student: Optional[Student] = None):
