@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from sport.admin import site
-from sport.models import MedicalGroupReference, MedicalGroup, MedicalGroups
+from sport.models import MedicalGroupReference, MedicalGroup, MedicalGroups, MedicalGroupHistory
 
 
 class StudentTextFilter(AutocompleteFilter):
@@ -30,6 +30,9 @@ class MedicalGroupReferenceForm(forms.ModelForm):
         instance = super().save(commit)
         instance.student.medical_group_id = self.cleaned_data['medical_group'].pk
         instance.student.save()
+        MedicalGroupHistory.objects.create(student=instance.student,
+                                           medical_group=self.cleaned_data['medical_group'],
+                                           medical_group_reference=instance)
         return instance
 
     class Meta:
