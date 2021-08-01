@@ -55,7 +55,7 @@ def setup(
         sport=sport,
         semester=sem,
         trainer=trainer_user.trainer,
-        is_club=True,
+        is_club=False,
     )
 
     training = Training.objects.create(

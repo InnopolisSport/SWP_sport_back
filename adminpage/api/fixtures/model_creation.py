@@ -76,12 +76,14 @@ def group_factory():
             defaults={
                 "capacity": capacity,
                 "sport": sport,
-                "trainer": trainer,
                 "description": description,
                 "is_club": is_club,
                 "minimum_medical_group_id": minimum_medical_group_id,
             }
         )
+        if trainer is not None and not obj.trainers.filter(pk=trainer.pk).exists():
+            obj.trainers.add(trainer)
+            obj.save()
         return obj
 
     return create_group
