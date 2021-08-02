@@ -62,6 +62,7 @@ class SelfSportAdmin(admin.ModelAdmin):
         "link",
         # "reference_image",
         "attendance_link",
+        "debt"
     )
 
     list_select_related = (
@@ -75,6 +76,7 @@ class SelfSportAdmin(admin.ModelAdmin):
         "obtained_hours",
         "attendance_link",
         "medical_group",
+        "debt"
     )
 
     def attendance_link(self, obj):

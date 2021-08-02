@@ -21,7 +21,6 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
             is_active=True,
         ).all()
     )
-    debt = serializers.BooleanField(required=True)
     # start = serializers.DateTimeField(required=True)
     # end = serializers.DateTimeField(required=True)
     hours = serializers.IntegerField()
@@ -31,6 +30,5 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
         fields = (
             'link',
             'hours',
-            'training_type',
-            'debt'
+            'training_type'
         )

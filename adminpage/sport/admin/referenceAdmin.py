@@ -10,6 +10,7 @@ from sport.admin.utils import custom_order_filter
 from sport.models import Reference
 from .site import site
 
+from api.crud import get_ongoing_semester
 
 class StudentTextFilter(AutocompleteFilter):
     title = "student"
@@ -43,6 +44,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         "image",
         "uploaded",
         "approval",
+        "hours",
     )
 
     list_filter = (
@@ -54,8 +56,11 @@ class ReferenceAdmin(admin.ModelAdmin):
     fields = (
         "student",
         "semester",
+        ("start", "end"),
         "uploaded",
-        ("hours", "comment"),
+        "hours",
+        "student_comment",
+        "comment",
         "reference_image",
         "attendance_link"
     )
@@ -66,6 +71,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         "uploaded",
         "reference_image",
         "attendance_link",
+        "student_comment"
     )
 
     def attendance_link(self, obj):

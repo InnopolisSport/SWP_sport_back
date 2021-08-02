@@ -111,13 +111,6 @@ def toggle_illness(student: Student):
 
 
 def get_student_hours(student_id, **kwargs):
-    def clear_sem_info(dict_sem):
-        dict_sem["id_sem"] = 0
-        dict_sem["hours_not_self"] = 0.0
-        dict_sem["hours_self_not_debt"] = 0.0
-        dict_sem["hours_self_not_debt"] = 0.0
-        dict_sem["hours_sem_max"] = 0.0
-
     student = Student.objects.get(user_id=student_id)
     sem_info_cur = {"id_sem": 0, "hours_not_self": 0.0, "hours_self_not_debt": 0.0,
                     "hours_self_debt": 0.0, "hours_sem_max": 0.0}
@@ -158,16 +151,16 @@ def get_student_hours(student_id, **kwargs):
                     sem_info['hours_self_not_debt'] += float(i.hours)
 
             last_sem_info_arr.append(sem_info)
-            clear_sem_info(sem_info)
-
+            sem_info = {"id_sem": 0, "hours_not_self": 0.0, "hours_self_not_debt": 0.0,
+                        "hours_self_debt": 0.0, "hours_sem_max": 0.0}
     return {
         "last_semesters_hours": last_sem_info_arr,
         "ongoing_semester": sem_info_cur
     }
 
 
-def get_negative_hours(student_id, **kwargs):
-    student_hours = get_student_hours(student_id)
+def get_negative_hours(student_id, hours_info=None, **kwargs):
+    student_hours = get_student_hours(student_id) if hours_info is None else hours_info
     sem_now = student_hours['ongoing_semester']
     res = 0.0
     for i in student_hours['last_semesters_hours']:
