@@ -7,7 +7,7 @@ class ReferenceUploadSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(allow_empty_file=False)
     start = serializers.DateField(allow_null=False)
     end = serializers.DateField(allow_null=False)
-    student_comment = serializers.CharField(max_length=1024, allow_null=True)
+    student_comment = serializers.CharField(max_length=1024, min_length=0, allow_null=True)
 
     class Meta:
         model = Reference
