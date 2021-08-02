@@ -89,6 +89,7 @@ def test_reference_upload(
     ref.hours = 2.5
     ref.start = datetime.datetime.now()
     ref.end = datetime.datetime.now()
+    ref.student_comment = "hi"
     ref.save()
 
     assert Attendance.objects.count() == 1
@@ -100,6 +101,7 @@ def test_reference_upload(
     ref.hours = 3.5
     ref.start = datetime.datetime.now()
     ref.end = datetime.datetime.now()
+    ref.student_comment = "hi1"
     ref.save()
 
     assert Attendance.objects.count() == 1
