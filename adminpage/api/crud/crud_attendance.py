@@ -153,10 +153,6 @@ def get_student_hours(student_id, **kwargs):
             last_sem_info_arr.append(sem_info)
             sem_info = {"id_sem": 0, "hours_not_self": 0.0, "hours_self_not_debt": 0.0,
                         "hours_self_debt": 0.0, "hours_sem_max": 0.0}
-    print({
-        "last_semesters_hours": last_sem_info_arr,
-        "ongoing_semester": sem_info_cur
-    })
     return {
         "last_semesters_hours": last_sem_info_arr,
         "ongoing_semester": sem_info_cur
