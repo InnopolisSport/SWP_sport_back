@@ -35,7 +35,7 @@ def get_sports(all=False, student: Optional[Student] = None):
         sport_groups = groups.filter(sport=sport['id'])
 
         trainers = set()
-        for group_trainers in sport_groups.values_list('trainer'):
+        for group_trainers in sport_groups.values_list('trainers'):
             trainers |= set(group_trainers)
         trainers = list(map(lambda t: Trainer.objects.get(user_id=t), trainers))
 

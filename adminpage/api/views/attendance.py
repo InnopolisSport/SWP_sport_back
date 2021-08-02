@@ -9,12 +9,12 @@ from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.response import Response
 
 from api.crud import get_email_name_like_students, Training, \
-    get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, get_student_hours
+    get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, get_student_hours, get_negative_hours
 from api.permissions import IsTrainer
 from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
     TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, \
-    BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer, HoursInfoSerializer
+    BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer, HoursInfoSerializer, HoursInfoFullSerializer
 from sport.models import Group, Student, Semester, SelfSportReport, Attendance
 
 User = get_user_model()
@@ -125,6 +125,19 @@ def get_last_attended_dates(request, group_id, **kwargs):
 @swagger_auto_schema(
     method="GET",
     responses={
+        status.HTTP_200_OK: HoursInfoFullSerializer,
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer,
+        status.HTTP_403_FORBIDDEN: InbuiltErrorSerializer,
+    }
+)
+@api_view(["GET"])
+def get_negative_hours_info(request, student_id, **kwargs):
+    return Response({"final_hours": get_negative_hours(student_id)})
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
         status.HTTP_200_OK: HoursInfoSerializer,
         status.HTTP_404_NOT_FOUND: NotFoundSerializer,
         status.HTTP_403_FORBIDDEN: InbuiltErrorSerializer,
@@ -133,7 +146,6 @@ def get_last_attended_dates(request, group_id, **kwargs):
 @api_view(["GET"])
 def get_student_hours_info(request, student_id, **kwargs):
     return Response(get_student_hours(student_id))
-
 
 @swagger_auto_schema(
     method="POST",

@@ -8,48 +8,48 @@ from api.crud.utils import dictfetchone, dictfetchall, get_trainers, get_trainer
 from api.crud.crud_semester import get_ongoing_semester
 from sport.models import Student, Trainer, Group, Training
 
-# def get_attended_training_info(training_id: int, student: Student):
-#     """
-#     Retrieves more detailed training info by its id
-#     @param training_id - searched training id
-#     @param student - request sender student
-#     @return found training
-#     """
-#     with connection.cursor() as cursor:
-#         cursor.execute(
-#             'SELECT '
-#             'g.id AS group_id, '
-#             'g.name AS group_name, '
-#             'tr.custom_name AS custom_name, '
-#             'g.description AS group_description, '
-#             'g.link_name AS link_name, '
-#             'g.link AS link, '
-#             'tc.name AS training_class, '
-#             'g.capacity AS capacity, '
-#             'count(e.id) AS current_load, '
-#             'd.first_name AS trainer_first_name, '
-#             'd.last_name AS trainer_last_name, '
-#             'd.email AS trainer_email, '
-#             'COALESCE(a.hours, 0) AS hours, '
-#             'COALESCE(bool_or(e.student_id = %(student_pk)s), false) AS is_enrolled '
-#             'FROM training tr '
-#             'LEFT JOIN training_class tc ON tr.training_class_id = tc.id, "group" g '
-#             'LEFT JOIN enroll e ON e.group_id = g.id '
-#             'LEFT JOIN auth_user d ON g.trainer_id = d.id '
-#             'LEFT JOIN attendance a ON a.training_id = %(training_pk)s AND a.student_id = %(student_pk)s '
-#             'WHERE tr.group_id = g.id '
-#             'AND tr.id = %(training_pk)s '
-#             'GROUP BY g.id, d.id, a.id, tc.id, tr.id',
-#             {
-#                 "student_pk": student.pk,
-#                 "training_pk": training_id
-#             }
-#         )
-#
-#         info = dictfetchone(cursor)
-#         info['trainers'] = get_trainers(training_id)
-#
-#         return info
+def get_attended_training_info(training_id: int, student: Student):
+    """
+    Retrieves more detailed training info by its id
+    @param training_id - searched training id
+    @param student - request sender student
+    @return found training
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(
+            'SELECT '
+            'g.id AS group_id, '
+            'g.name AS group_name, '
+            'tr.custom_name AS custom_name, '
+            'g.description AS group_description, '
+            'g.link_name AS link_name, '
+            'g.link AS link, '
+            'tc.name AS training_class, '
+            'g.capacity AS capacity, '
+            'count(e.id) AS current_load, '
+            'd.first_name AS trainer_first_name, '
+            'd.last_name AS trainer_last_name, '
+            'd.email AS trainer_email, '
+            'COALESCE(a.hours, 0) AS hours, '
+            'COALESCE(bool_or(e.student_id = %(student_pk)s), false) AS is_enrolled '
+            'FROM training tr '
+            'LEFT JOIN training_class tc ON tr.training_class_id = tc.id, "group" g '
+            'LEFT JOIN enroll e ON e.group_id = g.id '
+            'LEFT JOIN auth_user d ON g.trainer_id = d.id '
+            'LEFT JOIN attendance a ON a.training_id = %(training_pk)s AND a.student_id = %(student_pk)s '
+            'WHERE tr.group_id = g.id '
+            'AND tr.id = %(training_pk)s '
+            'GROUP BY g.id, d.id, a.id, tc.id, tr.id',
+            {
+                "student_pk": student.pk,
+                "training_pk": training_id
+            }
+        )
+
+        info = dictfetchone(cursor)
+        info['trainers'] = get_trainers(training_id)
+
+        return info
 
 
 def get_group_info(group_id: int, student: Student):
@@ -180,7 +180,7 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
         'training_class',
     ).filter(
         Q(group__semester__id=get_ongoing_semester().id) &
-        Q(group__trainer=trainer) & (
+        Q(group__trainers=trainer) & (
                 Q(start__gt=start) & Q(start__lt=end) |
                 Q(end__gt=start) & Q(end__lt=end) |
                 Q(start__lt=start) & Q(end__gt=end)

@@ -21,16 +21,12 @@ def get_trainers(training_id: int):
     """
     Return the list of dictionaries containing trainers' information
     """
-    query = Training.objects.filter(
+    query = Training.objects.get(
         id=training_id,
-    ).values(
-        'group__trainers__user__first_name',
-        'group__trainers__user__last_name',
-        'group__trainers__user__email',
-    ).annotate(
-        trainer_first_name=F('group__trainers__user__first_name'),
-        trainer_last_name=F('group__trainers__user__last_name'),
-        trainer_email=F('group__trainers__user__email'),
+    ).group.trainers.annotate(
+        trainer_first_name=F('user__first_name'),
+        trainer_last_name=F('user__last_name'),
+        trainer_email=F('user__email'),
     )
 
     return query

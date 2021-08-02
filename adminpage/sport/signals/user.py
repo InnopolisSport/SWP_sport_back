@@ -9,6 +9,8 @@ from django_auth_adfs.signals import post_authenticate
 
 from sport.models import Student, Trainer, CustomPermission
 
+from api.crud.crud_semester import get_ongoing_semester
+
 User = get_user_model()
 
 
@@ -77,6 +79,12 @@ def change_online_status(instance: Student, sender, using, **kwargs):
         user.user_permissions.add(Permission.objects.get(codename='more_than_10_hours_of_self_sport', content_type=content_type))
     else:
         user.user_permissions.remove(Permission.objects.get(codename='more_than_10_hours_of_self_sport', content_type=content_type))
+
+
+@receiver(post_save, sender=Student)
+def change_status_to_academic_leave(instance: Student, sender, using, **kwargs):
+    if instance.student_status.name == "Academic leave":
+        get_ongoing_semester().academic_leave_students.add(instance)
 
 
 def update_group_verbose_names(sid_to_name_mapping: dict):

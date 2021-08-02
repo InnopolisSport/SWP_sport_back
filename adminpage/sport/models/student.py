@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 
+from sport.models import MedicalGroupHistory
 from sport.utils import get_current_study_year
 
 
@@ -60,10 +61,14 @@ class Student(models.Model):
 
     sport = models.ForeignKey(
         'Sport',
-        on_delete=models.DO_NOTHING,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_medical_group = self.medical_group
 
     def notify(self, subject, message, **kwargs):
         msg = message.format(**kwargs)
@@ -78,6 +83,9 @@ class Student(models.Model):
     def save(self, *args, **kwargs):
         if self.telegram is not None and self.telegram[0] != '@':
             self.telegram = '@' + self.telegram
+        if self.medical_group != self.__original_medical_group:
+            MedicalGroupHistory.objects.create(student=self,
+                                               medical_group=self.medical_group)
         super().save(*args, **kwargs)
 
     class Meta:

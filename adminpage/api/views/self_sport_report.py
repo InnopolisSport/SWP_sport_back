@@ -71,7 +71,8 @@ def self_sport_upload(request, **kwargs):
             data=error_detail(*SelfSportErrors.MEDICAL_DISALLOWANCE),
         )
     hours_info = get_student_hours(student.id)
-    if hours_info['hours_self_not_debt_current'] >= 10 and not student.has_perm('sport.more_than_10_hours_of_self_sport'):
+    if hours_info['ongoing_semester']['hours_self_not_debt'] >= 10 \
+            and not student.has_perm('sport.more_than_10_hours_of_self_sport'):
         return Response(
             status=400,
             data=error_detail(*SelfSportErrors.MAX_NUMBER_SELFSPORT),
