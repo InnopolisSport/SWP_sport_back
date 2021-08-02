@@ -221,8 +221,8 @@
                             </div>
                         {% endif %}
                         <hr>
-                        <div class="container" id="control-buttons">
-                            <div class="row justify-content-around align-content-between flex-wrap">
+                        <div class="container">
+                            <div class="d-flex justify-content-around align-content-between flex-wrap">
                                 <div class="my-2 mx-2">
                                     {% if student.obj.medical_group.id == -2 and not student.has_unresolved_med_group_submission %}
                                         <button type="button" class="btn btn-danger"
@@ -255,19 +255,15 @@
                                         </a>
                                     {% endif %}
                                 </div>
-                                <div class="my-2 mx-2">
-                                    {% if student.is_ill %}
-                                        <button type="button" class="btn btn-success" id="recovered-btn"
-                                                onclick="toggle_ill(this)">Recovered
-                                            &#x1F601
-                                        </button>
-                                    {% else %}
-                                        <button type="button" class="btn btn-secondary"
-                                                onclick="toggle_ill(this)">
-                                            Got sick
-                                            &#x1F912
-                                        </button>
-                                    {% endif %}
+                            </div>
+                            <div class="d-flex justify-content-center align-content-center flex-wrap">
+                                <div class="my-2 mx-2 align-self-center">
+                                    Could not do sports for a while?
+                                </div>
+                                <div class="my-2 mx-2 align-self-center">
+                                    <button type="button" class="btn btn-secondary" onclick="open_recovered_modal()">
+                                        Submit medical reference
+                                    </button>
                                 </div>
                             </div>
                         </div>

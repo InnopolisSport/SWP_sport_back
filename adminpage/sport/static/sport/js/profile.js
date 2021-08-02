@@ -34,19 +34,19 @@ async function fetch_detailed_hours(e) {
     loaded_hours[semester_id] = true;
 }
 
-function toggle_ill(elem) {
-    if (elem.id === "recovered-btn") {
-        open_recovered_modal();
-    } else {
-        sendResults("/api/profile/sick/toggle", {})
-            .then(data => {
-                goto_profile();
-            })
-            .catch(function (error) {
-                toastr.error(error.message);
-            })
-    }
-}
+// function toggle_ill(elem) {
+//     if (elem.id === "recovered-btn") {
+//         open_recovered_modal();
+//     } else {
+//         sendResults("/api/profile/sick/toggle", {})
+//             .then(data => {
+//                 goto_profile();
+//             })
+//             .catch(function (error) {
+//                 toastr.error(error.message);
+//             })
+//     }
+// }
 
 function close_modal(modal_id) {
     $(modal_id).modal('hide');
@@ -394,7 +394,7 @@ function autocomplete_select(event, ui) {
 async function submit_reference() {
     const formData = new FormData()
     const fileInput = $('#reference-file-input')[0]
-    const beginDate = $('#begin-date')
+    const startDate = $('#start-date')
     const endDate = $('#end-date')
     const commentField = $('#comment-field')
     const file = fileInput.files[0]
@@ -422,7 +422,7 @@ async function submit_reference() {
     }
 
     formData.append(fileInput.name, file)
-    formData.append(beginDate.name, beginDate)
+    formData.append(startDate.name, startDate)
     formData.append(endDate.name, endDate)
     formData.append(commentField.name, commentField)
     try {
