@@ -100,7 +100,7 @@
                                     });
                             </script>
                             <span id="debtor_status" class="d-none badge badge-pill badge-danger mx-1">DEBTOR</span>
-                            {% if student.obj.medical_group.id != -2 %}
+                            {% if student.obj.medical_group.id != -2 and not student.has_unresolved_med_group_submission %}
                                 <span id="medical-group" class="badge badge-pill badge-success text-uppercase mx-1"
                                     onclick="openMedicalInfoModal(
                                             `{{ student.obj.medical_group.name }}`,
@@ -224,11 +224,15 @@
                         <div class="container" id="control-buttons">
                             <div class="row justify-content-around align-content-between flex-wrap">
                                 <div class="my-2 mx-2">
-                                    {% if student.obj.medical_group.id == -2 %}
+                                    {% if student.obj.medical_group.id == -2 and not student.has_unresolved_med_group_submission %}
                                         <button type="button" class="btn btn-danger"
                                             onclick="open_med_group_modal()"
                                             style="cursor: pointer;">
-                                            Submit medical reference
+                                            Submit medical group reference
+                                        </button>
+                                    {% elif student.has_unresolved_med_group_submission %}
+                                        <button type="button" class="btn btn-warning" disabled style="cursor: default; opacity: 1;">
+                                            Awaiting medical group reference approval
                                         </button>
                                     {% else %}
                                         <button type="button" class="btn btn-primary" onclick="open_selfsport_modal()">

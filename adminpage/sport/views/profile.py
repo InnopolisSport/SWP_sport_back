@@ -71,7 +71,12 @@ def profile_view(request, **kwargs):
             student=student,
             semester=current_semester,
         ).exists()
-
+        
+        has_unresolved_med_group_submission = MedicalGroupReference.objects.filter(
+            student=student,
+            semester=current_semester,
+            resolved=None,
+        ).exists()
         context.update({
             "student": {
                 "student_id": student.pk,
@@ -85,6 +90,7 @@ def profile_view(request, **kwargs):
                 "semesters": student_brief_hours_info,
                 "obj": student,
                 "has_med_group_submission": has_med_group_submission,
+                "has_unresolved_med_group_submission": has_unresolved_med_group_submission,
                 **student_data,
                 "sport": student.sport,
             },
