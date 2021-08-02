@@ -394,6 +394,9 @@ function autocomplete_select(event, ui) {
 async function submit_reference() {
     const formData = new FormData()
     const fileInput = $('#reference-file-input')[0]
+    const beginDate = $('#begin-date')
+    const endDate = $('#end-date')
+    const commentField = $('#comment-field')
     const file = fileInput.files[0]
 
     if (!file) {
@@ -419,6 +422,9 @@ async function submit_reference() {
     }
 
     formData.append(fileInput.name, file)
+    formData.append(beginDate.name, beginDate)
+    formData.append(endDate.name, endDate)
+    formData.append(commentField.name, commentField)
     try {
         await sendResults('/api/reference/upload', formData, 'POST', false)
         await sendResults("/api/profile/sick/toggle", {})
