@@ -61,7 +61,7 @@ class Student(models.Model):
 
     sport = models.ForeignKey(
         'Sport',
-        on_delete=models.DO_NOTHING,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True
     )
