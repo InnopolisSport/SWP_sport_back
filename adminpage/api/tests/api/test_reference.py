@@ -50,7 +50,7 @@ def test_reference_upload(
     file_lg.seek(0)
     response = client.post(
         f"/{settings.PREFIX}api/reference/upload",
-        data={"image": file_sm},
+        data={"image": file_sm, "start": datetime.date.today(), "end": datetime.date.today(), "student_comment": "hi123"},
         format='multipart'
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -87,8 +87,8 @@ def test_reference_upload(
     assert ref.hours == 0
 
     ref.hours = 2.5
-    ref.start = datetime.datetime.now()
-    ref.end = datetime.datetime.now()
+    ref.start = datetime.date.today()
+    ref.end = datetime.date.today()
     ref.student_comment = "hi"
     ref.save()
 
@@ -99,8 +99,8 @@ def test_reference_upload(
     assert att.hours == 2.5
 
     ref.hours = 3.5
-    ref.start = datetime.datetime.now()
-    ref.end = datetime.datetime.now()
+    ref.start = datetime.date.today()
+    ref.end = datetime.date.today()
     ref.student_comment = "hi1"
     ref.save()
 
