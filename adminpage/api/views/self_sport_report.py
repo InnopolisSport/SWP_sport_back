@@ -79,6 +79,7 @@ def self_sport_upload(request, **kwargs):
             status=400,
             data=error_detail(*SelfSportErrors.MAX_NUMBER_SELFSPORT),
         )
+
     if neg_hours < 0:
         debt = True
 
