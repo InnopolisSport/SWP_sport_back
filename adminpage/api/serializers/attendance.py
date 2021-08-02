@@ -71,3 +71,7 @@ class HoursInfoSerializer(serializers.Serializer):
     last_semesters_hours = HourInfoSemesterChildSerializer(many=True)
     ongoing_semester = HourInfoSemesterChildSerializer()
 
+
+class HoursInfoFullSerializer(serializers.Serializer):
+    final_hours = serializers.FloatField()
+

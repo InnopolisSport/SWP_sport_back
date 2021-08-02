@@ -141,14 +141,13 @@ def get_student_hours(student_id, **kwargs):
     last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
 
     for i in last_semesters:
-        if student in i.academic_leave_students:
+        if student in i.academic_leave_students.all():
             pass
-        elif i.end.split('-')[0] >= student.enrollment_year:
+        elif i.end.year >= student.enrollment_year:
             sem_info["id_sem"] = i.id
             sem_info["hours_sem_max"] = i.hours
             query_attend_last_semester = Attendance.objects.filter(student_id=student_id,
-                                                                   training__group__semester=last_semesters[i]) if len(
-                last_semesters) != 0 else []
+                                                                   training__group__semester=i)
 
             for j in query_attend_last_semester:
                 if j.cause_report is None:
