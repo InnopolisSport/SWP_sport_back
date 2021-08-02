@@ -420,7 +420,6 @@ async function submit_reference() {
         toastr.error('Uploaded file is not an image');
         return false;
     }
-
     formData.append(fileInput.name, file)
     formData.append(startDate.name, startDate.value)
     formData.append(endDate.name, endDate.value)
