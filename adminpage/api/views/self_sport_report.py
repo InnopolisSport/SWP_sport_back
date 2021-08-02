@@ -9,7 +9,7 @@ from rest_framework.decorators import (
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
-from api.crud import get_ongoing_semester, get_student_hours
+from api.crud import get_ongoing_semester, get_student_hours, get_negative_hours
 from api.permissions import IsStudent
 from api.serializers import (
     SelfSportReportUploadSerializer,
@@ -62,6 +62,7 @@ def get_self_sport_types(request, **kwargs):
 def self_sport_upload(request, **kwargs):
     serializer = SelfSportReportUploadSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+    debt = False
 
     student = request.user  # user.pk == user.student.pk
     if request.user.student.medical_group_id \
@@ -71,12 +72,15 @@ def self_sport_upload(request, **kwargs):
             data=error_detail(*SelfSportErrors.MEDICAL_DISALLOWANCE),
         )
     hours_info = get_student_hours(student.id)
+    neg_hours = get_negative_hours(student.id, hours_info)
     if hours_info['ongoing_semester']['hours_self_not_debt'] >= 10 \
             and not student.has_perm('sport.more_than_10_hours_of_self_sport'):
         return Response(
             status=400,
             data=error_detail(*SelfSportErrors.MAX_NUMBER_SELFSPORT),
         )
+    if neg_hours < 0:
+        debt = True
 
     # image = None
     link = serializer.validated_data.get('link', None)
@@ -91,6 +95,7 @@ def self_sport_upload(request, **kwargs):
         link=link,
         semester=get_ongoing_semester(),
         student_id=student.pk,
+        debt=debt
     )
 
     return Response({})

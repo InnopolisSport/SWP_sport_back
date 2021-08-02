@@ -166,8 +166,8 @@ def get_student_hours(student_id, **kwargs):
     }
 
 
-def get_negative_hours(student_id, **kwargs):
-    student_hours = get_student_hours(student_id)
+def get_negative_hours(student_id, hours_info=None, **kwargs):
+    student_hours = get_student_hours(student_id) if hours_info is None else hours_info
     sem_now = student_hours['ongoing_semester']
     res = 0.0
     for i in student_hours['last_semesters_hours']:

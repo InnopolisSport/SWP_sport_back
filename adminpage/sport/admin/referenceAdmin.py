@@ -44,7 +44,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         "image",
         "uploaded",
         "approval",
-        "get_hours",
+        "hours",
     )
 
     list_filter = (
@@ -58,7 +58,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         "semester",
         ("start", "end"),
         "uploaded",
-        "get_hours",
+        "hours",
         "student_comment",
         "comment",
         "reference_image",
@@ -83,10 +83,6 @@ class ReferenceAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         "student",
     )
-
-    def get_hours(self, obj):
-        print(obj.end - obj.start)
-        return get_ongoing_semester().number_hours_one_day_ill * (obj.end.days - obj.start.days)
 
     ordering = (F("approval").asc(nulls_first=True), "uploaded")
 
