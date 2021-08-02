@@ -1,3 +1,4 @@
+import datetime
 import tempfile
 from datetime import date
 
@@ -86,6 +87,8 @@ def test_reference_upload(
     assert ref.hours == 0
 
     ref.hours = 2.5
+    ref.start = datetime.datetime.now()
+    ref.end = datetime.datetime.now()
     ref.save()
 
     assert Attendance.objects.count() == 1
@@ -95,6 +98,8 @@ def test_reference_upload(
     assert att.hours == 2.5
 
     ref.hours = 3.5
+    ref.start = datetime.datetime.now()
+    ref.end = datetime.datetime.now()
     ref.save()
 
     assert Attendance.objects.count() == 1

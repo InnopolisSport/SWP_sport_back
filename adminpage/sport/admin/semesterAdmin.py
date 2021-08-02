@@ -19,10 +19,16 @@ class SemesterAdmin(admin.ModelAdmin):
         "start",
         "end",
         "hours",
-        "academic_students"
+    )
+
+    fields = (
+        "name",
+        "start",
+        "end",
+        "hours",
+        "academic_leave_students",
+        "number_hours_one_day_ill",
     )
 
     filter_horizontal = ('academic_leave_students',)
 
-    def academic_students(self, obj):
-        return "\n".join([p.user.email for p in obj.academic_leave_students.all()])

@@ -50,7 +50,7 @@ def reference_upload(request, **kwargs):
         with transaction.atomic():
             ref = serializer.save(
                 semester=get_ongoing_semester(),
-                student_id=student.pk
+                student_id=student.pk,
             )
             count = Reference.objects.filter(
                 student_id=student.pk,
