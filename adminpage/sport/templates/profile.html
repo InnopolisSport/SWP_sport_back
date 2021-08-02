@@ -44,7 +44,7 @@
         <div class="card text-center">
             <div class="card-body">
                 <h1 class="card-title">{{ user.get_full_name }}</h1>
-                <hr style="margin-bottom: 2px;">    
+                <hr style="margin-bottom: 8px;">    
                 {% if trainer.sport_groups is not None  %}
                     {% if trainer.sport_groups|length > 0 %}
                         <p id="trainer-list">
@@ -74,34 +74,34 @@
                     {% endif %}
                     <meta id="illness-data" data-ill="{{ student.is_ill }}">
                     {% if student.obj.student_status.id == 0 %}
-                        <p>
+                        <p class="row justify-content-center align-content-between flex-wrap">
                             {% if student.is_online %}
-                                <span class="badge badge-pill badge-primary text-light text-uppercase">
+                                <span class="badge badge-pill badge-primary text-light text-uppercase mx-1">
                                     Online student
                                 </span>
                             {% else %}
-                                <span class="badge badge-pill badge-secondary text-light text-uppercase">
+                                <span class="badge badge-pill badge-secondary text-light text-uppercase mx-1">
                                     Offline student
                                 </span>
                             {% endif %}
-                            {% comment %} <script type="text/javascript">
+                            <script type="text/javascript">
                                 const student_id = "{{ student.student_id }}";
-                                const apiUrl = `/api/attendance/${student_id}/hours`;
+                                const apiUrl = `/api/attendance/${student_id}/negative_hours`;
                                 fetch(apiUrl).then(response => {
                                 return response.json();
                                     }).then(data => {
-                                        console.log(data);
-                                        document.getElementById('hours').innerHTML = data['hours_sem_max_current'];
+                                        d_span = document.getElementById('debtor_status');
+                                        d_alert = document.getElementById('debtor_alert');
+                                        if (data['final_hours'] < 0) {
+                                            d_span.classList.remove('d-none');
+                                            d_alert.classList.remove('d-none');
+                                        }
                                     }).catch(err => {
-                                    // Do something for an error here
                                     });
                             </script>
-                            <span id="hours"></span>
-                            {% if student.hours > 0 %}
-                                <span class="badge badge-pill badge-danger">DEBTOR</span>
-                            {% endif %} {% endcomment %}
+                            <span id="debtor_status" class="d-none badge badge-pill badge-danger mx-1">DEBTOR</span>
                             {% if student.obj.medical_group.id != -2 %}
-                                <span id="medical-group" class="badge badge-pill badge-success text-uppercase"
+                                <span id="medical-group" class="badge badge-pill badge-success text-uppercase mx-1"
                                     onclick="openMedicalInfoModal(
                                             `{{ student.obj.medical_group.name }}`,
                                             `{{ student.obj.medical_group.description }}`
@@ -111,11 +111,12 @@
                                 </span>
                             {% endif %}
                         </p>
-                        {% comment %} {% if student is debtor %}
-                        <div class="alert alert-danger" role="alert">
-                            <!-- Reminder for debtors-->
+                        <div id="debtor_alert" class="d-none alert alert-danger" role="alert">
+                            <h5>Dear student!</h5>
+                            <p>To remove the debtor status you should make your <strong>number of hours positive</strong>.</p>
+                            <hr>
+                            <p>Closing the debt is <strong>required to pass</strong> the sport course.</p>
                         </div>
-                        {% endif %} {% endcomment %}
                         {% if student.sport %}
                             <p id="student-list">
                                 Your sport type for the 
