@@ -57,7 +57,7 @@ def test_reference_upload(
     assert response.data["code"] == ImageErrors.INVALID_IMAGE_SIZE[0]
     response = client.post(
         f"/{settings.PREFIX}api/reference/upload",
-        data={"image": file_lg},
+        data={"image": file_lg, "start": datetime.date.today(), "end": datetime.date.today(), "student_comment": "hi123"},
         format='multipart'
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -66,7 +66,7 @@ def test_reference_upload(
     file_lg.seek(0)
     response = client.post(
         f"/{settings.PREFIX}api/reference/upload",
-        data={"image": file_lg},
+        data={"image": file_lg, "start": datetime.date.today(), "end": datetime.date.today(), "student_comment": "hi123"},
         format='multipart'
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -74,7 +74,7 @@ def test_reference_upload(
     settings.MAX_IMAGE_SIZE = 5_000_000
     response = client.post(
         f"/{settings.PREFIX}api/reference/upload",
-        data={"image": file_md},
+        data={"image": file_md, "start": datetime.date.today(), "end": datetime.date.today(), "student_comment": "hi123"},
         format='multipart'
     )
     assert response.status_code == status.HTTP_200_OK
