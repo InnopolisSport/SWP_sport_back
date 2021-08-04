@@ -1,5 +1,6 @@
 from math import floor
-from typing import Iterable, Tuple
+from typing import Iterable, Tuple, List
+from typing_extensions import TypedDict
 
 from django.db import connection
 
@@ -10,24 +11,48 @@ from api.crud.crud_semester import get_ongoing_semester
 from sport.models import Attendance
 
 
-def get_brief_hours(student: Student):
+class BriefHours(TypedDict):
+    semester_id: int
+    semester_name: str
+    semester_start: str
+    semester_end: str
+    hours: int
+
+
+def get_brief_hours(student: Student) -> List[BriefHours]:
     """
     Retrieves statistics of hours per different semesters
     """
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT '
-                       's.id AS semester_id, '
-                       's.name AS semester_name, '
-                       's.start AS semester_start, '
-                       's.end AS semester_end, '
-                       'sum(a.hours) AS hours '
-                       'FROM semester s, training t, "group" g, attendance a '
-                       'WHERE a.student_id = %s '
-                       'AND a.training_id = t.id '
-                       'AND t.group_id = g.id '
-                       'AND g.semester_id = s.id '
-                       'GROUP BY s.id', (student.pk,))
-        return dictfetchall(cursor)
+    hours = get_student_hours(student)
+    hours = [hours['ongoing_semester']] + hours['last_semesters_hours']
+
+    brief_hours: List[BriefHours] = []
+    for sem in hours:
+        semester = Semester.objects.get(id=sem['id_sem'])
+        element: BriefHours = {
+            'semester_id': semester.id,
+            'semester_name': semester.name,
+            'semester_start': semester.start.strftime("%b. %d, %Y"),
+            'semester_end': semester.end.strftime("%b. %d, %Y"),
+            'hours': int(sem['hours_not_self'] + sem['hours_self_not_debt'] + sem['hours_self_debt'])
+        }
+        brief_hours.append(element)
+
+    return brief_hours
+    # with connection.cursor() as cursor:
+    #     cursor.execute('SELECT '
+    #                    's.id AS semester_id, '
+    #                    's.name AS semester_name, '
+    #                    's.start AS semester_start, '
+    #                    's.end AS semester_end, '
+    #                    'sum(a.hours) AS hours '
+    #                    'FROM semester s, training t, "group" g, attendance a '
+    #                    'WHERE a.student_id = %s '
+    #                    'AND a.training_id = t.id '
+    #                    'AND t.group_id = g.id '
+    #                    'AND g.semester_id = s.id '
+    #                    'GROUP BY s.id', (student.pk,))
+    #     return dictfetchall(cursor)
 
 
 def get_detailed_hours(student: Student, semester: Semester):
@@ -35,13 +60,14 @@ def get_detailed_hours(student: Student, semester: Semester):
     Retrieves statistics of hours in one semester
     """
     with connection.cursor() as cursor:
-        cursor.execute('SELECT g.name AS "group", t.custom_name AS custom_name, t.start AS "timestamp", a.hours AS hours '
-                        'FROM training t, "group" g, attendance a '
-                        'WHERE a.student_id = %s '
-                        'AND a.training_id = t.id '
-                        'AND t.group_id = g.id '
-                        'AND g.semester_id = %s '
-                        'ORDER BY t.start', (student.pk, semester.pk))
+        cursor.execute(
+            'SELECT g.name AS "group", t.custom_name AS custom_name, t.start AS "timestamp", a.hours AS hours '
+            'FROM training t, "group" g, attendance a '
+            'WHERE a.student_id = %s '
+            'AND a.training_id = t.id '
+            'AND t.group_id = g.id '
+            'AND g.semester_id = %s '
+            'ORDER BY t.start', (student.pk, semester.pk))
         return dictfetchall(cursor)
 
 
@@ -110,7 +136,17 @@ def toggle_illness(student: Student):
     student.save()
 
 
-def get_student_hours(student_id, **kwargs):
+class SemesterHours(TypedDict):
+    id_sem: int
+    hours_not_self: float
+    hours_self_not_debt: float
+    hours_self_debt: float
+    hours_sem_max: int
+
+
+def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
+                                                         {'last_semesters_hours': List[SemesterHours],
+                                                          'ongoing_semester': SemesterHours}):
     student = Student.objects.get(user_id=student_id)
     sem_info_cur = {"id_sem": 0, "hours_not_self": 0.0, "hours_self_not_debt": 0.0,
                     "hours_self_debt": 0.0, "hours_sem_max": 0.0}
