@@ -83,6 +83,8 @@ def get_group_info(group_id: int, student: Student):
         info = dictfetchone(cursor)
         info['trainers'] = get_trainers_group(group_id)
 
+        info['can_enroll'] = student.sport and not Group.objects.filter(enroll__student=student).exists()
+
         return info
 
     # query = Group.objects.filter(
