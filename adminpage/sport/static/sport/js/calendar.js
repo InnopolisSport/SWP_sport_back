@@ -57,11 +57,10 @@ $(function () {
     calendar.render();
 });
 
-async function submit_sport_group() {
+async function submit_sport_type() {
     const parser = document.createElement('a');
     parser.href = document.URL;
     url = parser.pathname;
-    console.log(url);
     const sport_id = Number(url.match(/[^calendar\/sport\/](.*)/g)[0]);
     try {
         await sendResults('/api/select_sport', {"sport_id": sport_id}, 'POST',  asJSON = true)
