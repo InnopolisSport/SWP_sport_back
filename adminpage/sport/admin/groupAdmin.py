@@ -3,6 +3,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.db.models.expressions import RawSQL
 from django.utils.html import format_html
+from django.forms import ModelForm
+from django.forms import CheckboxSelectMultiple
 
 from api.crud import get_ongoing_semester
 from sport.models import Group, MedicalGroup
@@ -16,8 +18,19 @@ class TrainerTextFilter(AutocompleteFilter):
     field_name = "trainers"
 
 
+class GroupAdminForm(ModelForm):
+    class Meta:
+        model = Group
+        fields = '__all__'  # will be overridden by ModelAdmin
+        widgets = {
+            'allowed_medical_groups': CheckboxSelectMultiple()
+        }
+
+
 @admin.register(Group, site=site)
 class GroupAdmin(admin.ModelAdmin):
+    form = GroupAdminForm
+
     search_fields = (
         "name",
     )
@@ -33,7 +46,7 @@ class GroupAdmin(admin.ModelAdmin):
         has_free_places_filter(),
         ("is_club", custom_titled_filter("club status")),
         TrainerTextFilter,
-        "minimum_medical_group",
+        # "minimum_medical_group",
         ("sport", admin.RelatedOnlyFieldListFilter),
     )
 
@@ -42,7 +55,7 @@ class GroupAdmin(admin.ModelAdmin):
         "sport",
         "is_club",
         "teachers",  # check function below
-        "minimum_medical_group",
+        # "minimum_medical_group",
         "free_places",
     )
 
@@ -56,7 +69,7 @@ class GroupAdmin(admin.ModelAdmin):
         "semester",
         "sport",
         "trainer__user",
-        "minimum_medical_group",
+        # "minimum_medical_group",
     )
 
     fields = (
@@ -69,7 +82,8 @@ class GroupAdmin(admin.ModelAdmin):
         "semester",
         # "trainer",
         "trainers",
-        "minimum_medical_group",
+        # "minimum_medical_group",
+        "allowed_medical_groups",
     )
 
     readonly_fields = (
