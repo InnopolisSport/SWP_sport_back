@@ -92,12 +92,12 @@ function formatTime(time) {
 
 async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
     const {data, title, body, footer} = await openModal('#group-info-modal', apiUrl)
-    const {custom_name, group_id, group_name, is_enrolled, capacity, current_load, is_primary, schedule} = data;
+    const {custom_name, group_id, group_name, is_enrolled, capacity, current_load, is_primary, can_enroll, schedule} = data;
 
     let disabled_attr;
 
     if (is_enrolled) {
-        disabled_attr =  is_primary ? 'disabled' : '';
+        // disabled_attr =  is_primary ? 'disabled' : '';
         footer.html(`
             <div class="container">
                 <div class="row justify-content-between">
@@ -108,12 +108,13 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
         `);
         footer.find('.btn-danger').click(() => enroll(group_id, 'unenroll'));
     } else {
-        disabled_attr = (current_load >= capacity) ? 'disabled' : ''
+        disabled_attr = (current_load >= capacity || !can_enroll) ? 'disabled' : ''
         footer.html(`
             <div class="container">
                 <div class="row justify-content-between">
                     <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
-                    <div><button type="button" class="btn btn-success ${disabled_attr}" ${disabled_attr}>Enroll</button></div>
+                    <div><button type="button" class="btn btn-success ${disabled_attr}" ${disabled_attr}
+                     ${disabled_attr=='disabled' && 'data-bs-toggle="tooltip" data-bs-placement="top" title="To enroll you should unenroll from your sport group first" style="cursor: default;"'}>Enroll</button></div>
                 </div>
             </div>
         `);

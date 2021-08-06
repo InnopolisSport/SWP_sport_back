@@ -6,7 +6,7 @@ from django.db.models import Q, F
 
 from api.crud.utils import dictfetchone, dictfetchall, get_trainers, get_trainers_group
 from api.crud.crud_semester import get_ongoing_semester
-from sport.models import Student, Trainer, Group, Training
+from sport.models import Student, Trainer, Group, Training, Sport
 
 def get_attended_training_info(training_id: int, student: Student):
     """
@@ -82,6 +82,11 @@ def get_group_info(group_id: int, student: Student):
 
         info = dictfetchone(cursor)
         info['trainers'] = get_trainers_group(group_id)
+
+        info['can_enroll'] = student.student.sport and \
+                             student.student.sport==Group.objects.get(id=info['group_id']).sport and \
+                             not Group.objects.filter(enroll__student=student.student,
+                                                      semester=get_ongoing_semester()).exists()
 
         return info
 

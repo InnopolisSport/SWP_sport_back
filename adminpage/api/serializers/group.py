@@ -48,5 +48,6 @@ class GroupInfoSerializer(serializers.Serializer):
     link_name = serializers.CharField()
 
     is_enrolled = serializers.BooleanField()
+    can_enroll = serializers.BooleanField()
 
     schedule = ScheduleSerializer(many=True)
