@@ -32,3 +32,15 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
             'hours',
             'training_type'
         )
+
+class ParseStrava(serializers.Serializer):
+    link = serializers.URLField(required=True)
+
+class ParsedStravaSerializer(serializers.Serializer):
+    training_type = serializers.CharField()
+    pace = serializers.CharField(required=False)
+    speed = serializers.CharField(required=False)
+    distance_km = serializers.IntegerField()
+    hours = serializers.IntegerField()
+    approved = serializers.BooleanField()
+    

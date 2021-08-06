@@ -24,34 +24,36 @@
                               <option disabled selected>Loading...</option>
                             </select>
                             <small id="self-sport-type-help" class="form-text text-muted"></small>
-                            <input name="link" type="url" class="form-control"
+                            <input name="link" type="url" class="form-control mt-3"
                                     maxlength="100"
                                     placeholder="Strava activity link"
                                     pattern="^(http|https):\/\/.*"
                                     title="The link must start with &quot;http://&quot; or &quot;https://&quot;"
-                                    id="self-sport-text-input">
+                                    id="self-sport-text-input"
+                                    onchange="getStravaActivityInfo(this)">
                         </div>
-                        <p>Specify the <strong>number of hours</strong> you have accumulated during the training.</p>
-                        <div class="form-group">
-                            <input type="number" class="form-control" maxlength="10" placeholder="Number of hours"
-                                    title="The number format: NN or NN.NN"
-                                    id="self-sport-number-input">
+                        <p id="description-ok">System <b>automatically set the number of hours</b> you have accumulated during the training. <i>Change it if something went wrong</i>.</p>
+                        <p id="description-error" class="d-none"><b>An error has occured</b>. Please <b>specify the number of hours</b> you have accumulated during the training.</p>
+                        <div class="form-group mt-3">
+                            <input type="number" class="form-control" maxlength="10" placeholder="Waiting for the Strava link"
+                                    title="The number format: N (integer)"
+                                    id="self-sport-number-input" disabled>
+                            <textarea class="form-control mt-3" placeholder="Leave comments here (optional)" id="comment-field" style="height: 75px" name="student_comment"></textarea>
+                        </div>
+                        <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="width: 100%">
+                            How do we calculate the number of hours?
+                        </button>
+                        <div class="collapse mt-2" id="collapseExample">
+                            <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-post="sportinIU/180" data-width="100%"></script>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="container">
-                            <div class="row justify-content-between">
-                                <div>
-                                    <button type="button" class="btn btn-secondary"
-                                            data-dismiss="modal">Close
-                                    </button>
-                                </div>
-                                <div>
+                            <div class="row justify-content-end">
                                     <input type="submit" value="Submit"
                                            class="btn btn-primary"
                                            id="submit-self-sport-btn"
                                            onclick="submit_self_sport()">
-                                </div>
                             </div>
                         </div>
                     </div>
