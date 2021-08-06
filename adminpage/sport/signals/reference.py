@@ -6,7 +6,6 @@ from sport.models import Reference, Group, MedicalGroupReference
 from sport.signals.utils import create_attendance_record
 from sport.utils import format_submission_html
 
-from api.crud import get_ongoing_semester
 
 @receiver(post_save, sender=Reference)
 def update_hours_for_reference(sender, instance: Reference, created, **kwargs):
@@ -79,12 +78,3 @@ def medical_group_updated(
                 *instance.get_submission_url()
             ),
         )
-
-
-@receiver(post_save, sender=Reference)
-def count_hours_for_reference(sender, instance: Reference, created, **kwargs):
-    if created:
-        instance.hours = (instance.end - instance.start).days * get_ongoing_semester().number_hours_one_day_ill
-        instance.save()
-    else:
-        return
