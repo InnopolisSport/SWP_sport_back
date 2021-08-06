@@ -37,6 +37,7 @@ handler500 = "sport.views.errors.handler500"
 urlpatterns = [
                   path(settings.PREFIX, include([
                       path("", include("sport.urls")),
+                      path('', include('django_prometheus.urls')),
                       path('admin/', site.urls),
                       path('oauth2/', include('django_auth_adfs.urls')),
 
