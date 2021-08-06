@@ -152,12 +152,12 @@
                             <div class="container" id="semester-hours">
                                 <table class="table table-hover">
                                     <thead>
-                                    <tr>
-                                        <th scope="col">Semester</th>
-                                        <th scope="col">Start</th>
-                                        <th scope="col">End</th>
-                                        <th scope="col">Hours</th>
-                                    </tr>
+                                        <tr>
+                                            <th scope="col">Semester</th>
+                                            <th scope="col">Start</th>
+                                            <th scope="col">End</th>
+                                            <th scope="col">Hours</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                     {% for sem in student.semesters %}
@@ -221,54 +221,49 @@
                             </div>
                         {% endif %}
                         <hr>
-                        <div class="container" id="control-buttons">
-                            <div class="row justify-content-around align-content-between flex-wrap">
-                                <div class="my-2 mx-2">
-                                    {% if student.obj.medical_group.id == -2 and not student.has_unresolved_med_group_submission %}
-                                        <button type="button" class="btn btn-danger"
-                                            onclick="open_med_group_modal()"
-                                            style="cursor: pointer;">
-                                            Submit medical group reference
-                                        </button>
-                                    {% elif student.has_unresolved_med_group_submission %}
-                                        <button type="button" class="btn btn-warning" disabled style="cursor: default; opacity: 1;">
-                                            Awaiting medical group reference approval
-                                        </button>
-                                    {% else %}
-                                        <button type="button" class="btn btn-primary" onclick="open_selfsport_modal()">
-                                            Self-sport upload
-                                        </button>
-                                    {% endif %}
-                                </div>
-                                <div class="my-2 mx-2">
-                                    {% if not student.sport %}
-                                        <a href="{% url 'category' %}" class="btn btn-danger">
-                                            Choose sport type
-                                        </a>
-                                    {% elif not student.sport_groups%}
-                                        <a href="{% url 'category' %}" class="btn btn-danger">
-                                            Choose sport group
-                                        </a>
-                                    {% else %}
-                                        <a href="{% url 'category' %}" class="btn btn-dark">
-                                            Sport types' schedule
-                                        </a>
-                                    {% endif %}
-                                </div>
-                                <div class="my-2 mx-2">
-                                    {% if student.is_ill %}
-                                        <button type="button" class="btn btn-success" id="recovered-btn"
-                                                onclick="toggle_ill(this)">Recovered
-                                            &#x1F601
-                                        </button>
-                                    {% else %}
-                                        <button type="button" class="btn btn-secondary"
-                                                onclick="toggle_ill(this)">
-                                            Got sick
-                                            &#x1F912
-                                        </button>
-                                    {% endif %}
-                                </div>
+                        <div class="d-flex justify-content-around align-content-between flex-wrap">
+                            <div class="my-2 mx-2">
+                                {% if student.obj.medical_group.id == -2 and not student.has_unresolved_med_group_submission %}
+                                    <button type="button" class="btn btn-danger"
+                                        onclick="open_med_group_modal()"
+                                        style="cursor: pointer;">
+                                        Submit medical group reference
+                                    </button>
+                                {% elif student.has_unresolved_med_group_submission %}
+                                    <button type="button" class="btn btn-warning" disabled style="cursor: default; opacity: 1;">
+                                        Awaiting medical group reference approval
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-primary" onclick="open_selfsport_modal()">
+                                        Self-sport upload
+                                    </button>
+                                {% endif %}
+                            </div>
+                            <div class="my-2 mx-2">
+                                {% if not student.sport %}
+                                    <a href="{% url 'category' %}" class="btn btn-danger">
+                                        Choose sport type
+                                    </a>
+                                {% elif not student.sport_groups%}
+                                    <a href="{% url 'category' %}" class="btn btn-danger">
+                                        Choose sport group
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'category' %}" class="btn btn-dark">
+                                        Sport types' schedule
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {# <hr> #}
+                        <div class="d-flex justify-content-center align-content-center flex-wrap">
+                            <div class="my-2 mx-2 align-self-center">
+                                Could not do sports for a while?
+                            </div>
+                            <div class="my-2 mx-2 align-self-center">
+                                <button type="button" class="btn btn-secondary" onclick="open_recovered_modal()">
+                                    Submit medical reference
+                                </button>
                             </div>
                         </div>
                     {% endif %}
