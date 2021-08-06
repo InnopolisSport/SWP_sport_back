@@ -46,7 +46,6 @@ class GroupAdmin(admin.ModelAdmin):
         has_free_places_filter(),
         ("is_club", custom_titled_filter("club status")),
         TrainerTextFilter,
-        # "minimum_medical_group",
         ("sport", admin.RelatedOnlyFieldListFilter),
     )
 
@@ -55,7 +54,6 @@ class GroupAdmin(admin.ModelAdmin):
         "sport",
         "is_club",
         "teachers",  # check function below
-        # "minimum_medical_group",
         "free_places",
     )
 
@@ -69,7 +67,6 @@ class GroupAdmin(admin.ModelAdmin):
         "semester",
         "sport",
         "trainer__user",
-        # "minimum_medical_group",
     )
 
     fields = (
@@ -82,7 +79,6 @@ class GroupAdmin(admin.ModelAdmin):
         "semester",
         # "trainer",
         "trainers",
-        # "minimum_medical_group",
         "allowed_medical_groups",
     )
 
