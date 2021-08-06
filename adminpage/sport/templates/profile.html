@@ -44,7 +44,7 @@
         <div class="card text-center">
             <div class="card-body">
                 <h1 class="card-title">{{ user.get_full_name }}</h1>
-                <hr style="margin-bottom: 8px;">    
+                <hr style="margin-bottom: 8px;">
                 {% if trainer.sport_groups is not None  %}
                     {% if trainer.sport_groups|length > 0 %}
                         <p id="trainer-list">
@@ -64,13 +64,19 @@
                 {% if student %}
                     {% if student.obj.student_status.id != 0 %}
                         <h5>
-                            <span class="badge bg-{% if student.obj.student_status.id == 1 %}danger
+                            <span class="badge badge-pill bg-{% if student.obj.student_status.id == 1 %}danger
                                                     {% elif student.obj.student_status.id == 2 %}primary
                                                     {% else %}success
                                                     {% endif %}text-light">
                                 {{ student.obj.student_status.description }}
                             </span>
                         </h5>
+                    {% endif %}
+                    {% if student.obj.student_status.id == 2  %}
+                        <hr>
+                        <a href="{% url 'category' %}" class="btn btn-dark" style="width: 100%">
+                            Sport types' schedule
+                        </a>
                     {% endif %}
                     <meta id="illness-data" data-ill="{{ student.is_ill }}">
                     {% if student.obj.student_status.id == 0 %}

@@ -39,7 +39,7 @@ def group_info_view(request, group_id, **kwargs):
     }
 )
 @api_view(["GET"])
-@permission_classes([IsStudent])
+# @permission_classes([IsStudent]) Temporary off for academic_leave students
 def sports_view(request, **kwargs):
     print(get_sports())
     serializer = SportsSerializer({'sports': get_sports()})
