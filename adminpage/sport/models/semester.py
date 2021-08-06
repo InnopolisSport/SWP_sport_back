@@ -20,7 +20,7 @@ class Semester(models.Model):
     end = models.DateField(null=False, default=today)
     academic_leave_students = models.ManyToManyField(Student, blank=True)
     hours = models.IntegerField(default=30)
-    number_hours_one_day_ill = models.IntegerField(default=1)
+    number_hours_one_week_ill = models.IntegerField(default=2)
 
     class Meta:
         db_table = "semester"
