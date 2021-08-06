@@ -27,7 +27,7 @@ class SemesterAdmin(admin.ModelAdmin):
         "end",
         "hours",
         "academic_leave_students",
-        "number_hours_one_day_ill",
+        "number_hours_one_week_ill",
     )
 
     filter_horizontal = ('academic_leave_students',)
