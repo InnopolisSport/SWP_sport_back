@@ -3,7 +3,7 @@
          aria-labelledby="recovered-modal" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
-                <form action="#" onsubmit="return false;">
+                <form action="#" onsubmit="submit_reference(); return false;">
                     <div class="modal-header">
                         <h5 class="modal-title">
                             Medical Reference Submission
@@ -29,11 +29,11 @@
                         <div class="form-group d-flex justify-content-between">
                             <div class="text-center flex-fill mr-1">
                                 Start date
-                                <input class="form-control mt-1" id="start-date" type="date" name="start"/>
+                                <input class="form-control mt-1" id="start-date" type="date" name="start" required />
                             </div>
                             <div class="text-center flex-fill ml-1">
                                 End date
-                                <input class="form-control mt-1" id="end-date" type="date" name="end"/>
+                                <input class="form-control mt-1" id="end-date" type="date" name="end" required />
                             </div>
                         </div>
                         <div class="form-floating">
@@ -48,8 +48,7 @@
                                     </button>
                                 </div>
                                 <div>
-                                    <input type="submit" value="Submit" class="btn btn-primary" id="submit-reference-btn"
-                                           onclick="submit_reference()">
+                                    <input type="submit" value="Submit" class="btn btn-primary" id="submit-reference-btn">
                                 </div>
                             </div>
                         </div>

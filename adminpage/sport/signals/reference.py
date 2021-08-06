@@ -78,11 +78,3 @@ def medical_group_updated(
                 *instance.get_submission_url()
             ),
         )
-
-
-@receiver(post_save, sender=Reference)
-def count_hours_for_reference(sender, instance: Reference, created, **kwargs):
-    if created:
-        instance.hours = (instance.end - instance.start).days
-    else:
-        return

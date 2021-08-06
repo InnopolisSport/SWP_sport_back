@@ -51,6 +51,7 @@ def reference_upload(request, **kwargs):
             ref = serializer.save(
                 semester=get_ongoing_semester(),
                 student_id=student.pk,
+                hours=(serializer.validated_data['end'] - serializer.validated_data['start']).days * get_ongoing_semester().number_hours_one_day_ill
             )
             count = Reference.objects.filter(
                 student_id=student.pk,
