@@ -86,10 +86,6 @@ class ReferenceAdmin(admin.ModelAdmin):
 
     ordering = (F("approval").asc(nulls_first=True), "uploaded")
 
-    def save_model(self, request, obj, form, change):
-        if 'comment' in form.changed_data or 'hours' in form.changed_data:
-            super().save_model(request, obj, form, change)
-
     def reference_image(self, obj):
         return format_html(
             '<a href="{}"><img style="width: 50%" src="{}" /></a>',
