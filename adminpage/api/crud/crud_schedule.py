@@ -2,11 +2,13 @@ from typing import Optional
 
 from django.db import connection
 from django.db.models import F
+from django.db.models import Q
 from django.db.models import Count
+from django.db.models import Prefetch
 
 from api.crud.utils import dictfetchall
 from api.crud import get_ongoing_semester
-from sport.models import Student, Group
+from sport.models import Student, Group, Schedule
 
 
 def get_sport_schedule(
@@ -43,24 +45,20 @@ def get_sport_schedule(
     #                    }
     #                    )
     #     return dictfetchall(cursor)
+    medical_group_condition = Q(allowed_medical_groups=1) | Q(allowed_medical_groups=2)
+    if student is not None:
+        medical_group_condition = Q(allowed_medical_groups=student.medical_group)
 
-    query = Group.objects.select_related(
+    prefetch_query = Schedule.objects.select_related('training_class')
+
+    query = Group.objects.prefetch_related(
         'sport',
-        'enroll',
-        'schedule',
-        'schedule__training_class',
+        'enrolls',
+        Prefetch('schedule', queryset=prefetch_query),
     ).filter(
-        sport__id=sport_id,
-        allowed_medical_groups=student.medical_group,
-        semester__id=get_ongoing_semester().id,
-    ).annotate(
-        current_load=Count('enroll__id'),
-        group_id=F('id'),
-        group_name=F('name'),
-        weekday=F('schedule__weekday'),
-        start=F('schedule__start'),
-        end=F('schedule__end'),
-        training_class=F('schedule__training_class__name'),
+        Q(sport__id=sport_id) &
+        medical_group_condition &
+        Q(semester__id=get_ongoing_semester().id)
     ).values(
         'id',
         'name',
@@ -69,6 +67,14 @@ def get_sport_schedule(
         'schedule__start',
         'schedule__end',
         'schedule__training_class__name',
+    ).annotate(
+        current_load=Count('enrolls__id'),
+        group_id=F('id'),
+        group_name=F('name'),
+        weekday=F('schedule__weekday'),
+        start=F('schedule__start'),
+        end=F('schedule__end'),
+        training_class=F('schedule__training_class__name'),
     ).order_by(
         'id',
         'schedule__id',
