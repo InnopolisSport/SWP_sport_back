@@ -45,9 +45,9 @@ def get_sport_schedule(
     #                    }
     #                    )
     #     return dictfetchall(cursor)
-    medical_group_condition = Q(allowed_medical_groups=1) | Q(allowed_medical_groups=2)
+    medical_group_condition = Q(allowed_medical_groups__id=1) | Q(allowed_medical_groups__id=2)
     if student is not None:
-        medical_group_condition = Q(allowed_medical_groups=student.medical_group)
+        medical_group_condition = Q(allowed_medical_groups__id=student.medical_group.id)
 
     prefetch_query = Schedule.objects.select_related('training_class')
 
