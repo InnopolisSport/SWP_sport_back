@@ -72,6 +72,8 @@ class SelfSportReport(models.Model):
     )
 
     comment = models.TextField(max_length=1024, null=True, blank=True)
+    student_comment = models.TextField(max_length=1024, null=True, blank=True, verbose_name="Student's comment")
+    parsed_data = models.JSONField(verbose_name="Data from the Strava link", null=True, blank=True)
 
     class Meta:
         db_table = "self_sport_report"

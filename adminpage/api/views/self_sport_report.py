@@ -87,7 +87,6 @@ def self_sport_upload(request, **kwargs):
         debt = True
 
     # image = None
-    link = serializer.validated_data.get('link', None)
 
     # if 'image' in serializer.validated_data:
     #     image, error = process_image(serializer.validated_data['image'])
@@ -96,7 +95,6 @@ def self_sport_upload(request, **kwargs):
 
     serializer.save(
         # image=image,
-        link=link,
         semester=get_ongoing_semester(),
         student_id=student.pk,
         debt=debt
