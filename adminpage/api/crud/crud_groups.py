@@ -3,6 +3,7 @@ from typing import Optional
 from django.conf import settings
 from django.db import connection
 from django.db.models import F
+from django.db.models import Q
 from django.db.models import Count
 
 import api.crud
@@ -72,15 +73,18 @@ def get_clubs(student: Optional[Student] = None):
     #             "medical_group_id_sign": 1 if student is None else student.medical_group_id
     #         })
     #     return dictfetchall(cursor)
+    medical_group_condition = Q(allowed_medical_groups=1) | Q(allowed_medical_groups=2)
+    if student is not None:
+        medical_group_condition = Q(allowed_medical_groups=student.medical_group)
 
     query = Group.objects.select_related(
         'sport',
-        'enroll',
+        'enrolls',
         'semester',
     ).filter(
-        allowed_medical_groups=student.medical_group,
-        is_club='True',
-        semester__id=get_ongoing_semester().id,
+        Q(is_club='True') &
+        medical_group_condition &
+        Q(semester__id=get_ongoing_semester().id)
     ).values(
         'id',
         'name',
@@ -90,7 +94,7 @@ def get_clubs(student: Optional[Student] = None):
         'description',
         'is_club',
     ).annotate(
-        current_load=Count('enroll__id'),
+        current_load=Count('enrolls__id'),
         sport_name=F('sport__name'),
         semester=F('semester__name'),
     ).order_by(
