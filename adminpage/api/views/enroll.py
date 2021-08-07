@@ -82,12 +82,14 @@ def enroll(request, **kwargs):
             data=error_detail(*EnrollErrors.TOO_MUCH_GROUPS)
         )
 
-    if group.minimum_medical_group_id is not None \
-            and student.medical_group_id * group.minimum_medical_group_id <= \
-            0 \
-            and not (
-            student.medical_group_id == 0 and group.minimum_medical_group_id
-            == 0):
+
+    # if group.minimum_medical_group_id is not None \
+    #         and student.medical_group_id * group.minimum_medical_group_id <= \
+    #         0 \
+    #         and not (
+    #         student.medical_group_id == 0 and group.minimum_medical_group_id
+    #         == 0):
+    if not group.allowed_medical_groups.filter(id=student.medical_group.id).exists():
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*EnrollErrors.MEDICAL_DISALLOWANCE)
