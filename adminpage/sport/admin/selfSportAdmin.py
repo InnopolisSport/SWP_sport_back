@@ -10,7 +10,38 @@ from django.utils.safestring import mark_safe
 from sport.models import SelfSportReport, Attendance
 from .site import site
 from .utils import custom_order_filter
+import json
+import logging
 
+from django.db.models import JSONField 
+from django.contrib import admin
+from django.forms import widgets
+
+
+logger = logging.getLogger(__name__)
+
+
+class PrettyJSONWidget(widgets.Textarea):
+    
+
+    def format_value(self, value):
+        self.attrs['disabled'] = True
+        try:
+            value = json.dumps(json.loads(value), indent=2, sort_keys=True)
+            # these lines will try to adjust size of TextArea to fit to content
+            row_lengths = [len(r) for r in value.split('\n')]
+            self.attrs['rows'] = len(row_lengths)
+            self.attrs['cols'] = max(row_lengths)
+            return value
+        except Exception as e:
+            logger.warning("Error while formatting JSON: {}".format(e))
+            return super(PrettyJSONWidget, self).format_value(value)
+
+
+class JsonAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        JSONField: {'widget': PrettyJSONWidget}
+    }
 
 class StudentTextFilter(AutocompleteFilter):
     title = "student"
@@ -36,7 +67,7 @@ class ReferenceAcceptRejectForm(forms.ModelForm):
 
 
 @admin.register(SelfSportReport, site=site)
-class SelfSportAdmin(admin.ModelAdmin):
+class SelfSportAdmin(JsonAdmin):
     form = ReferenceAcceptRejectForm
 
     list_display = (
@@ -54,11 +85,12 @@ class SelfSportAdmin(admin.ModelAdmin):
     )
 
     fields = (
-        "student",
+        ("student", "uploaded"),
         "semester",
         "training_type",
-        "uploaded",
-        ("hours", "obtained_hours", "medical_group", "comment"),
+        ("hours", "obtained_hours", "medical_group"),
+        ("parsed_data","student_comment"),
+        "comment",
         "link",
         # "reference_image",
         "attendance_link",
@@ -76,7 +108,8 @@ class SelfSportAdmin(admin.ModelAdmin):
         "obtained_hours",
         "attendance_link",
         "medical_group",
-        "debt"
+        "debt",
+        "student_comment",
     )
 
     def attendance_link(self, obj):
@@ -98,12 +131,12 @@ class SelfSportAdmin(admin.ModelAdmin):
             Sum('hours')
         )['hours__sum']
 
-    obtained_hours.short_description = "Self sport hours in semester"
+    obtained_hours.short_description = "Self sport hours in current semester"
 
     def medical_group(self, obj: SelfSportReport):
         return obj.student.medical_group.name
 
-    medical_group.short_description = "Student medical group"
+    medical_group.short_description = "Student's medical group"
 
     def reference_image(self, obj):
         if obj.image is not None:

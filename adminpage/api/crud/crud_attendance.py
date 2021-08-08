@@ -155,13 +155,13 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
                                                               training__group__semester=get_ongoing_semester())
     sem_info_cur['id_sem'] = get_ongoing_semester().id
     sem_info_cur['hours_sem_max'] = get_ongoing_semester().hours
-    for i in query_attend_current_semester:
-        if i.cause_report is None:
-            sem_info_cur['hours_not_self'] += float(i.hours)
-        elif i.cause_report.debt is True:
-            sem_info_cur['hours_self_debt'] += float(i.hours)
+    for sem in query_attend_current_semester:
+        if sem.cause_report is None:
+            sem_info_cur['hours_not_self'] += float(sem.hours)
+        elif sem.cause_report.debt is True:
+            sem_info_cur['hours_self_debt'] += float(sem.hours)
         else:
-            sem_info_cur['hours_self_not_debt'] += float(i.hours)
+            sem_info_cur['hours_self_not_debt'] += float(sem.hours)
 
     sem_info = {"id_sem": 0, "hours_not_self": 0.0, "hours_self_not_debt": 0.0,
                 "hours_self_debt": 0.0, "hours_sem_max": 0.0}
@@ -169,23 +169,21 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
 
     last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
 
-    for i in last_semesters:
-        if student in i.academic_leave_students.all():
+    for sem in last_semesters:
+        if student in sem.academic_leave_students.all():
             pass
-        elif i.end.year >= student.enrollment_year:
-            sem_info["id_sem"] = i.id
-            sem_info["hours_sem_max"] = i.hours
+        elif sem.end.year >= student.enrollment_year:
+            sem_info["id_sem"] = sem.id
+            sem_info["hours_sem_max"] = sem.hours
             query_attend_last_semester = Attendance.objects.filter(student_id=student_id,
-                                                                   training__group__semester=i)
-
-            for j in query_attend_last_semester:
-                if j.cause_report is None:
-                    sem_info['hours_not_self'] += float(i.hours)
-                elif j.cause_report.debt is True:
-                    sem_info['hours_self_debt'] += float(i.hours)
+                                                                   training__group__semester=sem)
+            for att in query_attend_last_semester:
+                if att.cause_report is None:
+                    sem_info['hours_not_self'] += float(att.hours)
+                elif att.cause_report.debt is True:
+                    sem_info['hours_self_debt'] += float(att.hours)
                 else:
-                    sem_info['hours_self_not_debt'] += float(i.hours)
-
+                    sem_info['hours_self_not_debt'] += float(att.hours)
             last_sem_info_arr.append(sem_info)
             sem_info = {"id_sem": 0, "hours_not_self": 0.0, "hours_self_not_debt": 0.0,
                         "hours_self_debt": 0.0, "hours_sem_max": 0.0}

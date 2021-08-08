@@ -20,19 +20,19 @@ def test_mark_hours(student_factory, sport_factory, semester_factory, group_fact
     group = group_factory(name="G1", sport=sport, semester=semester, capacity=20)
     training = training_factory(group=group, start=timezone.now(), end=timezone.now())
     mark_hours(training, [
-        (student1.pk, 1.5),
-        (student2.pk, 2.5)
+        (student1.pk, 1),
+        (student2.pk, 2)
     ])
     attendance1 = Attendance.objects.get(student=student1)
     attendance2 = Attendance.objects.get(student=student2)
-    assert attendance1.hours == 1.5
-    assert attendance2.hours == 2.5
+    assert attendance1.hours == 1
+    assert attendance2.hours == 2
     mark_hours(training, [
-        (student1.pk, 3.5),
+        (student1.pk, 3),
         (student2.pk, 0)
     ])
     attendance1 = Attendance.objects.get(student=student1)
-    assert attendance1.hours == 3.5
+    assert attendance1.hours == 3
     assert Attendance.objects.count() == 1
 
 

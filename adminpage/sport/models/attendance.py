@@ -14,7 +14,7 @@ class Attendance(models.Model):
         limit_choices_to=~Q(medical_group__name='Medical checkup not passed'),
         on_delete=models.CASCADE,
     )
-    hours = models.DecimalField(max_digits=5, decimal_places=2, default=1, validators=[validate_hours])
+    hours = models.IntegerField(default=1, validators=[validate_hours])
     cause_report = models.OneToOneField('SelfSportReport', null=True, blank=True, on_delete=models.CASCADE, related_name='attendance')
     cause_reference = models.OneToOneField('Reference', null=True, blank=True, on_delete=models.CASCADE, related_name='attendance')
 
