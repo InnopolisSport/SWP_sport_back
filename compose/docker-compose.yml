@@ -53,6 +53,26 @@ services:
     env_file:
       - .env
 
+  prometheus:
+    image: "prom/prometheus:latest"
+    restart: always
+    volumes:
+      - ../prometheus:/etc/prometheus
+    ports:
+      - "9090:9090"
+
+  prometheus-postgres:
+    image: "quay.io/prometheuscommunity/postgres-exporter:latest"
+    restart: always
+    environment:
+      DATA_SOURCE_URI: "${POSTGRES_SERVER}:5432/${POSTGRES_DB}?sslmode=disable"
+      DATA_SOURCE_USER: "${POSTGRES_USER}"
+      DATA_SOURCE_PASS: "${POSTGRES_PASSWORD}"
+    ports:
+      - "9187:9187"
+    depends_on:
+      - db
+
   grafana:
     image: "grafana/grafana:latest"
     ports:
