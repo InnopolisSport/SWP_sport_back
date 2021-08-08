@@ -69,14 +69,16 @@ class MedicalGroupReferenceAdmin(admin.ModelAdmin):
     )
 
     fields = (
-        "student",
+        ("student", "uploaded"),
         ("medical_group", "comment"),
-        "reference_image",
+        ("student_comment", "reference_image"),
     )
 
     readonly_fields = (
         "student",
+        "uploaded",
         "reference_image",
+        "student_comment",
     )
 
     def save_model(self, request, obj, form, change):

@@ -16,6 +16,13 @@ from sport.utils import set_session_notification
 
 class MedicalGroupReferenceForm(forms.Form):
     reference = forms.ImageField()
+    student_comment = forms.CharField(
+        widget=forms.Textarea,
+        max_length=1024,
+        label="Comments (optional)",
+        required=False,
+        empty_value='-'
+    )
 
 
 def parse_group(group: dict) -> dict:
@@ -122,6 +129,7 @@ def process_med_group_form(request, *args, **kwargs):
             student_id=request.user.pk,
             semester=get_ongoing_semester(),
             image=form.cleaned_data["reference"],
+            student_comment=form.cleaned_data['student_comment']
         )
 
         set_session_notification(
