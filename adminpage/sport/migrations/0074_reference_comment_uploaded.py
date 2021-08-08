@@ -7,7 +7,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sport', '0071_add_parsed_data_student_comment_fields'),
+        ('sport', '0073_make_hours_integer'),
     ]
 
     operations = [
@@ -21,10 +21,5 @@ class Migration(migrations.Migration):
             name='uploaded',
             field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
             preserve_default=False,
-        ),
-        migrations.AlterField(
-            model_name='selfsportreport',
-            name='parsed_data',
-            field=models.JSONField(blank=True, null=True, verbose_name='Data from the Strava link'),
         ),
     ]
