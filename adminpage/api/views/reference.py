@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils.timezone import make_naive
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, \
@@ -55,7 +56,7 @@ def reference_upload(request, **kwargs):
             )
             count = Reference.objects.filter(
                 student_id=student.pk,
-                uploaded__date=ref.uploaded.date()
+                uploaded__date=make_naive(ref.uploaded).date()
             ).count()
             assert count == 1
     except AssertionError:
