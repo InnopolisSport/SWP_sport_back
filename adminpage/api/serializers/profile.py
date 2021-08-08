@@ -8,4 +8,4 @@ class IsIllSerializer(serializers.Serializer):
 class TrainingHourSerializer(serializers.Serializer):
     group = serializers.CharField()
     timestamp = serializers.DateTimeField()
-    hours = serializers.FloatField()
+    hours = serializers.IntegerField()
