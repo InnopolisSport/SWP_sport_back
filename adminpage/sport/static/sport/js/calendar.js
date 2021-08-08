@@ -64,7 +64,7 @@ async function submit_sport_type() {
     const sport_id = Number(url.match(/[^calendar\/sport\/](.*)/g)[0]);
     try {
         await sendResults('/api/select_sport', {"sport_id": sport_id}, 'POST',  asJSON = true)
-        toastr.success("You successfully choice " + sport_name + " for current semester.")
+        toastr.success("You have successfully chosen " + sport_name + " for current semester!")
     } catch (error) {
         toastr.error(error.message);
     }

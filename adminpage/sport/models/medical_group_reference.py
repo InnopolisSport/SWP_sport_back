@@ -31,12 +31,19 @@ class MedicalGroupReference(models.Model):
     )
 
     comment = models.TextField(max_length=1024, null=True, blank=True)
-
-    def __str__(self):
-        return f'{self.student} - {self.semester}'
+    uploaded = models.DateTimeField(
+        auto_now_add=True,
+        null=False
+    )
+    student_comment = models.TextField(max_length=1024, null=True, blank=True, verbose_name="Student's comment")
+    # def __str__(self):
+    #     return f'{self.student} - {self.semester}'
 
     def get_submission_url(self) -> Tuple[SubmissionType, str]:
         return SubmissionType.IMAGE, self.image.url
+    
+    def __str__(self):
+        return f"{self.student} {self.uploaded.strftime('%Y-%m-%d %H:%M:%S')} for {self.semester}"
 
     class Meta:
         db_table = "medical_group_reference"
