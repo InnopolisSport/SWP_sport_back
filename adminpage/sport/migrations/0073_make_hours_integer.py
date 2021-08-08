@@ -7,7 +7,7 @@ import sport.models.attendance
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sport', '0071_add_parsed_data_student_comment_fields'),
+        ('sport', '0072_auto_20210808_1618'),
     ]
 
     operations = [
