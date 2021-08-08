@@ -126,7 +126,7 @@ def process_med_group_form(request, *args, **kwargs):
 
         set_session_notification(
             request,
-            "Medical group reference successfully submitted",
+            "Medical group reference has been successfully uploaded!",
             "success",
         )
         return redirect('profile')

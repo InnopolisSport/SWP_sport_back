@@ -511,7 +511,7 @@ async function submit_self_sport() {
 
     try {
         await sendResults('/api/selfsport/upload', formData, 'POST', false)
-        toastr.success("Your report was successfully uploaded.")
+        toastr.success("Your report has been successfully uploaded!")
         close_modal('#selfsport-modal');
     } catch (error) {
         toastr.error(error.message);
