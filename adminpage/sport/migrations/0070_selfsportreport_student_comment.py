@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sport', '0068_auto_20210802_1649'),
+        ('sport', '0069_change_number_of_hour_one_day_ill'),
     ]
 
     operations = [
