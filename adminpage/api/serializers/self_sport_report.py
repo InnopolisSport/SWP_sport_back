@@ -24,11 +24,27 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
     # start = serializers.DateTimeField(required=True)
     # end = serializers.DateTimeField(required=True)
     hours = serializers.IntegerField()
+    student_comment = serializers.CharField(required=False)
+    parsed_data = serializers.JSONField()
 
     class Meta:
         model = SelfSportReport
         fields = (
             'link',
             'hours',
-            'training_type'
+            'training_type',
+            'student_comment',
+            'parsed_data'
         )
+
+class ParseStrava(serializers.Serializer):
+    link = serializers.URLField(required=True)
+
+class ParsedStravaSerializer(serializers.Serializer):
+    training_type = serializers.CharField()
+    pace = serializers.CharField(required=False)
+    speed = serializers.CharField(required=False)
+    distance_km = serializers.IntegerField()
+    hours = serializers.IntegerField()
+    approved = serializers.BooleanField()
+    

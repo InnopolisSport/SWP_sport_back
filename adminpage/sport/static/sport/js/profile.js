@@ -443,16 +443,20 @@ async function submit_self_sport() {
     // const file = fileInput.files[0];
 
     // Get link
-    const linkInput = $('#self-sport-text-input');
-    const link = linkInput.val();
+    const linkInput = $('#self-sport-text-input')[0];
+    const link = linkInput.value;
 
     // Get training_type
-    const typeInput = $('#self-sport-type');
-    const type = typeInput.val();
+    const typeInput = $('#self-sport-type')[0];
+    const type = typeInput.value;
 
-    // Get training_type
-    const hoursInput = $('#self-sport-number-input');
-    const hours = hoursInput.val();
+    // Get hours
+    const hoursInput = $('#self-sport-number-input')[0];
+    const hours = hoursInput.value;
+
+    // Get student comment
+    const commentInput = $('#student-comment-field')[0];
+    const comment = commentInput.value;
 
     if (!type) {
         toastr.error("You should select the training type");
@@ -491,17 +495,19 @@ async function submit_self_sport() {
     // }
 
     if (link) {
-        // TODO: regexp for strava
-        if (link.startsWith('http://') || link.startsWith('https://')) {
-            formData.append(linkInput[0].name, link);
+        if ((link.startsWith('http://') || link.startsWith('https://')) && link.includes('strava')) {
+            formData.append(linkInput.name, link);
         } else {
             toastr.error("You should submit a link to your Strava activity");
             return false;
         }
     }
 
-    formData.append(typeInput[0].name, type);
+    formData.append(typeInput.name, type);
     formData.append('hours', hours);
+    console.log(comment)
+    formData.append(commentInput.name, comment);
+    formData.append('parsed_data', JSON.stringify(parsed_data));
 
     try {
         await sendResults('/api/selfsport/upload', formData, 'POST', false)
