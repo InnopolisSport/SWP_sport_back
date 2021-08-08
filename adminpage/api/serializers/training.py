@@ -15,6 +15,6 @@ class TrainingInfoSerializer(serializers.Serializer):
     trainer_last_name = serializers.CharField()
     trainer_email = serializers.CharField()
 
-    hours = serializers.FloatField(default=None)
+    hours = serializers.IntegerField(default=None)
 
     is_enrolled = serializers.BooleanField()

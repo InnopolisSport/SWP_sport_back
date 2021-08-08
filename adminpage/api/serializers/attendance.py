@@ -20,7 +20,7 @@ class StudentInfoSerializer(serializers.Serializer):
 
 
 class GradeReportSerializer(StudentInfoSerializer):
-    hours = serializers.FloatField(default=None)
+    hours = serializers.IntegerField(default=None)
 
 
 class TrainingGradesSerializer(serializers.Serializer):
@@ -39,7 +39,7 @@ class LastAttendedDatesSerializer(serializers.Serializer):
 
 class BadGradeReportGradeSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    hours = serializers.FloatField()
+    hours = serializers.IntegerField()
 
 
 class BadGradeReport(serializers.Serializer):
@@ -51,7 +51,7 @@ class BadGradeReport(serializers.Serializer):
 
 class GradeSetSerializer(serializers.Serializer):
     student_id = serializers.IntegerField()
-    hours = serializers.FloatField()
+    hours = serializers.IntegerField()
 
 
 class AttendanceMarkSerializer(serializers.Serializer):
@@ -61,10 +61,10 @@ class AttendanceMarkSerializer(serializers.Serializer):
 
 class HourInfoSemesterChildSerializer(serializers.Serializer):
     id_sem = serializers.IntegerField()
-    hours_not_self = serializers.FloatField()
-    hours_self_not_debt = serializers.FloatField()
-    hours_self_debt = serializers.FloatField()
-    hours_sem_max = serializers.FloatField()
+    hours_not_self = serializers.IntegerField()
+    hours_self_not_debt = serializers.IntegerField()
+    hours_self_debt = serializers.IntegerField()
+    hours_sem_max = serializers.IntegerField()
 
 
 class HoursInfoSerializer(serializers.Serializer):
@@ -73,5 +73,5 @@ class HoursInfoSerializer(serializers.Serializer):
 
 
 class HoursInfoFullSerializer(serializers.Serializer):
-    final_hours = serializers.FloatField()
+    final_hours = serializers.IntegerField()
 
