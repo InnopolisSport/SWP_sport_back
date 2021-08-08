@@ -17,4 +17,18 @@ class Migration(migrations.Migration):
             name='hours',
             field=models.IntegerField(default=1, validators=[sport.models.attendance.validate_hours]),
         ),
+
+        migrations.RunSQL('UPDATE reference SET hours = CEIL(hours)'),
+        migrations.AlterField(
+            model_name='reference',
+            name='hours',
+            field=models.IntegerField(default=0),
+        ),
+
+        migrations.RunSQL('UPDATE self_sport_report SET hours = CEIL(hours)'),
+        migrations.AlterField(
+            model_name='selfsportreport',
+            name='hours',
+            field=models.IntegerField(default=0),
+        ),
     ]

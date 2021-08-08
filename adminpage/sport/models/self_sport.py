@@ -58,11 +58,7 @@ class SelfSportReport(models.Model):
         default=False
     )
 
-    hours = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=0,
-    )
+    hours = models.IntegerField(default=0)
     uploaded = models.DateTimeField(
         auto_now_add=True,
         null=False

@@ -33,7 +33,7 @@ class Reference(models.Model):
     image = models.ImageField(upload_to=get_reference_path)
     start = models.DateField(null=False, default=today)
     end = models.DateField(null=False, default=today)
-    hours = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    hours = models.IntegerField(default=0)
     uploaded = models.DateTimeField(auto_now_add=True, null=False)
     approval = models.BooleanField(null=True)
     comment = models.TextField(max_length=1024, null=True, blank=True)
