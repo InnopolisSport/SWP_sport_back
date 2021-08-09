@@ -48,6 +48,4 @@ def get_trainers_group(group_id: int):
         trainer_email=F('user__email'),
     )
 
-    print(query)
-
     return query
