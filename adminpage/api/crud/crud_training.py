@@ -206,7 +206,6 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
     for entry in query:
         entry["can_grade"] = True
 
-    print(list(query))
     return list(query)
 
 

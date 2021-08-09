@@ -58,7 +58,6 @@ def get_history(request, semester_id: int, **kwargs):
     """
     semester = get_object_or_404(Semester, pk=semester_id)
     student = request.user  # user.pk == user.student.pk
-    print(get_detailed_hours(student, semester))
     return Response({
         "trainings": list(map(
             lambda g: {
