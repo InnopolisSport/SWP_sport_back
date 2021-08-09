@@ -119,6 +119,19 @@
                                     {{ student.obj.medical_group.name }} medical group
                                 </span>
                             {% endif %}
+                            {% if student.sport %}
+                                <span class="badge badge-dark text-uppercase mx-1 my-1">{{ student.sport.name }}</span>
+                            {% else %}
+                                <span class="badge badge-dark mx-1 my-1">NO SPORT TYPE</span>
+                            {% endif %}
+                            {% if student.sport_groups|length > 0 %}
+                                <span class="badge badge-info text-uppercase mx-1 my-1"
+                                    id="student-span"
+                                    onclick="openGroupInfoModalForStudent('/api/group/{{ group.id }}')"
+                                    style="cursor: pointer;">{{ student.sport_groups.0.name }}</span>
+                            {% else %}
+                                <span class="badge badge-info mx-1 my-1">NO SPORT GROUP</span>
+                            {% endif %}
                         </p>
                         <div id="debtor_alert" class="d-none alert alert-danger" role="alert">
                             <h5>Dear student!</h5>
@@ -164,36 +177,6 @@
                                 </div>
                             {% endif %}
                         </div>
-                        {% if student.sport %}
-                            <p id="student-list">
-                                Your sport type for the 
-                                <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> semester is
-                                <span class="badge badge badge-dark text-uppercase">{{ student.sport.name }}</span>
-                            </p>
-                        {% else %}
-                            <p id="student-list">
-                                You have not chosen any 
-                                <span class="badge badge-dark" style="cursor: default;">SPORT TYPE</span>
-                                 for the <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> semester yet
-                            </p>
-                        {% endif %}
-                        {% if student.sport_groups|length > 0 %}
-                            <p id="student-list">
-                                Your sport group for the <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> 
-                                semester is 
-                                {% for group in student.sport_groups %}
-                                    <span class="badge badge-info text-uppercase"
-                                          id="student-span"
-                                          onclick="openGroupInfoModalForStudent('/api/group/{{ group.id }}')"
-                                          style="cursor: pointer;">{{ group.name }}</span>
-                                {% endfor %}
-                            </p>
-                        {% else %}
-                            <p id="student-list">
-                                You have not enroll to any <span class="badge badge-info">SPORT GROUP</span> for the 
-                                <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> semester yet
-                            </p>
-                        {% endif %}
                         <div id="medical-group-info-modal"></div>
                         {% if student.semesters|length > 0 %}
                             <div class="container" id="semester-hours">
