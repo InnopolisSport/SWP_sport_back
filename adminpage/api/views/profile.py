@@ -51,6 +51,7 @@ def toggle_sick(request, **kwargs):
 )
 @api_view(["GET"])
 @permission_classes([IsStudent])
+# TODO: Replace on get_history_with_self
 def get_history(request, semester_id: int, **kwargs):
     """
     Get student's trainings per_semester
@@ -87,7 +88,6 @@ def get_history_with_self(request, semester_id: int, **kwargs):
     """
     semester = get_object_or_404(Semester, pk=semester_id)
     student = request.user  # user.pk == user.student.pk
-    print(get_detailed_hours_and_self(student, semester))
     return Response({
         "trainings": list(map(
             lambda g: {

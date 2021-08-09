@@ -1,14 +1,20 @@
 from math import floor
 from typing import Iterable, Tuple, List
+
+from django.db.models import F, Value, BooleanField, Case, When, CharField
+from django.db.models.functions import Concat
 from typing_extensions import TypedDict
 
 from django.db import connection
 
 from api.crud.utils import dictfetchall
-from sport.models import Student, Semester, Training
+from sport.models import Student, Semester, Training, SelfSportReport, Reference
 
 from api.crud.crud_semester import get_ongoing_semester
 from sport.models import Attendance
+
+VTrue = Value(True, output_field=BooleanField())
+VFalse = Value(False, output_field=BooleanField())
 
 
 class BriefHours(TypedDict):
@@ -71,28 +77,43 @@ def get_detailed_hours(student: Student, semester: Semester):
         return dictfetchall(cursor)
 
 
-def get_detailed_hours_and_self(student: Student, semester: Semester):
+def get_detailed_hours_and_self(student, semester: Semester):
     """
     Retrieves statistics of hours in one semester
     """
-    with connection.cursor() as cursor:
-        cursor.execute(
-            'SELECT g.name AS "group", t.custom_name AS custom_name, t.start AS "timestamp", a.hours AS hours, true AS "approved" '
-            'FROM training t, "group" g, attendance a, "self_sport_report" r '
-            'WHERE a.student_id = %(student)s '
-            'AND a.training_id = t.id '
-            'AND t.group_id = g.id '
-            'AND r.id = a.cause_report_id '
-            'AND g.semester_id = %(semester)s '
-            'UNION '
-            'SELECT \'Self training\' AS "group", CONCAT(\'[Self] \', g.name) AS custom_name, r.uploaded as timestamp, r.hours, r.approval AS "approved" '
-            'FROM "self_sport_report" r, "self_sport_group" g '
-            'WHERE r.semester_id = %(semester)s '
-            'AND r.student_id = %(student)s '
-            'AND (r.approval IS NULL OR r.approval = false) '
-            'AND g.id = r.training_type_id '
-            'ORDER BY timestamp', {'student': student.pk, 'semester': semester.pk})
-        return dictfetchall(cursor)
+    att = (Attendance.objects
+        .filter(training__group__semester=semester, student=student.student)
+        .annotate(
+            group=F("training__group__name"),
+            custom_name=F("training__custom_name"),
+            timestamp=Case(When(cause_report__isnull=False, then=F('cause_report__uploaded')),
+                           When(cause_reference__isnull=False, then=F('cause_reference__uploaded')),
+                           default=F('training__start')),
+            approved=Case(When(hours__gt=0, then=VTrue), default=VFalse)
+        )
+        .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
+
+    self = (SelfSportReport.objects
+        .filter(semester=semester, student=student.student, attendance=None)
+        .annotate(
+            group=Value('Self training', output_field=CharField()),
+            custom_name=Concat(Value('[Self] ', output_field=CharField()), F('training_type__name')),
+            timestamp=F("uploaded"),
+            approved=F('approval')
+        )
+        .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
+
+    ref = (Reference.objects
+        .filter(semester=semester, student=student.student, attendance=None)
+        .annotate(
+            group=Value('Medical leave', output_field=CharField()),
+            custom_name=Value(None, output_field=CharField()),
+            timestamp=F("uploaded"),
+            approved=F('approval')
+        )
+        .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
+
+    return att.union(self).union(ref).order_by('timestamp')
 
 
 def mark_hours(training: Training, student_hours: Iterable[Tuple[int, float]]):
