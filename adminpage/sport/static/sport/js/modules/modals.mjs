@@ -28,8 +28,6 @@ async function openModal(id, apiUrl) {
     body.empty();
     footer.empty();
     body.append($('<div class="spinner-border" role="status"></div>'));
-    // title.text('Loading...');
-    // title.append('Loading...');
     modal.modal('show');
     let data;
     if (apiUrl) {
