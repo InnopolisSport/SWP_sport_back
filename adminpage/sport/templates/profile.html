@@ -99,9 +99,11 @@
                                     }).then(data => {
                                         d_span = document.getElementById('debtor_status');
                                         d_alert = document.getElementById('debtor_alert');
+                                        d_bar = document.getElementById('debtor_bar');
                                         if (data['final_hours'] < 0) {
                                             d_span.classList.remove('d-none');
                                             d_alert.classList.remove('d-none');
+                                            d_bar.classList.remove('d-none');
                                         }
                                     }).catch(err => {
                                     });
@@ -120,9 +122,47 @@
                         </p>
                         <div id="debtor_alert" class="d-none alert alert-danger" role="alert">
                             <h5>Dear student!</h5>
-                            <p>To remove the debtor status you should make your <b>number of hours positive</b>.</p>
-                            <hr>
-                            <p>Closing the debt is <b>required to pass the sport course</b>.</p>
+                            <p><b>To remove</b> the <span class="badge badge-pill badge-danger">DEBTOR</span> status you should make your <b>number of hours positive</b> (clear debt bar),
+                            <br>
+                            <i>either</i>  on <b>self-sport</b> or <span class="badge badge-info">SPORT GROUP</span> trainings.
+                            <br>
+                            Closing the debt is <b>required to pass the sport course</b>.</p>
+                        </div>
+                        <h3 class="text-left">Progress</h3>
+                        <!-- Debt bar-->
+                        <div id="debtor_bar" class="d-none">
+                            <div class="progress mt-3" style="width: 100%; height: 2rem;">
+                                <div class="progress-bar progress-bar-striped bg-light" style="width: 100%; height: 2rem; color: red;"><b>Debt</b></div>
+                            </div>
+                            <div class="progress mb-3" style="width: 100%; height: 2rem">
+                                <div class="progress-bar progress-bar-striped bg-danger" style="width: {{student.debt_hours}}%; height: 2rem">{{student.debt_hours}}h</div>
+                            </div>
+                        </div>
+                        <!-- Self-sport + Sport group bar-->
+                        <div class="progress mt-3" style="width: 100%; height: 2rem;">
+                            {% if student.is_online %}
+                                <div class="progress-bar bg-light" style="width: 100%; height: 2rem; color: blue"><b>Self-sport (max {{student.all_hours.hours_sem_max}}h)</b></div>
+                            {% else %}
+                                <div class="progress-bar bg-light" style="width: 30%; height: 2rem; color: blue"><b>Self-sport (max 10h)</b></div>
+                                <div class="progress-bar bg-light" style="width: 70%; height: 2rem; color: green"><b>Sport group (max {{student.all_hours.hours_sem_max}}h)</b></div>
+                            {% endif %}
+                        </div>
+                        <div class="progress mb-3" style="width: 100%; height: 2rem">
+                            {% if student.is_online %}
+                                <div class="progress-bar bg-primary" 
+                                    style="width: calc({{student.all_hours.hours_self_not_debt}}%*(100/{{student.all_hours.hours_sem_max}})); height: 2rem">
+                                    {{student.all_hours.hours_self_not_debt}}h
+                                </div>
+                            {% else %}
+                                <div class="progress-bar bg-primary" 
+                                    style="width: calc({{student.all_hours.hours_self_not_debt}}%*(100/{{student.all_hours.hours_sem_max}})); height: 2rem">
+                                    {{student.all_hours.hours_self_not_debt}}h
+                                </div>
+                                <div class="progress-bar bg-success"
+                                    style="width: calc({{student.all_hours.hours_not_self}}%*(100/{{student.all_hours.hours_sem_max}})); height: 2rem">
+                                    {{student.all_hours.hours_not_self}}h
+                                </div>
+                            {% endif %}
                         </div>
                         {% if student.sport %}
                             <p id="student-list">
