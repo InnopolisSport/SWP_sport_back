@@ -16,6 +16,11 @@ function handleErrors(response) {
 async function getStravaActivityInfo(e) {
     const apiUrl = `/api/selfsport/strava_parsing`
     const numberFieldObject = document.getElementById('self-sport-number-input');
+    const pOkObject = document.getElementById('description-ok');
+    const pErrorObject = document.getElementById('description-error');
+    pOkObject.classList.remove('d-none');
+    pErrorObject.classList.add('d-none');
+    numberFieldObject.setAttribute('disabled', 'disabled');
     numberFieldObject.placeholder = "Loading...";
     parsed_data = await fetch(`${apiUrl}?${new URLSearchParams({link : e.value})}`)
                     .then(handleErrors)

@@ -127,7 +127,7 @@
                             {% if student.sport_groups|length > 0 %}
                                 <span class="badge badge-info text-uppercase mx-1 my-1"
                                     id="student-span"
-                                    onclick="openGroupInfoModalForStudent('/api/group/{{ group.id }}')"
+                                    onclick="openGroupInfoModalForStudent('/api/group/{{ student.sport_groups.0.id }}')"
                                     style="cursor: pointer;">{{ student.sport_groups.0.name }}</span>
                             {% else %}
                                 <span class="badge badge-info mx-1 my-1">NO SPORT GROUP</span>
