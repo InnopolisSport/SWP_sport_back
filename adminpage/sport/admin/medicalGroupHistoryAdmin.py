@@ -32,7 +32,6 @@ class MedicalGroupHistoryAdmin(admin.ModelAdmin):
     student_link.short_description = "student"
 
     def medical_group_reference_link(self, obj: MedicalGroupHistory):
-        print(obj.medical_group_reference._meta.model_name)
         change_url = reverse('admin:sport_medicalgroupreference_change', args=(obj.medical_group_reference.pk,))
         return mark_safe('<a href="%s">%s</a>' % (change_url, obj.medical_group_reference))
     medical_group_reference_link.short_description = "medical group reference"
