@@ -4,7 +4,7 @@ from sport.models import Student
 
 class IsStudent(permissions.BasePermission):
     def has_permission(self, request, view):
-        if hasattr(request.user, 'student') and request.user.student.student_status == 'Normal':
+        if hasattr(request.user, 'student') and str(request.user.student.student_status) == 'Normal':
             return True
         return False
 
