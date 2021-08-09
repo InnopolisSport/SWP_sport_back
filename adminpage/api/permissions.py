@@ -1,16 +1,17 @@
-from django.conf import settings
-
 from rest_framework import permissions
+from sport.models import Student
 
 
 class IsStudent(permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.user and \
-                request.user.groups.filter(
-                    verbose_name=settings.STUDENT_AUTH_GROUP_VERBOSE_NAME
-                ):
+        if hasattr(request.user, 'student') and str(request.user.student.student_status) == 'Normal':
             return True
         return False
+
+
+class SportSelected(IsStudent):
+    def has_permission(self, request, view):
+        return super().has_permission(request, view) and request.user.student.sport
 
 
 class IsTrainer(permissions.BasePermission):

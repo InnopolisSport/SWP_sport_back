@@ -11,7 +11,8 @@ class Trainer(models.Model):
 
     class Meta:
         db_table = "trainer"
-        verbose_name_plural = "trainers"
+        verbose_name = "teacher"
+        verbose_name_plural = "teachers"
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"

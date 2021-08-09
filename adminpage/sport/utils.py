@@ -5,7 +5,6 @@ from django.conf import settings
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-
 class SubmissionType(IntEnum):
     LINK = 1
     IMAGE = 0

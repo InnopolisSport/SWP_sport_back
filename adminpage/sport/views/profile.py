@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 from api.crud import get_ongoing_semester, get_student_groups, \
     get_brief_hours, \
-    get_trainer_groups
+    get_trainer_groups, get_negative_hours, get_student_hours
 from api.permissions import IsStudent
 from sport.models import Student, MedicalGroupReference
 from sport.utils import set_session_notification
@@ -16,6 +16,13 @@ from sport.utils import set_session_notification
 
 class MedicalGroupReferenceForm(forms.Form):
     reference = forms.ImageField()
+    student_comment = forms.CharField(
+        widget=forms.Textarea,
+        max_length=1024,
+        label="Comments (optional)",
+        required=False,
+        empty_value='-'
+    )
 
 
 def parse_group(group: dict) -> dict:
@@ -71,7 +78,12 @@ def profile_view(request, **kwargs):
             student=student,
             semester=current_semester,
         ).exists()
-
+        
+        has_unresolved_med_group_submission = MedicalGroupReference.objects.filter(
+            student=student,
+            semester=current_semester,
+            resolved=None,
+        ).exists()
         context.update({
             "student": {
                 "student_id": student.pk,
@@ -85,7 +97,11 @@ def profile_view(request, **kwargs):
                 "semesters": student_brief_hours_info,
                 "obj": student,
                 "has_med_group_submission": has_med_group_submission,
+                "has_unresolved_med_group_submission": has_unresolved_med_group_submission,
                 **student_data,
+                "sport": student.sport,
+                "debt_hours": get_negative_hours(student.pk),
+                "all_hours": get_student_hours(student.pk)['ongoing_semester']
             },
         })
 
@@ -111,27 +127,20 @@ def profile_view(request, **kwargs):
 def process_med_group_form(request, *args, **kwargs):
     form = MedicalGroupReferenceForm(request.POST, request.FILES)
     if form.is_valid():
-        obj, created = MedicalGroupReference.objects.get_or_create(
+        MedicalGroupReference.objects.create(
             student_id=request.user.pk,
             semester=get_ongoing_semester(),
-            defaults={
-                "image": form.cleaned_data["reference"],
-            },
+            image=form.cleaned_data["reference"],
+            student_comment=form.cleaned_data['student_comment']
         )
 
-        if created:
-            set_session_notification(
-                request,
-                "Medical group reference successfully submitted",
-                "success",
-            )
-            return redirect('profile')
-        else:
-            set_session_notification(
-                request,
-                "You have already submitted medical group reference",
-                "error",
-            )
+        set_session_notification(
+            request,
+            "Medical group reference has been successfully uploaded!",
+            "success",
+        )
+        return redirect('profile')
+
     else:
         set_session_notification(request, "Form is invalid", "error")
     return redirect('profile')

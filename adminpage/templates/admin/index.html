@@ -1,6 +1,9 @@
 {% extends "admin/index.html" %}
 {% load i18n static %}
 {% block content %}
+    <div align="right" style="margin-bottom: 1em;">
+        <a href="../dashboard/" target="_blank" rel="noopener noreferrer"><strong>Open Grafana dashboard</strong></a>
+    </div>
     <div id="content-main">
 
         {% if app_list %}
@@ -20,15 +23,15 @@
                                 {% endif %}
 
                                 {% if model.add_url %}
-                                    {% if model.object_name|lower == "training" %}
-                                        <td><a href="{{ model.admin_url }}add-extra/"
-                                               class="addlink">{% trans 'Add extra training' %}</a></td>
-                                        <td><a href="{{ model.admin_url }}add-extra-multi/"
-                                               class="addlink">{% trans 'Add multiple extra trainings' %}</a></td>
-                                    {% else %}
+{#                                    {% if model.object_name|lower == "training" %}#}
+{#                                        <td><a href="{{ model.admin_url }}add-extra/"#}
+{#                                               class="addlink">{% trans 'Add extra training' %}</a></td>#}
+{#                                        <td><a href="{{ model.admin_url }}add-extra-multi/"#}
+{#                                               class="addlink">{% trans 'Add multiple extra trainings' %}</a></td>#}
+{#                                    {% else %}#}
                                         <td></td>
                                         <td></td>
-                                    {% endif %}
+{#                                    {% endif %}#}
                                     <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
                                 {% else %}
                                     <td>&nbsp;</td>

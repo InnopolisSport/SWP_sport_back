@@ -8,15 +8,21 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportMixin
 from import_export.results import RowResult
 
-from sport.models import Student, MedicalGroup
+from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours, get_negative_hours
+from sport.models import Student, MedicalGroup, StudentStatus, Semester
 from sport.signals import get_or_create_student_group
-from .inlines import ViewAttendanceInline, AddAttendanceInline
+from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
-from .utils import user__email
+from .utils import user__email, user__role
 
 
 class MedicalGroupWidget(widgets.ForeignKeyWidget):
     def render(self, value: MedicalGroup, obj=None):
+        return str(value)
+
+
+class StudentStatusWidget(widgets.ForeignKeyWidget):
+    def render(self, value: StudentStatus, obj=None):
         return str(value)
 
 
@@ -25,6 +31,12 @@ class StudentResource(resources.ModelResource):
         column_name="medical_group",
         attribute="medical_group",
         widget=MedicalGroupWidget(MedicalGroup, "pk"),
+    )
+
+    student_status = fields.Field(
+        column_name="student_status",
+        attribute="student_status",
+        widget=StudentStatusWidget(StudentStatus, "pk"),
     )
 
     def get_or_init_instance(self, instance_loader, row):
@@ -66,6 +78,7 @@ class StudentResource(resources.ModelResource):
             "user__first_name",
             "user__last_name",
             "enrollment_year",
+            "course",
             "telegram",
         )
         export_order = (
@@ -75,7 +88,9 @@ class StudentResource(resources.ModelResource):
             "user__last_name",
             "medical_group",
             "enrollment_year",
+            "course",
             "telegram",
+            "student_status",
         )
         import_id_fields = ("user",)
         skip_unchanged = False
@@ -95,6 +110,7 @@ class StudentResource(resources.ModelResource):
                 row.get('last_name'),
                 row.get('medical_group'),
                 row.get('enrollment_year'),
+                row.get('course'),
                 row.get('telegram'),
             ]
             # Add a column with the error message
@@ -118,13 +134,20 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
                 "user",
                 "medical_group",
                 "enrollment_year",
+                "course",
+                "student_status",
                 "telegram",
             )
         return (
             "user",
             "is_ill",
+            "is_online",
             "medical_group",
             "enrollment_year",
+            "course",
+            "sport",
+            "student_status",
+            "hours",
             "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
         )
 
@@ -140,23 +163,29 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     )
 
     list_filter = (
-        "is_ill",
+        "is_online",
         "enrollment_year",
+        "course",
         "medical_group",
+        'student_status',
     )
 
     list_display = (
         "__str__",
-        user__email,
-        "is_ill",
+        user__role,
+        "is_online",
+        "course",
         "medical_group",
+        "sport",
+        "hours",
+        "student_status",
         "write_to_telegram",
     )
 
     readonly_fields = (
+        "hours",
         "write_to_telegram",
     )
-
 
     def write_to_telegram(self, obj):
         return None if obj.telegram is None else \
@@ -166,30 +195,32 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
                 obj.telegram
             )
 
+    def hours(self, obj):
+        return get_negative_hours(obj.user_id)
+
     ordering = (
         "user__first_name",
         "user__last_name"
     )
 
     inlines = (
+        ViewMedicalGroupHistoryInline,
         ViewAttendanceInline,
         AddAttendanceInline,
     )
+
+    # https://stackoverflow.com/a/66730984
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        try:
+            obj = self.model.objects.get(pk=object_id)
+        except self.model.DoesNotExist:
+            pass
+        else:
+            if obj.medical_group.name == 'Medical checkup not passed':
+                self.inlines = (ViewAttendanceInline,)
+        return super().change_view(request, object_id, form_url, extra_context)
 
     list_select_related = (
         "user",
         "medical_group",
     )
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        # TODO: show current primary group
-        return qs
-        # return qs.annotate(has_enrolled=RawSQL(
-        #     'SELECT count(*) > 0 FROM enroll, "group" '
-        #     'WHERE student_id = student.user_id '
-        #     'AND "group".semester_id = current_semester() '
-        #     'AND "group".id = enroll.group_id '
-        #     'AND enroll.is_primary = True',
-        #     ()
-        # ))

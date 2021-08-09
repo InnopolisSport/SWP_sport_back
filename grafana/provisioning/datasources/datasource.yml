@@ -16,3 +16,9 @@ datasources:
       sslmode: "disable"
       postgresVersion: 1100
       timescaledb: false
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    version: 1
+    editable: true

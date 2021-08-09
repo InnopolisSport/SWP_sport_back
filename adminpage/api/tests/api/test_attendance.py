@@ -55,7 +55,7 @@ def setup(
         sport=sport,
         semester=sem,
         trainer=trainer_user.trainer,
-        is_club=True,
+        is_club=False,
     )
 
     training = Training.objects.create(
@@ -167,7 +167,7 @@ def test_attendance_during_training_outbound(setup, student_factory):
     client = APIClient()
     client.force_authenticate(trainer_user)
     hours_put = 1
-    hours_overflow = training.academic_duration + 0.5
+    hours_overflow = training.academic_duration + 1
     hours_underflow = -1
 
     student_user_overflow = student_factory(

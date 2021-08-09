@@ -2,9 +2,32 @@ from django import forms
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminDateWidget
 from django.http import HttpRequest
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 
-from sport.models import Attendance, Schedule, Enroll, Group, Training
+from sport.models import Attendance, Schedule, Enroll, Group, Training, MedicalGroupHistory
+
+
+class ViewMedicalGroupHistoryInline(admin.TabularInline):
+    model = MedicalGroupHistory
+    extra = 0
+    fields = ("medical_group", "medical_group_reference_link", "changed")
+    readonly_fields = fields
+
+    def medical_group_reference_link(self, obj: MedicalGroupHistory):
+        change_url = reverse('admin:sport_medicalgroupreference_change', args=(obj.medical_group_reference.pk,))
+        return mark_safe('<a href="%s">%s</a>' % (change_url, obj.medical_group_reference))
+    medical_group_reference_link.short_description = "medical group reference"
+
+    def has_add_permission(self, request, obj):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    # def get_queryset(self, request):
+    #     return super().get_queryset(request).filter(student=request.)
 
 
 class ViewAttendanceInline(admin.TabularInline):

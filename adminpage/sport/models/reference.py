@@ -3,8 +3,14 @@ from typing import Tuple
 
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
+import datetime
 
 from sport.utils import SubmissionType
+
+
+def today() -> datetime.date:
+    return timezone.now().date()
 
 
 def get_reference_path(instance, filename):
@@ -25,10 +31,13 @@ class Reference(models.Model):
         null=False,
     )
     image = models.ImageField(upload_to=get_reference_path)
-    hours = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    start = models.DateField(null=False, default=today)
+    end = models.DateField(null=False, default=today)
+    hours = models.IntegerField(default=0)
     uploaded = models.DateTimeField(auto_now_add=True, null=False)
     approval = models.BooleanField(null=True)
     comment = models.TextField(max_length=1024, null=True, blank=True)
+    student_comment = models.TextField(max_length=1024, null=True, blank=True)
 
     class Meta:
         db_table = "reference"

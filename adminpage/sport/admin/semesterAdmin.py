@@ -14,9 +14,21 @@ class SemesterAdmin(admin.ModelAdmin):
     ordering = (
         "-start",
     )
-
     list_display = (
         "name",
         "start",
         "end",
+        "hours",
     )
+
+    fields = (
+        "name",
+        "start",
+        "end",
+        "hours",
+        "academic_leave_students",
+        "number_hours_one_week_ill",
+    )
+
+    filter_horizontal = ('academic_leave_students',)
+

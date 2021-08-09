@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from sport.admin import site
-from sport.models import MedicalGroupReference, MedicalGroup, MedicalGroups
+from sport.models import MedicalGroupReference, MedicalGroup, MedicalGroups, MedicalGroupHistory
 
 
 class StudentTextFilter(AutocompleteFilter):
@@ -16,7 +16,10 @@ class MedicalGroupReferenceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.student_id is not None:
-            self.fields['medical_group'].initial = self.instance.student.medical_group_id
+            if MedicalGroupHistory.objects.filter(medical_group_reference=self.instance).exists():
+                self.fields['medical_group'].initial = MedicalGroupHistory.objects.get(medical_group_reference=self.instance).medical_group
+            else:
+                self.fields['medical_group'].initial = self.instance.student.medical_group_id
 
     medical_group = forms.ModelChoiceField(MedicalGroup.objects.all(), initial=-2)
 
@@ -30,6 +33,11 @@ class MedicalGroupReferenceForm(forms.ModelForm):
         instance = super().save(commit)
         instance.student.medical_group_id = self.cleaned_data['medical_group'].pk
         instance.student.save()
+
+        last_med_hist: MedicalGroupHistory = MedicalGroupHistory.objects.filter(student=instance.student).latest('changed')
+        last_med_hist.medical_group_reference=instance
+        last_med_hist.save()
+
         return instance
 
     class Meta:
@@ -61,14 +69,16 @@ class MedicalGroupReferenceAdmin(admin.ModelAdmin):
     )
 
     fields = (
-        "student",
+        ("student", "uploaded"),
         ("medical_group", "comment"),
-        "reference_image",
+        ("student_comment", "reference_image"),
     )
 
     readonly_fields = (
         "student",
+        "uploaded",
         "reference_image",
+        "student_comment",
     )
 
     def save_model(self, request, obj, form, change):

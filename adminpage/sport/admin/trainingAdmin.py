@@ -27,12 +27,13 @@ class AutocompleteStudent:
 class TrainingFormWithCSV(forms.ModelForm):
     attended_students = forms.ModelMultipleChoiceField(
         required=False,
-        queryset=Student.objects.all(),
+        queryset=Student.objects.exclude(medical_group__name='Medical checkup not passed'),
+        error_messages={'invalid_choice': 'The student has not passed medical check-up yet!'},
         widget=AutocompleteSelectMultiple(
             rel=AutocompleteStudent,
             admin_site=site,
             attrs={'data-width': '50%'}
-        )
+        ),
     )
     hours = forms.DecimalField(required=False, max_digits=5, decimal_places=2, min_value=0.01, max_value=999.99,
                                initial=1)
@@ -125,8 +126,9 @@ CreateExtraTrainingForm.title = "Add extra training"
 
 class MultiTrainingsForStudentForm(forms.ModelForm):
     student = forms.ModelChoiceField(
-        Student.objects.all(),
-        widget=AutocompleteSelect(Attendance._meta.get_field('student').remote_field, site)
+        Student.objects.exclude(medical_group__name='Medical checkup not passed'),
+        error_messages={'invalid_choice': 'The student has not passed medical check-up yet!'},
+        widget=AutocompleteSelect(Attendance._meta.get_field('student').remote_field, site),
     )
 
     class Meta:
