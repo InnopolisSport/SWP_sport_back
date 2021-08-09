@@ -99,9 +99,11 @@
                                     }).then(data => {
                                         d_span = document.getElementById('debtor_status');
                                         d_alert = document.getElementById('debtor_alert');
+                                        d_bar = document.getElementById('debtor_bar');
                                         if (data['final_hours'] < 0) {
                                             d_span.classList.remove('d-none');
                                             d_alert.classList.remove('d-none');
+                                            d_bar.classList.remove('d-none');
                                         }
                                     }).catch(err => {
                                     });
@@ -117,43 +119,64 @@
                                     {{ student.obj.medical_group.name }} medical group
                                 </span>
                             {% endif %}
+                            {% if student.sport %}
+                                <span class="badge badge-dark text-uppercase mx-1 my-1">{{ student.sport.name }}</span>
+                            {% else %}
+                                <span class="badge badge-dark mx-1 my-1">NO SPORT TYPE</span>
+                            {% endif %}
+                            {% if student.sport_groups|length > 0 %}
+                                <span class="badge badge-info text-uppercase mx-1 my-1"
+                                    id="student-span"
+                                    onclick="openGroupInfoModalForStudent('/api/group/{{ group.id }}')"
+                                    style="cursor: pointer;">{{ student.sport_groups.0.name }}</span>
+                            {% else %}
+                                <span class="badge badge-info mx-1 my-1">NO SPORT GROUP</span>
+                            {% endif %}
                         </p>
                         <div id="debtor_alert" class="d-none alert alert-danger" role="alert">
                             <h5>Dear student!</h5>
-                            <p>To remove the debtor status you should make your <b>number of hours positive</b>.</p>
-                            <hr>
-                            <p>Closing the debt is <b>required to pass the sport course</b>.</p>
+                            <p><b>To remove</b> the <span class="badge badge-pill badge-danger">DEBTOR</span> status you should make your <b>number of hours positive</b> (clear debt bar),
+                            <br>
+                            <i>either</i>  on <b>self-sport</b> or <span class="badge badge-info">SPORT GROUP</span> trainings.
+                            <br>
+                            Closing the debt is <b>required to pass the sport course</b>.</p>
                         </div>
-                        {% if student.sport %}
-                            <p id="student-list">
-                                Your sport type for the 
-                                <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> semester is
-                                <span class="badge badge badge-dark text-uppercase">{{ student.sport.name }}</span>
-                            </p>
-                        {% else %}
-                            <p id="student-list">
-                                You have not chosen any 
-                                <span class="badge badge-dark" style="cursor: default;">SPORT TYPE</span>
-                                 for the <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> semester yet
-                            </p>
-                        {% endif %}
-                        {% if student.sport_groups|length > 0 %}
-                            <p id="student-list">
-                                Your sport group for the <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> 
-                                semester is 
-                                {% for group in student.sport_groups %}
-                                    <span class="badge badge-info text-uppercase"
-                                          id="student-span"
-                                          onclick="openGroupInfoModalForStudent('/api/group/{{ group.id }}')"
-                                          style="cursor: pointer;">{{ group.name }}</span>
-                                {% endfor %}
-                            </p>
-                        {% else %}
-                            <p id="student-list">
-                                You have not enroll to any <span class="badge badge-info">SPORT GROUP</span> for the 
-                                <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> semester yet
-                            </p>
-                        {% endif %}
+                        <h3>Progress</h3>
+                        <!-- Debt bar-->
+                        <div id="debtor_bar" class="d-none">
+                            <div class="progress mt-3" style="width: 100%; height: 2rem;">
+                                <div class="progress-bar progress-bar-striped bg-light" style="width: 100%; height: 2rem; color: red;"><b>Debt</b></div>
+                            </div>
+                            <div class="progress mb-3" style="width: 100%; height: 2rem">
+                                <div class="progress-bar progress-bar-striped bg-danger" style="width: {{student.debt_hours}}%; height: 2rem">{{student.debt_hours}}h</div>
+                            </div>
+                        </div>
+                        <!-- Self-sport + Sport group bar-->
+                        <div class="progress mt-3" style="width: 100%; height: 2rem;">
+                            {% if student.is_online %}
+                                <div class="progress-bar bg-light" style="width: 100%; height: 2rem; color: blue"><b>Self-sport (max {{student.all_hours.hours_sem_max}}h)</b></div>
+                            {% else %}
+                                <div class="progress-bar bg-light" style="width: 30%; height: 2rem; color: blue"><b>Self-sport (max 10h)</b></div>
+                                <div class="progress-bar bg-light" style="width: 70%; height: 2rem; color: green"><b>Sport group (max {{student.all_hours.hours_sem_max}}h)</b></div>
+                            {% endif %}
+                        </div>
+                        <div class="progress mb-3" style="width: 100%; height: 2rem">
+                            {% if student.is_online %}
+                                <div class="progress-bar bg-primary" 
+                                    style="width: calc({{student.all_hours.hours_self_not_debt}}%*(100/{{student.all_hours.hours_sem_max}})); height: 2rem">
+                                    {{student.all_hours.hours_self_not_debt}}h
+                                </div>
+                            {% else %}
+                                <div class="progress-bar bg-primary" 
+                                    style="width: calc({{student.all_hours.hours_self_not_debt}}%*(100/{{student.all_hours.hours_sem_max}})); height: 2rem">
+                                    {{student.all_hours.hours_self_not_debt}}h
+                                </div>
+                                <div class="progress-bar bg-success"
+                                    style="width: calc({{student.all_hours.hours_not_self}}%*(100/{{student.all_hours.hours_sem_max}})); height: 2rem">
+                                    {{student.all_hours.hours_not_self}}h
+                                </div>
+                            {% endif %}
+                        </div>
                         <div id="medical-group-info-modal"></div>
                         {% if student.semesters|length > 0 %}
                             <div class="container" id="semester-hours">
@@ -264,7 +287,7 @@
                         </div>
                         <div class="d-flex justify-content-center align-content-center flex-wrap">
                             <div class="my-2 mx-2 align-self-center">
-                                Could not do sports for a while?
+                                <i>Could not do sports for a while?</i>
                             </div>
                             <div class="my-2 mx-2 align-self-center">
                                 <button type="button" class="btn btn-secondary" onclick="open_recovered_modal()">
