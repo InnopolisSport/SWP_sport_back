@@ -28,6 +28,7 @@ async function openModal(id, apiUrl) {
     body.empty();
     footer.empty();
     body.append($('<div class="spinner-border" role="status"></div>'));
+    title.text('Loading...');
     modal.modal('show');
     let data;
     if (apiUrl) {
@@ -95,7 +96,6 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
     let disabled_attr;
 
     if (is_enrolled) {
-        // disabled_attr =  is_primary ? 'disabled' : '';
         footer.html(`
             <div class="container">
                 <div class="row justify-content-between">
@@ -118,14 +118,13 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
         `);
         footer.find('.btn-success').click(() => enroll(group_id, 'enroll', enrollErrorCb));
     }
-    if (title[0].innerHTML.length == 0) {
-        if (custom_name != undefined) {
-            title.append(`<h2> <span class="badge badge-info text-uppercase">${custom_name}</span></h2>`);
-        } else {
-            title.append(`<h2> <span class="badge badge-info text-uppercase">${group_name}</span></h2>`);
-        }
+    title.text('');
+    if (custom_name != undefined) {
+        title.append(`<h2> <span class="badge badge-info text-uppercase">${custom_name}</span></h2>`);
+    } else {
+        title.append(`<h2> <span class="badge badge-info text-uppercase">${group_name}</span></h2>`);
     }
-    renderGroupModalBody(body, data)
+    renderGroupModalBody(body, data);
     if (schedule && schedule.length > 0) {
 
         const days = [
