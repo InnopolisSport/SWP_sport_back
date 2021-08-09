@@ -38,7 +38,7 @@ services:
     volumes:
       - ../prometheus:/etc/prometheus
     ports:
-      - "9090:9090"
+      - "127.0.0.1:9090:9090"
 
   prometheus-postgres:
     image: "quay.io/prometheuscommunity/postgres-exporter:latest"
@@ -48,7 +48,7 @@ services:
       DATA_SOURCE_USER: "${POSTGRES_USER}"
       DATA_SOURCE_PASS: "${POSTGRES_PASSWORD}"
     ports:
-      - "9187:9187"
+      - "127.0.0.1:9187:9187"
     depends_on:
       - db
 
