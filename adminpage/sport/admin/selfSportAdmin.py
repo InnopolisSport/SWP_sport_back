@@ -2,10 +2,11 @@ from admin_auto_filters.filters import AutocompleteFilter
 from django import forms
 from django.conf import settings
 from django.contrib import admin
-from django.db.models import F, Sum
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
+from django.db.models import F, Q, Sum
 
 from sport.models import SelfSportReport, Attendance
 from .site import site
@@ -75,7 +76,8 @@ class SelfSportAdmin(JsonAdmin):
         'semester',
         'hours',
         'uploaded',
-        'approval'
+        'approval',
+        "obtained_hours"
     )
 
     list_filter = (
@@ -88,8 +90,8 @@ class SelfSportAdmin(JsonAdmin):
         ("student", "uploaded"),
         "semester",
         "training_type",
-        ("hours", "obtained_hours", "medical_group"),
-        ("parsed_data","student_comment"),
+        ("medical_group", "student_status"),
+        ("hours", "obtained_self_hours", "obtained_hours"),
         "comment",
         "link",
         # "reference_image",
@@ -105,11 +107,12 @@ class SelfSportAdmin(JsonAdmin):
         "student",
         "uploaded",
         # "reference_image",
-        "obtained_hours",
+        "obtained_self_hours",
+        'obtained_hours',
+        'student_status',
         "attendance_link",
         "medical_group",
-        "debt",
-        "student_comment",
+        "debt"
     )
 
     def attendance_link(self, obj):
@@ -122,7 +125,7 @@ class SelfSportAdmin(JsonAdmin):
         "student",
     )
 
-    def obtained_hours(self, obj: SelfSportReport):
+    def obtained_self_hours(self, obj: SelfSportReport):
         return Attendance.objects.filter(
             student=obj.student,
             training__group__semester=obj.semester,
@@ -131,12 +134,23 @@ class SelfSportAdmin(JsonAdmin):
             Sum('hours')
         )['hours__sum']
 
-    obtained_hours.short_description = "Self sport hours in current semester"
+    obtained_self_hours.short_description = "Self sport hours in semester"
+
+    def obtained_hours(self, obj: SelfSportReport):
+        return obj.obtained_hours
+
+    obtained_hours.short_description = "All hours in semester"
+    obtained_hours.admin_order_field = 'obtained_hours'
 
     def medical_group(self, obj: SelfSportReport):
         return obj.student.medical_group.name
 
     medical_group.short_description = "Student's medical group"
+
+    def student_status(self, obj: SelfSportReport):
+        return obj.student.student_status.name
+
+    student_status.short_description = "Student status"
 
     def reference_image(self, obj):
         if obj.image is not None:
@@ -156,6 +170,14 @@ class SelfSportAdmin(JsonAdmin):
     reference_image.allow_tags = True
 
     ordering = (F("approval").asc(nulls_first=True), "uploaded")
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        qs = qs.annotate(obtained_hours=Sum("student__attendance__hours",
+                                       filter=Q(attendance__student=F("student")) &
+                                              Q(attendance__training__group__semester=F("semester"))))
+        print(qs.values())
+        return qs
 
     class Media:
         pass
