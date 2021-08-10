@@ -151,7 +151,7 @@
                                 <div class="progress-bar progress-bar-striped bg-light" style="width: 100%; height: 2rem; color: red;"><b>Debt</b></div>
                             </div>
                             <div class="progress mb-3" style="width: 100%; height: 2rem">
-                                <div class="progress-bar progress-bar-striped bg-danger" style="width: {{student.debt_hours}}%; height: 2rem">{{student.debt_hours}}h</div>
+                                <div class="progress-bar progress-bar-striped bg-danger" id="debt-subbar"></div>
                             </div>
                         </div>
                         <!-- Self-sport + Sport group bar-->
@@ -367,4 +367,10 @@
 
     <div id="medical-group-info-modal"></div>
     <div id="group-info-modal"></div>
+    <script>
+        const debt_hours = {{student.debt_hours}}*(-1);
+        const debt_subbar = document.getElementById('debt-subbar');
+        debt_subbar.setAttribute('style', `width: ${debt_hours}%; height: 2rem;`);
+        debt_subbar.textContent = `${debt_hours}h`;
+    </script>
 {% endblock %}
