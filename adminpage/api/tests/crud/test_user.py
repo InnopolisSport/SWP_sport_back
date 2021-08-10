@@ -4,7 +4,9 @@ import pytest
 from django.contrib.auth import get_user_model
 
 from sport.models import Student
+from sport.models import MedicalGroups
 from api.crud import get_email_name_like_students
+
 
 User = get_user_model()
 
@@ -72,7 +74,6 @@ def test_get_email_name_like_students(
         capacity=30,
         sport=sport,
         semester=sem,
-        minimum_medical_group_id=None
     )
     assert len(
         get_email_name_like_students(
@@ -80,7 +81,11 @@ def test_get_email_name_like_students(
             "k.fedoseev@innopolis.university"
         )
     ) == 1
-    group.minimum_medical_group_id = 0
+    group.allowed_medical_groups = [
+        MedicalGroups.GENERAL,
+        MedicalGroups.PREPARATIVE,
+        MedicalGroups.SPECIAL1,
+    ]
     group.save()
     assert len(
         get_email_name_like_students(
