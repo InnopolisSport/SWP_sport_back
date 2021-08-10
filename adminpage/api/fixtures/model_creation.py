@@ -89,7 +89,7 @@ def group_factory():
         )
 
         if created is True:
-            obj.allowed_medical_groups = allowed_medical_groups
+            obj.allowed_medical_groups.set(allowed_medical_groups)
 
         if trainer is not None and not obj.trainers.filter(pk=trainer.pk).exists():
             obj.trainers.add(trainer)
