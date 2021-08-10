@@ -108,6 +108,8 @@ class SelfSportAdmin(JsonAdmin):
         "uploaded",
         # "reference_image",
         "obtained_self_hours",
+        'obtained_hours',
+        'student_status',
         "attendance_link",
         "medical_group",
         "debt"
@@ -132,7 +134,7 @@ class SelfSportAdmin(JsonAdmin):
             Sum('hours')
         )['hours__sum']
 
-    obtained_hours.short_description = "Self sport hours in semester"
+    obtained_self_hours.short_description = "Self sport hours in semester"
 
     def obtained_hours(self, obj: SelfSportReport):
         return obj.obtained_hours
