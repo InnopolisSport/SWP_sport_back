@@ -101,10 +101,5 @@ class GroupAdmin(admin.ModelAdmin):
             return qs.filter(semester=get_ongoing_semester(), sport=None).order_by('name')
         return qs.annotate(enroll_count=RawSQL('select count(*) from enroll where group_id = "group".id', ()))
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "minimum_medical_group":
-            kwargs["queryset"] = MedicalGroup.objects.filter(pk__gte=0)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
     class Media:
         pass
