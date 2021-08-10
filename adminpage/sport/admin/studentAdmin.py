@@ -1,15 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.db.models import ForeignKey
-from django.db.models.expressions import RawSQL
+from django.db.models import ForeignKey, IntegerField, Count, DecimalField
+from django.db.models.expressions import RawSQL, Value, Case, When, Subquery, OuterRef, ExpressionWrapper
+from django.db.models.functions import Coalesce, Least
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from import_export import resources, widgets, fields
-from import_export.admin import ImportMixin
+from import_export.admin import ImportMixin, ImportExportActionModelAdmin
 from import_export.results import RowResult
 
+from django.db.models import F, Q, Sum
+
 from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours, get_negative_hours
-from sport.models import Student, MedicalGroup, StudentStatus, Semester
+from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
@@ -26,6 +29,23 @@ class StudentStatusWidget(widgets.ForeignKeyWidget):
         return str(value)
 
 
+class HoursFilter(admin.SimpleListFilter):
+    title = 'debt'
+    parameter_name = 'debt'
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', 'Yes'),
+            ('No', 'No'),
+        )
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            return queryset.filter(complex_hours__lt=0)
+        elif value == 'No':
+            return queryset.exclude(complex_hours__lt=0)
+        return queryset
+
+
 class StudentResource(resources.ModelResource):
     medical_group = fields.Field(
         column_name="medical_group",
@@ -38,6 +58,14 @@ class StudentResource(resources.ModelResource):
         attribute="student_status",
         widget=StudentStatusWidget(StudentStatus, "pk"),
     )
+
+    sport = fields.Field(
+        column_name="sport",
+        attribute="sport",
+        widget=StudentStatusWidget(Sport, "pk"),
+    )
+
+    complex_hours = fields.Field(attribute='complex_hours', readonly=True)
 
     def get_or_init_instance(self, instance_loader, row):
         student_group = get_or_create_student_group()
@@ -80,17 +108,21 @@ class StudentResource(resources.ModelResource):
             "enrollment_year",
             "course",
             "telegram",
+            "is_online",
         )
         export_order = (
             "user",
             "user__email",
             "user__first_name",
             "user__last_name",
-            "medical_group",
             "enrollment_year",
             "course",
-            "telegram",
+            "medical_group",
             "student_status",
+            "is_online",
+            'sport',
+            'complex_hours',
+            "telegram",
         )
         import_id_fields = ("user",)
         skip_unchanged = False
@@ -125,7 +157,7 @@ class StudentResource(resources.ModelResource):
 
 
 @admin.register(Student, site=site)
-class StudentAdmin(ImportMixin, admin.ModelAdmin):
+class StudentAdmin(ImportExportActionModelAdmin):
     resource_class = StudentResource
 
     def get_fields(self, request, obj=None):
@@ -163,11 +195,13 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     )
 
     list_filter = (
-        "is_online",
-        "enrollment_year",
         "course",
+        "enrollment_year",
+        "is_online",
         "medical_group",
         'student_status',
+        'sport',
+        HoursFilter
     )
 
     list_display = (
@@ -178,6 +212,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
         "medical_group",
         "sport",
         "hours",
+        "complex_hours",
         "student_status",
         "write_to_telegram",
     )
@@ -197,6 +232,11 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
 
     def hours(self, obj):
         return get_negative_hours(obj.user_id)
+
+    def complex_hours(self, obj: Student):
+        return obj.complex_hours
+
+    complex_hours.admin_order_field = 'complex_hours'
 
     ordering = (
         "user__first_name",
@@ -219,6 +259,40 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
             if obj.medical_group.name == 'Medical checkup not passed':
                 self.inlines = (ViewAttendanceInline,)
         return super().change_view(request, object_id, form_url, extra_context)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        # Get all hours for ongoing semester
+        qs = qs.annotate(ongoing_semester_hours=Coalesce(Sum("attendance__hours",
+                                                filter=Q(attendance__student=F("pk")) &
+                                                       Q(attendance__training__group__semester=get_ongoing_semester())), 0))
+
+        # To get previous semesters for current student exclude: (see comments below)
+        previous_semesters_for_current_student = (
+            Semester.objects
+                .filter(end__lt=get_ongoing_semester().start)  # ongoing semester;
+                .exclude(academic_leave_students=OuterRef("pk"))  # academic-leave semesters for current student;
+                .exclude(end__year__lt=OuterRef("enrollment_year"))  # semesters, which current student wasn't enrolled.
+        )
+
+        # Get debt from previous semesters
+        qs = qs.annotate(debt=Coalesce(Subquery(
+            # TODO: Analyse answer https://stackoverflow.com/a/43771738 and complexity
+            previous_semesters_for_current_student
+                .values('hours').annotate(sum_hours=Sum('hours')).values('sum_hours')
+        ), 0))
+
+        # Get all hours for previous semesters
+        qs = qs.annotate(last_semesters_hours=Coalesce(Sum("attendance__hours",
+                                                        filter=Q(attendance__student=F("pk")) &
+                                                               Q(attendance__training__group__semester__in=Subquery(previous_semesters_for_current_student.values('id')))), 0))
+
+        qs = qs.annotate(complex_hours=ExpressionWrapper(F('ongoing_semester_hours') + Least(F('last_semesters_hours') - F('debt'), Value(0)), output_field=IntegerField()))
+        print(qs.query)
+        print(qs.values())
+        return qs
+
 
     list_select_related = (
         "user",
