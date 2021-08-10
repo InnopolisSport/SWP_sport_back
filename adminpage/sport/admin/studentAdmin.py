@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.db.models import ForeignKey, IntegerField, Count, DecimalField
 from django.db.models.expressions import RawSQL, Value, Case, When, Subquery, OuterRef, ExpressionWrapper
-from django.db.models.functions import Coalesce
+from django.db.models.functions import Coalesce, Least
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from import_export import resources, widgets, fields
@@ -257,7 +257,7 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
                                                         filter=Q(attendance__student=F("pk")) &
                                                                Q(attendance__training__group__semester__in=Subquery(previous_semesters_for_current_student.values('id')))), 0))
 
-        qs = qs.annotate(complex_hours=ExpressionWrapper(F('ongoing_semester_hours') + F('last_semesters_hours') - F('debt'), output_field=DecimalField()))
+        qs = qs.annotate(complex_hours=ExpressionWrapper(F('ongoing_semester_hours') + Least(F('last_semesters_hours') - F('debt'), Value(0)), output_field=IntegerField()))
         print(qs.query)
         print(qs.values())
         return qs
