@@ -6,13 +6,13 @@ from django.db.models.functions import Coalesce, Least
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from import_export import resources, widgets, fields
-from import_export.admin import ImportMixin
+from import_export.admin import ImportMixin, ImportExportActionModelAdmin
 from import_export.results import RowResult
 
 from django.db.models import F, Q, Sum
 
 from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours, get_negative_hours
-from sport.models import Student, MedicalGroup, StudentStatus, Semester
+from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
@@ -29,6 +29,23 @@ class StudentStatusWidget(widgets.ForeignKeyWidget):
         return str(value)
 
 
+class HoursFilter(admin.SimpleListFilter):
+    title = 'debt'
+    parameter_name = 'debt'
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', 'Yes'),
+            ('No', 'No'),
+        )
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            return queryset.filter(complex_hours__lt=0)
+        elif value == 'No':
+            return queryset.exclude(complex_hours__lt=0)
+        return queryset
+
+
 class StudentResource(resources.ModelResource):
     medical_group = fields.Field(
         column_name="medical_group",
@@ -41,6 +58,14 @@ class StudentResource(resources.ModelResource):
         attribute="student_status",
         widget=StudentStatusWidget(StudentStatus, "pk"),
     )
+
+    sport = fields.Field(
+        column_name="sport",
+        attribute="sport",
+        widget=StudentStatusWidget(Sport, "pk"),
+    )
+
+    complex_hours = fields.Field(attribute='complex_hours', readonly=True)
 
     def get_or_init_instance(self, instance_loader, row):
         student_group = get_or_create_student_group()
@@ -83,17 +108,21 @@ class StudentResource(resources.ModelResource):
             "enrollment_year",
             "course",
             "telegram",
+            "is_online",
         )
         export_order = (
             "user",
             "user__email",
             "user__first_name",
             "user__last_name",
-            "medical_group",
             "enrollment_year",
             "course",
-            "telegram",
+            "medical_group",
             "student_status",
+            "is_online",
+            'sport',
+            'complex_hours',
+            "telegram",
         )
         import_id_fields = ("user",)
         skip_unchanged = False
@@ -128,7 +157,7 @@ class StudentResource(resources.ModelResource):
 
 
 @admin.register(Student, site=site)
-class StudentAdmin(ImportMixin, admin.ModelAdmin):
+class StudentAdmin(ImportExportActionModelAdmin):
     resource_class = StudentResource
 
     def get_fields(self, request, obj=None):
@@ -166,11 +195,13 @@ class StudentAdmin(ImportMixin, admin.ModelAdmin):
     )
 
     list_filter = (
-        "is_online",
-        "enrollment_year",
         "course",
+        "enrollment_year",
+        "is_online",
         "medical_group",
         'student_status',
+        'sport',
+        HoursFilter
     )
 
     list_display = (
