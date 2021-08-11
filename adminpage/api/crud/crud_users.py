@@ -39,25 +39,26 @@ def get_email_name_like_students(group_id: int, pattern: str, limit: int = 5):
     #                        "group_id": group_id
     #                    })
     #     return dictfetchall(cursor)
-    group = Group.objects.get(id=group_id)
-
     medical_group_condition = Q()
-    for medical_group in group.allowed_medical_groups.all():
-        medical_group_condition = medical_group_condition | Q(medical_group__id=medical_group.id)
 
-    query = Student.objects.select_related(
-        'user',
-    ).values(
-        'user__id',
-        'user__first_name',
-        'user__last_name',
-        'user__email',
-    ).annotate(
+    if Group.objects.filter(id=group_id).exists():
+        group = Group.objects.get(id=group_id)
+        medical_group_condition = Q(pk=None)
+        for medical_group in group.allowed_medical_groups.all():
+            medical_group_condition = medical_group_condition | Q(medical_group__id=medical_group.id)
+
+    query = Student.objects.annotate(
         id=F('user__id'),
         first_name=F('user__first_name'),
         last_name=F('user__last_name'),
         email=F('user__email'),
         full_name=Concat('user__first_name', Value(' '), 'user__last_name')
+    ).values(
+        'id',
+        'first_name',
+        'last_name',
+        'email',
+        'full_name',
     ).filter(
         medical_group_condition & (
             Q(email__icontains=pattern) |
@@ -66,4 +67,4 @@ def get_email_name_like_students(group_id: int, pattern: str, limit: int = 5):
         )
     )[:limit]
 
-    return query
+    return list(query)
