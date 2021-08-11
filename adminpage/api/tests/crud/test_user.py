@@ -40,6 +40,7 @@ def test_get_email_name_like_students(
         last_name="Fedoseev",
         email="k.fedoseev@innopolis.university",
     )
+
     assert get_email_name_like_students(0, "Kirill") == [{
         "id": user.student.pk,
         "first_name": user.first_name,
@@ -75,18 +76,7 @@ def test_get_email_name_like_students(
         sport=sport,
         semester=sem,
     )
-    assert len(
-        get_email_name_like_students(
-            group.id,
-            "k.fedoseev@innopolis.university"
-        )
-    ) == 1
-    group.allowed_medical_groups = [
-        MedicalGroups.GENERAL,
-        MedicalGroups.PREPARATIVE,
-        MedicalGroups.SPECIAL1,
-    ]
-    group.save()
+
     assert len(
         get_email_name_like_students(
             group.id,
