@@ -9,7 +9,7 @@ from django.forms import CheckboxSelectMultiple
 from api.crud import get_ongoing_semester
 from sport.models import Group, MedicalGroup
 from .inlines import ScheduleInline, EnrollInline, TrainingInline
-from .utils import custom_titled_filter, has_free_places_filter
+from .utils import custom_titled_filter, has_free_places_filter, DefaultFilterMixIn
 from .site import site
 
 
@@ -32,7 +32,9 @@ class GroupAdminForm(ModelForm):
 
 
 @admin.register(Group, site=site)
-class GroupAdmin(admin.ModelAdmin):
+class GroupAdmin(DefaultFilterMixIn):
+    semester_filter = 'semester__id__exact'
+
     form = GroupAdminForm
 
     search_fields = (

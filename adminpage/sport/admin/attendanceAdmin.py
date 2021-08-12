@@ -12,7 +12,7 @@ from django.utils.safestring import mark_safe
 from openpyxl import Workbook
 from rangefilter.filter import DateRangeFilter
 
-from sport.admin.utils import cache_filter, cache_dependent_filter, custom_order_filter
+from sport.admin.utils import cache_filter, cache_dependent_filter, custom_order_filter, DefaultFilterMixIn
 from sport.models import Attendance, Student, Semester
 from sport.utils import get_study_year_from_date
 from .site import site
@@ -94,7 +94,8 @@ def export_attendance_as_xlsx(modeladmin, request, queryset):
 
 
 @admin.register(Attendance, site=site)
-class AttendanceAdmin(admin.ModelAdmin):
+class AttendanceAdmin(DefaultFilterMixIn):
+    semester_filter = 'training__group__semester__id__exact'
     # TODO: test performance
     # https://docs.djangoproject.com/en/3.0/ref/contrib/admin/#django.contrib.admin.ModelAdmin.autocomplete_fields
     autocomplete_fields = (

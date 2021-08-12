@@ -2,12 +2,14 @@ from django.contrib import admin
 
 from sport.models import Schedule
 from .inlines import ViewTrainingInline
-from .utils import cache_filter, cache_dependent_filter, custom_order_filter
+from .utils import cache_filter, cache_dependent_filter, custom_order_filter, DefaultFilterMixIn
 from .site import site
 
 
 @admin.register(Schedule, site=site)
-class ScheduleAdmin(admin.ModelAdmin):
+class ScheduleAdmin(DefaultFilterMixIn):
+    semester_filter = 'group__semester__id__exact'
+
     autocomplete_fields = (
         "group",
         "training_class"
