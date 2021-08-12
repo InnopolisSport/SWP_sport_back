@@ -24,6 +24,7 @@ class Semester(models.Model):
     hours = models.IntegerField(default=30)
     number_hours_one_week_ill = models.IntegerField(default=2)
     nullify_groups = models.ManyToManyField(MedicalGroup, blank=True)
+    increase_course = models.BooleanField(default=False)
 
     class Meta:
         db_table = "semester"

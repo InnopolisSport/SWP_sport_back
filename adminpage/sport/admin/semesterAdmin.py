@@ -40,7 +40,8 @@ class SemesterAdmin(admin.ModelAdmin):
         "hours",
         "academic_leave_students",
         "number_hours_one_week_ill",
-        "nullify_groups"
+        "nullify_groups",
+        "increase_course"
     )
 
     filter_horizontal = ('academic_leave_students',)

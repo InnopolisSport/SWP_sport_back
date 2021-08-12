@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group as AuthGroup
 from django.db.models.signals import post_save, pre_save, m2m_changed
 from django.dispatch.dispatcher import receiver
+from django.db.models import F
 from datetime import datetime
 
 from sport.models import Semester, Sport, Trainer, Group, Schedule, Student
@@ -93,3 +94,11 @@ def validate_semester(sender, instance, *args, **kwargs):
 @receiver(m2m_changed, sender=Semester.nullify_groups.through)
 def nullify_medical_groups(instance, action, reverse, pk_set, **kwargs):
     students = Student.objects.filter(medical_group_id__in=pk_set).update(medical_group_id=-2)
+
+
+@receiver(post_save, sender=Semester)
+def increase_course(sender, instance, created, **kwargs):
+    if not created:
+        return
+
+    students = Student.objects.filter(student_status_id=0, course__lt=4).update(course=F('course') + 1)
