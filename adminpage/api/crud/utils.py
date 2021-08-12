@@ -27,9 +27,9 @@ def get_trainers(training_id: int):
         trainer_first_name=F('user__first_name'),
         trainer_last_name=F('user__last_name'),
         trainer_email=F('user__email'),
-    )
+    ).values('trainer_first_name', 'trainer_last_name', 'trainer_email')
 
-    return query
+    return list(query)
 
 
 def get_trainers_group(group_id: int):
@@ -38,14 +38,14 @@ def get_trainers_group(group_id: int):
     """
     query = Group.objects.get(
         id=group_id,
-    ).trainers.values(
-        'user__first_name',
-        'user__last_name',
-        'user__email',
-    ).annotate(
+    ).trainers.annotate(
         trainer_first_name=F('user__first_name'),
         trainer_last_name=F('user__last_name'),
         trainer_email=F('user__email'),
+    ).values(
+        'trainer_first_name',
+        'trainer_last_name',
+        'trainer_email',
     )
 
-    return query
+    return list(query)
