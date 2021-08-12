@@ -20,7 +20,7 @@ def get_sports(all=False, student: Optional[Student] = None):
     @return list of all sport types
     """
 
-    groups = Group.objects.filter(allowed_medical_groups_id=student.medical_group_id, semester__pk=api.crud.get_ongoing_semester().pk)
+    groups = Group.objects.filter(allowed_medical_groups=student.medical_group_id, semester__pk=api.crud.get_ongoing_semester().pk)
 
     # w/o distinct returns a lot of duplicated
     sports = Sport.objects.filter(id__in=groups.values_list('sport')).distinct()
