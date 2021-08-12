@@ -227,10 +227,11 @@ def get_negative_hours(student_id, hours_info=None, **kwargs):
 # TODO: api method
 def better_than(student_id):
     attendance_query = (
-        Attendance.objects.only('training__group__semester_id',
-                                'training__group__semester__hours',
-                                'student_id',
-                                'semester')
+        Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk)
+            .only('training__group__semester_id',
+                  'training__group__semester__hours',
+                  'stuent_id',
+                  'semedster')
             # Get attendance, annotate, group by student and semester
             .annotate(semester=F("training__group__semester_id"),
                       semester_hours=F("training__group__semester__hours"))
@@ -239,7 +240,7 @@ def better_than(student_id):
             .annotate(sum_hours=Sum("hours", output_field=IntegerField()))
     )
     qs = Student.objects.all().annotate(ongoing_semester_hours=Coalesce(
-        attendance_query.filter(student_id=OuterRef("pk"), semester=get_ongoing_semester().pk).values('sum_hours'),
+        attendance_query.filter(student_id=OuterRef("pk")).values('sum_hours'),
         0
     ))
 
@@ -254,4 +255,4 @@ def better_than(student_id):
 
     worse = qs.filter(ongoing_semester_hours__gt=0, ongoing_semester_hours__lt=student_hours).count()
 
-    return worse / all * 100
+    return round(worse / all * 100, 1)
