@@ -1,22 +1,29 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.db.models import ForeignKey, IntegerField, Count, DecimalField
-from django.db.models.expressions import RawSQL, Value, Case, When, Subquery, OuterRef, ExpressionWrapper
+from django.db.models import ForeignKey, IntegerField, F, Sum
+from django.db.models.expressions import Value, Case, When, Subquery, OuterRef, ExpressionWrapper
 from django.db.models.functions import Coalesce, Least
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from import_export import resources, widgets, fields
-from import_export.admin import ImportMixin, ImportExportActionModelAdmin
+from import_export.admin import ImportExportActionModelAdmin
 from import_export.results import RowResult
 
-from django.db.models import F, Q, Sum
-
-from api.crud import get_brief_hours, get_ongoing_semester, get_detailed_hours, get_negative_hours
-from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport
+from api.crud import get_ongoing_semester
+from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
-from .utils import user__email, user__role
+from .utils import user__role
+
+
+class SumSubquery(Subquery):
+    output_field = None
+
+    def __init__(self, queryset, sum_by, output_field=IntegerField(), **extra):
+        super().__init__(queryset, output_field, **extra)
+        self.output_field = output_field
+        self.template = "(SELECT sum({}) FROM (%(subquery)s) _sum)".format(sum_by)
 
 
 class MedicalGroupWidget(widgets.ForeignKeyWidget):
@@ -32,11 +39,13 @@ class StudentStatusWidget(widgets.ForeignKeyWidget):
 class HoursFilter(admin.SimpleListFilter):
     title = 'debt'
     parameter_name = 'debt'
+
     def lookups(self, request, model_admin):
         return (
             ('Yes', 'Yes'),
             ('No', 'No'),
         )
+
     def queryset(self, request, queryset):
         value = self.value()
         if value == 'Yes':
@@ -179,7 +188,6 @@ class StudentAdmin(ImportExportActionModelAdmin):
             "course",
             "sport",
             "student_status",
-            "hours",
             "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
         )
 
@@ -211,14 +219,12 @@ class StudentAdmin(ImportExportActionModelAdmin):
         "course",
         "medical_group",
         "sport",
-        "hours",
         "complex_hours",
         "student_status",
         "write_to_telegram",
     )
 
     readonly_fields = (
-        "hours",
         "write_to_telegram",
     )
 
@@ -230,12 +236,8 @@ class StudentAdmin(ImportExportActionModelAdmin):
                 obj.telegram
             )
 
-    def hours(self, obj):
-        return get_negative_hours(obj.user_id)
-
     def complex_hours(self, obj: Student):
         return obj.complex_hours
-
     complex_hours.admin_order_field = 'complex_hours'
 
     ordering = (
@@ -263,34 +265,59 @@ class StudentAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
 
-        # Get all hours for ongoing semester
-        qs = qs.annotate(ongoing_semester_hours=Coalesce(Sum("attendance__hours",
-                                                filter=Q(attendance__student=F("pk")) &
-                                                       Q(attendance__training__group__semester=get_ongoing_semester())), 0))
-
         # To get previous semesters for current student exclude: (see comments below)
         previous_semesters_for_current_student = (
             Semester.objects
                 .filter(end__lt=get_ongoing_semester().start)  # ongoing semester;
                 .exclude(academic_leave_students=OuterRef("pk"))  # academic-leave semesters for current student;
                 .exclude(end__year__lt=OuterRef("enrollment_year"))  # semesters, which current student wasn't enrolled.
+                .only('hours')
+        )
+        # Get debt from previous semesters
+        qs = qs.annotate(debt=Coalesce(SumSubquery(previous_semesters_for_current_student, 'hours'), 0))
+
+        attendance_query = (
+            Attendance.objects.only('training__group__semester_id',
+                                    'training__group__semester__hours',
+                                    'student_id',
+                                    'semester')
+                # Get attendance, annotate, group by student and semester
+                .annotate(semester=F("training__group__semester_id"),
+                          semester_hours=F("training__group__semester__hours"))
+                .values('semester', 'student_id').order_by('student_id', 'semester')
+                # Calculate hours
+                .annotate(sum_hours=Sum("hours", output_field=IntegerField()))
+                .annotate(bounded_hours=Case(When(sum_hours__gt=F('semester_hours'),
+                                                  then=F('semester_hours')),
+                                             default=F('sum_hours')))
         )
 
-        # Get debt from previous semesters
-        qs = qs.annotate(debt=Coalesce(Subquery(
-            # TODO: Analyse answer https://stackoverflow.com/a/43771738 and complexity
-            previous_semesters_for_current_student
-                .values('hours').annotate(sum_hours=Sum('hours')).values('sum_hours')
-        ), 0))
+        qs = qs.annotate(ongoing_semester_hours=Coalesce(
+            SumSubquery(attendance_query.filter(student_id=OuterRef("pk"), semester=get_ongoing_semester().pk), 'sum_hours'),
+            0
+        ))
 
-        # Get all hours for previous semesters
-        qs = qs.annotate(last_semesters_hours=Coalesce(Sum("attendance__hours",
-                                                        filter=Q(attendance__student=F("pk")) &
-                                                               Q(attendance__training__group__semester__in=Subquery(previous_semesters_for_current_student.values('id')))), 0))
+        qs = qs.annotate(
+            last_semesters_hours=Coalesce(
+                SumSubquery(attendance_query.filter(student_id=OuterRef("pk"),
+                                                    semester__in=(
+                                                        Semester.objects
+                                                            # ongoing semester;
+                                                            .filter(end__lt=get_ongoing_semester().start)
+                                                            # academic-leave semesters for current student;
+                                                            .exclude(academic_leave_students=OuterRef(OuterRef("pk")))
+                                                            # semesters, which current student wasn't enrolled.
+                                                            .exclude(end__year__lt=OuterRef(OuterRef("enrollment_year")))
+                                                    )
+                                                    ), 'bounded_hours'), 0
+            )
+        )
 
-        qs = qs.annotate(complex_hours=ExpressionWrapper(F('ongoing_semester_hours') + Least(F('last_semesters_hours') - F('debt'), Value(0)), output_field=IntegerField()))
-        print(qs.query)
-        print(qs.values())
+        qs = qs.annotate(complex_hours=ExpressionWrapper(
+            F('ongoing_semester_hours') + Least(F('last_semesters_hours') - F('debt'), Value(0)),
+            output_field=IntegerField()
+        ))
+
         return qs
 
 
