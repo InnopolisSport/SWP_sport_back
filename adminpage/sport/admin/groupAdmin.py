@@ -26,6 +26,10 @@ class GroupAdminForm(ModelForm):
             'allowed_medical_groups': CheckboxSelectMultiple()
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['allowed_medical_groups'].initial = [2,1,0]
+
 
 @admin.register(Group, site=site)
 class GroupAdmin(admin.ModelAdmin):
