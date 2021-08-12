@@ -90,7 +90,7 @@ def test_enroll_incorrect_sport(
 ):
     client, student_user = logged_in_student_general_med
 
-    student_user.student.sport = Sport.objects.get_or_create(name='sport_incorrect')
+    student_user.student.sport = Sport.objects.get_or_create(name='sport_incorrect')[0]
     student_user.student.save()
 
     response = client.post(
