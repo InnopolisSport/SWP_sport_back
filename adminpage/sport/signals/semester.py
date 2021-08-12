@@ -3,13 +3,11 @@ import datetime
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group as AuthGroup
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, m2m_changed
 from django.dispatch.dispatcher import receiver
 from datetime import datetime
 
 from sport.models import Semester, Sport, Trainer, Group, Schedule, Student
-
-from api.crud import get_brief_hours, get_detailed_hours, get_ongoing_semester
 
 User = get_user_model()
 
@@ -92,17 +90,6 @@ def validate_semester(sender, instance, *args, **kwargs):
             raise ValueError("Last semester has a intersection with other semester")
 
 
-@receiver(post_save, sender=Semester)
-def start_semester(sender, instance, created, **kwargs):
-    students = Student.objects.all()
-    for student in students:
-        if student.student_status.id != 0:
-            pass
-        elif student.course == 4:
-            student.student_status.id = 3
-        else:
-            student.course += 1
-
-        if student.medical_group.name in ("Special 1", "Special 2"):
-            student.medical_group.id = -2
-        student.save()
+@receiver(m2m_changed, sender=Semester.nullify_groups.through)
+def nullify_medical_groups(instance, action, reverse, pk_set, **kwargs):
+    students = Student.objects.filter(medical_group_id__in=pk_set).update(medical_group_id=-2)

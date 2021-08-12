@@ -3,6 +3,8 @@ from datetime import timedelta, date
 from django.db import models
 from django.db.models import Q, F
 from django.utils import timezone
+
+from . import MedicalGroup
 from .student import Student
 
 
@@ -21,6 +23,7 @@ class Semester(models.Model):
     academic_leave_students = models.ManyToManyField(Student, blank=True)
     hours = models.IntegerField(default=30)
     number_hours_one_week_ill = models.IntegerField(default=2)
+    nullify_groups = models.ManyToManyField(MedicalGroup, blank=True)
 
     class Meta:
         db_table = "semester"
