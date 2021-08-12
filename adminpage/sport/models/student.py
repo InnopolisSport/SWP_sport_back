@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 
 from sport.models import MedicalGroupHistory
+from sport.models.student_hours import StudentHoursManager
 from sport.utils import get_current_study_year
 
 
@@ -65,6 +66,9 @@ class Student(models.Model):
         null=True,
         blank=True
     )
+
+    objects = models.Manager()
+    objects_with_hours = StudentHoursManager()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

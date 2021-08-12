@@ -222,3 +222,18 @@ def get_negative_hours(student_id, hours_info=None, **kwargs):
         res += i['hours_self_debt'] + min(i['hours_not_self'] + i['hours_self_not_debt'] - i['hours_sem_max'], 0)
     res += sem_now['hours_self_debt'] + sem_now['hours_not_self'] + sem_now['hours_self_not_debt']
     return res
+
+
+def better_than(student_id):
+    all = Student.objects_with_hours.filter(complex_hours__gt=0).count()
+    if all == 0 or all == 1:
+        return None
+    all -= 1
+
+    student_hours = Student.objects_with_hours.get(pk=student_id).complex_hours
+    if student_hours <= 0:
+        return None
+
+    worse = Student.objects_with_hours.filter(complex_hours__gt=0, complex_hours__lt=student_hours).count()
+    print(worse / all)
+    return worse / all
