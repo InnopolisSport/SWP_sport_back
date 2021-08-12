@@ -142,6 +142,9 @@
                             Closing the debt is <b>required to pass the sport course</b>.</p>
                         </div>
                         <h3>Progress</h3>
+                        {% if student.better_than is not None %}
+                            <span>You are better than {{student.better_than}}% of the students!</span>
+                        {% endif %}
                         <!-- Debt bar-->
                         <div id="debtor_bar" class="d-none">
                             <div class="progress mt-3" style="width: 100%; height: 2rem;">

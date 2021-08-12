@@ -254,4 +254,4 @@ def better_than(student_id):
 
     worse = qs.filter(ongoing_semester_hours__gt=0, ongoing_semester_hours__lt=student_hours).count()
 
-    return worse / all
+    return worse / all * 100
