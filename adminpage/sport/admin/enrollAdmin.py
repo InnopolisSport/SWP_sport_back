@@ -5,7 +5,7 @@ from sport.models import Enroll
 from .site import site
 from .utils import custom_titled_filter, cache_filter, \
     cache_dependent_filter, \
-    custom_order_filter
+    custom_order_filter, DefaultFilterMixIn
 
 
 class StudentTextFilter(AutocompleteFilter):
@@ -69,7 +69,9 @@ class StudentTextFilter(AutocompleteFilter):
 
 
 @admin.register(Enroll, site=site)
-class EnrollAdmin(admin.ModelAdmin):
+class EnrollAdmin(DefaultFilterMixIn):
+    semester_filter = 'group__semester__id__exact'
+
     autocomplete_fields = (
         "student",
         "group",

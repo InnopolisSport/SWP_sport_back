@@ -16,7 +16,8 @@ import datetime
 from api.crud import get_ongoing_semester, mark_hours
 from sport.models import Training, Student, Group, Attendance
 from .inlines import ViewAttendanceInline, AddAttendanceInline, HackAttendanceInline
-from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter
+from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter, \
+    DefaultFilterMixIn
 from .site import site
 
 
@@ -140,7 +141,9 @@ MultiTrainingsForStudentForm.title = "Add multiple extra training records"
 
 
 @admin.register(Training, site=site)
-class TrainingAdmin(admin.ModelAdmin):
+class TrainingAdmin(DefaultFilterMixIn):
+    semester_filter = 'group__semester__id__exact'
+
     search_fields = (
         "group__name",
     )

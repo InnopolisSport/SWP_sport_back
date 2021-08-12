@@ -10,7 +10,7 @@ from django.db.models import F, Q, Sum
 
 from sport.models import SelfSportReport, Attendance
 from .site import site
-from .utils import custom_order_filter
+from .utils import custom_order_filter, DefaultFilterMixIn
 import json
 import logging
 
@@ -39,7 +39,7 @@ class PrettyJSONWidget(widgets.Textarea):
             return super(PrettyJSONWidget, self).format_value(value)
 
 
-class JsonAdmin(admin.ModelAdmin):
+class JsonAdmin(DefaultFilterMixIn):
     formfield_overrides = {
         JSONField: {'widget': PrettyJSONWidget}
     }
@@ -69,6 +69,8 @@ class ReferenceAcceptRejectForm(forms.ModelForm):
 
 @admin.register(SelfSportReport, site=site)
 class SelfSportAdmin(JsonAdmin):
+    semester_filter = 'semester__id__exact'
+
     form = ReferenceAcceptRejectForm
 
     list_display = (

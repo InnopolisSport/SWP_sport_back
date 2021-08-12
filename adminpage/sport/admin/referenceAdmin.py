@@ -6,11 +6,10 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from sport.admin.utils import custom_order_filter
+from sport.admin.utils import custom_order_filter, DefaultFilterMixIn
 from sport.models import Reference
 from .site import site
 
-from api.crud import get_ongoing_semester
 
 class StudentTextFilter(AutocompleteFilter):
     title = "student"
@@ -35,7 +34,9 @@ class ReferenceAcceptRejectForm(forms.ModelForm):
 
 
 @admin.register(Reference, site=site)
-class ReferenceAdmin(admin.ModelAdmin):
+class ReferenceAdmin(DefaultFilterMixIn):
+    semester_filter = 'semester__id__exact'
+
     form = ReferenceAcceptRejectForm
 
     list_display = (
