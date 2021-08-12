@@ -85,7 +85,7 @@ def get_group_info(group_id: int, student: Student):
 
         info['can_enroll'] = student.sport is not None and \
                              student.sport==Group.objects.get(id=info['group_id']).sport and \
-                             not Group.objects.filter(enroll__student=student,
+                             not Group.objects.filter(enrolls__student=student,
                                                       semester=get_ongoing_semester()).exists()
 
         return info

@@ -87,8 +87,6 @@ def test_get_sport_schedule(
         sport=sport,
         semester=sem,
         allowed_medical_groups = [
-            MedicalGroups.GENERAL,
-            MedicalGroups.PREPARATIVE,
             MedicalGroups.SPECIAL1,
         ]
     )

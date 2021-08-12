@@ -76,7 +76,7 @@ def enroll(request, **kwargs):
                 *EnrollErrors.DOUBLE_ENROLL
             )
         )
-    if Group.objects.filter(semester=get_ongoing_semester(), enroll__student=student).exists():
+    if Group.objects.filter(semester=get_ongoing_semester(), enrolls__student=student).exists():
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*EnrollErrors.TOO_MUCH_GROUPS)
