@@ -81,4 +81,4 @@ def get_sport_schedule(
         'schedule__training_class__id',
     )
 
-    return query
+    return list(query)
