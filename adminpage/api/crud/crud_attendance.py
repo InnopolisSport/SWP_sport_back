@@ -1,8 +1,8 @@
 from math import floor
 from typing import Iterable, Tuple, List
 
-from django.db.models import F, Value, BooleanField, Case, When, CharField
-from django.db.models.functions import Concat
+from django.db.models import F, Value, BooleanField, Case, When, CharField, Sum, IntegerField, OuterRef
+from django.db.models.functions import Concat, Coalesce
 from typing_extensions import TypedDict
 
 from django.db import connection
@@ -224,16 +224,34 @@ def get_negative_hours(student_id, hours_info=None, **kwargs):
     return res
 
 
+# TODO: api method
 def better_than(student_id):
-    all = Student.objects_with_hours.filter(complex_hours__gt=0).count()
+    attendance_query = (
+        Attendance.objects.only('training__group__semester_id',
+                                'training__group__semester__hours',
+                                'student_id',
+                                'semester')
+            # Get attendance, annotate, group by student and semester
+            .annotate(semester=F("training__group__semester_id"),
+                      semester_hours=F("training__group__semester__hours"))
+            .values('semester', 'student_id').order_by('student_id', 'semester')
+            # Calculate hours
+            .annotate(sum_hours=Sum("hours", output_field=IntegerField()))
+    )
+    qs = Student.objects.all().annotate(ongoing_semester_hours=Coalesce(
+        attendance_query.filter(student_id=OuterRef("pk"), semester=get_ongoing_semester().pk).values('sum_hours'),
+        0
+    ))
+
+    all = qs.filter(ongoing_semester_hours__gt=0).count()
     if all == 0 or all == 1:
         return None
     all -= 1
 
-    student_hours = Student.objects_with_hours.get(pk=student_id).complex_hours
+    student_hours = qs.get(pk=student_id).ongoing_semester_hours
     if student_hours <= 0:
         return None
 
-    worse = Student.objects_with_hours.filter(complex_hours__gt=0, complex_hours__lt=student_hours).count()
-    print(worse / all)
+    worse = qs.filter(ongoing_semester_hours__gt=0, ongoing_semester_hours__lt=student_hours).count()
+
     return worse / all
