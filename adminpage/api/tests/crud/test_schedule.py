@@ -86,7 +86,9 @@ def test_get_sport_schedule(
         capacity=30,
         sport=sport,
         semester=sem,
-        minimum_medical_group_id=MedicalGroups.SPECIAL1,
+        allowed_medical_groups = [
+            MedicalGroups.SPECIAL1,
+        ]
     )
 
     group2 = group_factory(
@@ -94,7 +96,9 @@ def test_get_sport_schedule(
         capacity=30,
         sport=sport,
         semester=sem,
-        minimum_medical_group_id=MedicalGroups.GENERAL,
+        allowed_medical_groups = [
+            MedicalGroups.GENERAL,
+        ]
     )
 
     schedule_start = time(14, 0, 0)

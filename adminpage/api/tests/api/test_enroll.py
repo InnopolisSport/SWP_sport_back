@@ -201,7 +201,11 @@ def test_enroll_insufficient_medical(
     student_user.student.medical_group_id = MedicalGroups.SPECIAL2
     student_user.save()
 
-    setup_group.minimum_medical_group_id = MedicalGroups.SPECIAL1
+    setup_group.allowed_medical_groups.set([
+        MedicalGroups.GENERAL,
+        MedicalGroups.PREPARATIVE,
+        MedicalGroups.SPECIAL1,
+    ])
     setup_group.save()
 
     response = client.post(
