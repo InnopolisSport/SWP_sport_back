@@ -24,6 +24,7 @@ import requests
 from bs4 import BeautifulSoup, SoupStrainer
 import json
 from datetime import time, datetime
+import re
 
 
 class SelfSportErrors:
@@ -64,6 +65,11 @@ def get_self_sport_types(request, **kwargs):
 @parser_classes([MultiPartParser])
 def self_sport_upload(request, **kwargs):
     serializer = SelfSportReportUploadSerializer(data=request.data)
+    if re.match(r'https?://www\.strava\.com/.*', serializer.initial_data['link'], re.IGNORECASE) is None:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data="Invalid link"
+        )
     serializer.is_valid(raise_exception=True)
     debt = False
 
@@ -116,7 +122,11 @@ def self_sport_upload(request, **kwargs):
 @permission_classes([IsStudent])
 def get_strava_activity_info(request, **kwargs):
     url = request.GET['link']
-
+    if re.match(r'https?://www\.strava\.com/.*', url, re.IGNORECASE) is None:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data="Invalid link"
+        )
     resp = requests.get(url)
     if resp.status_code == 429:
         return Response(
@@ -130,7 +140,13 @@ def get_strava_activity_info(request, **kwargs):
         )
     txt = requests.get(url).text
     soup = BeautifulSoup(txt)
-    json_string = soup.html.body.find_all('div', attrs={"data-react-class":"ActivityPublic"})[0].get("data-react-props")
+    try:
+        json_string = soup.html.body.find_all('div', attrs={"data-react-class":"ActivityPublic"})[0].get("data-react-props")
+    except IndexError:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data="Invalid Strava link"
+        )
     data = json.loads(json_string)
     beautified_data = json.dumps(data, sort_keys=True, indent=2)
 

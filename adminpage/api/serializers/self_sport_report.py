@@ -25,7 +25,7 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
     # end = serializers.DateTimeField(required=True)
     hours = serializers.IntegerField()
     student_comment = serializers.CharField(required=False)
-    parsed_data = serializers.JSONField()
+    parsed_data = serializers.JSONField(required=False)
 
     class Meta:
         model = SelfSportReport
