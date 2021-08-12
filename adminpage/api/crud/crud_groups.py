@@ -37,7 +37,11 @@ def get_sports(all=False, student: Optional[Student] = None):
         trainers = set()
         for group_trainers in sport_groups.values_list('trainers'):
             trainers |= set(group_trainers)
-        trainers = list(map(lambda t: Trainer.objects.get(user_id=t), trainers))
+
+        try:
+            trainers = list(map(lambda t: Trainer.objects.get(user_id=t), trainers))
+        except Trainer.DoesNotExist:
+            trainers = []
 
         sport['trainers'] = trainers
         sport['num_of_groups'] = sport_groups.count()
@@ -111,13 +115,12 @@ def get_trainer_groups(trainer: Trainer):
     query = Group.objects.filter(
         semester__id=get_ongoing_semester().id,
         trainers__pk=trainer.pk,
+    ).annotate(
+        sport_name=F('sport__name'),
     ).values(
         'id',
         'name',
-        'sport',
-    ).annotate(
-        sport_name=F('sport'),
-
+        'sport_name',
     )
     return query
     # Currently query is a list of one dictionary
