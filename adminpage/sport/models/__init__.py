@@ -4,9 +4,11 @@ from django.db import models
 from .attendance import Attendance
 from .enroll import Enroll
 from .enums import MedicalGroups
+from .enums import StudentStatuses
 from .group import Group
 from .medical_group import MedicalGroup
 from .medical_group_reference import MedicalGroupReference
+from .medical_group_history import MedicalGroupHistory
 from .reference import Reference
 from .schedule import Schedule
 from .self_sport import SelfSportReport
@@ -14,9 +16,11 @@ from .self_sport_type import SelfSportType
 from .semester import Semester
 from .sport import Sport
 from .student import Student, save_student_profile
+from .student_status import StudentStatus
 from .trainer import Trainer
 from .training import Training
 from .training_class import TrainingClass
+from .custom_permission import CustomPermission
 
 DjangoGroup.add_to_class(
     'verbose_name',

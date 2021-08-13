@@ -18,6 +18,7 @@ urlpatterns = [
     # profile
     path(r"profile/sick/toggle", profile.toggle_sick),
     path(r"profile/history/<int:semester_id>", profile.get_history),
+    path(r"profile/history_with_self/<int:semester_id>", profile.get_history_with_self),
 
     # enroll
     path(r"enrollment/enroll", enroll.enroll),
@@ -26,6 +27,8 @@ urlpatterns = [
 
     # group
     path(r"group/<int:group_id>", group.group_info_view),
+    path(r"select_sport", group.select_sport),
+    path(r"sports", group.sports_view),
 
     # training
     path(r"training/<int:training_id>", training.training_info),
@@ -36,6 +39,8 @@ urlpatterns = [
     path(r"attendance/<int:group_id>/report",
          attendance.get_last_attended_dates),
     path(r"attendance/mark", attendance.mark_attendance),
+    path(r"attendance/<int:student_id>/hours", attendance.get_student_hours_info),
+    path(r"attendance/<int:student_id>/negative_hours", attendance.get_negative_hours_info),
 
     # calendar
     path(r"calendar/<int:sport_id>/schedule", calendar.get_schedule),
@@ -46,7 +51,8 @@ urlpatterns = [
 
     # self sport report
     path(r"selfsport/upload", self_sport_report.self_sport_upload),
-    path(r"selfsport/types", self_sport_report.get_self_sport_types)
+    path(r"selfsport/types", self_sport_report.get_self_sport_types),
+    path(r"selfsport/strava_parsing", self_sport_report.get_strava_activity_info)
 ]
 
 urlpatterns.extend([

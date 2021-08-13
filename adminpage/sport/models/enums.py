@@ -12,3 +12,10 @@ class MedicalGroups(models.IntegerChoices):
     SPECIAL1 = 0, "Special 1"
     PREPARATIVE = 1, "Preparative"
     GENERAL = 2, "General"
+
+
+class StudentStatuses(models.IntegerChoices):
+    NORMAL = 0, "normal"
+    DROPPED = 1, "dropped"
+    ACADEMIC_LEAVE = 2, "academic leave"
+    ALUMNUS = 3, "alumnus"

@@ -9,6 +9,8 @@ from .attendance import (
     BadGradeReportGradeSerializer,
     BadGradeReport,
     AttendanceMarkSerializer,
+    HoursInfoSerializer,
+    HoursInfoFullSerializer
 )
 from .calendar import (
     CalendarRequestSerializer,
@@ -29,6 +31,8 @@ from .enroll import (
 )
 from .group import (
     ScheduleSerializer,
+    SportSerializer,
+    SportsSerializer,
     GroupInfoSerializer,
 )
 from .profile import (

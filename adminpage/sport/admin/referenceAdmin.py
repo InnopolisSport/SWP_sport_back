@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from sport.admin.utils import custom_order_filter
+from sport.admin.utils import custom_order_filter, DefaultFilterMixIn
 from sport.models import Reference
 from .site import site
 
@@ -34,7 +34,9 @@ class ReferenceAcceptRejectForm(forms.ModelForm):
 
 
 @admin.register(Reference, site=site)
-class ReferenceAdmin(admin.ModelAdmin):
+class ReferenceAdmin(DefaultFilterMixIn):
+    semester_filter = 'semester__id__exact'
+
     form = ReferenceAcceptRejectForm
 
     list_display = (
@@ -43,6 +45,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         "image",
         "uploaded",
         "approval",
+        "hours",
     )
 
     list_filter = (
@@ -54,8 +57,11 @@ class ReferenceAdmin(admin.ModelAdmin):
     fields = (
         "student",
         "semester",
+        ("start", "end"),
         "uploaded",
-        ("hours", "comment"),
+        "hours",
+        "student_comment",
+        "comment",
         "reference_image",
         "attendance_link"
     )
@@ -66,6 +72,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         "uploaded",
         "reference_image",
         "attendance_link",
+        "student_comment"
     )
 
     def attendance_link(self, obj):
@@ -79,10 +86,6 @@ class ReferenceAdmin(admin.ModelAdmin):
     )
 
     ordering = (F("approval").asc(nulls_first=True), "uploaded")
-
-    def save_model(self, request, obj, form, change):
-        if 'comment' in form.changed_data or 'hours' in form.changed_data:
-            super().save_model(request, obj, form, change)
 
     def reference_image(self, obj):
         return format_html(

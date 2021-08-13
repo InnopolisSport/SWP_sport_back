@@ -1,11 +1,15 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
-from django.db.models.signals import m2m_changed
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+from django.db.models.signals import m2m_changed, post_save, pre_save
 from django.dispatch.dispatcher import receiver
 from django_auth_adfs.signals import post_authenticate
 
-from sport.models import Student, Trainer
+from sport.models import Student, Trainer, CustomPermission
+
+from api.crud.crud_semester import get_ongoing_semester
 
 User = get_user_model()
 
@@ -48,6 +52,39 @@ def create_student_profile(instance, action, reverse, pk_set, **kwargs):
         ) in pk_set:
             if action == "post_add":
                 Trainer.objects.get_or_create(pk=instance.pk)
+
+
+@receiver(post_save, sender=Student)
+def add_group_for_student_status(instance: Student, sender, using, **kwargs):
+    instance.user.groups.remove(*instance.user.groups.filter(name__startswith="STUDENT_STATUS"))
+    new_group, created = Group.objects.get_or_create(name="STUDENT_STATUS_{}".format(instance.student_status.id),
+                                            defaults={'verbose_name': "[Student status] {}".format(instance.student_status.name)})
+    content_type = ContentType.objects.get_for_model(CustomPermission)
+    if instance.student_status.name == "Normal":
+        new_group.permissions.add(Permission.objects.get(codename='go_to_another_group', content_type=content_type))
+        new_group.permissions.add(Permission.objects.get(codename='choose_sport', content_type=content_type))
+        new_group.permissions.add(Permission.objects.get(codename='choose_group', content_type=content_type))
+        new_group.permissions.add(Permission.objects.get(codename='see_calendar', content_type=content_type))
+    elif instance.student_status.name == "Academic leave":
+        new_group.permissions.add(Permission.objects.get(codename='see_calendar', content_type=content_type))
+
+    instance.user.groups.add(new_group)
+
+
+@receiver(post_save, sender=Student)
+def change_online_status(instance: Student, sender, using, **kwargs):
+    user = User.objects.get(id=instance.user_id)
+    content_type = ContentType.objects.get_for_model(CustomPermission)
+    if instance.is_online is True:
+        user.user_permissions.add(Permission.objects.get(codename='more_than_10_hours_of_self_sport', content_type=content_type))
+    else:
+        user.user_permissions.remove(Permission.objects.get(codename='more_than_10_hours_of_self_sport', content_type=content_type))
+
+
+@receiver(post_save, sender=Student)
+def change_status_to_academic_leave(instance: Student, sender, using, **kwargs):
+    if instance.student_status.name == "Academic leave":
+        get_ongoing_semester().academic_leave_students.add(instance)
 
 
 def update_group_verbose_names(sid_to_name_mapping: dict):

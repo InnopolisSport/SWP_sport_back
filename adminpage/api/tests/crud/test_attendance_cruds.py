@@ -12,12 +12,37 @@ assertMembers = unittest.TestCase().assertCountEqual
 
 
 @pytest.mark.django_db
+def test_mark_hours(student_factory, sport_factory, semester_factory, group_factory, training_factory):
+    student1 = student_factory("A@foo.bar").student
+    student2 = student_factory("B@foo.bar").student
+    sport = sport_factory(name="Sport")
+    semester = semester_factory(name="S19", start=dummy_date, end=dummy_date)
+    group = group_factory(name="G1", sport=sport, semester=semester, capacity=20)
+    training = training_factory(group=group, start=timezone.now(), end=timezone.now())
+    mark_hours(training, [
+        (student1.pk, 1),
+        (student2.pk, 2)
+    ])
+    attendance1 = Attendance.objects.get(student=student1)
+    attendance2 = Attendance.objects.get(student=student2)
+    assert attendance1.hours == 1
+    assert attendance2.hours == 2
+    mark_hours(training, [
+        (student1.pk, 3),
+        (student2.pk, 0)
+    ])
+    attendance1 = Attendance.objects.get(student=student1)
+    assert attendance1.hours == 3
+    assert Attendance.objects.count() == 1
+
+
+@pytest.mark.django_db
 def test_hours_statistics(student_factory, sport_factory, semester_factory, group_factory, training_factory, attendance_factory):
     student = student_factory("A").student
     other_student = student_factory("B").student
     sport = sport_factory(name="Sport")
-    s1 = semester_factory(name="S19", start=dummy_date, end=dummy_date)
-    s2 = semester_factory(name="S20", start=dummy_date, end=dummy_date)
+    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 2, 1))
+    s2 = semester_factory(name="S20", start=date(2020, 3, 1), end=date(2020, 4, 1))
     g11 = group_factory(name="G11", sport=sport, semester=s1, capacity=20)
     g12 = group_factory(name="G12", sport=sport, semester=s1, capacity=20)
     g21 = group_factory(name="G21", sport=sport, semester=s2, capacity=20)
@@ -30,20 +55,37 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
         attendance_factory(training=t, student=student, hours=i + 1)
         attendance_factory(training=t, student=other_student, hours=1)
     brief = get_brief_hours(student)
-    assertMembers(brief, [
+    print(brief)
+    print([
         {
             "hours": 3,
             "semester_id": s1.pk,
             "semester_name": s1.name,
-            "semester_start": s1.start,
-            "semester_end": s1.end
+            'semester_start': s1.start.strftime("%b. %d, %Y"),
+            'semester_end': s1.end.strftime("%b. %d, %Y"),
         },
         {
             "hours": 7,
             "semester_id": s2.pk,
             "semester_name": s2.name,
-            "semester_start": s2.start,
-            "semester_end": s2.end
+            'semester_start': s2.start.strftime("%b. %d, %Y"),
+            'semester_end': s2.end.strftime("%b. %d, %Y"),
+        }
+    ])
+    assertMembers(brief, [
+        {
+            "hours": 3,
+            "semester_id": s1.pk,
+            "semester_name": s1.name,
+            'semester_start': s1.start.strftime("%b. %d, %Y"),
+            'semester_end': s1.end.strftime("%b. %d, %Y"),
+        },
+        {
+            "hours": 7,
+            "semester_id": s2.pk,
+            "semester_name": s2.name,
+            'semester_start': s2.start.strftime("%b. %d, %Y"),
+            'semester_end': s2.end.strftime("%b. %d, %Y"),
         }
     ])
     stat1 = get_detailed_hours(student, s1)
@@ -76,38 +118,3 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
             "hours": 3
         }
     ])
-
-
-@pytest.mark.django_db
-def test_mark_hours(student_factory, sport_factory, semester_factory, group_factory, training_factory):
-    student1 = student_factory("A@foo.bar").student
-    student2 = student_factory("B@foo.bar").student
-    sport = sport_factory(name="Sport")
-    semester = semester_factory(name="S19", start=dummy_date, end=dummy_date)
-    group = group_factory(name="G1", sport=sport, semester=semester, capacity=20)
-    training = training_factory(group=group, start=timezone.now(), end=timezone.now())
-    mark_hours(training, [
-        (student1.pk, 1.5),
-        (student2.pk, 2.5)
-    ])
-    attendance1 = Attendance.objects.get(student=student1)
-    attendance2 = Attendance.objects.get(student=student2)
-    assert attendance1.hours == 1.5
-    assert attendance2.hours == 2.5
-    mark_hours(training, [
-        (student1.pk, 3.5),
-        (student2.pk, 0)
-    ])
-    attendance1 = Attendance.objects.get(student=student1)
-    assert attendance1.hours == 3.5
-    assert Attendance.objects.count() == 1
-
-
-@pytest.mark.django_db
-def test_toggle_illness(student_factory):
-    student = student_factory("A@foo.bar").student
-    assert not student.is_ill
-    toggle_illness(student)
-    assert student.is_ill
-    toggle_illness(student)
-    assert not student.is_ill

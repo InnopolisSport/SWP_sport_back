@@ -92,16 +92,17 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_boolean("DEBUG")
 PROJECT_ROOT = "/src/"
-ALLOWED_HOSTS = [HOSTNAME, ]
+ALLOWED_HOSTS = [HOSTNAME, 'nginx']
 
 if DEBUG:
     ALLOWED_HOSTS.append('localhost')
-else:
+
+if os.getenv('SCHEMA') == 'https':
     # make django think it is using https
     # WARNING: make sure, only trusted connections are possible
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# Application definition
 
+# Application definition
 INSTALLED_APPS = [
     'adminpage.apps.SportAdminConfig',
     'django.contrib.auth',
@@ -118,6 +119,7 @@ INSTALLED_APPS = [
     'django_auth_adfs',
     'admin_auto_filters',
     'rest_framework',
+    'django_prometheus',
     'drf_yasg',
     'sport.apps.SportConfig',
     'api',
@@ -125,6 +127,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -132,6 +135,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'adminpage.urls'
@@ -183,6 +187,7 @@ AUTH_ADFS = {
     "USERNAME_CLAIM": "upn",
     # use group ids instead of name, because names are written in different languages
     "GROUPS_CLAIM": "groupsid",
+    "GROUPS_CLAIM_REGEX": r"S-\d*-\d*-\d*-\d*-\d*-\d*-\d*",
     "MIRROR_GROUPS": True,
     "CLAIM_MAPPING": {
         "first_name": "given_name",
@@ -200,7 +205,7 @@ LOGIN_REDIRECT_URL = "profile"
 
 DATABASES = {
     'default': {
-        "ENGINE": 'django.db.backends.postgresql',
+        "ENGINE": 'django_prometheus.db.backends.postgresql',
         'NAME': os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
@@ -208,6 +213,8 @@ DATABASES = {
         "PORT": "",  # default 5432 will be set
     }
 }
+
+PROMETHEUS_EXPORT_MIGRATIONS = False
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

@@ -8,9 +8,9 @@ from rest_framework.response import Response
 
 from api.crud import (
     unenroll_student,
-    enroll_student,
+    enroll_student, get_ongoing_semester,
 )
-from api.permissions import IsStudent, IsTrainer
+from api.permissions import IsStudent, IsTrainer, SportSelected
 from api.serializers import (
     EnrollSerializer,
     error_detail,
@@ -19,7 +19,7 @@ from api.serializers import (
     ErrorSerializer, UnenrollStudentSerializer,
 )
 from api.views.attendance import is_training_group
-from sport.models import Group, Student
+from sport.models import Group, Student, Enroll
 
 
 class EnrollErrors:
@@ -32,6 +32,7 @@ class EnrollErrors:
     MEDICAL_DISALLOWANCE = (6, "You can't enroll to the group "
                                "due to your medical group")
     NOT_ENROLLED = (7, "Requested student is not enrolled into this group")
+    SPORT_ERROR = (8, "Requested group doesn't belong to requested student's sport")
 
 
 @swagger_auto_schema(
@@ -44,7 +45,7 @@ class EnrollErrors:
     },
 )
 @api_view(["POST"])
-@permission_classes([IsStudent])
+@permission_classes([IsStudent, SportSelected])
 @transaction.atomic
 def enroll(request, **kwargs):
     """
@@ -63,12 +64,32 @@ def enroll(request, **kwargs):
         pk=serializer.validated_data["group_id"]
     )
     student = request.user.student
-    if group.minimum_medical_group_id is not None \
-            and student.medical_group_id * group.minimum_medical_group_id <= \
-            0 \
-            and not (
-            student.medical_group_id == 0 and group.minimum_medical_group_id
-            == 0):
+    if student.sport != group.sport:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(*EnrollErrors.SPORT_ERROR)
+        )
+    if Enroll.objects.filter(group=group, student=student).exists():
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(
+                *EnrollErrors.DOUBLE_ENROLL
+            )
+        )
+    if Group.objects.filter(semester=get_ongoing_semester(), enrolls__student=student).exists():
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(*EnrollErrors.TOO_MUCH_GROUPS)
+        )
+
+
+    # if group.minimum_medical_group_id is not None \
+    #         and student.medical_group_id * group.minimum_medical_group_id <= \
+    #         0 \
+    #         and not (
+    #         student.medical_group_id == 0 and group.minimum_medical_group_id
+    #         == 0):
+    if not group.allowed_medical_groups.filter(id=student.medical_group.id).exists():
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*EnrollErrors.MEDICAL_DISALLOWANCE)

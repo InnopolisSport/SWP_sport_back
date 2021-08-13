@@ -1,10 +1,17 @@
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 
+from sport.models import MedicalGroupHistory
 from sport.utils import get_current_study_year
+
+
+def validate_course(course):
+    if course < 1 or course > 4:
+        raise ValidationError('Course is bounded by 1 and 4')
 
 
 class Student(models.Model):
@@ -19,6 +26,15 @@ class Student(models.Model):
 
     is_ill = models.BooleanField(
         default=False,
+    )
+
+    is_online = models.BooleanField(
+        default=False,
+    )
+
+    course = models.PositiveSmallIntegerField(
+        default=1,
+        validators=[validate_course]
     )
 
     medical_group = models.ForeignKey(
@@ -37,6 +53,23 @@ class Student(models.Model):
         blank=True
     )
 
+    student_status = models.ForeignKey(
+        'StudentStatus',
+        on_delete=models.DO_NOTHING,
+        default=0
+    )
+
+    sport = models.ForeignKey(
+        'Sport',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_medical_group = self.medical_group
+
     def notify(self, subject, message, **kwargs):
         msg = message.format(**kwargs)
         send_mail(
@@ -50,6 +83,9 @@ class Student(models.Model):
     def save(self, *args, **kwargs):
         if self.telegram is not None and self.telegram[0] != '@':
             self.telegram = '@' + self.telegram
+        if self.medical_group != self.__original_medical_group:
+            MedicalGroupHistory.objects.create(student=self,
+                                               medical_group=self.medical_group)
         super().save(*args, **kwargs)
 
     class Meta:

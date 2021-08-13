@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils.timezone import make_naive
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, \
@@ -50,11 +51,12 @@ def reference_upload(request, **kwargs):
         with transaction.atomic():
             ref = serializer.save(
                 semester=get_ongoing_semester(),
-                student_id=student.pk
+                student_id=student.pk,
+                hours=(serializer.validated_data['end'] - serializer.validated_data['start']).days // 7 * get_ongoing_semester().number_hours_one_week_ill
             )
             count = Reference.objects.filter(
                 student_id=student.pk,
-                uploaded__date=ref.uploaded.date()
+                uploaded__date=make_naive(ref.uploaded).date()
             ).count()
             assert count == 1
     except AssertionError:

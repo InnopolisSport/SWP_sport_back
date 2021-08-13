@@ -16,7 +16,8 @@ import datetime
 from api.crud import get_ongoing_semester, mark_hours
 from sport.models import Training, Student, Group, Attendance
 from .inlines import ViewAttendanceInline, AddAttendanceInline, HackAttendanceInline
-from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter
+from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter, \
+    DefaultFilterMixIn
 from .site import site
 
 
@@ -27,12 +28,13 @@ class AutocompleteStudent:
 class TrainingFormWithCSV(forms.ModelForm):
     attended_students = forms.ModelMultipleChoiceField(
         required=False,
-        queryset=Student.objects.all(),
+        queryset=Student.objects.exclude(medical_group__name='Medical checkup not passed'),
+        error_messages={'invalid_choice': 'The student has not passed medical check-up yet!'},
         widget=AutocompleteSelectMultiple(
             rel=AutocompleteStudent,
             admin_site=site,
             attrs={'data-width': '50%'}
-        )
+        ),
     )
     hours = forms.DecimalField(required=False, max_digits=5, decimal_places=2, min_value=0.01, max_value=999.99,
                                initial=1)
@@ -125,8 +127,9 @@ CreateExtraTrainingForm.title = "Add extra training"
 
 class MultiTrainingsForStudentForm(forms.ModelForm):
     student = forms.ModelChoiceField(
-        Student.objects.all(),
-        widget=AutocompleteSelect(Attendance._meta.get_field('student').remote_field, site)
+        Student.objects.exclude(medical_group__name='Medical checkup not passed'),
+        error_messages={'invalid_choice': 'The student has not passed medical check-up yet!'},
+        widget=AutocompleteSelect(Attendance._meta.get_field('student').remote_field, site),
     )
 
     class Meta:
@@ -138,7 +141,9 @@ MultiTrainingsForStudentForm.title = "Add multiple extra training records"
 
 
 @admin.register(Training, site=site)
-class TrainingAdmin(admin.ModelAdmin):
+class TrainingAdmin(DefaultFilterMixIn):
+    semester_filter = 'group__semester__id__exact'
+
     search_fields = (
         "group__name",
     )

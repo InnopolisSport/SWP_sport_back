@@ -7,7 +7,9 @@ from api.crud import get_attended_training_info, enroll_student, \
     get_trainings_for_student, get_trainings_for_trainer, get_students_grades
 from sport.models import Training, Schedule
 
-assertMembers = unittest.TestCase().assertCountEqual
+testcase = unittest.TestCase()
+testcase.maxDiff = None
+assertMembers = testcase.assertCountEqual
 
 
 @pytest.mark.django_db
@@ -32,8 +34,8 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
         sport=sport,
         semester=semester,
         capacity=20,
-        trainer=trainer
     )
+    group.trainers.add(trainer)
     schedule = schedule_factory(
         group=group,
         weekday=Schedule.Weekday.MONDAY,
@@ -47,7 +49,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
     t2 = trainings[1]
     t2.training_class = None
     t2.save()
-    a1 = attendance_factory(training=t1, student=student, hours=1.5)
+    a1 = attendance_factory(training=t1, student=student, hours=1)
     assert get_attended_training_info(t1.pk, student) == {
         "group_id": group.pk,
         "group_name": group.name,
@@ -58,9 +60,14 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
         "training_class": training_class.name,
         "capacity": group.capacity,
         "current_load": 0,
-        "trainer_first_name": trainer.user.first_name,
-        "trainer_last_name": trainer.user.last_name,
-        "trainer_email": trainer.user.email,
+        'trainer_email': None,
+        'trainer_first_name': None,
+        'trainer_last_name': None,
+        'trainers': [{
+            "trainer_first_name": trainer.user.first_name,
+            "trainer_last_name": trainer.user.last_name,
+            "trainer_email": trainer.user.email
+        }],
         "hours": a1.hours,
         "is_enrolled": False,
     }
@@ -72,18 +79,24 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
         "link_name": None,
         "capacity": group.capacity,
         "current_load": 0,
-        "trainer_first_name": trainer.user.first_name,
-        "trainer_last_name": trainer.user.last_name,
-        "trainer_email": trainer.user.email,
+        'trainer_email': None,
+        'trainer_first_name': None,
+        'trainer_last_name': None,
+        'trainers': [{
+            "trainer_first_name": trainer.user.first_name,
+            "trainer_last_name": trainer.user.last_name,
+            "trainer_email": trainer.user.email
+        }],
         "is_enrolled": False,
+        "can_enroll": False,
         "is_club": False,
     }
-    assertMembers(
+    assert \
         get_trainings_for_trainer(
             trainer=trainer,
             start=datetime(2020, 1, 1),
             end=datetime(2020, 1, 14)
-        ),
+        ) == \
         [
             {
                 "id": t1.pk,
@@ -103,10 +116,10 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
                 "training_class": None,
                 "can_grade": True
             }
-        ])
+        ]
 
     enroll_student(group, student)
-    group.trainer = None
+    group.trainers.clear()
     group.save()
     assert get_attended_training_info(t2.pk, student) == {
         "group_id": group.pk,
@@ -118,9 +131,10 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
         "training_class": None,
         "capacity": group.capacity,
         "current_load": 1,
-        "trainer_first_name": None,
-        "trainer_last_name": None,
-        "trainer_email": None,
+        'trainer_email': None,
+        'trainer_first_name': None,
+        'trainer_last_name': None,
+        'trainers': [],
         "hours": 0,
         "is_enrolled": True,
     }
@@ -135,7 +149,9 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
         "trainer_first_name": None,
         "trainer_last_name": None,
         "trainer_email": None,
+        'trainers': [],
         "is_enrolled": True,
+        'can_enroll': False,
         "is_club": False,
     }
     assertMembers(

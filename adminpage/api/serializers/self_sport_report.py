@@ -14,8 +14,8 @@ class SelfSportTypes(serializers.ModelSerializer):
 
 
 class SelfSportReportUploadSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(allow_empty_file=False, required=False)
-    link = serializers.URLField(required=False)
+    # image = serializers.ImageField(allow_empty_file=False, required=False)
+    link = serializers.URLField(required=True)
     training_type = serializers.PrimaryKeyRelatedField(
         queryset=SelfSportType.objects.filter(
             is_active=True,
@@ -23,23 +23,28 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
     )
     # start = serializers.DateTimeField(required=True)
     # end = serializers.DateTimeField(required=True)
-
-    def validate(self, data):
-        image_present = 'image' in data
-        link_present = 'link' in data
-        if (image_present and link_present) or \
-                (not image_present and not link_present):
-            raise serializers.ValidationError(
-                "Must include either image or link"
-            )
-        return data
+    hours = serializers.IntegerField()
+    student_comment = serializers.CharField(required=False)
+    parsed_data = serializers.JSONField(required=False)
 
     class Meta:
         model = SelfSportReport
         fields = (
-            'image',
             'link',
-            # 'start',
-            # 'end',
+            'hours',
             'training_type',
+            'student_comment',
+            'parsed_data'
         )
+
+class ParseStrava(serializers.Serializer):
+    link = serializers.URLField(required=True)
+
+class ParsedStravaSerializer(serializers.Serializer):
+    training_type = serializers.CharField()
+    pace = serializers.CharField(required=False)
+    speed = serializers.CharField(required=False)
+    distance_km = serializers.IntegerField()
+    hours = serializers.IntegerField()
+    approved = serializers.BooleanField()
+    

@@ -8,11 +8,13 @@ class Group(models.Model):
     link = models.URLField(max_length=256, null=True, blank=True)
     capacity = models.PositiveIntegerField(default=50, null=False)
     is_club = models.BooleanField(default=False, null=False)
-    sport = models.ForeignKey('Sport', on_delete=models.CASCADE, null=False)
+    sport = models.ForeignKey('Sport', on_delete=models.CASCADE, null=True, blank=True)
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, null=False)
-    trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True)
+    trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='teacher')
+    trainers = models.ManyToManyField('Trainer', related_name='m2m', blank=True, verbose_name='teachers')
 
-    minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, null=True, blank=True)
+    # minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, null=True, blank=True)
+    allowed_medical_groups = models.ManyToManyField('MedicalGroup', blank=True)
 
     class Meta:
         db_table = "group"

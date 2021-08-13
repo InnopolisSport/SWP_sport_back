@@ -3,7 +3,7 @@ on: [push, workflow_dispatch]
 jobs:
   run_tests:
     name: Run tests
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Checkout code
@@ -28,11 +28,11 @@ jobs:
       - name: Run tests
         run: docker-compose -p test_sport -f compose/docker-compose-test.yml exec -T adminpanel pytest
 
-  cleanup:
-    name: Cleanup test containers
-    if: always()
-    needs: run_tests
-    runs-on: self-hosted
-    steps:
-      - name: Remove docker containers
-        run: docker-compose -p test_sport -f compose/docker-compose-test.yml down --volumes --rmi all
+#  cleanup:
+#    name: Cleanup test containers
+#    if: always()
+#    needs: run_tests
+#    runs-on: self-hosted
+#    steps:
+#      - name: Remove docker containers
+#        run: docker-compose -p test_sport -f compose/docker-compose-test.yml down --volumes --rmi all

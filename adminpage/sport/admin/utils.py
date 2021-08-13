@@ -3,7 +3,36 @@ from typing import List, Dict, Tuple
 
 from django.contrib import admin
 from django.db.models.expressions import F
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+from api.crud import get_ongoing_semester
+
+
+class DefaultFilterMixIn(admin.ModelAdmin):
+    def changelist_view(self, request, *args, **kwargs):
+        from django.http import HttpResponseRedirect
+        if hasattr(self, 'semester_filter') and self.semester_filter:
+            if hasattr(self, 'default_filters') and self.default_filters:
+                self.default_filters.append(F'{self.semester_filter}={get_ongoing_semester().pk}')
+            else:
+                self.default_filters = [F'{self.semester_filter}={get_ongoing_semester().pk}']
+        if hasattr(self, 'default_filters') and self.default_filters:
+            try:
+                test = request.META['HTTP_REFERER'].split(request.META['PATH_INFO'])
+                if test and test[-1] and not test[-1].startswith('?'):
+                    url = reverse('admin:%s_%s_changelist' % (self.opts.app_label, self.opts.model_name))
+                    filters = []
+                    for filter in self.default_filters:
+                        key = filter.split('=')[0]
+                        if key not in request.GET:
+                            filters.append(filter)
+                    print(filters)
+                    if filters:
+                        return HttpResponseRedirect("%s?%s" % (url, "&".join(filters)))
+            except:
+                pass
+        return super(DefaultFilterMixIn, self).changelist_view(request, *args, **kwargs)
 
 
 def user__email(obj):
@@ -11,6 +40,13 @@ def user__email(obj):
 
 
 user__email.short_description = 'user email'
+
+
+def user__role(obj):
+    return obj.user.role
+
+
+user__role.short_description = 'group'
 
 
 def custom_order_filter(ordering: Tuple, cls=admin.RelatedFieldListFilter):

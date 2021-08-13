@@ -1,5 +1,6 @@
 import tempfile
 from datetime import date
+import unittest
 
 import pytest
 from PIL import Image
@@ -14,6 +15,7 @@ from sport.models import SelfSportReport, SelfSportType, Attendance, Group
 frozen_time = date(2020, 1, 2)
 semester_start = date(2020, 1, 1)
 semester_end = date(2020, 1, 15)
+assertMembers = unittest.TestCase().assertEqual
 
 
 @pytest.fixture
@@ -55,42 +57,7 @@ def setup(
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(frozen_time)
-def test_reference_upload_image(
-        setup,
-        freezer
-):
-    student, semester, selfsport_type, client = setup
-
-    image_md = Image.new('RGB', (600, 600))
-    file_md = tempfile.NamedTemporaryFile(suffix='.jpg')
-    image_md.save(file_md)
-    file_md.seek(0)
-
-    response = client.post(
-        f"/{settings.PREFIX}api/selfsport/upload",
-        data={
-            "image": file_md,
-            "training_type": selfsport_type.pk,
-        },
-        format='multipart'
-    )
-    assert response.status_code == status.HTTP_200_OK
-    assert SelfSportReport.objects.filter(
-        semester=semester,
-        student__pk=student.pk,
-    ).count() == 1
-    report = SelfSportReport.objects.filter(
-        semester=semester,
-        student__pk=student.pk,
-    ).first()
-
-    assert report.link is None
-    assert report.image is not None
-
-
-@pytest.mark.django_db
-@pytest.mark.freeze_time(frozen_time)
-def test_reference_upload_link(
+def test_reference_upload_link_only(
         setup,
         freezer
 ):
@@ -99,65 +66,28 @@ def test_reference_upload_link(
     response = client.post(
         f"/{settings.PREFIX}api/selfsport/upload",
         data={
-            "link": "http://example.com/",
-            "training_type": selfsport_type.pk,
-        },
-        format='multipart'
-    )
-
-    assert response.status_code == status.HTTP_200_OK
-    assert SelfSportReport.objects.filter(
-        semester=semester,
-        student__pk=student.pk,
-    ).count() == 1
-    report = SelfSportReport.objects.filter(
-        semester=semester,
-        student__pk=student.pk,
-    ).first()
-
-    assert report.link is not None
-    assert report.image == ''
-
-
-@pytest.mark.django_db
-def test_reference_upload_medical_disalowance(
-        setup,
-):
-    student, semester, selfsport_type, client = setup
-    student.student.medical_group_id = -2
-    student.save()
-
-    response = client.post(
-        f"/{settings.PREFIX}api/selfsport/upload",
-        data={
-            "link": "http://example.com/",
+            "link": "https://strava.com/activities/1",
             "training_type": selfsport_type.pk,
         },
         format='multipart'
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["code"] == SelfSportErrors.MEDICAL_DISALLOWANCE[0]
 
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(frozen_time)
-def test_reference_upload_image_link(
+def test_reference_upload_invalid_link(
         setup,
         freezer
 ):
     student, semester, selfsport_type, client = setup
 
-    image_md = Image.new('RGB', (600, 600))
-    file_md = tempfile.NamedTemporaryFile(suffix='.jpg')
-    image_md.save(file_md)
-    file_md.seek(0)
-
     response = client.post(
         f"/{settings.PREFIX}api/selfsport/upload",
         data={
-            "image": file_md,
             "link": "https://google.com",
+            "hours": 2,
             "training_type": selfsport_type.pk,
         },
         format='multipart'
@@ -168,37 +98,44 @@ def test_reference_upload_image_link(
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time(frozen_time)
-def test_reference_upload_image_invalid_size(
+def test_reference_upload_valid_link(
         setup,
         freezer
 ):
     student, semester, selfsport_type, client = setup
 
-    image_sm = Image.new('RGB', (600, 300))
-    image_lg = Image.new('RGB', (600, 5500))
-    file_sm = tempfile.NamedTemporaryFile(suffix='.jpg')
-    file_lg = tempfile.NamedTemporaryFile(suffix='.jpg')
-    image_sm.save(file_sm)
-    image_lg.save(file_lg)
-    file_sm.seek(0)
-    file_lg.seek(0)
-
     response = client.post(
         f"/{settings.PREFIX}api/selfsport/upload",
         data={
-            "image": file_sm,
+            "link": "https://www.strava.com/activities/5324378543",
+            "hours": 2,
             "training_type": selfsport_type.pk,
         },
         format='multipart'
     )
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time(frozen_time)
+def test_reference_upload_more_three_hours(
+        setup,
+        freezer
+):
+    student, semester, selfsport_type, client = setup
 
     response = client.post(
         f"/{settings.PREFIX}api/selfsport/upload",
-        data={"image": file_lg, },
+        data={
+            "link": "https://www.strava.com/activities/5324378543",
+            "hours": 2,
+            "training_type": selfsport_type.pk,
+        },
         format='multipart'
     )
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
@@ -215,14 +152,14 @@ def test_self_sport_same_type_same_day(
     report1 = SelfSportReport.objects.create(
         student_id=student.pk,
         semester=semester,
-        link="https://example.com",
+        link="https://www.strava.com/activities/5324378542",
         training_type=selfsport_type
     )
     report1.save()
     report2 = SelfSportReport.objects.create(
         student_id=student.pk,
         semester=semester,
-        link="https://example.ru",
+        link="https://www.strava.com/activities/5324378543",
         training_type=selfsport_type
     )
     report2.save()
@@ -236,3 +173,68 @@ def test_self_sport_same_type_same_day(
         student_id=student.pk,
         training__group=self_sport_group,
     ).aggregate(Sum("hours"))["hours__sum"] == report1.hours + report2.hours
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time(frozen_time)
+def test_valid_strava_link_parsing(
+        setup,
+        freezer
+):
+    student, semester, selfsport_type, client = setup
+
+    response = client.get(
+        f"/{settings.PREFIX}api/selfsport/strava_parsing",
+        data={
+            "link": "https://www.strava.com/activities/5324378542"
+        },
+        format='multipart'
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assertMembers(response.data, {
+        'distance_km': 2.5,
+        'type': 'RUNNING',
+        'speed': 10.0,
+        'hours': 1,
+        'approved': True
+        }
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time(frozen_time)
+def test_invalid_strava_link_parsing(
+        setup,
+        freezer
+):
+    student, semester, selfsport_type, client = setup
+
+    response = client.get(
+        f"/{settings.PREFIX}api/selfsport/strava_parsing",
+        data={
+            "link": "https://www.strava.com/activities/5"
+        },
+        format='multipart'
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time(frozen_time)
+def test_invalid_link_parsing(
+        setup,
+        freezer
+):
+    student, semester, selfsport_type, client = setup
+
+    response = client.get(
+        f"/{settings.PREFIX}api/selfsport/strava_parsing",
+        data={
+            "link": "https://www.google.com"
+        },
+        format='multipart'
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST

@@ -1,16 +1,17 @@
 function make_hours_table(trainings) {
-    const table = $('<table class="table table-hover">');
+    const table = $('<table class="table table-hover table-sm table-borderless">');
     table.append('<thead>')
         .children('thead')
         .append('<tr />')
         .children('tr')
-        .append('<th scope="col">Group</th><th scope="col">Date</th><th scope="col">Hours</th>');
+        .append('<th scope="col">Group</th><th scope="col">Date</th><th scope="col">Hours</th><th scope="col">Approved</th>');
     const tbody = table.append('<tbody>').children('tbody');
-    trainings.forEach(({group, custom_name, timestamp, hours}) => {
+    trainings.forEach(({group, custom_name, timestamp, hours, approved}) => {
         tbody.append($(`<tr>
-                            <td>${custom_name || group}</td>
+                            <td><span class="badge badge-info text-uppercase">${custom_name || group}</span></td>
                             <td>${timestamp.substr(0, 16)}</td>
                             <td>${hours}</td>
+                            <td>${approved === null ? 'Awaiting' : (approved ? 'Yes' : 'No')}</td>
                         </tr>`))
     });
     return table;
@@ -21,30 +22,31 @@ const loaded_hours = {};
 async function fetch_detailed_hours(e) {
     const semester_id = parseInt(e.getAttribute('data-semester-id'), 10);
     if (loaded_hours[semester_id]) return;
-    const response = await fetch(`/api/profile/history/${semester_id}`, {
+    const response = await fetch(`/api/profile/history_with_self/${semester_id}`, {
         method: 'GET',
         "X-CSRFToken": csrf_token,
     });
     const history = await response.json();
     const table = $(`#hours-modal-${semester_id} .modal-body`);
     table.empty();
+    console.log(history.trainings)
     table.append(make_hours_table(history.trainings));
     loaded_hours[semester_id] = true;
 }
 
-function toggle_ill(elem) {
-    if (elem.id === "recovered-btn") {
-        open_recovered_modal();
-    } else {
-        sendResults("/api/profile/sick/toggle", {})
-            .then(data => {
-                goto_profile();
-            })
-            .catch(function (error) {
-                toastr.error(error.message);
-            })
-    }
-}
+// function toggle_ill(elem) {
+//     if (elem.id === "recovered-btn") {
+//         open_recovered_modal();
+//     } else {
+//         sendResults("/api/profile/sick/toggle", {})
+//             .then(data => {
+//                 goto_profile();
+//             })
+//             .catch(function (error) {
+//                 toastr.error(error.message);
+//             })
+//     }
+// }
 
 function close_modal(modal_id) {
     $(modal_id).modal('hide');
@@ -70,15 +72,6 @@ function open_med_group_modal() {
 async function open_selfsport_modal() {
     $('#selfsport-modal').modal('show');
     $('#self-sport-type-help').html('');
-    $('#self-sport-file-input')
-        .off('change')
-        .val('')
-        .on('change', function () {
-            const parts = $(this).val().split('\\')
-            $(this).prev('.custom-file-label').html(parts[parts.length - 1]);
-        })
-        .prev('.custom-file-label')
-        .html('Proof image');
     const options = await fetch('/api/selfsport/types')
         .then(res => res.json())
         .then(arr => arr.sort((a, b) => a.name > b.name));
@@ -401,6 +394,9 @@ function autocomplete_select(event, ui) {
 async function submit_reference() {
     const formData = new FormData()
     const fileInput = $('#reference-file-input')[0]
+    const startDate = $('#start-date')[0]
+    const endDate = $('#end-date')[0]
+    const commentField = $('#comment-field')[0]
     const file = fileInput.files[0]
 
     if (!file) {
@@ -424,8 +420,10 @@ async function submit_reference() {
         toastr.error('Uploaded file is not an image');
         return false;
     }
-
     formData.append(fileInput.name, file)
+    formData.append(startDate.name, startDate.value)
+    formData.append(endDate.name, endDate.value)
+    formData.append(commentField.name, commentField.value)
     try {
         await sendResults('/api/reference/upload', formData, 'POST', false)
         await sendResults("/api/profile/sick/toggle", {})
@@ -440,62 +438,80 @@ async function submit_reference() {
 async function submit_self_sport() {
     const formData = new FormData()
 
-    // Get file
-    const fileInput = $('#self-sport-file-input')[0];
-    const file = fileInput.files[0];
+    // // Get file
+    // const fileInput = $('#self-sport-file-input')[0];
+    // const file = fileInput.files[0];
 
     // Get link
-    const linkInput = $('#self-sport-text-input');
-    const link = linkInput.val();
+    const linkInput = $('#self-sport-text-input')[0];
+    const link = linkInput.value;
 
     // Get training_type
-    const typeInput = $('#self-sport-type');
-    const type = typeInput.val();
+    const typeInput = $('#self-sport-type')[0];
+    const type = typeInput.value;
+
+    // Get hours
+    const hoursInput = $('#self-sport-number-input')[0];
+    const hours = hoursInput.value;
+
+    // Get student comment
+    const commentInput = $('#student-comment-field')[0];
+    const comment = commentInput.value;
 
     if (!type) {
         toastr.error("You should select the training type");
         return false;
     }
 
-    if (!file && !link || file && link) {
-        toastr.error("You should submit either an image or a link");
+    if (!link) {
+        toastr.error("You should submit a link to your Strava activity");
         return false;
     }
 
-    if (file) {
-        if (file.size > 1E7) {
-            toastr.error('Image file size too big, expected size <= 10 MB');
-            return false;
-        }
-
-        try {
-            const _URL = window.URL || window.webkitURL;
-            const img = await loadImage(_URL.createObjectURL(file));
-            if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
-                toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
-                return false;
-            }
-        } catch (e) {
-            toastr.error('Uploaded file is not an image');
-            return false;
-        }
-
-        formData.append(fileInput.name, file);
+    if (!hours) {
+        toastr.error("You should input hours");
+        return false;
     }
+
+    // if (file) {
+    //     if (file.size > 1E7) {
+    //         toastr.error('Image file size too big, expected size <= 10 MB');
+    //         return false;
+    //     }
+
+    //     try {
+    //         const _URL = window.URL || window.webkitURL;
+    //         const img = await loadImage(_URL.createObjectURL(file));
+    //         if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
+    //             toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
+    //             return false;
+    //         }
+    //     } catch (e) {
+    //         toastr.error('Uploaded file is not an image');
+    //         return false;
+    //     }
+
+    //     formData.append(fileInput.name, file);
+    // }
 
     if (link) {
-        if (link.startsWith('http://') || link.startsWith('https://')) {
-            formData.append(linkInput[0].name, link);
+        if ((link.startsWith('http://') || link.startsWith('https://')) && link.includes('strava')) {
+            formData.append(linkInput.name, link);
         } else {
+            toastr.error("You should submit a link to your Strava activity");
             return false;
         }
     }
 
-    formData.append(typeInput[0].name, type);
+    formData.append(typeInput.name, type);
+    formData.append('hours', hours);
+    console.log(comment)
+    formData.append(commentInput.name, comment);
+    formData.append('parsed_data', JSON.stringify(parsed_data));
 
     try {
         await sendResults('/api/selfsport/upload', formData, 'POST', false)
-        toastr.success("Your report was successfully uploaded.")
+        toastr.success("Your report has been successfully uploaded!")
         close_modal('#selfsport-modal');
     } catch (error) {
         toastr.error(error.message);

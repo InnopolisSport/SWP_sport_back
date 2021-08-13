@@ -50,9 +50,23 @@ $(function () {
         eventClick: openGroupInfoModal,
         eventRender: render,
         // Event format: yyyy-mm-dd
-        events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule'
-
+        events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule',
+        eventTimeFormat: { hour: 'numeric', minute: '2-digit', meridiem: 'short'}
     });
 
     calendar.render();
 });
+
+async function submit_sport_type() {
+    const parser = document.createElement('a');
+    parser.href = document.URL;
+    url = parser.pathname;
+    const sport_id = Number(url.match(/[^calendar\/sport\/](.*)/g)[0]);
+    try {
+        await sendResults('/api/select_sport', {"sport_id": sport_id}, 'POST',  asJSON = true)
+        toastr.success("You have successfully chosen " + sport_name + " for current semester!")
+    } catch (error) {
+        toastr.error(error.message);
+    }
+    return false;
+}

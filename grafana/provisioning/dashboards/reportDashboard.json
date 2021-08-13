@@ -17,8 +17,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1610616206296,
+  "id": 1,
+  "iteration": 1624381155862,
   "links": [],
   "panels": [
     {
@@ -27,6 +27,7 @@
         "defaults": {
           "custom": {
             "align": null,
+            "displayMode": "auto",
             "filterable": false
           },
           "mappings": [],
@@ -75,14 +76,14 @@
           }
         ]
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select au.first_name,\n       au.last_name,\n       au.email,\n       coalesce(s.telegram,'') as telegram,\n       s.enrollment_year,\n       mg.id                 as medical_group_id,\n       mg.name               as medical_group,\n       coalesce(at.hours, 0) as hours,\n       pg.name,\n       pg.id\nfrom student s\n         join auth_user au on au.id = s.user_id\n         join medical_group mg on s.medical_group_id = mg.id\n         left join (select student_id, pgg.id, pgg.name\n                    from get_primary_groups_in_semester(current_semester())\n                    join \"group\" pgg on group_id=pgg.id\n          ) pg on s.user_id = pg.student_id\n         left join (select student_id,\n                           sum(hours) as hours\n                    from attendance\n                             join training\n                                  on attendance.training_id = training.id\n                    where $__timeFilter(start)\n                    group by student_id) at on s.user_id = at.student_id\n         \n",
+          "rawSql": "select au.first_name,\n       au.last_name,\n       au.email,\n       coalesce(s.telegram,'') as telegram,\n       s.enrollment_year,\n       status.id             as status_id,\n       status.name           as status_name,\n       mg.id                 as medical_group_id,\n       mg.name               as medical_group,\n       coalesce(at.hours, 0) as hours,\n       pg.name,\n       pg.id\nfrom student s\n         join auth_user au on au.id = s.user_id\n         join medical_group mg on s.medical_group_id = mg.id\n         join student_status status on s.student_status_id = status.id\n         left join (select student_id, pgg.id, pgg.name\n                    from get_primary_groups_in_semester(current_semester())\n                    join \"group\" pgg on group_id=pgg.id\n          ) pg on s.user_id = pg.student_id\n         left join (select student_id,\n                           sum(hours) as hours\n                    from attendance\n                             join training\n                                  on attendance.training_id = training.id\n                    where $__timeFilter(start)\n                    group by student_id) at on s.user_id = at.student_id\n         \n",
           "refId": "A",
           "select": [
             [
@@ -123,6 +124,7 @@
               "medical_group": "Medical group",
               "medical_group_id": "",
               "name": "Primary group name",
+              "status_name": "Student status",
               "telegram": "Telegram"
             }
           }
@@ -141,15 +143,7 @@
             "displayMode": "auto",
             "filterable": false
           },
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "",
-              "to": "",
-              "type": 1
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -216,7 +210,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "format": "table",
@@ -273,7 +267,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 26,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -290,6 +284,7 @@
             "self"
           ]
         },
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": true,
@@ -332,6 +327,7 @@
         },
         "datasource": "SportPostgres",
         "definition": "select name from semester;",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -345,7 +341,6 @@
         "skipUrlSync": false,
         "sort": 4,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -363,6 +358,7 @@
         },
         "datasource": "SportPostgres",
         "definition": "select name from \"group\" where semester_id=current_semester()",
+        "description": null,
         "error": null,
         "hide": 2,
         "includeAll": true,
@@ -376,7 +372,6 @@
         "skipUrlSync": false,
         "sort": 5,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -391,5 +386,5 @@
   "timezone": "",
   "title": "Report Dashboard",
   "uid": "oixcRlbGk",
-  "version": 10
+  "version": 11
 }

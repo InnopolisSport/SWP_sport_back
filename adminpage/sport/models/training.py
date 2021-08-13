@@ -29,4 +29,6 @@ class Training(models.Model):
 
     @property
     def academic_duration(self) -> float:
-        return round((self.end - self.start).total_seconds() / 2700, 2)
+        secs = (self.end - self.start).total_seconds()
+        # TODO: Move 5% (2565) to settings
+        return secs // 2700 + (1 if secs % 2700 > 2565 else 0)

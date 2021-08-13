@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from api.views.enroll import EnrollErrors
-from sport.models import Enroll, Group, MedicalGroups
+from sport.models import Enroll, Group, MedicalGroups, Sport
 
 User = get_user_model()
 
@@ -49,6 +49,7 @@ def logged_in_student_general_med(student_factory) -> Tuple[APIClient, User]:
         password=password,
     )
     student_user.student.medical_group_id = MedicalGroups.GENERAL
+    student_user.student.sport = Sport.objects.get(name='sport1')
     student_user.save()
     client = APIClient()
     client.login(
@@ -56,6 +57,53 @@ def logged_in_student_general_med(student_factory) -> Tuple[APIClient, User]:
         password=password,
     )
     return client, student_user
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time('2020-01-01 10:00')
+def test_enroll_none_sport(
+        setup_group: Group,
+        logged_in_student_general_med
+):
+    client, student_user = logged_in_student_general_med
+
+    student_user.student.sport = None
+    student_user.student.save()
+
+    response = client.post(
+        f"/{settings.PREFIX}api/enrollment/enroll",
+        data={
+            "group_id": setup_group.pk,
+        }
+    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert Enroll.objects.filter(
+        student=student_user.student,
+    ).count() == 0
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time('2020-01-01 10:00')
+def test_enroll_incorrect_sport(
+        setup_group: Group,
+        logged_in_student_general_med
+):
+    client, student_user = logged_in_student_general_med
+
+    student_user.student.sport = Sport.objects.get_or_create(name='sport_incorrect')[0]
+    student_user.student.save()
+
+    response = client.post(
+        f"/{settings.PREFIX}api/enrollment/enroll",
+        data={
+            "group_id": setup_group.pk,
+        }
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["code"] == EnrollErrors.SPORT_ERROR[0]
+    assert Enroll.objects.filter(
+        student=student_user.student,
+    ).count() == 0
 
 
 @pytest.mark.django_db
@@ -104,7 +152,7 @@ def test_enroll_full_group(
 # TODO: maybe remove the test (just tests add to a group)
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-01 10:00')
-def test_enroll_two_success(
+def test_enroll_two_fail(
         setup_group: Group,
         logged_in_student_general_med,
         group_factory
@@ -138,11 +186,7 @@ def test_enroll_two_success(
             "group_id": other_group.pk,
         }
     )
-    assert response.status_code == status.HTTP_200_OK
-    assert Enroll.objects.filter(
-        student=student_user.student,
-        group=other_group,
-    ).exists()
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.django_db
@@ -157,7 +201,11 @@ def test_enroll_insufficient_medical(
     student_user.student.medical_group_id = MedicalGroups.SPECIAL2
     student_user.save()
 
-    setup_group.minimum_medical_group_id = MedicalGroups.SPECIAL1
+    setup_group.allowed_medical_groups.set([
+        MedicalGroups.GENERAL,
+        MedicalGroups.PREPARATIVE,
+        MedicalGroups.SPECIAL1,
+    ])
     setup_group.save()
 
     response = client.post(
@@ -168,50 +216,6 @@ def test_enroll_insufficient_medical(
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data["code"] == EnrollErrors.MEDICAL_DISALLOWANCE[0]
-
-
-@pytest.mark.django_db
-@pytest.mark.freeze_time('2020-01-01 10:00')
-def test_enroll_too_many_groups(
-        setup_group: Group,
-        logged_in_student_general_med,
-        group_factory
-):
-    client, student_user = logged_in_student_general_med
-    groups = [setup_group]
-    # setup group is G1, others are G2, G3 etc
-    for i in range(2, settings.STUDENT_MAXIMUM_GROUP_COUNT + 2):
-        g = group_factory(
-            "G" + str(i),
-            capacity=1,
-            sport=setup_group.sport,
-            semester=setup_group.semester,
-            trainer=setup_group.trainer,
-            is_club=setup_group.is_club,
-        )
-        groups.append(g)
-
-    # enroll to max amount of groups
-    for group in groups[:-1]:
-        response = client.post(
-            f"/{settings.PREFIX}api/enrollment/enroll",
-            data={
-                "group_id": group.pk,
-            }
-        )
-        assert response.status_code == status.HTTP_200_OK
-
-    response = client.post(
-        f"/{settings.PREFIX}api/enrollment/enroll",
-        data={
-            "group_id": groups[-1].pk,
-        }
-    )
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["code"] == EnrollErrors.TOO_MUCH_GROUPS[0]
-    assert Enroll.objects.filter(
-        student=student_user.student,
-    ).count() == settings.STUDENT_MAXIMUM_GROUP_COUNT
 
 
 @pytest.mark.django_db

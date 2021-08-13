@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
 
         # UPDATE django_content_type SET app_label = 'accounts'
         # WHERE app_label = 'auth' and model = 'user';
-        ('auth', '__latest__'),
+        ('auth', '0012_group_verbose_name'),
     ]
 
     operations = [
