@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
         INSERT INTO medical_group (id, name, description) VALUES 
         (-2, 'Medical checkup not passed', 'You can''t get sport hours for training unless you pass a checkup'),
         (-1, 'Special 2', 'You can''t attend trainings, instead you should write a report on sport related topic'),
-        (0, 'Special 1', 'You can attend only special groups, that is why you might see less available groups than your classmates'),
+        (0, 'Special 1', 'Your health status is considered to be OK, you can attend any trainings'),
         (1, 'Preparative', 'Your health status is considered to be OK, you can attend any trainings'),
         (2, 'General', 'Your health status is considered to be OK, you can attend any trainings');
         ''', '')
