@@ -37,10 +37,84 @@ def test_mark_hours(student_factory, sport_factory, semester_factory, group_fact
 
 
 @pytest.mark.django_db
-def test_toggle_illness(student_factory):
-    student = student_factory("A@foo.bar").student
-    assert not student.is_ill
-    toggle_illness(student)
-    assert student.is_ill
-    toggle_illness(student)
-    assert not student.is_ill
+def test_hours_statistics(student_factory, sport_factory, semester_factory, group_factory, training_factory, attendance_factory):
+    student = student_factory("A").student
+    other_student = student_factory("B").student
+    sport = sport_factory(name="Sport")
+    s1 = semester_factory(name="S19", start=date(2020, 1, 1), end=date(2020, 2, 1))
+    s2 = semester_factory(name="S20", start=date(2020, 3, 1), end=date(2020, 4, 1))
+    g11 = group_factory(name="G11", sport=sport, semester=s1, capacity=20)
+    g12 = group_factory(name="G12", sport=sport, semester=s1, capacity=20)
+    g21 = group_factory(name="G21", sport=sport, semester=s2, capacity=20)
+    g22 = group_factory(name="G22", sport=sport, semester=s2, capacity=20)
+
+    trainings = []
+    for i, g in enumerate([g11, g12, g21, g22]):
+        t = training_factory(group=g, start=timezone.now(), end=timezone.now())
+        trainings.append(t)
+        attendance_factory(training=t, student=student, hours=i + 1)
+        attendance_factory(training=t, student=other_student, hours=1)
+    brief = get_brief_hours(student)
+    print(brief)
+    print([
+        {
+            "hours": 3,
+            "semester_id": s1.pk,
+            "semester_name": s1.name,
+            'semester_start': s1.start.strftime("%b. %d, %Y"),
+            'semester_end': s1.end.strftime("%b. %d, %Y"),
+        },
+        {
+            "hours": 7,
+            "semester_id": s2.pk,
+            "semester_name": s2.name,
+            'semester_start': s2.start.strftime("%b. %d, %Y"),
+            'semester_end': s2.end.strftime("%b. %d, %Y"),
+        }
+    ])
+    assertMembers(brief, [
+        {
+            "hours": 3,
+            "semester_id": s1.pk,
+            "semester_name": s1.name,
+            'semester_start': s1.start.strftime("%b. %d, %Y"),
+            'semester_end': s1.end.strftime("%b. %d, %Y"),
+        },
+        {
+            "hours": 7,
+            "semester_id": s2.pk,
+            "semester_name": s2.name,
+            'semester_start': s2.start.strftime("%b. %d, %Y"),
+            'semester_end': s2.end.strftime("%b. %d, %Y"),
+        }
+    ])
+    stat1 = get_detailed_hours(student, s1)
+    stat2 = get_detailed_hours(student, s2)
+    assertMembers(stat1, [
+        {
+            "group": g12.name,
+            "custom_name": None,
+            "timestamp": trainings[1].start,
+            "hours": 2
+        },
+        {
+            "group": g11.name,
+            "custom_name": None,
+            "timestamp": trainings[0].start,
+            "hours": 1
+        }
+    ])
+    assertMembers(stat2, [
+        {
+            "group": g22.name,
+            "custom_name": None,
+            "timestamp": trainings[3].start,
+            "hours": 4
+        },
+        {
+            "group": g21.name,
+            "custom_name": None,
+            "timestamp": trainings[2].start,
+            "hours": 3
+        }
+    ])

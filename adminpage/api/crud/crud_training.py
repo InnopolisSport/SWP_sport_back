@@ -83,9 +83,9 @@ def get_group_info(group_id: int, student: Student):
         info = dictfetchone(cursor)
         info['trainers'] = get_trainers_group(group_id)
 
-        info['can_enroll'] = student.student.sport and \
-                             student.student.sport==Group.objects.get(id=info['group_id']).sport and \
-                             not Group.objects.filter(enroll__student=student.student,
+        info['can_enroll'] = student.sport is not None and \
+                             student.sport==Group.objects.get(id=info['group_id']).sport and \
+                             not Group.objects.filter(enrolls__student=student,
                                                       semester=get_ongoing_semester()).exists()
 
         return info
@@ -194,13 +194,19 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
         'id',
         'start',
         'end',
-        'group__id',
+        'group_id',
         'group__name',
         'training_class__name',
     ).annotate(
-        group_id=F('group__id'),
         group_name=F('group__name'),
         training_class=F('training_class__name'),
+    ).values(
+        'id',
+        'start',
+        'end',
+        'group_id',
+        'group_name',
+        'training_class',
     )
 
     for entry in query:

@@ -1,5 +1,5 @@
 from datetime import datetime, time, date
-from typing import Optional
+from typing import Optional, List
 
 import pytest
 
@@ -68,9 +68,16 @@ def group_factory():
             trainer: Optional[Trainer] = None,
             description: Optional[str] = None,
             is_club: bool = False,
-            minimum_medical_group_id: MedicalGroups = MedicalGroups.PREPARATIVE,
+            allowed_medical_groups: Optional[List[MedicalGroups]] = None,
     ) -> Group:
-        obj, _ = Group.objects.get_or_create(
+        if allowed_medical_groups is None:
+            allowed_medical_groups = [
+                MedicalGroups.GENERAL,
+                MedicalGroups.PREPARATIVE,
+                MedicalGroups.SPECIAL1,
+            ]
+
+        obj, created = Group.objects.get_or_create(
             name=name,
             semester=semester,
             defaults={
@@ -78,9 +85,12 @@ def group_factory():
                 "sport": sport,
                 "description": description,
                 "is_club": is_club,
-                "minimum_medical_group_id": minimum_medical_group_id,
             }
         )
+
+        if created is True:
+            obj.allowed_medical_groups.set(allowed_medical_groups)
+
         if trainer is not None and not obj.trainers.filter(pk=trainer.pk).exists():
             obj.trainers.add(trainer)
             obj.save()

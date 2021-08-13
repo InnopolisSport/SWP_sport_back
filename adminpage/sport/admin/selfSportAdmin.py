@@ -2,15 +2,17 @@ from admin_auto_filters.filters import AutocompleteFilter
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from django.db.models import F, Q, Sum
+from django.db.models import F, Q, Sum, IntegerField, Case, When, OuterRef
 
+from api.crud import get_ongoing_semester
 from sport.models import SelfSportReport, Attendance
 from .site import site
-from .utils import custom_order_filter
+from .utils import custom_order_filter, DefaultFilterMixIn
 import json
 import logging
 
@@ -39,7 +41,7 @@ class PrettyJSONWidget(widgets.Textarea):
             return super(PrettyJSONWidget, self).format_value(value)
 
 
-class JsonAdmin(admin.ModelAdmin):
+class JsonAdmin(DefaultFilterMixIn):
     formfield_overrides = {
         JSONField: {'widget': PrettyJSONWidget}
     }
@@ -69,6 +71,8 @@ class ReferenceAcceptRejectForm(forms.ModelForm):
 
 @admin.register(SelfSportReport, site=site)
 class SelfSportAdmin(JsonAdmin):
+    semester_filter = 'semester__id__exact'
+
     form = ReferenceAcceptRejectForm
 
     list_display = (
@@ -83,7 +87,8 @@ class SelfSportAdmin(JsonAdmin):
     list_filter = (
         StudentTextFilter,
         ("semester", custom_order_filter(("-start",))),
-        "approval"
+        "approval",
+        'student__course'
     )
 
     fields = (
@@ -173,10 +178,28 @@ class SelfSportAdmin(JsonAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        qs = qs.annotate(obtained_hours=Sum("student__attendance__hours",
-                                       filter=Q(attendance__student=F("student")) &
-                                              Q(attendance__training__group__semester=F("semester"))))
-        print(qs.values())
+
+        attendance_query = (
+            Attendance.objects.only('training__group__semester_id',
+                                    'training__group__semester__hours',
+                                    'student_id',
+                                    'semester')
+                # Get attendance, annotate, group by student and semester
+                .annotate(semester=F("training__group__semester_id"),
+                          semester_hours=F("training__group__semester__hours"))
+                .values('semester', 'student_id').order_by('student_id', 'semester')
+                # Calculate hours
+                .annotate(sum_hours=Sum("hours", output_field=IntegerField()))
+                .annotate(bounded_hours=Case(When(sum_hours__gt=F('semester_hours'),
+                                                  then=F('semester_hours')),
+                                             default=F('sum_hours')))
+        )
+
+        qs = qs.annotate(obtained_hours=Coalesce(
+            attendance_query.filter(student_id=OuterRef("student__pk"), semester=get_ongoing_semester().pk).values('sum_hours'),
+            0
+        ))
+
         return qs
 
     class Media:

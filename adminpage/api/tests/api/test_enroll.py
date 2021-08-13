@@ -61,6 +61,53 @@ def logged_in_student_general_med(student_factory) -> Tuple[APIClient, User]:
 
 @pytest.mark.django_db
 @pytest.mark.freeze_time('2020-01-01 10:00')
+def test_enroll_none_sport(
+        setup_group: Group,
+        logged_in_student_general_med
+):
+    client, student_user = logged_in_student_general_med
+
+    student_user.student.sport = None
+    student_user.student.save()
+
+    response = client.post(
+        f"/{settings.PREFIX}api/enrollment/enroll",
+        data={
+            "group_id": setup_group.pk,
+        }
+    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert Enroll.objects.filter(
+        student=student_user.student,
+    ).count() == 0
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time('2020-01-01 10:00')
+def test_enroll_incorrect_sport(
+        setup_group: Group,
+        logged_in_student_general_med
+):
+    client, student_user = logged_in_student_general_med
+
+    student_user.student.sport = Sport.objects.get_or_create(name='sport_incorrect')[0]
+    student_user.student.save()
+
+    response = client.post(
+        f"/{settings.PREFIX}api/enrollment/enroll",
+        data={
+            "group_id": setup_group.pk,
+        }
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["code"] == EnrollErrors.SPORT_ERROR[0]
+    assert Enroll.objects.filter(
+        student=student_user.student,
+    ).count() == 0
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time('2020-01-01 10:00')
 def test_enroll_one_success(
         setup_group: Group,
         logged_in_student_general_med
@@ -154,7 +201,11 @@ def test_enroll_insufficient_medical(
     student_user.student.medical_group_id = MedicalGroups.SPECIAL2
     student_user.save()
 
-    setup_group.minimum_medical_group_id = MedicalGroups.SPECIAL1
+    setup_group.allowed_medical_groups.set([
+        MedicalGroups.GENERAL,
+        MedicalGroups.PREPARATIVE,
+        MedicalGroups.SPECIAL1,
+    ])
     setup_group.save()
 
     response = client.post(
