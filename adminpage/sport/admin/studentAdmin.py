@@ -9,8 +9,8 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportExportActionModelAdmin
 from import_export.results import RowResult
 
-from api.crud import get_ongoing_semester
-from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance
+from api.crud import get_ongoing_semester, get_negative_hours
+from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance, Debt
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
@@ -265,57 +265,17 @@ class StudentAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
 
-        # To get previous semesters for current student exclude: (see comments below)
-        previous_semesters_for_current_student = (
-            Semester.objects
-                .filter(end__lt=get_ongoing_semester().start)  # ongoing semester;
-                .exclude(academic_leave_students=OuterRef("pk"))  # academic-leave semesters for current student;
-                .exclude(end__year__lt=OuterRef("enrollment_year"))  # semesters, which current student wasn't enrolled.
-                .only('hours')
-        )
-        # Get debt from previous semesters
-        qs = qs.annotate(debt=Coalesce(SumSubquery(previous_semesters_for_current_student, 'hours'), 0))
-
-        attendance_query = (
-            Attendance.objects.only('training__group__semester_id',
-                                    'training__group__semester__hours',
-                                    'student_id',
-                                    'semester')
-                # Get attendance, annotate, group by student and semester
-                .annotate(semester=F("training__group__semester_id"),
-                          semester_hours=F("training__group__semester__hours"))
-                .values('semester', 'student_id').order_by('student_id', 'semester')
-                # Calculate hours
-                .annotate(sum_hours=Sum("hours", output_field=IntegerField()))
-                .annotate(bounded_hours=Case(When(sum_hours__gt=F('semester_hours'),
-                                                  then=F('semester_hours')),
-                                             default=F('sum_hours')))
-        )
-
-        qs = qs.annotate(ongoing_semester_hours=Coalesce(
-            SumSubquery(attendance_query.filter(student_id=OuterRef("pk"), semester=get_ongoing_semester().pk), 'sum_hours'),
+        qs = qs.annotate(_debt=Coalesce(
+            SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
+                                            student_id=OuterRef("pk")), 'debt'),
             0
         ))
-
-        qs = qs.annotate(
-            last_semesters_hours=Coalesce(
-                SumSubquery(attendance_query.filter(student_id=OuterRef("pk"),
-                                                    semester__in=(
-                                                        Semester.objects
-                                                            # ongoing semester;
-                                                            .filter(end__lt=get_ongoing_semester().start)
-                                                            # academic-leave semesters for current student;
-                                                            .exclude(academic_leave_students=OuterRef(OuterRef("pk")))
-                                                            # semesters, which current student wasn't enrolled.
-                                                            .exclude(end__year__lt=OuterRef(OuterRef("enrollment_year")))
-                                                    )
-                                                    ), 'bounded_hours'), 0
-            )
-        )
-
+        qs = qs.annotate(_ongoing_semester_hours=Coalesce(
+            SumSubquery(Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
+            0
+        ))
         qs = qs.annotate(complex_hours=ExpressionWrapper(
-            F('ongoing_semester_hours') + Least(F('last_semesters_hours') - F('debt'), Value(0)),
-            output_field=IntegerField()
+            F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
         ))
 
         return qs
