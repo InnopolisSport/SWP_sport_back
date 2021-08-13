@@ -24,3 +24,4 @@ from .medicalGroupReferenceAdmin import MedicalGroupReferenceAdmin
 from .studentStatusAdmin import StudentStatusAdmin
 from .custompermissionAdmin import CustomPermissionAdmin
 from .medicalGroupHistoryAdmin import MedicalGroupHistoryAdmin
+from .debtAdmin import DebtAdmin

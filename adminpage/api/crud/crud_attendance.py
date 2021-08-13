@@ -8,7 +8,7 @@ from typing_extensions import TypedDict
 from django.db import connection
 
 from api.crud.utils import dictfetchall
-from sport.models import Student, Semester, Training, SelfSportReport, Reference
+from sport.models import Student, Semester, Training, SelfSportReport, Reference, Debt
 
 from api.crud.crud_semester import get_ongoing_semester
 from sport.models import Attendance
@@ -217,10 +217,12 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
 def get_negative_hours(student_id, hours_info=None, **kwargs):
     student_hours = get_student_hours(student_id) if hours_info is None else hours_info
     sem_now = student_hours['ongoing_semester']
-    res = 0.0
-    for i in student_hours['last_semesters_hours']:
-        res += i['hours_self_debt'] + min(i['hours_not_self'] + i['hours_self_not_debt'] - i['hours_sem_max'], 0)
-    res += sem_now['hours_self_debt'] + sem_now['hours_not_self'] + sem_now['hours_self_not_debt']
+    try:
+        debt = Debt.objects.get(student=student_id, semester=get_ongoing_semester()).debt
+    except:
+        debt = 0
+    res = sem_now['hours_self_debt'] + sem_now['hours_not_self'] + sem_now['hours_self_not_debt'] - debt
+
     return res
 
 
