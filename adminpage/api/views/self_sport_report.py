@@ -19,7 +19,7 @@ from api.serializers import (
 )
 from api.serializers.self_sport_report import SelfSportTypes, ParseStrava, ParsedStravaSerializer
 # from api.views.utils import process_image
-from sport.models import SelfSportType
+from sport.models import SelfSportType, SelfSportReport
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 import json
@@ -34,6 +34,9 @@ class SelfSportErrors:
     )
     MAX_NUMBER_SELFSPORT = (
         5, "You can't submit self-sport report, because you have max number of self sport"
+    )
+    INVALID_LINK = (
+        4, "You can't submit link submitted previously or link is invalid."
     )
 
 @swagger_auto_schema(
@@ -65,10 +68,11 @@ def get_self_sport_types(request, **kwargs):
 @parser_classes([MultiPartParser])
 def self_sport_upload(request, **kwargs):
     serializer = SelfSportReportUploadSerializer(data=request.data)
-    if re.match(r'https?://www\.strava\.com/.*', serializer.initial_data['link'], re.IGNORECASE) is None:
+    url = serializer.initial_data['link']
+    if SelfSportReport.objects.filter(link=url).exists() or re.match(r'https?://www\.strava\.com/.*', url, re.IGNORECASE) is None:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
-            data="Invalid link"
+            data=error_detail(*SelfSportErrors.INVALID_LINK)
         )
     serializer.is_valid(raise_exception=True)
     debt = False
@@ -122,7 +126,7 @@ def self_sport_upload(request, **kwargs):
 @permission_classes([IsStudent])
 def get_strava_activity_info(request, **kwargs):
     url = request.GET['link']
-    if re.match(r'https?://www\.strava\.com/.*', url, re.IGNORECASE) is None:
+    if re.match(r'https?://.*strava\.com/.*', url, re.IGNORECASE) is None:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data="Invalid link"

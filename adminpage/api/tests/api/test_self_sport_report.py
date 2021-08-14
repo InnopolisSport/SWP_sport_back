@@ -238,3 +238,36 @@ def test_invalid_link_parsing(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time(frozen_time)
+def test_reference_upload_duplicate_link(
+        setup,
+        freezer
+):
+    student, semester, selfsport_type, client = setup
+
+    response = client.post(
+        f"/{settings.PREFIX}api/selfsport/upload",
+        data={
+            "link": "https://www.strava.com/activities/5324378543",
+            "hours": 2,
+            "training_type": selfsport_type.pk,
+        },
+        format='multipart'
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    response = client.post(
+        f"/{settings.PREFIX}api/selfsport/upload",
+        data={
+            "link": "https://www.strava.com/activities/5324378543",
+            "hours": 2,
+            "training_type": selfsport_type.pk,
+        },
+        format='multipart'
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
