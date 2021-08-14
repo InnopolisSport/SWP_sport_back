@@ -24,8 +24,14 @@
                     </button>
                 </div>
                 <div class="modal-body text-left">
-                    <p>Please submit <b>an image of medical reference with your medical group data</b>.
-                        Based on the reference you will be assigned a health group.</p>
+                    <p>
+                        Please submit <b>an image of medical reference with your medical group data</b>.
+                        Based on the reference you will be assigned a health group.
+                    </p>
+                    <div class="alert alert-danger text-center pt-3" role="alert">
+                        <p>Take the <b>original certificate to office 319</b>. If the original certificate is <b>missing</b>, 
+                        the result <b>will be canceled</b>.</p>
+                    </div>
                     {% csrf_token %}
                     {{ forms.medical_group_reference.as_p }}
                 </div>
