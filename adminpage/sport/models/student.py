@@ -90,6 +90,7 @@ class Student(models.Model):
         if self.medical_group != self.__original_medical_group:
             MedicalGroupHistory.objects.create(student=self,
                                                medical_group=self.medical_group)
+
         super().save(*args, **kwargs)
 
     class Meta:
