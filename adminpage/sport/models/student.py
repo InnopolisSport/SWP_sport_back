@@ -36,7 +36,9 @@ class Student(models.Model):
 
     course = models.PositiveSmallIntegerField(
         default=1,
-        validators=[validate_course]
+        validators=[validate_course],
+        null=True,
+        blank=True
     )
 
     medical_group = models.ForeignKey(
