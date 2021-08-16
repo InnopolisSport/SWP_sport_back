@@ -44,6 +44,7 @@ def get_sports(all=False, student: Optional[Student] = None):
 
         sport['trainers'] = trainers
         sport['num_of_groups'] = sport_groups.count()
+        # sport['free_places']
 
         sports_list.append(sport)
 
