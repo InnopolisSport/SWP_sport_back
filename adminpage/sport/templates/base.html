@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} {% endblock %}</title>
     <link rel="stylesheet" href="{% static "sport/css/header.css" %}">
-    <script src="{% static "sport/js/header.js" %}"></script>
+    <script src="{% static "sport/js/header.js" %}?{{JS_VERSION}}"></script>
     {% block extrahead %} {% endblock %}
 </head>
 <body>
