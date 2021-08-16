@@ -30,7 +30,7 @@ def test_sport(
     valid = model_to_dict(sport)
     valid['trainers'] = []
     valid['num_of_groups'] = 2
-
+    print(list(sport_list))
     assert list(sport_list) == [
         valid,
     ]
