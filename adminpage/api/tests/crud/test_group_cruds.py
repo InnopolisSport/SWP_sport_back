@@ -30,7 +30,8 @@ def test_sport(
     valid = model_to_dict(sport)
     valid['trainers'] = []
     valid['num_of_groups'] = 2
-    print(list(sport_list))
+    valid['free_places'] = 40
+
     assert list(sport_list) == [
         valid,
     ]
@@ -78,6 +79,7 @@ def test_sports_in_new_filled_semester(
 
     valid = model_to_dict(sport1)
     valid['trainers'] = []
+    valid['free_places'] = 20
     valid['num_of_groups'] = 1
 
     assert list(sport_list) == [
