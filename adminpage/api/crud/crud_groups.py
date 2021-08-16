@@ -4,12 +4,12 @@ from django.conf import settings
 from django.db import connection
 from django.db.models import F
 from django.db.models import Q
-from django.db.models import Count
+from django.db.models import Count, Sum, IntegerField
 
 import api.crud
 from api.crud.utils import dictfetchall, get_trainers_group
 from api.crud.crud_semester import get_ongoing_semester
-from sport.models import Sport, Student, Trainer, Group
+from sport.models import Sport, Student, Trainer, Group, Enroll
 
 
 def get_sports(all=False, student: Optional[Student] = None):
@@ -44,6 +44,7 @@ def get_sports(all=False, student: Optional[Student] = None):
 
         sport['trainers'] = trainers
         sport['num_of_groups'] = sport_groups.count()
+        sport['free_places'] = get_free_places_for_sport(sport['id'])
 
         sports_list.append(sport)
 
@@ -157,3 +158,11 @@ def get_trainer_groups(trainer: Trainer):
     return query
     # Currently query is a list of one dictionary
     # Will it be converted to a dictionary?
+
+
+def get_free_places_for_sport(sport_id):
+    groups = Group.objects.filter(sport=sport_id)
+    res = 0
+    for i in groups:
+        res += i.capacity - Enroll.objects.filter(group=i.id).count()
+    return res

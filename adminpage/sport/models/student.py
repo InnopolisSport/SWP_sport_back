@@ -10,6 +10,8 @@ from sport.utils import get_current_study_year
 
 
 def validate_course(course):
+    if course is None:
+        pass
     if course < 1 or course > 4:
         raise ValidationError('Course is bounded by 1 and 4')
 
@@ -34,7 +36,9 @@ class Student(models.Model):
 
     course = models.PositiveSmallIntegerField(
         default=1,
-        validators=[validate_course]
+        validators=[validate_course],
+        null=True,
+        blank=True
     )
 
     medical_group = models.ForeignKey(
@@ -86,6 +90,7 @@ class Student(models.Model):
         if self.medical_group != self.__original_medical_group:
             MedicalGroupHistory.objects.create(student=self,
                                                medical_group=self.medical_group)
+
         super().save(*args, **kwargs)
 
     class Meta:
