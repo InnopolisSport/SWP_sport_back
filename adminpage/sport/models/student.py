@@ -10,6 +10,8 @@ from sport.utils import get_current_study_year
 
 
 def validate_course(course):
+    if course is None:
+        pass
     if course < 1 or course > 4:
         raise ValidationError('Course is bounded by 1 and 4')
 
