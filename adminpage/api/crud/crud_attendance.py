@@ -226,14 +226,18 @@ def get_negative_hours(student_id, hours_info=None, **kwargs):
     return res
 
 
+def create_debt(last_semester, **kwargs):
+    pass
+
+
 # TODO: api method
 def better_than(student_id):
     attendance_query = (
         Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk)
             .only('training__group__semester_id',
                   'training__group__semester__hours',
-                  'stuent_id',
-                  'semedster')
+                  'student_id',
+                  'semester')
             # Get attendance, annotate, group by student and semester
             .annotate(semester=F("training__group__semester_id"),
                       semester_hours=F("training__group__semester__hours"))

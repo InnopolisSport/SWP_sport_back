@@ -67,6 +67,8 @@ def add_group_for_student_status(instance: Student, sender, using, **kwargs):
         new_group.permissions.add(Permission.objects.get(codename='see_calendar', content_type=content_type))
     elif instance.student_status.name == "Academic leave":
         new_group.permissions.add(Permission.objects.get(codename='see_calendar', content_type=content_type))
+    elif instance.student_status.name == "Alumnus":
+        instance.course = None
 
     instance.user.groups.add(new_group)
 
