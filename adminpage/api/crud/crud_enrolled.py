@@ -11,6 +11,7 @@ def enroll_student(group: Group, student: Student):
     """
     Enrolls given student in a group
     """
+
     Enroll.objects.create(student=student, group=group)
 
 
