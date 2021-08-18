@@ -83,3 +83,28 @@ def test_get_email_name_like_students(
     ) == 1
     assert len(get_email_name_like_students(group.id, "kfedoseev")) == 0
 
+    wrong_sport = sport_factory(
+        name="wrong",
+        special=False,
+    )
+    wrong_group = group_factory(
+        name="F-S2fsd0-01",
+        capacity=30,
+        sport=wrong_sport,
+        semester=sem,
+    )
+    wrong_group.allowed_medical_groups.set([
+        MedicalGroups.NO_CHECKUP,
+        MedicalGroups.PREPARATIVE,
+        MedicalGroups.SPECIAL1,
+        MedicalGroups.SPECIAL2,
+        MedicalGroups.GENERAL
+    ])
+
+    assert len(get_email_name_like_students(wrong_group.id, "Kir")) == 0
+    assert len(get_email_name_like_students(wrong_group.id, "Kirill Fed")) == 0
+    assert len(get_email_name_like_students(wrong_group.id, "Kirill Fedoseev")) == 0
+    assert len(get_email_name_like_students(wrong_group.id, "k.fedoseev")) == 0
+    assert len(
+        get_email_name_like_students(wrong_group.id, "k.fedoseev@innopolis.university")
+    ) == 0
