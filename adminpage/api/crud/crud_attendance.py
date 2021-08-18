@@ -227,6 +227,7 @@ def get_negative_hours(student_id, hours_info=None, **kwargs):
 
 
 def create_debt(last_semester, **kwargs):
+    # TODO: add debt when new semester starts
     pass
 
 

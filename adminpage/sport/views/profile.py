@@ -100,7 +100,7 @@ def profile_view(request, **kwargs):
                 "has_unresolved_med_group_submission": has_unresolved_med_group_submission,
                 **student_data,
                 "sport": student.sport,
-                "init_debt_hours": Debt.objects.filter(student=student).first(),
+                "init_debt_hours": Debt.objects.filter(student=student).first().debt,
                 "debt_hours": get_negative_hours(student.pk),
                 "all_hours": get_student_hours(student.pk)['ongoing_semester'],
                 "better_than": better_than(student.pk)
