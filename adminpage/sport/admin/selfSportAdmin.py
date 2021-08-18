@@ -77,6 +77,7 @@ class SelfSportAdmin(JsonAdmin):
 
     list_display = (
         'student',
+        'student__course'
         'semester',
         'hours',
         'uploaded',
