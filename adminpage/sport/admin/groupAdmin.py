@@ -57,7 +57,6 @@ class GroupAdmin(DefaultFilterMixIn):
 
     list_display = (
         "__str__",
-        "sport",
         "is_club",
         "teachers",  # check function below
         "free_places",
