@@ -103,6 +103,7 @@ class SelfSportAdmin(JsonAdmin):
         "training_type",
         ("medical_group", "student_status"),
         ("hours", "obtained_self_hours", "obtained_hours"),
+        ("parsed_data", "student_comment"),
         "comment",
         "link",
         # "reference_image",
