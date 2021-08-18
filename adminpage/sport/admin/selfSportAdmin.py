@@ -124,7 +124,8 @@ class SelfSportAdmin(JsonAdmin):
         'student_status',
         "attendance_link",
         "medical_group",
-        "debt"
+        "debt",
+        "student_comment"
     )
 
     def attendance_link(self, obj):
