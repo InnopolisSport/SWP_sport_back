@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from django.contrib.auth import get_user_model
 
-from sport.models import Student
+from sport.models import Student, Group
 from sport.models import MedicalGroups
 from api.crud import get_email_name_like_students
 
@@ -35,28 +35,6 @@ def test_get_email_name_like_students(
         sport_factory,
         group_factory
 ):
-    user = student_factory(
-        first_name="Kirill",
-        last_name="Fedoseev",
-        email="k.fedoseev@innopolis.university",
-    )
-
-    assert get_email_name_like_students(0, "Kirill") == [{
-        "id": user.student.pk,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "email": user.email,
-        "full_name": f"{user.first_name} {user.last_name}",
-    }]
-    assert len(get_email_name_like_students(0, "Kir")) == 1
-    assert len(get_email_name_like_students(0, "Kirill Fed")) == 1
-    assert len(get_email_name_like_students(0, "Kirill Fedoseev")) == 1
-    assert len(get_email_name_like_students(0, "k.fedoseev")) == 1
-    assert len(
-        get_email_name_like_students(0,"k.fedoseev@innopolis.university")
-    ) == 1
-    assert len(get_email_name_like_students(0, "kfedoseev")) == 0
-
     start = date(2020, 1, 20)
     end = date(2020, 1, 27)
     sem = semester_factory(
@@ -64,30 +42,69 @@ def test_get_email_name_like_students(
         start=start,
         end=end,
     )
-
     sport = sport_factory(
         name="football",
         special=False,
     )
-
     group = group_factory(
         name="F-S20-01",
         capacity=30,
         sport=sport,
         semester=sem,
     )
+    group.allowed_medical_groups.set([
+        MedicalGroups.NO_CHECKUP,
+        MedicalGroups.PREPARATIVE,
+        MedicalGroups.SPECIAL1,
+        MedicalGroups.SPECIAL2,
+        MedicalGroups.GENERAL
+    ])
+    user = student_factory(
+        first_name="Kirill",
+        last_name="Fedoseev",
+        email="k.fedoseev@innopolis.university",
+    )
+    user.student.sport = sport
+    user.student.save()
 
+    assert get_email_name_like_students(group.id, "Kirill") == [{
+        "id": user.student.pk,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "full_name": f"{user.first_name} {user.last_name}",
+    }]
+    assert len(get_email_name_like_students(group.id, "Kir")) == 1
+    assert len(get_email_name_like_students(group.id, "Kirill Fed")) == 1
+    assert len(get_email_name_like_students(group.id, "Kirill Fedoseev")) == 1
+    assert len(get_email_name_like_students(group.id, "k.fedoseev")) == 1
     assert len(
-        get_email_name_like_students(
-            group.id,
-            "k.fedoseev@innopolis.university"
-        )
-    ) == 0
-    user.student.medical_group_id = 0
-    user.save()
-    assert len(
-        get_email_name_like_students(
-            group.id,
-            "k.fedoseev@innopolis.university"
-        )
+        get_email_name_like_students(group.id,"k.fedoseev@innopolis.university")
     ) == 1
+    assert len(get_email_name_like_students(group.id, "kfedoseev")) == 0
+
+    wrong_sport = sport_factory(
+        name="wrong",
+        special=False,
+    )
+    wrong_group = group_factory(
+        name="F-S2fsd0-01",
+        capacity=30,
+        sport=wrong_sport,
+        semester=sem,
+    )
+    wrong_group.allowed_medical_groups.set([
+        MedicalGroups.NO_CHECKUP,
+        MedicalGroups.PREPARATIVE,
+        MedicalGroups.SPECIAL1,
+        MedicalGroups.SPECIAL2,
+        MedicalGroups.GENERAL
+    ])
+
+    assert len(get_email_name_like_students(wrong_group.id, "Kir")) == 0
+    assert len(get_email_name_like_students(wrong_group.id, "Kirill Fed")) == 0
+    assert len(get_email_name_like_students(wrong_group.id, "Kirill Fedoseev")) == 0
+    assert len(get_email_name_like_students(wrong_group.id, "k.fedoseev")) == 0
+    assert len(
+        get_email_name_like_students(wrong_group.id, "k.fedoseev@innopolis.university")
+    ) == 0
