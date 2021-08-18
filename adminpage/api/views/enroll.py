@@ -33,6 +33,7 @@ class EnrollErrors:
                                "due to your medical group")
     NOT_ENROLLED = (7, "Requested student is not enrolled into this group")
     SPORT_ERROR = (8, "Requested group doesn't belong to requested student's sport")
+    SEMESTER_ERROR = (9, "Requested group does't belong to current semester")
 
 
 @swagger_auto_schema(
@@ -81,7 +82,11 @@ def enroll(request, **kwargs):
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*EnrollErrors.TOO_MUCH_GROUPS)
         )
-
+    if group.semester.id is not get_ongoing_semester().id:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(*EnrollErrors.SEMESTER_ERROR)
+        )
 
     # if group.minimum_medical_group_id is not None \
     #         and student.medical_group_id * group.minimum_medical_group_id <= \
