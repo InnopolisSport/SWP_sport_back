@@ -10,7 +10,7 @@ from api.crud import get_ongoing_semester, get_student_groups, \
     get_brief_hours, \
     get_trainer_groups, get_negative_hours, get_student_hours, better_than
 from api.permissions import IsStudent
-from sport.models import Student, MedicalGroupReference
+from sport.models import Student, MedicalGroupReference, Debt
 from sport.utils import set_session_notification
 
 
@@ -100,6 +100,7 @@ def profile_view(request, **kwargs):
                 "has_unresolved_med_group_submission": has_unresolved_med_group_submission,
                 **student_data,
                 "sport": student.sport,
+                "init_debt_hours": Debt.objects.filter(student=student).first(),
                 "debt_hours": get_negative_hours(student.pk),
                 "all_hours": get_student_hours(student.pk)['ongoing_semester'],
                 "better_than": better_than(student.pk)
