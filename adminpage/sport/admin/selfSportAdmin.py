@@ -51,6 +51,11 @@ class StudentTextFilter(AutocompleteFilter):
     field_name = "student"
 
 
+def student__course(obj):
+    return obj.student.course
+student__course.short_description = 'course'
+
+
 class ReferenceAcceptRejectForm(forms.ModelForm):
     def clean_comment(self):
         if self.cleaned_data['hours'] == 0 and self.cleaned_data['comment'] == '':
@@ -77,7 +82,7 @@ class SelfSportAdmin(JsonAdmin):
 
     list_display = (
         'student',
-        'student__course'
+        student__course,
         'semester',
         'hours',
         'uploaded',
