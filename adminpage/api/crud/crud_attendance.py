@@ -176,7 +176,8 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
                                                               training__group__semester=get_ongoing_semester())
     sem_info_cur['id_sem'] = get_ongoing_semester().id
     sem_info_cur['hours_sem_max'] = get_ongoing_semester().hours
-    sem_info_cur['debt'] = Debt.objects.get(semester_id=get_ongoing_semester().id, student_id=student_id).debt
+    debt_object = Debt.objects.get(semester_id=get_ongoing_semester().id, student_id=student_id)
+    sem_info_cur['debt'] = debt_object.debt if debt_object is not None else 0
     for sem in query_attend_current_semester:
         if sem.cause_report is None:
             sem_info_cur['hours_not_self'] += float(sem.hours)
@@ -197,7 +198,8 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
         elif sem.end.year >= student.enrollment_year:
             sem_info["id_sem"] = sem.id
             sem_info["hours_sem_max"] = sem.hours
-            sem_info['debt'] = Debt.objects.get(semester_id=sem.id, student_id=student_id).debt
+            debt_object = Debt.objects.get(semester_id=get_ongoing_semester().id, student_id=student_id)
+            sem_info['debt'] = debt_object.debt if debt_object is not None else 0
             query_attend_last_semester = Attendance.objects.filter(student_id=student_id,
                                                                    training__group__semester=sem)
             for att in query_attend_last_semester:
