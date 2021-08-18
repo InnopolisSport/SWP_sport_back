@@ -161,8 +161,9 @@ def get_trainer_groups(trainer: Trainer):
 
 
 def get_free_places_for_sport(sport_id):
-    groups = Group.objects.filter(sport=sport_id)
+    groups = Group.objects.filter(sport=sport_id, semester=get_ongoing_semester())
     res = 0
+    # TODO: replace with aggregate
     for i in groups:
         res += i.capacity - Enroll.objects.filter(group=i.id).count()
     return res
