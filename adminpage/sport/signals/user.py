@@ -71,6 +71,12 @@ def add_group_for_student_status(instance: Student, sender, using, **kwargs):
     instance.user.groups.add(new_group)
 
 
+@receiver(pre_save, sender=Student)
+def change_course(instance: Student, sender, using, **kwargs):
+    if instance.student_status.name == "Alumnus":
+        instance.course = None
+
+
 @receiver(post_save, sender=Student)
 def change_online_status(instance: Student, sender, using, **kwargs):
     user = User.objects.get(id=instance.user_id)

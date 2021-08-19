@@ -10,6 +10,8 @@ from datetime import datetime
 
 from sport.models import Semester, Sport, Trainer, Group, Schedule, Student
 
+from api.crud import get_free_places_for_sport
+
 User = get_user_model()
 
 
@@ -33,6 +35,7 @@ def get_or_create_trainer_group():
 
 @receiver(post_save, sender=Semester)
 def special_groups_create(sender, instance, created, **kwargs):
+    get_free_places_for_sport(1)
     if created:
         trainer_group = get_or_create_trainer_group()
         sport_dep_user, _ = User.objects.get_or_create(
@@ -100,5 +103,6 @@ def nullify_medical_groups(instance, action, reverse, pk_set, **kwargs):
 def increase_course(sender, instance, created, **kwargs):
     if not created:
         return
-
-    students = Student.objects.filter(student_status_id=0, course__lt=4).update(course=F('course') + 1)
+    if instance.increase_course is True:
+        Student.objects.filter(student_status_id=0, course__lte=3).update(course=F('course') + 1)
+        Student.objects.filter(student_status_id=0, course__gte=4).update(course=None, student_status_id=3)

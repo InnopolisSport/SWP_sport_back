@@ -10,30 +10,30 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
-    <link rel="stylesheet" href="{% static "sport/css/bootstrap-tourist.css" %}">
-    <link rel="stylesheet" href="{% static "sport/css/category.css" %}">
+    <link rel="stylesheet" href="{% static "sport/css/bootstrap-tourist.css" %}?{{JS_VERSION}}">
+    <link rel="stylesheet" href="{% static "sport/css/category.css" %}?{{JS_VERSION}}">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
-    <script src="{% static "sport/js/bootstrap-tourist.js" %}"></script>
-    <script src="{% static "sport/js/modules/networking.mjs" %}"></script>
-    <script src="{% static "sport/js/modules/enrollment.mjs" %}"></script>
-    <script src="{% static "sport/js/modules/modals.mjs" %}"></script>
-    <script src="{% static "sport/js/modules/tour.mjs" %}"></script>
-    <script src="{% static "sport/js/category.js" %}"></script>
+    <script src="{% static "sport/js/bootstrap-tourist.js" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/networking.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/enrollment.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/modals.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/tour.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/category.js" %}?{{JS_VERSION}}"></script>
 {% endblock %}
 
 {% block content %}
     <div class="card">
         <div class="card-body">
-            <div class="container">
+            <div class="container-xl">
                 <h1>Sports</h1>
                 <div class="my-3">
                     <div class="alert alert-success" role="alert">
-                        To choose a <span class="badge badge-dark">SPORT TYPE</span>, 
-                        enroll to a <span class="badge badge-info">SPORT GROUP</span> <strong>see the schedule</strong>.
+                        To choose a <span class="badge badge-dark">SPORT TYPE</span> and 
+                        enroll to a <span class="badge badge-info">SPORT GROUP</span>, <strong>see the schedule</strong>.
                     </div>
                 </div>
                 {% if sports %}
@@ -43,6 +43,7 @@
                             <tr>
                                 <th scope="col">Sport type</th>
                                 <th scope="col" width=50%>Teacher(s)</th>
+                                <th scope="col">Free places</th>
                                 <th scope="col"># of sport groups</th>
                                 <th scope="col">Schedule</th>
                             </tr>
@@ -57,7 +58,7 @@
                                         </span>
                                     </th>
                                     <td class="align-middle">
-                                        <div class="d-flex justify-content-around align-content-between flex-wrap">
+                                        <div class="d-flex justify-content-center align-content-between flex-wrap">
                                             {% if sport.trainers %}
                                                 {% for teacher in sport.trainers %}
                                                      <span class="badge badge-pill badge-light my-1 mx-1">{{ teacher }}</span>
@@ -67,6 +68,7 @@
                                             {% endif %}
                                         </div>
                                     </td>
+                                    <td class="align-middle">{{ sport.free_places }}</td>
                                     <td class="align-middle">{{ sport.num_of_groups }}</td>
                                     <td class="align-middle">
                                         <a href="{% url "sport_schedule_calendar" sport.id %}" class="btn btn-outline-dark">
@@ -80,7 +82,7 @@
                     </div>
                 {% else %}
                 <div class="text-center">
-                    <h5><span class="badge badge-warning">No sport types are available</span></h5>
+                    <h4><span class="badge badge-warning">No sport types are available</span></h4>
                 </div>
                 {% endif %}
             </div>
