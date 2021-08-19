@@ -170,12 +170,18 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
                                                           'ongoing_semester': SemesterHours}):
     student = Student.objects.get(user_id=student_id)
     sem_info_cur = {"id_sem": 0, "hours_not_self": 0.0, "hours_self_not_debt": 0.0,
-                    "hours_self_debt": 0.0, "hours_sem_max": 0.0}
+                    "hours_self_debt": 0.0, "hours_sem_max": 0.0, "debt": 0.0}
 
     query_attend_current_semester = Attendance.objects.filter(student_id=student_id,
                                                               training__group__semester=get_ongoing_semester())
     sem_info_cur['id_sem'] = get_ongoing_semester().id
     sem_info_cur['hours_sem_max'] = get_ongoing_semester().hours
+
+    try:
+        sem_info_cur['debt'] = Debt.objects.get(semester_id=get_ongoing_semester().id, student_id=student_id).debt
+    except Debt.DoesNotExist:
+        sem_info_cur['debt'] = 0
+
     for sem in query_attend_current_semester:
         if sem.cause_report is None:
             sem_info_cur['hours_not_self'] += float(sem.hours)
@@ -185,7 +191,7 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
             sem_info_cur['hours_self_not_debt'] += float(sem.hours)
 
     sem_info = {"id_sem": 0, "hours_not_self": 0.0, "hours_self_not_debt": 0.0,
-                "hours_self_debt": 0.0, "hours_sem_max": 0.0}
+                "hours_self_debt": 0.0, "hours_sem_max": 0.0, "debt": 0.0}
     last_sem_info_arr = []
 
     last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
@@ -196,6 +202,11 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
         elif sem.end.year >= student.enrollment_year:
             sem_info["id_sem"] = sem.id
             sem_info["hours_sem_max"] = sem.hours
+            try:
+                sem_info['debt'] = Debt.objects.get(semester_id=get_ongoing_semester().id,
+                                                        student_id=student_id).debt
+            except Debt.DoesNotExist:
+                sem_info['debt'] = 0
             query_attend_last_semester = Attendance.objects.filter(student_id=student_id,
                                                                    training__group__semester=sem)
             for att in query_attend_last_semester:
@@ -207,7 +218,7 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
                     sem_info['hours_self_not_debt'] += float(att.hours)
             last_sem_info_arr.append(sem_info)
             sem_info = {"id_sem": 0, "hours_not_self": 0.0, "hours_self_not_debt": 0.0,
-                        "hours_self_debt": 0.0, "hours_sem_max": 0.0}
+                        "hours_self_debt": 0.0, "hours_sem_max": 0.0, "debt": 0.0}
     return {
         "last_semesters_hours": last_sem_info_arr,
         "ongoing_semester": sem_info_cur
@@ -226,14 +237,19 @@ def get_negative_hours(student_id, hours_info=None, **kwargs):
     return res
 
 
+def create_debt(last_semester, **kwargs):
+    # TODO: add debt when new semester starts
+    pass
+
+
 # TODO: api method
 def better_than(student_id):
     attendance_query = (
         Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk)
             .only('training__group__semester_id',
                   'training__group__semester__hours',
-                  'stuent_id',
-                  'semedster')
+                  'student_id',
+                  'semester')
             # Get attendance, annotate, group by student and semester
             .annotate(semester=F("training__group__semester_id"),
                       semester_hours=F("training__group__semester__hours"))

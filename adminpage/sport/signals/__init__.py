@@ -5,7 +5,8 @@ from .schedule import (
 from .semester import (
     special_groups_create,
     get_or_create_student_group,
-    nullify_medical_groups
+    nullify_medical_groups,
+    increase_course
 )
 from .user import (
     create_student_profile,

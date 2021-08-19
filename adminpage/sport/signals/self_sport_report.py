@@ -14,31 +14,31 @@ def update_hours_for_self_sport(
         created,
         **kwargs
 ):
-    if instance.hours > 0:
-        if created:
-            return
-        group = Group.objects.get(
-            semester=instance.semester,
-            name=settings.SELF_TRAINING_GROUP_NAME
+    if created:
+        return
+
+    group = Group.objects.get(
+        semester=instance.semester,
+        name=settings.SELF_TRAINING_GROUP_NAME
+    )
+    training_custom_name = None
+    if instance.training_type is not None:
+        training_custom_name = f'[Self] {instance.training_type.name}'
+
+    if not hasattr(instance, 'attendance'):
+        instance.attendance = create_attendance_record(
+            group=group,
+            upload_date=instance.uploaded.date(),
+            student=instance.student,
+            hours=instance.hours,
+            training_name=training_custom_name,
+            cause_report=instance,
         )
-        training_custom_name = None
-        if instance.training_type is not None:
-            training_custom_name = f'[Self] {instance.training_type.name}'
+    else:
+        instance.attendance.hours = instance.hours
+        instance.attendance.save()
 
-        if not hasattr(instance, 'attendance'):
-            instance.attendance = create_attendance_record(
-                group=group,
-                upload_date=instance.uploaded.date(),
-                student=instance.student,
-                hours=instance.hours,
-                training_name=training_custom_name,
-                cause_report=instance,
-            )
-        else:
-            instance.attendance.hours = instance.hours
-            instance.attendance.save()
-
-
+    if instance.hours > 0:
         instance.student.notify(
             *settings.EMAIL_TEMPLATES['self_sport_success'],
             training_type=instance.training_type.name,
@@ -49,6 +49,7 @@ def update_hours_for_self_sport(
             )
         )
     else:
+        instance.attendance.delete()
         instance.student.notify(
             *settings.EMAIL_TEMPLATES['self_sport_reject'],
             training_type=instance.training_type.name,

@@ -24,4 +24,4 @@ class Group(models.Model):
         ]
 
     def __str__(self):
-        return f"[{self.semester}] {self.name}"
+        return f"[{self.semester}] {f'{self.sport} - ' if self.sport is not None else ''}{self.name}"

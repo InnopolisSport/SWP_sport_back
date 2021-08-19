@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
-    <link rel="stylesheet" href="{% static "sport/css/calendar.css" %}">
+    <link rel="stylesheet" href="{% static "sport/css/calendar.css" %}?{{JS_VERSION}}">
     <script>
         const sport_name = "{{ sport.name }}";
     </script>
@@ -19,49 +19,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
-    <script src="{% static "sport/js/modules/networking.mjs" %}"></script>
-    <script src="{% static "sport/js/modules/calendar.mjs" %}"></script>
-    <script src="{% static "sport/js/modules/enrollment.mjs" %}"></script>
-    <script src="{% static "sport/js/modules/modals.mjs" %}"></script>
-    <script src="{% static "sport/js/calendar.js" %}"></script>
+    <script src="{% static "sport/js/modules/networking.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/calendar.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/enrollment.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/modals.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/calendar.js" %}?{{JS_VERSION}}"></script>
 {% endblock %}
 
 {% block content %}
     <div class="card">
         <div class="card-body">
             <div class="container-xl">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="align-middle">
-                        <h1><span class="badge badge-dark text-uppercase">{{ sport.name }}</span></h1>
-                    </div>
-                    {% if not student.sport %}
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#submission">
-                            <strong>Choose</strong>
-                        </button>
-                        <div class="modal fade" id="submission" tabindex="-1" aria-labelledby="submitModal" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="submitModalTitle">Submission</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>You are choosing <span class="badge badge-dark text-uppercase">{{ sport.name }}</span> as your
-                                    sport type.</p>
-                                    <p>Remember that <strong>it can't be changed</strong> during the semester.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-success" data-dismiss="modal" onclick="submit_sport_type()">Submit</button>
-                                </div>
-                                </div>
+                <h1><span class="badge badge-dark text-uppercase">{{ sport.name }}</span></h1>
+                {% if not student.sport %}
+                    <button type="button" class="btn btn-danger w-100 mt-1" data-toggle="modal" data-target="#submission">
+                        <strong>CHOOSE</strong>
+                    </button>
+                    <div class="modal fade" id="submission" tabindex="-1" aria-labelledby="submitModal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="submitModalTitle">Submission</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>You are choosing <span class="badge badge-dark text-uppercase">{{ sport.name }}</span> as your
+                                sport type.</p>
+                                <p>Remember that <strong>it can't be changed</strong> during the semester.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-success" data-dismiss="modal" onclick="submit_sport_type()">Submit</button>
+                            </div>
                             </div>
                         </div>
-                    {% elif sport.id == student.sport.id %}
-                        <div class="align-middle">
-                            <h2><span class="badge badge-pill badge-primary">CHOSEN</span></h2>
-                        </div>
-                    {% endif %}
-                </div>
+                    </div>
+                {% elif sport.id == student.sport.id %}
+                    <h2><span class="badge badge-primary w-100">CHOSEN</span></h2>
+                {% endif %}
                 {% if not student.sport %}
                     <div class="my-3">
                         <div class="alert alert-danger" role="alert">
