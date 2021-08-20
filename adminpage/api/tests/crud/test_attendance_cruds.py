@@ -79,13 +79,6 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
             "semester_name": s1.name,
             'semester_start': s1.start.strftime("%b. %d, %Y"),
             'semester_end': s1.end.strftime("%b. %d, %Y"),
-        },
-        {
-            "hours": 7,
-            "semester_id": s2.pk,
-            "semester_name": s2.name,
-            'semester_start': s2.start.strftime("%b. %d, %Y"),
-            'semester_end': s2.end.strftime("%b. %d, %Y"),
         }
     ])
     stat1 = get_detailed_hours(student, s1)
