@@ -103,7 +103,7 @@ def change_sport_of_student(instance: Student, sender, using, **kwargs):
         return
 
     for group in groups:
-        if group['sport_name'] != instance.sport.name:
+        if instance.sport is None or group['sport_name'] != instance.sport.name:
             unenroll_student(Group_model.objects.get(id=group['id']), instance)
 
 
