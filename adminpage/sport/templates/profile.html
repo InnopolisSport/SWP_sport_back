@@ -56,6 +56,7 @@
                             Teaching groups:
                             {% for group in trainer.sport_groups %}
                                 <span class="badge badge-info text-uppercase mx-1 my-1" id="trainer-span"
+                                      style="cursor: pointer"
                                       onclick="openGroupInfoModalForTrainer(['/api/group/{{ group.id }}', '/api/attendance/{{ group.id }}/report'])">
                                       {{ group.qualified_name }}
                                 </span>
@@ -317,7 +318,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="grading-modal-title">
                         Marking hours for
-                        <span id="grading-group-name"></span>
+                        <span  class="badge badge-info text-uppercase" id="grading-group-name"></span>
                         at
                         <span id="grading-date"></span>
                     </h5>
