@@ -47,17 +47,23 @@
                 <h1 class="card-title">{{ user.get_full_name }}</h1>
                 <hr style="margin-bottom: 4px;">
                 {% if trainer.sport_groups is not None  %}
+                    <span class="badge badge-pill badge-primary text-uppercase mx-1 my-1">
+                            Teacher
+                    </span>
+                    <h3>Work — <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> semester</h3>
                     {% if trainer.sport_groups|length > 0 %}
-                        <p id="trainer-list">
-                            In semester <b>{{ common.semester_name }}</b> you train the following groups:
+                        <p class="d-flex justify-content-center align-content-between flex-wrap" id="trainer-list">
+                            Teaching groups:
                             {% for group in trainer.sport_groups %}
-                                <span class="badge badge-pill badge-training" id="trainer-span"
-                                      onclick="openGroupInfoModalForTrainer(['/api/group/{{ group.id }}', '/api/attendance/{{ group.id }}/report'])">{{ group.qualified_name }}</span>
+                                <span class="badge badge-info text-uppercase mx-1 my-1" id="trainer-span"
+                                      onclick="openGroupInfoModalForTrainer(['/api/group/{{ group.id }}', '/api/attendance/{{ group.id }}/report'])">
+                                      {{ group.qualified_name }}
+                                </span>
                             {% endfor %}
                         </p>
                     {% else %}
                         <p id="trainer-list">
-                            You are not training in the semester <b>{{ common.semester_name }}</b>
+                            <h4><span class="badge badge-warning">You are not teaching in the current semester</span></h4>
                         </p>
                     {% endif %}
                 {% endif %}
