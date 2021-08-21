@@ -29,19 +29,21 @@
     <div class="card">
         <div class="card-body">
             <div class="container-xl">
-                <h1>Sports</h1>
-                <div class="my-3">
-                    <div class="alert alert-success" role="alert">
-                        To choose a <span class="badge badge-dark">SPORT TYPE</span> and 
-                        enroll to a <span class="badge badge-info">SPORT GROUP</span>, <strong>see the schedule</strong>.
+                <h1 class="mb-3">Sports & Clubs</h1>
+                {% if student_sport_group|length == 0 %}
+                    <div class="mb-3">
+                        <div class="alert alert-success" role="alert">
+                            To choose a <span class="badge badge-dark">SPORT TYPE</span> and 
+                            enroll to a <span class="badge badge-info">SPORT GROUP</span>, <strong>see the schedule</strong>.
+                        </div>
                     </div>
-                </div>
+                {% endif %}
                 {% if sports %}
                     <div class="table-responsive-xl">
                         <table class="table table-hover text-center">
                             <thead>
                             <tr>
-                                <th scope="col">Sport type</th>
+                                <th scope="col">Sport type | Club</th>
                                 <th scope="col" width=50%>Teacher(s)</th>
                                 <th scope="col">Free places</th>
                                 <th scope="col"># of sport groups</th>
