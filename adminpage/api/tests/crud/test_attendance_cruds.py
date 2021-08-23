@@ -74,13 +74,6 @@ def test_hours_statistics(student_factory, sport_factory, semester_factory, grou
     ])
     assertMembers(brief, [
         {
-            "hours": 3,
-            "semester_id": s1.pk,
-            "semester_name": s1.name,
-            'semester_start': s1.start.strftime("%b. %d, %Y"),
-            'semester_end': s1.end.strftime("%b. %d, %Y"),
-        },
-        {
             "hours": 7,
             "semester_id": s2.pk,
             "semester_name": s2.name,
