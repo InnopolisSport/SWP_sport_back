@@ -111,6 +111,10 @@ a.help-link {
     font-weight: bold;
 }
 
+.faq {
+    margin: 0;
+}
+
 @media only screen and (max-width: 576px) {
     .card {
         margin: 1%;

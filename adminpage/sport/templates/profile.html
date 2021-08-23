@@ -296,6 +296,40 @@
                     {% include "med_group_reference.html" %}
                     {% include "self_sport_reference.html" %}
                 {% endif %}
+
+                <!-- FAQ -->
+                {% if student %}
+                <hr>
+                <h2>FAQ</h2>
+                    <p class="d-flex justify-content-center align-content-between flex-wrap">
+                        {% for category in faq %}
+                            <button class="btn btn-sm btn-outline-dark m-1" type="button" data-toggle="collapse"
+                                    data-target="#{{category.id}}" aria-expanded="false" aria-controls="{{category.id}}">
+                            {{category.name}}
+                            </button>
+                        {% endfor %}
+                    </p>
+                    {% for category in faq %}
+                        <div class="collapse" id="{{category.id}}">
+                            {% for element in category %}
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <h4 class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                                            data-target="#{{element.id}}" aria-expanded="false" aria-controls="{{element.id}}">
+                                            <b>{{element.q}}</b>
+                                        </h4>
+                                        <div id="{{element.id}}" class="collapse my-3">
+                                            <p class="text-left">
+                                            {{element.a}}
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
                 {% if student.sport_groups|length > 0 and student.obj.student_status.id == 0 or trainer.sport_groups %}
                     <hr>
                     <h2>Schedule</h2>
