@@ -4,6 +4,9 @@ from typing import Tuple
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from smartfields import fields
+from smartfields.dependencies import FileDependency
+from smartfields.processors import ImageProcessor
 import datetime
 
 from sport.utils import SubmissionType
@@ -30,7 +33,10 @@ class Reference(models.Model):
         on_delete=models.CASCADE,
         null=False,
     )
-    image = models.ImageField(upload_to=get_reference_path)
+    image = fields.ImageField(dependencies=[
+        FileDependency(processor=ImageProcessor(
+            format='JPEG', scale={'max_width': 2000, 'max_height': 2000}), upload_to=get_reference_path)
+    ])
     start = models.DateField(null=False, default=today)
     end = models.DateField(null=False, default=today)
     hours = models.IntegerField(default=0)

@@ -112,7 +112,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django_sendfile',
+    'smartfields',
     'import_export',
     'rangefilter',
     'image_optimizer',
@@ -130,6 +132,7 @@ MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -139,6 +142,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'adminpage.urls'
+
+SITE_ID = 1
 
 TEMPLATES = [
     {

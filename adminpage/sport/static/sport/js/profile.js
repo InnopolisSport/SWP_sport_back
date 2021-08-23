@@ -412,10 +412,6 @@ async function submit_reference() {
     try {
         const _URL = window.URL || window.webkitURL;
         const img = await loadImage(_URL.createObjectURL(file));
-        if (img.width < 400 || img.width > 4500 || img.height < 400 || img.height > 4500) {
-            toastr.error('Invalid image width/height, expected them to be in range 400px..4500px');
-            return false;
-        }
     } catch (e) {
         toastr.error('Uploaded file is not an image');
         return false;
