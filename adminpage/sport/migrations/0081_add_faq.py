@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sport', '0079_auto_20210816_1541'),
+        ('sport', '0080_change_field_image_in_reference'),
     ]
 
     operations = [
