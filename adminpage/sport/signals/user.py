@@ -115,11 +115,11 @@ def verify_bachelor_role(user, claims, adfs_response, *args, **kwargs):
         )
         # To unban mistakenly banned people
         user.is_active = True
-        if not is_active_student:
-            group_mapping = get_current_group_mapping()
-            student_group = group_mapping.get(
-                settings.STUDENT_AUTH_GROUP_VERBOSE_NAME,
-                None
-            )
-            user.groups.remove(student_group)
+#         if not is_active_student:
+#             group_mapping = get_current_group_mapping()
+#             student_group = group_mapping.get(
+#                 settings.STUDENT_AUTH_GROUP_VERBOSE_NAME,
+#                 None
+#             )
+#             user.groups.remove(student_group)
         user.save()
