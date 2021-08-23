@@ -142,7 +142,7 @@
                             Closing the debt is <b>required to pass the sport course</b>.</p>
                         </div>
                         <h3>Progress</h3>
-                        {% if student.better_than is not None %}
+                        {% if student.better_than is not None and student.better_than >= 30 %}
                             <span>You are better than {{student.better_than}}% of the students!</span>
                         {% endif %}
                         <!-- Debt bar-->
@@ -316,11 +316,11 @@
                                     <li class="list-group-item">
                                         <h4 class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
                                             data-target="#{{element.id}}" aria-expanded="false" aria-controls="{{element.id}}">
-                                            <b>{{element.q}}</b>
+                                            <b>{{element.question}}</b>
                                         </h4>
                                         <div id="{{element.id}}" class="collapse my-3">
                                             <p class="text-left">
-                                            {{element.a}}
+                                            {{element.answer}}
                                             </p>
                                         </div>
                                     </li>
