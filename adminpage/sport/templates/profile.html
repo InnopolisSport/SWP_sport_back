@@ -148,7 +148,7 @@
                         <!-- Debt bar-->
                         <div id="debtor_bar" class="d-none">
                             <div class="progress mt-3" style="width: 100%; height: 2rem;">
-                                <div class="progress-bar progress-bar-striped bg-light" style="width: 100%; height: 2rem; color: red;"><b>Debt</b></div>
+                                <div class="progress-bar progress-bar-striped bg-light text-danger" style="width: 100%; height: 2rem;"><b>Debt</b></div>
                             </div>
                             <div class="progress mb-3" style="width: 100%; height: 2rem">
                                 <div class="progress-bar progress-bar-striped bg-danger" id="debt-subbar"></div>
@@ -157,10 +157,10 @@
                         <!-- Self-sport + Sport group bar-->
                         <div class="progress mt-3" style="width: 100%; height: 2rem;">
                             {% if student.is_online %}
-                                <div class="progress-bar bg-light" style="width: 100%; height: 2rem; color: blue"><b>Self-sport</b></div>
+                                <div class="progress-bar bg-light text-primary" style="width: 100%; height: 2rem;"><b>Self-sport</b></div>
                             {% else %}
-                                <div class="progress-bar bg-light" style="width: 40%; height: 2rem; color: blue"><b>Self-sport (max 10h)</b></div>
-                                <div class="progress-bar bg-light" style="width: 60%; height: 2rem; color: green"><b>Sport group</b></div>
+                                <div class="progress-bar bg-light text-primary" style="width: 40%; height: 2rem;"><b>Self-sport (max 10h)</b></div>
+                                <div class="progress-bar bg-light text-info" style="width: 60%; height: 2rem;"><b>Sport group</b></div>
                             {% endif %}
                         </div>
                         <div class="progress mb-3" style="width: 100%; height: 2rem">
