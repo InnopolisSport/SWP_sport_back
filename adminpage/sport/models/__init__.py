@@ -22,6 +22,8 @@ from .training import Training
 from .training_class import TrainingClass
 from .custom_permission import CustomPermission
 from .debt import Debt
+from .faq_category import FAQCategory
+from .faq_element import FAQElement
 
 DjangoGroup.add_to_class(
     'verbose_name',
