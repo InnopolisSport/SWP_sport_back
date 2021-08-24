@@ -23,5 +23,4 @@ class FAQAdmin(admin.ModelAdmin):
 class FAQAdmin(admin.ModelAdmin):
     list_display = (
         'name',
-        'description'
     )

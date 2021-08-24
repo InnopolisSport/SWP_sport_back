@@ -14,8 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FAQCategory',
             fields=[
-                ('name', models.CharField(max_length=50)),
-                ('description', models.TextField(max_length=1000)),
+                ('name', models.CharField(max_length=50))
             ],
             options={
                 'verbose_name_plural': 'faq category',
