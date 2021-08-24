@@ -30,9 +30,9 @@
     <div class="card">
         <div class="card-body">
             <div class="container-xl">
-                <h1><span class="badge badge-dark text-uppercase">{{ sport.name }}</span></h1>
+                <h1 id="sport-badge"><span class="badge badge-dark text-uppercase">{{ sport.name }}</span></h1>
                 {% if not student.sport %}
-                    <button type="button" class="btn btn-danger w-100 mt-1" data-toggle="modal" data-target="#submission">
+                    <button type="button" class="btn btn-danger w-100 mt-1"  id="choose-btn" data-toggle="modal" data-target="#submission">
                         <strong>CHOOSE</strong>
                     </button>
                     <div class="modal fade" id="submission" tabindex="-1" aria-labelledby="submitModal" aria-hidden="true">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 {% elif sport.id == student.sport.id %}
-                    <h2><span class="badge badge-primary w-100">CHOSEN</span></h2>
+                    <h2 id="chosen-btn"><span class="badge badge-primary w-100">CHOSEN</span></h2>
                 {% endif %}
                 {% if not student.sport %}
                     <div class="my-3">
