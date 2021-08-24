@@ -28,7 +28,7 @@ class MedicalGroupReferenceForm(forms.Form):
 def parse_group(group: dict) -> dict:
     return {
         "id": group["id"],
-        'qualified_name': f'{group["name"]} ({group["sport_name"]})',
+        'qualified_name': f'{group["sport_name"]} — {group["name"]}',
         "name": group["name"],
         "sport": group["sport_name"]
     }
