@@ -3,7 +3,6 @@ from django.db import models
 
 class FAQCategory(models.Model):
     name = models.CharField(max_length=50, null=False)
-    description = models.TextField(max_length=1000, null=False)
 
     class Meta:
         db_table = "faq_category"
