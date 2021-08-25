@@ -31,10 +31,6 @@ body.profile {
     color: #ffffff;
 }
 
-.badge-training {
-    background-color: #ffa500;
-}
-
 /* z-index needs to be more than 1113 to be shown above tour-backdrop */
 .tooltip {
     z-index: 2000;
@@ -109,6 +105,10 @@ a.help-link {
 .fc-list-item {
     color: white;
     font-weight: bold;
+}
+
+.faq {
+    margin: 0;
 }
 
 @media only screen and (max-width: 576px) {

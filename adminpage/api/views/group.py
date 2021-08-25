@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api.crud import get_group_info, get_sports
-from api.permissions import IsStudent
+from api.permissions import IsStudent, IsTrainer
 from api.serializers import GroupInfoSerializer, NotFoundSerializer, SportsSerializer, EmptySerializer, ErrorSerializer
 from api.serializers.group import SportEnrollSerializer
 from sport.models import Group, Schedule, Student, Sport
@@ -20,7 +20,7 @@ from sport.models import Group, Schedule, Student, Sport
     }
 )
 @api_view(["GET"])
-@permission_classes([IsStudent])
+@permission_classes([IsStudent | IsTrainer])
 def group_info_view(request, group_id, **kwargs):
     student = request.user  # user.pk == user.student.pk
     get_object_or_404(Group, pk=group_id)

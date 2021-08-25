@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 from api.crud import get_ongoing_semester, get_student_groups, \
     get_brief_hours, \
-    get_trainer_groups, get_negative_hours, get_student_hours, better_than
+    get_trainer_groups, get_negative_hours, get_student_hours, better_than, get_faq
 from api.permissions import IsStudent
 from sport.models import Student, MedicalGroupReference, Debt
 from sport.utils import set_session_notification
@@ -28,7 +28,7 @@ class MedicalGroupReferenceForm(forms.Form):
 def parse_group(group: dict) -> dict:
     return {
         "id": group["id"],
-        'qualified_name': f'{group["name"]} ({group["sport_name"]})',
+        'qualified_name': f'{group["sport_name"]} — {group["name"]}',
         "name": group["name"],
         "sport": group["sport_name"]
     }
@@ -106,6 +106,7 @@ def profile_view(request, **kwargs):
                 "all_hours": get_student_hours(student.pk)['ongoing_semester'],
                 "better_than": better_than(student.pk)
             },
+            "faq": get_faq(),
         })
 
     if trainer is not None:

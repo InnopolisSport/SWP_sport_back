@@ -47,17 +47,24 @@
                 <h1 class="card-title">{{ user.get_full_name }}</h1>
                 <hr style="margin-bottom: 4px;">
                 {% if trainer.sport_groups is not None  %}
+                    <span class="badge badge-pill badge-primary text-uppercase mx-1 my-1">
+                            Teacher
+                    </span>
+                    <h3>Work — <span class="badge badge-light text-uppercase">{{ common.semester_name }}</span> semester</h3>
                     {% if trainer.sport_groups|length > 0 %}
-                        <p id="trainer-list">
-                            In semester <b>{{ common.semester_name }}</b> you train the following groups:
+                        <p class="d-flex justify-content-center align-content-between flex-wrap" id="trainer-list">
+                            Teaching groups:
                             {% for group in trainer.sport_groups %}
-                                <span class="badge badge-pill badge-training" id="trainer-span"
-                                      onclick="openGroupInfoModalForTrainer(['/api/group/{{ group.id }}', '/api/attendance/{{ group.id }}/report'])">{{ group.qualified_name }}</span>
+                                <span class="badge badge-info text-uppercase mx-1 my-1" id="trainer-span"
+                                      style="cursor: pointer"
+                                      onclick="openGroupInfoModalForTrainer(['/api/group/{{ group.id }}', '/api/attendance/{{ group.id }}/report'])">
+                                      {{ group.qualified_name }}
+                                </span>
                             {% endfor %}
                         </p>
                     {% else %}
                         <p id="trainer-list">
-                            You are not training in the semester <b>{{ common.semester_name }}</b>
+                            <h4><span class="badge badge-warning">You are not teaching in the current semester</span></h4>
                         </p>
                     {% endif %}
                 {% endif %}
@@ -142,13 +149,13 @@
                             Closing the debt is <b>required to pass the sport course</b>.</p>
                         </div>
                         <h3>Progress</h3>
-                        {% if student.better_than is not None %}
+                        {% if student.better_than is not None and student.better_than >= 30 %}
                             <span>You are better than {{student.better_than}}% of the students!</span>
                         {% endif %}
                         <!-- Debt bar-->
                         <div id="debtor_bar" class="d-none">
                             <div class="progress mt-3" style="width: 100%; height: 2rem;">
-                                <div class="progress-bar progress-bar-striped bg-light" style="width: 100%; height: 2rem; color: red;"><b>Debt</b></div>
+                                <div class="progress-bar progress-bar-striped bg-light text-danger" style="width: 100%; height: 2rem;"><b>Debt</b></div>
                             </div>
                             <div class="progress mb-3" style="width: 100%; height: 2rem">
                                 <div class="progress-bar progress-bar-striped bg-danger" id="debt-subbar"></div>
@@ -157,10 +164,10 @@
                         <!-- Self-sport + Sport group bar-->
                         <div class="progress mt-3" style="width: 100%; height: 2rem;">
                             {% if student.is_online %}
-                                <div class="progress-bar bg-light" style="width: 100%; height: 2rem; color: blue"><b>Self-sport</b></div>
+                                <div class="progress-bar bg-light text-primary" style="width: 100%; height: 2rem;"><b>Self-sport</b></div>
                             {% else %}
-                                <div class="progress-bar bg-light" style="width: 40%; height: 2rem; color: blue"><b>Self-sport (max 10h)</b></div>
-                                <div class="progress-bar bg-light" style="width: 60%; height: 2rem; color: green"><b>Sport group</b></div>
+                                <div class="progress-bar bg-light text-primary" style="width: 40%; height: 2rem;"><b>Self-sport (max 10h)</b></div>
+                                <div class="progress-bar bg-light text-info" style="width: 60%; height: 2rem;"><b>Sport group</b></div>
                             {% endif %}
                         </div>
                         <div class="progress mb-3" style="width: 100%; height: 2rem">
@@ -170,7 +177,7 @@
                                 </div>
                             {% else %}
                                 <div class="progress-bar bg-primary" id="subbar-self-off"></div>
-                                <div class="progress-bar bg-success" id="subbar-sport"></div>
+                                <div class="progress-bar bg-info" id="subbar-sport"></div>
                             {% endif %}
                         </div>
                         <div id="medical-group-info-modal"></div>
@@ -198,7 +205,7 @@
                                                         <span class="text-uppercase">{{ sem.semester_name }}</span>
                                                     {% endif %}
                                                 </th>
-                                                <td>{{ sem.semester_start }}</td>
+                                                <td>{{ sem.semester_start }}{{forloop.counter0}}</td>
                                                 <td>{{ sem.semester_end }}</td>
                                                 <td>{{ sem.hours }}</td>
                                             </tr>
@@ -296,6 +303,42 @@
                     {% include "med_group_reference.html" %}
                     {% include "self_sport_reference.html" %}
                 {% endif %}
+
+                <!-- FAQ -->
+                {% if student and faq|length != 0%}
+                <hr>
+                <h2>FAQ</h2>
+                <div class="accordion" id="accordion-faq">
+                    <p class="d-flex justify-content-center align-content-between flex-wrap">
+                        {% for category in faq %}
+                            <button class="btn btn-sm btn-outline-dark m-1" type="button" data-toggle="collapse"
+                                    data-target="#category_{{forloop.counter0}}" aria-expanded="false" aria-controls="category_{{forloop.counter0}}">
+                            {{category.name}}
+                            </button>
+                        {% endfor %}
+                    </p>
+                    {% for category in faq %}
+                        <div class="collapse" id="category_{{forloop.counter0}}" data-parent="#accordion-faq">
+                            {% for element in category.values %}
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <h4 class="btn btn-link btn-block text-left text-reset" type="button" data-toggle="collapse"
+                                            data-target="#a_{{element.id}}" aria-expanded="false" aria-controls="a_{{element.id}}">
+                                            <b>{{element.question}}</b>
+                                        </h4>
+                                        <div id="a_{{element.id}}" class="collapse my-3">
+                                            <p class="text-left">
+                                            {{element.answer}}
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 {% if student.sport_groups|length > 0 and student.obj.student_status.id == 0 or trainer.sport_groups %}
                     <hr>
                     <h2>Schedule</h2>
@@ -311,7 +354,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="grading-modal-title">
                         Marking hours for
-                        <span id="grading-group-name"></span>
+                        <span  class="badge badge-info text-uppercase" id="grading-group-name"></span>
                         at
                         <span id="grading-date"></span>
                     </h5>

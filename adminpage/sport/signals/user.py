@@ -1,15 +1,18 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
+
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed, post_save, pre_save
 from django.dispatch.dispatcher import receiver
 from django_auth_adfs.signals import post_authenticate
 
-from sport.models import Student, Trainer, CustomPermission
+from sport.models import Student, Trainer, CustomPermission, Group as Group_model
 
 from api.crud.crud_semester import get_ongoing_semester
+
+from api.crud import unenroll_student, get_student_groups
 
 User = get_user_model()
 
@@ -91,6 +94,17 @@ def change_online_status(instance: Student, sender, using, **kwargs):
 def change_status_to_academic_leave(instance: Student, sender, using, **kwargs):
     if instance.student_status.name == "Academic leave":
         get_ongoing_semester().academic_leave_students.add(instance)
+
+
+@receiver(post_save, sender=Student)
+def change_sport_of_student(instance: Student, sender, using, **kwargs):
+    groups = get_student_groups(instance)
+    if len(groups) == 0:
+        return
+
+    for group in groups:
+        if instance.sport is None or group['sport_name'] != instance.sport.name:
+            unenroll_student(Group_model.objects.get(id=group['id']), instance)
 
 
 def update_group_verbose_names(sid_to_name_mapping: dict):
