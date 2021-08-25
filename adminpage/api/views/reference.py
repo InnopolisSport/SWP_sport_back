@@ -15,7 +15,7 @@ from api.serializers import (
     ErrorSerializer,
     error_detail,
 )
-from api.views.utils import process_image
+# from api.views.utils import process_image
 from sport.models import Reference
 
 
@@ -41,9 +41,7 @@ def reference_upload(request, **kwargs):
     serializer = ReferenceUploadSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    image, error = process_image(serializer.validated_data['image'])
-    if error is not None:
-        return error
+    image = serializer.validated_data['image']
 
     student = request.user  # user.pk == user.student.pk
 

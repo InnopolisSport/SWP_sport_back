@@ -27,7 +27,6 @@ class DefaultFilterMixIn(admin.ModelAdmin):
                         key = filter.split('=')[0]
                         if key not in request.GET:
                             filters.append(filter)
-                    print(filters)
                     if filters:
                         return HttpResponseRedirect("%s?%s" % (url, "&".join(filters)))
             except:
