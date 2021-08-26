@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             name='FAQElement',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('question', models.CharField(max_length=100)),
+                ('question', models.CharField(max_length=1000)),
                 ('answer', models.TextField(max_length=1000)),
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='sport.faqcategory')),
             ],
