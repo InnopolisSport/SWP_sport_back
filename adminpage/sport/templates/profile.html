@@ -334,10 +334,8 @@
                                             data-target="#a_{{element.id}}" aria-expanded="false" aria-controls="a_{{element.id}}">
                                             <b>{{element.question}}</b>
                                         </h4>
-                                        <div id="a_{{element.id}}" class="collapse my-3">
-                                            <p class="text-left">
-                                            {{element.answer}}
-                                            </p>
+                                        <div id="a_{{element.id}}" class="collapse my-3 text-left">
+                                            {{element.answer.html|safe}}
                                         </div>
                                     </li>
                                 </ul>
