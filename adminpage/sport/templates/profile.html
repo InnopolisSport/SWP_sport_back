@@ -79,6 +79,9 @@
                                 {{ student.obj.student_status.description }}
                             </span>
                         </h5>
+                        <p>
+                            If your status is incorrect, please contact <a href="https://t.me/loban4">Alexandr Lobanov</a>
+                        </p>
                     {% endif %}
                     {% if student.obj.student_status.id == 2  %}
                         <hr>
@@ -337,6 +340,21 @@
                         </div>
                     {% endfor %}
                 </div>
+                    {% if student.obj.course is not None %}
+                        <p>
+                            <b>Any other questions?</b> Please contact your course curator
+                            {% if student.obj.course == 1 %}
+                                <a href="https://t.me/crazycopter">Danila Khasanov</a>
+                            {% elif student.obj.course == 2 %}
+                                <a href="https://t.me/edikrvrs">Eduard Shaymardanov</a>
+                            {% elif student.obj.course == 3 %}
+                                <a href="https://t.me/linkainno">Alina Pavlova</a>
+                            {% elif student.obj.course == 4 %}
+                                <a href="https://t.me/rafil_coach">Rafil Galimzianov</a>
+                            {% endif %}
+                        </p>
+                        <a href="https://t.me/loban4">Alexandr Lobanov</a> (if you're English-speaking student)
+                    {% endif %}
                 {% endif %}
 
                 {% if student.sport_groups|length > 0 and student.obj.student_status.id == 0 or trainer.sport_groups %}
