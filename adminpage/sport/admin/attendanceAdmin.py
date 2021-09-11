@@ -156,6 +156,7 @@ class AttendanceAdmin(DefaultFilterMixIn):
             cache_dependent_filter({"training__group__semester": "semester__pk"}, ("name",),
                                    select_related=["semester"])
         ),
+        "training__group__sport",
     )
 
     list_select_related = (
