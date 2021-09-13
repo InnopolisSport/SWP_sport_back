@@ -200,6 +200,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
         "first_name": student.user.first_name,
         "last_name": student.user.last_name,
         "email": student.user.email,
+        "med_group": "Medical checkup not passed",
         "hours": 0,
         "full_name": f"{student.user.first_name} {student.user.last_name}",
 
