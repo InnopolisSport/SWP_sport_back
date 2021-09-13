@@ -220,9 +220,11 @@ let student_hours_tbody = null;
 let current_duration_academic_hours = 0;
 let students_in_table = {}; // <student_id: jquery selector of a row in the table>
 
-function add_student_row(student_id, full_name, email, hours, maxHours) {
+function add_student_row(student_id, full_name, email, med_group, hours, maxHours) {
     const row = $(`<tr id="student_${student_id}">
-                    <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name}</td>
+                    <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name} 
+                    <span class="badge badge-pill badge-success text-uppercase">${med_group}</span>
+                    </td>
                     <td class="trainer-table-width hide-email-in-trainer-table" onclick="show_name_hide_email()">${email}</td>
                     <td class="hours-in-trainer-table-right" style="cursor: pointer">
                         <form onsubmit="return false">
@@ -270,8 +272,8 @@ function make_grades_table(grades, maxHours) {
         .children('tr')
         .append('<th scope="col" class="trainer-table-width show-name-in-trainer-table">Student</th><th scope="col" class="trainer-table-width hide-email-in-trainer-table">Email</th><th scope="col" class="hours-in-trainer-table-right">Hours</th>');
     student_hours_tbody = table.append('<tbody>').children('tbody');
-    grades.forEach(({student_id, full_name, email, hours}) => {
-        add_student_row(student_id, full_name, email, hours, maxHours);
+    grades.forEach(({student_id, full_name, email, med_group, hours}) => {
+        add_student_row(student_id, full_name, email, med_group, hours, maxHours);
     });
     return table;
 }
