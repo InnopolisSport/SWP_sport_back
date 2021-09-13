@@ -221,16 +221,19 @@ def get_students_grades(training_id: int):
     @param training_id - searched training id
     @return list of student grades
     """
-    with connection.cursor() as cursor:
+    with connection.cursor() as cursor: # TODO: Add med_group into query
         cursor.execute('SELECT '
                        'd.id AS student_id, '
                        'd.first_name AS first_name, '
                        'd.last_name AS last_name, '
                        'd.email AS email, '
                        'a.hours AS hours, '
+                       'm.name AS med_group, '
                        'concat(d.first_name, \' \', d.last_name) as full_name '
-                       'FROM training t, attendance a, auth_user d '
-                       'WHERE d.id = a.student_id '
+                       'FROM training t, attendance a, auth_user d, student s '
+                       'LEFT JOIN medical_group m ON m.id = s.medical_group_id '
+                       'WHERE s.user_id = a.student_id '
+                       'AND d.id = a.student_id '
                        'AND a.training_id = %(training_id)s '
                        'AND t.id = %(training_id)s '
                        'UNION DISTINCT '
@@ -240,9 +243,11 @@ def get_students_grades(training_id: int):
                        'd.last_name AS last_name, '
                        'd.email AS email, '
                        'COALESCE(a.hours, 0) AS hours, '
+                       'm.name AS med_group, '
                        'concat(d.first_name, \' \', d.last_name) as full_name '
                        'FROM training t, enroll e, auth_user d, student s '
                        'LEFT JOIN attendance a ON a.student_id = s.user_id AND a.training_id = %(training_id)s '
+                       'LEFT JOIN medical_group m ON m.id = s.medical_group_id '
                        'WHERE s.user_id = e.student_id '
                        'AND d.id = e.student_id '
                        'AND s.is_ill = FALSE '
