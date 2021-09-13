@@ -312,8 +312,8 @@
 
                 <!-- FAQ -->
                 {% if student and student.obj.student_status.id == 0 and faq|length != 0 %}
-                <hr id="faq">
-                <h2 class="nav-link" href="#faq">FAQ</h2>
+                <hr href="#faq">
+                <h2 id="faq">FAQ</h2>
                 <div class="accordion" id="accordion-faq">
                     <p class="d-flex justify-content-center align-content-between flex-wrap">
                         {% for category in faq %}
