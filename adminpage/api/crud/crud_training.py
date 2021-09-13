@@ -221,7 +221,7 @@ def get_students_grades(training_id: int):
     @param training_id - searched training id
     @return list of student grades
     """
-    with connection.cursor() as cursor: # TODO: Add med_group into query
+    with connection.cursor() as cursor:
         cursor.execute('SELECT '
                        'd.id AS student_id, '
                        'd.first_name AS first_name, '
