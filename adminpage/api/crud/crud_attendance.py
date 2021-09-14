@@ -45,20 +45,6 @@ def get_brief_hours(student: Student) -> List[BriefHours]:
         brief_hours.append(element)
 
     return brief_hours
-    # with connection.cursor() as cursor:
-    #     cursor.execute('SELECT '
-    #                    's.id AS semester_id, '
-    #                    's.name AS semester_name, '
-    #                    's.start AS semester_start, '
-    #                    's.end AS semester_end, '
-    #                    'sum(a.hours) AS hours '
-    #                    'FROM semester s, training t, "group" g, attendance a '
-    #                    'WHERE a.student_id = %s '
-    #                    'AND a.training_id = t.id '
-    #                    'AND t.group_id = g.id '
-    #                    'AND g.semester_id = s.id '
-    #                    'GROUP BY s.id', (student.pk,))
-    #     return dictfetchall(cursor)
 
 
 def get_detailed_hours(student: Student, semester: Semester):
