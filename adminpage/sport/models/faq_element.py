@@ -4,7 +4,7 @@ from sport.models import FAQCategory
 
 class FAQElement(models.Model):
     category = models.ForeignKey('FAQCategory', on_delete=models.DO_NOTHING, null=False)
-    question = models.CharField(max_length=100, null=False)
+    question = models.CharField(max_length=1000, null=False)
     answer = models.TextField(max_length=1000, null=False)
 
     class Meta:
