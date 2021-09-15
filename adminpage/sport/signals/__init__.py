@@ -13,5 +13,5 @@ from .user import (
     verify_bachelor_role,
     change_status_to_academic_leave
 )
-from .reference import update_hours_for_reference
+# from .reference import update_hours_for_reference
 from .self_sport_report import create_attendance_record
