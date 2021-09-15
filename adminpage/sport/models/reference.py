@@ -54,12 +54,12 @@ class Reference(models.Model):
     def get_submission_url(self) -> Tuple[SubmissionType, str]:
         return SubmissionType.IMAGE, self.image.url
 
-    # def save(self, *args, **kwargs):
-    #     # update flag and approval only when object is created via API
-    #     if not kwargs.get('force_insert', False):
-    #         self.hours = max(self.hours, 0)
-    #         self.approval = self.hours > 0
-    #     return super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        # update flag and approval only when object is created via API
+        if not kwargs.get('force_insert', False):
+            self.hours = max(self.hours, 0)
+            self.approval = self.hours > 0
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.student} {self.uploaded.date()} for {self.semester}"
