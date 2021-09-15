@@ -62,6 +62,7 @@ class ReferenceAdmin(DefaultFilterMixIn):
         "hours",
         "student_comment",
         "comment",
+        "image",
         "reference_image",
         "attendance_link"
     )
