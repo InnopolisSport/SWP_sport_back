@@ -7,47 +7,47 @@ from sport.signals.utils import create_attendance_record
 from sport.utils import format_submission_html
 
 
-@receiver(post_save, sender=Reference)
-def update_hours_for_reference(sender, instance: Reference, created, **kwargs):
-    if created:
-        return
-
-    # get_or_create returns (object: Model, created: bool)
-    group = Group.objects.get(
-        semester=instance.semester,
-        name=settings.MEDICAL_LEAVE_GROUP_NAME
-    )
-
-    if not hasattr(instance, 'attendance'):
-        instance.attendance = create_attendance_record(
-            group=group,
-            upload_date=instance.uploaded.date(),
-            student=instance.student,
-            hours=instance.hours,
-            cause_reference=instance,
-        )
-    else:
-        instance.attendance.hours = instance.hours
-        instance.attendance.save()
-
-    if instance.hours > 0:
-        instance.student.notify(
-            *settings.EMAIL_TEMPLATES['medical_leave_success'],
-            date=instance.uploaded.date(),
-            hours=instance.hours,
-            submission=format_submission_html(
-                *instance.get_submission_url()
-            ),
-        )
-    else:
-        instance.student.notify(
-            *settings.EMAIL_TEMPLATES['medical_leave_reject'],
-            date=instance.uploaded.date(),
-            comment=instance.comment,
-            submission=format_submission_html(
-                *instance.get_submission_url()
-            ),
-        )
+# @receiver(post_save, sender=Reference)
+# def update_hours_for_reference(sender, instance: Reference, created, **kwargs):
+#     if created:
+#         return
+#
+#     # get_or_create returns (object: Model, created: bool)
+#     group = Group.objects.get(
+#         semester=instance.semester,
+#         name=settings.MEDICAL_LEAVE_GROUP_NAME
+#     )
+#
+#     if not hasattr(instance, 'attendance'):
+#         instance.attendance = create_attendance_record(
+#             group=group,
+#             upload_date=instance.uploaded.date(),
+#             student=instance.student,
+#             hours=instance.hours,
+#             cause_reference=instance,
+#         )
+#     else:
+#         instance.attendance.hours = instance.hours
+#         instance.attendance.save()
+#
+#     if instance.hours > 0:
+#         instance.student.notify(
+#             *settings.EMAIL_TEMPLATES['medical_leave_success'],
+#             date=instance.uploaded.date(),
+#             hours=instance.hours,
+#             submission=format_submission_html(
+#                 *instance.get_submission_url()
+#             ),
+#         )
+#     else:
+#         instance.student.notify(
+#             *settings.EMAIL_TEMPLATES['medical_leave_reject'],
+#             date=instance.uploaded.date(),
+#             comment=instance.comment,
+#             submission=format_submission_html(
+#                 *instance.get_submission_url()
+#             ),
+#         )
 
 
 @receiver(post_save, sender=MedicalGroupReference)
