@@ -165,7 +165,7 @@ async function unenroll_by_trainer(group_id, student_id) {
 async function openGroupInfoModalForTrainer(apiUrl) {
     const {data, title, body, footer} = await openModal('#group-info-modal', apiUrl);
     footer.html('<div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>');
-    title.text(`${data[0].group_name} group`);
+    title.html(`<h2><span class="badge badge-info text-uppercase">${data[0].group_name}</span></h2>`);
     renderGroupModalBody(body, data[0]);
     const tbody = body.append(`<p>Enrolled students:
                     <table class="table table-hover table-responsive-md">
