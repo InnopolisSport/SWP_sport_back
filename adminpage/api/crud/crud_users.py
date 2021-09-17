@@ -38,6 +38,7 @@ def get_email_name_like_students(group_id: int, pattern: str, limit: int = 5):
         'last_name',
         'email',
         'full_name',
+        'medical_group__name',
     )[:limit]
 
     return list(query)
