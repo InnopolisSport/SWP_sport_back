@@ -223,7 +223,7 @@ let students_in_table = {}; // <student_id: jquery selector of a row in the tabl
 function add_student_row(student_id, full_name, email, med_group, hours, maxHours) {
     const row = $(`<tr id="student_${student_id}">
                     <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name} 
-                    <span class="badge badge-pill badge-success text-uppercase">${med_group}</span>
+                    ${med_group === "Special 1" ? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>` : ""}
                     </td>
                     <td class="trainer-table-width hide-email-in-trainer-table" onclick="show_name_hide_email()">${email}</td>
                     <td class="hours-in-trainer-table-right" style="cursor: pointer">
@@ -313,7 +313,7 @@ async function open_trainer_modal({event}) {
     $('#grading-date').text(start.split('T')[0])
     const duration = event.end - event.start;
     // duration_academic_hours = (duration / 3_600_000) * (60 / 45) = duration / 2_700_000
-    current_duration_academic_hours = Math.min(10, round(duration / 2700000, 2)) // Maximum amount of hours: 10
+    current_duration_academic_hours = Math.min(10, Math.floor(duration / 2700000)) // Maximum amount of hours: 10
     const mark_all_btn = $('#put-default-hours-btn');
     mark_all_btn.attr('data-hours', current_duration_academic_hours)
     $('#mark-all-hours-value').text(current_duration_academic_hours)
@@ -380,12 +380,12 @@ function autocomplete_select(event, ui) {
     event.preventDefault(); // prevent adding the value into the text field
     event.stopPropagation(); // stop other handlers from execution
     $(this).val(""); // clear the input field
-    const [student_id, full_name, email] = ui.item.value.split("_");
+    const [student_id, full_name, email, med_group] = ui.item.value.split("_");
     const hours = 0;
     const student_row = students_in_table[student_id];
     if (student_row == null) { // check if current student is in the table
         const maxHours = $('#put-default-hours-btn').attr('data-hours');
-        add_student_row(student_id, full_name, email, hours, maxHours); // add if student isn't present
+        add_student_row(student_id, full_name, email, med_group, hours, maxHours); // add if student isn't present
     } else {
         student_row[0].scrollIntoView(); // scroll to the row with student
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
