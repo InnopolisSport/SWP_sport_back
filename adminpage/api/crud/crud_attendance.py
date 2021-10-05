@@ -13,6 +13,8 @@ from sport.models import Student, Semester, Training, SelfSportReport, Reference
 
 from api.crud.crud_semester import get_ongoing_semester
 from sport.models import Attendance
+from .utils import SumSubquery
+
 
 VTrue = Value(True, output_field=BooleanField())
 VFalse = Value(False, output_field=BooleanField())
@@ -24,14 +26,6 @@ class BriefHours(TypedDict):
     semester_start: str
     semester_end: str
     hours: int
-
-class SumSubquery(Subquery):
-    output_field = None
-
-    def __init__(self, queryset, sum_by, output_field=IntegerField(), **extra):
-        super().__init__(queryset, output_field, **extra)
-        self.output_field = output_field
-        self.template = "(SELECT sum({}) FROM (%(subquery)s) _sum)".format(sum_by)
 
 
 def get_brief_hours(student: Student) -> List[BriefHours]:

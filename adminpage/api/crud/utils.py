@@ -1,5 +1,15 @@
 from django.db.models import F
+from django.db.models.expressions import Subquery
 from sport.models import Training, Group
+
+
+class SumSubquery(Subquery):
+    output_field = None
+
+    def __init__(self, queryset, sum_by, output_field=IntegerField(), **extra):
+        super().__init__(queryset, output_field, **extra)
+        self.output_field = output_field
+        self.template = "(SELECT sum({}) FROM (%(subquery)s) _sum)".format(sum_by)
 
 
 def dictfetchall(cursor):

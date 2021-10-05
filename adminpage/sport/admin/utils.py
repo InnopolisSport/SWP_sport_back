@@ -2,7 +2,7 @@ import operator
 from typing import List, Dict, Tuple
 
 from django.contrib import admin
-from django.db.models.expressions import F
+from django.db.models.expressions import F, Subquery
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -33,6 +33,15 @@ class DefaultFilterMixIn(admin.ModelAdmin):
                 pass
         return super(DefaultFilterMixIn, self).changelist_view(request, *args, **kwargs)
 
+
+class SumSubquery(Subquery):
+    output_field = None
+
+    def __init__(self, queryset, sum_by, output_field=IntegerField(), **extra):
+        super().__init__(queryset, output_field, **extra)
+        self.output_field = output_field
+        self.template = "(SELECT sum({}) FROM (%(subquery)s) _sum)".format(sum_by)
+        
 
 def user__email(obj):
     return obj.user.email
