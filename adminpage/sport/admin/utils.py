@@ -3,6 +3,7 @@ from typing import List, Dict, Tuple
 
 from django.contrib import admin
 from django.db.models.expressions import F, Subquery
+from django.db.models.fields import IntegerField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 

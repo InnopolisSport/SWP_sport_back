@@ -1,5 +1,6 @@
 from django.db.models import F
 from django.db.models.expressions import Subquery
+from django.db.models.fields import IntegerField
 from sport.models import Training, Group
 
 
