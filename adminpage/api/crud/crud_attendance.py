@@ -3,6 +3,7 @@ from typing import Iterable, Tuple, List
 
 from django.db.models import F, Value, BooleanField, Case, When, CharField, Sum, IntegerField, OuterRef
 from django.db.models.functions import Concat, Coalesce
+from django.db.models.expressions import Value, Case, When, Subquery, OuterRef, ExpressionWrapper
 from typing_extensions import TypedDict
 
 from django.db import connection
@@ -23,6 +24,14 @@ class BriefHours(TypedDict):
     semester_start: str
     semester_end: str
     hours: int
+
+class SumSubquery(Subquery):
+    output_field = None
+
+    def __init__(self, queryset, sum_by, output_field=IntegerField(), **extra):
+        super().__init__(queryset, output_field, **extra)
+        self.output_field = output_field
+        self.template = "(SELECT sum({}) FROM (%(subquery)s) _sum)".format(sum_by)
 
 
 def get_brief_hours(student: Student) -> List[BriefHours]:
@@ -248,7 +257,23 @@ def better_than(student_id):
         0
     ))
 
-    all = qs.filter(ongoing_semester_hours__gt=0).count()
+    qs = qs.annotate(_debt=Coalesce(
+        SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
+                                        student_id=OuterRef("pk")), 'debt'),
+        0
+    ))
+
+    qs = qs.annotate(_ongoing_semester_hours=Coalesce(
+        SumSubquery(Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
+        0
+    ))
+    
+    qs = qs.annotate(complex_hours=ExpressionWrapper(
+        F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
+    ))
+
+    # all = qs.filter(ongoing_semester_hours__gt=0, ).count()
+    all = qs.filter(complex_hours__gt=0, ).count()
     if all == 0 or all == 1:
         return None
     all -= 1
