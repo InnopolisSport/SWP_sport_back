@@ -233,32 +233,15 @@ def create_debt(last_semester, **kwargs):
 
 # TODO: api method
 def better_than(student_id):
-    attendance_query = (
-        Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk)
-            .only('training__group__semester_id',
-                  'training__group__semester__hours',
-                  'student_id',
-                  'semester')
-            # Get attendance, annotate, group by student and semester
-            .annotate(semester=F("training__group__semester_id"),
-                      semester_hours=F("training__group__semester__hours"))
-            .values('semester', 'student_id').order_by('student_id', 'semester')
-            # Calculate hours
-            .annotate(sum_hours=Sum("hours", output_field=IntegerField()))
-    )
-    qs = Student.objects.all().annotate(ongoing_semester_hours=Coalesce(
-        attendance_query.filter(student_id=OuterRef("pk")).values('sum_hours'),
-        0
-    ))
-
-    qs = qs.annotate(_debt=Coalesce(
+    qs = Student.objects.all().annotate(_debt=Coalesce(
         SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
-                                        student_id=OuterRef("pk")), 'debt'),
+                                        student_id=student_id), 'debt'),
         0
     ))
 
     qs = qs.annotate(_ongoing_semester_hours=Coalesce(
-        SumSubquery(Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
+        SumSubquery(Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk,
+                                              student_id=student_id), 'hours'),
         0
     ))
     
@@ -266,16 +249,15 @@ def better_than(student_id):
         F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
     ))
 
-    # all = qs.filter(ongoing_semester_hours__gt=0, ).count()
     all = qs.filter(complex_hours__gt=0, ).count()
     if all == 0 or all == 1:
         return None
     all -= 1
 
-    student_hours = qs.get(pk=student_id).ongoing_semester_hours
+    student_hours = qs.get(pk=student_id).complex_hours
     if student_hours <= 0:
         return None
 
-    worse = qs.filter(ongoing_semester_hours__gt=0, ongoing_semester_hours__lt=student_hours).count()
+    worse = qs.filter(complex_hours__gt=0, complex_hours__lt=student_hours).count()
 
     return round(worse / all * 100, 1)
