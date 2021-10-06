@@ -9,12 +9,12 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportExportActionModelAdmin
 from import_export.results import RowResult
 
-from api.crud import get_ongoing_semester, get_negative_hours
+from api.crud import get_ongoing_semester, get_negative_hours, SumSubquery
 from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance, Debt
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
-from .utils import SumSubquery, user__role
+from .utils import user__role
 
 
 class MedicalGroupWidget(widgets.ForeignKeyWidget):
