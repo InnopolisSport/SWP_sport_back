@@ -235,13 +235,12 @@ def create_debt(last_semester, **kwargs):
 def better_than(student_id):
     qs = Student.objects.all().annotate(_debt=Coalesce(
         SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
-                                        student_id=student_id), 'debt'),
+                                        student_id=OuterRef("pk")), 'debt'),
         0
     ))
 
     qs = qs.annotate(_ongoing_semester_hours=Coalesce(
-        SumSubquery(Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk,
-                                              student_id=student_id), 'hours'),
+        SumSubquery(Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
         0
     ))
     
@@ -249,6 +248,7 @@ def better_than(student_id):
         F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
     ))
 
+    # all = qs.filter(ongoing_semester_hours__gt=0, ).count()
     all = qs.filter(complex_hours__gt=0, ).count()
     if all == 0 or all == 1:
         return None
