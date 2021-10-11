@@ -13,6 +13,7 @@ from api.views import (
     self_sport_report,
 )
 
+
 class NegativeIntConverter:
     regex = '-?\d+'
 
@@ -21,8 +22,8 @@ class NegativeIntConverter:
 
     def to_url(self, value):
         return '%d' % value
-
 register_converter(NegativeIntConverter, 'negint')
+
 
 urlpatterns = [
     path(r"test/", tmp.test),
