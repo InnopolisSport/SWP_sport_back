@@ -33,7 +33,7 @@ def get_sport_schedule(
         'enrolls',
         Prefetch('schedule', queryset=prefetch_query),
     ).filter(
-        Q(sport__id=sport_id) if sport_id != -1 else Q(sport=None) &
+        (Q(sport__id=sport_id) if sport_id != -1 else Q(sport=None)) &
         medical_group_condition &
         Q(semester__id=get_ongoing_semester().id)
     ).values(
