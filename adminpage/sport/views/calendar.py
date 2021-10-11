@@ -7,8 +7,15 @@ from sport.models import Sport
 @login_required
 def calendar_view(request, sport_id, **kwargs):
     student = getattr(request.user, "student", None)
+    if sport_id == -1:
+        return render(request, "calendar_without_sport.html")
     sport = get_object_or_404(Sport, pk=sport_id)
     return render(request, "calendar.html", {
         "sport": sport,
         "student": student,
     })
+    
+    
+@login_required
+def calendar_view_without_sport(request, **kwargs):
+    return render(request, "calendar_without_sport.html")

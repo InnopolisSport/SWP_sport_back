@@ -1,5 +1,5 @@
 from adminpage.swagger import schema_view
-from django.urls import path, re_path
+from django.urls import path, re_path, register_converter
 
 from api.views import (
     tmp,
@@ -12,6 +12,17 @@ from api.views import (
     reference,
     self_sport_report,
 )
+
+class NegativeIntConverter:
+    regex = '-?\d+'
+
+    def to_python(self, value):
+        return int(value)
+
+    def to_url(self, value):
+        return '%d' % value
+
+register_converter(NegativeIntConverter, 'negint')
 
 urlpatterns = [
     path(r"test/", tmp.test),
@@ -43,7 +54,7 @@ urlpatterns = [
     path(r"attendance/<int:student_id>/negative_hours", attendance.get_negative_hours_info),
 
     # calendar
-    path(r"calendar/<int:sport_id>/schedule", calendar.get_schedule),
+    path(r"calendar/<negint:sport_id>/schedule", calendar.get_schedule),
     path(r"calendar/trainings", calendar.get_personal_schedule),
 
     # reference management
