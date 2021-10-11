@@ -13,6 +13,11 @@ urlpatterns = [
         name="sport_schedule_calendar"
     ),
     path(
+        'calendar/extrasport',
+        calendar_view_without_sport,
+        name="extrasport_schedule_calendar"
+    ),
+    path(
         'form/meg_group',
         process_med_group_form,
         name="process_med_group_form"
