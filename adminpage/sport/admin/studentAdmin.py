@@ -28,21 +28,30 @@ class StudentStatusWidget(widgets.ForeignKeyWidget):
 
 
 class HoursFilter(admin.SimpleListFilter):
-    title = 'debt'
-    parameter_name = 'debt'
+    title = 'hours'
+    parameter_name = 'hours'
 
     def lookups(self, request, model_admin):
         return (
-            ('Yes', 'Yes'),
-            ('No', 'No'),
+            ('less', 'Less -60'),
+            ('-31', 'From -60 to -31'),
+            ('-1', 'From -30 to -1'),
+            ('29', 'From 0 to 29'),
+            ('more', 'More 30')
         )
 
     def queryset(self, request, queryset):
         value = self.value()
-        if value == 'Yes':
-            return queryset.filter(complex_hours__lt=0)
-        elif value == 'No':
-            return queryset.exclude(complex_hours__lt=0)
+        if value == 'less':
+            return queryset.filter(complex_hours__lt=-60)
+        if value == '-31':
+            return queryset.filter(complex_hours__lt=-30).filter(complex_hours__gte=-60)
+        if value == '-1':
+            return queryset.filter(complex_hours__lt=0).filter(complex_hours__gte=-30)
+        if value == '29':
+            return queryset.filter(complex_hours__lt=30).filter(complex_hours__gte=0)
+        elif value == 'more':
+            return queryset.filter(complex_hours__gte=30)
         return queryset
 
 
