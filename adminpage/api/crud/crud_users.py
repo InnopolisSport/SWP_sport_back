@@ -20,6 +20,8 @@ def get_email_name_like_students(group_id: int, pattern: str, limit: int = 5):
     for medical_group in group.allowed_medical_groups.all():
         medical_group_condition = medical_group_condition | Q(medical_group__id=medical_group.id)
 
+    sport_condition = Q(sport=group.sport) if group.sport is not None else ~Q(pk=None)
+
     query = Student.objects.annotate(
         id=F('user__id'),
         first_name=F('user__first_name'),
@@ -27,7 +29,7 @@ def get_email_name_like_students(group_id: int, pattern: str, limit: int = 5):
         email=F('user__email'),
         full_name=Concat('user__first_name', Value(' '), 'user__last_name')
     ).filter(
-        medical_group_condition & Q(sport=group.sport) & (
+        medical_group_condition & sport_condition & (
             Q(email__icontains=pattern) |
             Q(full_name__icontains=pattern) |
             Q(last_name__icontains=pattern)
