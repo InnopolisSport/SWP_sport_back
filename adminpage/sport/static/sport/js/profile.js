@@ -231,7 +231,7 @@ function add_student_row(student_id, full_name, email, med_group, hours, maxHour
                         <div class="btn-group">
                             <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).next().val(0).change()">0</a>
                             <input class="studentHourField form-control trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
-                            onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"
+                            onchange="local_save_hours(this, ${student_id}); calc_marked_students();" value="${hours}" step="1"
                             />
                             <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</a>
                         </div>
@@ -239,6 +239,15 @@ function add_student_row(student_id, full_name, email, med_group, hours, maxHour
                 </tr>`);
     student_hours_tbody.prepend(row);
     students_in_table[student_id] = row;
+    calc_marked_students();
+}
+
+function calc_marked_students() {
+    let students_with_hours = 0;
+    for (const v of Object.values(students_in_table)) {
+        if (v[0].getElementsByClassName('studentHourField')[0].value > 0) students_with_hours += 1;
+    }
+    document.getElementById('marked-students').innerText = `${students_with_hours}/${Object.keys(students_in_table).length}`;
 }
 
 /* The two functions are applied to the trainer table */
