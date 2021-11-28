@@ -24,6 +24,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script src="{% static "sport/js/csv.min.js" %}?{{JS_VERSION}}"></script>
     <script src="{% static "sport/js/bootstrap-tourist.js" %}?{{JS_VERSION}}"></script>
     <script src="{% static "sport/js/modules/networking.mjs" %}?{{JS_VERSION}}"></script>
     <script src="{% static "sport/js/modules/enrollment.mjs" %}?{{JS_VERSION}}"></script>
@@ -381,15 +382,25 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="ui-widget d-flex flex-row my-1">
-                        <form class="student_email_suggestor" onsubmit="return false;">
-                                        <span class="align-text-top"><label
-                                                for="student_emails"><b>Name or email:</b> </label>
-                                            <input id="student_emails" class="stundet_email_pick trainer-editable"
-                                                   size="30">
-                                        </span>
-                        </form>
-                    </div>
+                    <form class="student_email_suggestor" onsubmit="return false;">
+                        <div class="container">
+                        <div class="row align-items-center">
+                                <div class="col-lg-6 sol-sm-12 mb-3">
+                                    <input id="student_emails" class="form-control w-100 trainer-editable"
+                                        size="30" placeholder="Enter student name or email">
+                                </div>
+                                <div class="col-lg-6 sol-sm-12 mb-3">
+                                    <div class="custom-file">
+                                        <label for="csv-file-input" class="custom-file-label">Upload moodle CSV attendance</label>
+                                        <input name="image" type="file" class="custom-file-input form-control-file trainer-editable"
+                                            accept=".csv"
+                                            id="csv-file-input"
+                                            onchange="csv_upload(this)">
+                                    </div>
+                                </div>
+                        </div>
+                        </div>
+                    </form>
                     <div class="mb-3">Marked students: <span class="badge badge-dark" id="marked-students"></span></div>
                     <div class="modal-body-table">
 

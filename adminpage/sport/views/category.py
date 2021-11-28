@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from sport.models import Student
 
 from api.crud import get_sports, get_clubs, get_student_groups
 
@@ -15,7 +16,9 @@ def parse_group(group: dict) -> dict:
 
 @login_required
 def category_view(request, **kwargs):
-    student = getattr(request.user, "student", None)
+    student = Student.objects.filter(pk=request.user.pk).select_related(
+        "medical_group"
+    ).first()
     sports = get_sports(student=student)
     clubs = sorted(
         [{
