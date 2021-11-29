@@ -126,7 +126,7 @@ def self_sport_upload(request, **kwargs):
 @permission_classes([IsStudent])
 def get_strava_activity_info(request, **kwargs):
     url = request.GET['link']
-    if re.match(r'https?://.*strava\.com/.*', url, re.IGNORECASE) is None:
+    if re.match(r'https?://.*strava.*', url, re.IGNORECASE) is None:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data="Invalid link"

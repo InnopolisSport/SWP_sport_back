@@ -204,7 +204,7 @@ async function save_hours() {
         $('#grading-modal').modal("hide")
     }
     btn.prop('disabled', false);
-
+    calc_marked_students();
 }
 
 $(document).on('hidden.bs.modal', '#grading-modal', function () {
@@ -231,7 +231,7 @@ function add_student_row(student_id, full_name, email, med_group, hours, maxHour
                         <div class="btn-group">
                             <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).next().val(0).change()">0</a>
                             <input class="studentHourField form-control trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
-                            onchange="local_save_hours(this, ${student_id})" value="${hours}" step="1"
+                            onchange="local_save_hours(this, ${student_id}); calc_marked_students();" value="${hours}" step="1"
                             />
                             <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</a>
                         </div>
@@ -239,6 +239,15 @@ function add_student_row(student_id, full_name, email, med_group, hours, maxHour
                 </tr>`);
     student_hours_tbody.prepend(row);
     students_in_table[student_id] = row;
+    calc_marked_students();
+}
+
+function calc_marked_students() {
+    let students_with_hours = 0;
+    for (const v of Object.values(students_in_table)) {
+        if (v[0].getElementsByClassName('studentHourField')[0].value > 0) students_with_hours += 1;
+    }
+    document.getElementById('marked-students').innerText = `${students_with_hours}/${Object.keys(students_in_table).length}`;
 }
 
 /* The two functions are applied to the trainer table */
@@ -319,6 +328,16 @@ async function open_trainer_modal({event}) {
     $('#mark-all-hours-value').text(current_duration_academic_hours)
     modal.append(make_grades_table(grades, current_duration_academic_hours));
 
+    $('#csv-file-input')
+        .off('change')
+        .val('')
+        .on('change', function () {
+            const parts = $(this).val().split('\\')
+            $(this).prev('.custom-file-label').html(parts[parts.length - 1]);
+        })
+        .prev('.custom-file-label')
+        .html('Upload moodle CSV attendance');
+
     const editable_inputs = $(".trainer-editable");
     save_btn.prop('disabled', !event.extendedProps.can_edit);
     mark_all_btn.prop('disabled', !event.extendedProps.can_edit);
@@ -375,12 +394,8 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar.render();
 });
 
-
-function autocomplete_select(event, ui) {
-    event.preventDefault(); // prevent adding the value into the text field
-    event.stopPropagation(); // stop other handlers from execution
-    $(this).val(""); // clear the input field
-    const [student_id, full_name, email, med_group] = ui.item.value.split("_");
+function parse_student_from_server(data) {
+    const [student_id, full_name, email, med_group] = data.split("_");
     const hours = 0;
     const student_row = students_in_table[student_id];
     if (student_row == null) { // check if current student is in the table
@@ -390,6 +405,13 @@ function autocomplete_select(event, ui) {
         student_row[0].scrollIntoView(); // scroll to the row with student
         student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
+}
+
+function autocomplete_select(event, ui) {
+    event.preventDefault(); // prevent adding the value into the text field
+    event.stopPropagation(); // stop other handlers from execution
+    $(this).val(""); // clear the input field
+    parse_student_from_server(ui.item.value);
 }
 
 async function submit_reference() {
@@ -492,7 +514,7 @@ async function submit_self_sport() {
     // }
 
     if (link) {
-        if ((link.startsWith('http://') || link.startsWith('https://')) && link.match('https?://.*strava.*')) {
+        if ((link.startsWith('http://') || link.startsWith('https://')) && link.match('https?:\/\/.*strava.*')) {
             formData.append(linkInput.name, link);
         } else {
             toastr.error("You should submit a link to your Strava activity");
@@ -534,3 +556,29 @@ $(function () {
         .autocomplete("option", "appendTo", ".student_email_suggestor");
     $('[data-toggle="tooltip"]').tooltip()
 });
+
+function csv_upload(object) {
+    CSV.fetch({
+        file: object.files[0],
+    }).done(function(dataset) {
+        dataset.records.forEach((record) => {
+            fetch("/api/attendance/suggest_student?" + new URLSearchParams({term: record[0], group_id}),
+                {
+                    method: "GET",
+                    headers: {
+                        "X-CSRFToken": csrf_token
+                    },
+                })
+                .then(function(res){ return res.json(); })
+                .then((data) => {
+                    if (data.length === 1) {
+                        parse_student_from_server(data[0].value);
+                    } else if (data.length === 0) {
+                        toastr.error(`There is no such student (${record[0]}) or student does not choose its sport`, 'Invalid student', {timeOut: 10000});
+                    } else {
+                        toastr.error(`Something went wrong with input data (${record[0]})`, 'Invalid data', {timeOut: 10000});
+                    }
+                })
+        });
+    })
+}

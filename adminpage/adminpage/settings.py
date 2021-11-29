@@ -49,7 +49,7 @@ DATE_FORMAT = "%Y-%m-%d"
 # People with passed checkup are able to upload self-sport
 SELFSPORT_MINIMUM_MEDICAL_GROUP_ID = -1
 
-JS_VERSION = "3.0"
+JS_VERSION = "4.0"
 
 SPORT_DEPARTMENT_EMAIL = "sport@innopolis.university"
 STUDENT_AUTH_GROUP_VERBOSE_NAME = "Students"
@@ -66,7 +66,7 @@ MEDICAL_LEAVE_GROUP_NAME = "Medical leave"
 OTHER_SPORT_NAME = "Other"
 
 TRAINING_EDITABLE_INTERVAL = timedelta(
-    days=int(os.getenv("TRAINING_EDITABLE_INTERVAL", 14))
+    days=2
 )
 
 BACHELOR_STUDY_PERIOD_YEARS = 4
