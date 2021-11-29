@@ -66,7 +66,6 @@ MEDICAL_LEAVE_GROUP_NAME = "Medical leave"
 OTHER_SPORT_NAME = "Other"
 
 TRAINING_EDITABLE_INTERVAL = timedelta(
-    # days=int(os.getenv("TRAINING_EDITABLE_INTERVAL", 2))
     days=2
 )
 
