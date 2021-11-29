@@ -204,7 +204,7 @@ async function save_hours() {
         $('#grading-modal').modal("hide")
     }
     btn.prop('disabled', false);
-
+    calc_marked_students();
 }
 
 $(document).on('hidden.bs.modal', '#grading-modal', function () {
