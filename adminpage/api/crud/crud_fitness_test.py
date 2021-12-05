@@ -3,7 +3,7 @@ from api.crud import get_ongoing_semester
 
 
 def get_all_exercises():
-    return FitnessTestGrading.objects.filter(semester=get_ongoing_semester())
+    return list(FitnessTestGrading.objects.filter(semester=get_ongoing_semester()))
 
 
 # input: array of dicts, where dict: {"exercise_name": <name of exercise>, "value": <score of student result>}
