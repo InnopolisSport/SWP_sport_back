@@ -31,7 +31,7 @@ class Student(models.Model):
         default=-1
     )
 
-    is_ill = models.BooleanField(
+    has_QR = models.BooleanField(
         default=False,
     )
 

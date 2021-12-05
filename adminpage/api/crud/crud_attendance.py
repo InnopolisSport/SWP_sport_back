@@ -138,11 +138,11 @@ def mark_hours(training: Training, student_hours: Iterable[Tuple[int, float]]):
                            f'WHERE  (student_id, training_id) IN ({args_del_str.decode()})')
 
 
-def toggle_illness(student: Student):
+def toggle_has_QR(student: Student):
     """
-    Toggles student's illness
+    Toggles student's QR presence
     """
-    student.is_ill = not student.is_ill
+    student.has_QR = not student.has_QR
     student.save()
 
 

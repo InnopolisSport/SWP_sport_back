@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
 
-class IsIllSerializer(serializers.Serializer):
-    is_ill = serializers.BooleanField()
+class HasQRSerializer(serializers.Serializer):
+    has_QR = serializers.BooleanField()
 
 
 class GenderSerializer(serializers.Serializer):
