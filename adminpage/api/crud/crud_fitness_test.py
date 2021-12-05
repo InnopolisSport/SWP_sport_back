@@ -11,7 +11,7 @@ def post_student_exercises_result_crud(student_email, exercises) -> int:
     student = Student.objects.get(user__email=student_email)
     score = 0
     for i in range(len(exercises)):
-        exercise = FitnessTestExercise.objects.filter(exercise_name=exercises[i]['exercise_name'])
+        exercise = FitnessTestExercise.objects.get(exercise_name=exercises[i]['exercise_name'])
         grading_score = FitnessTestGrading.objects.get(exercise=exercise, semester=get_ongoing_semester(),
                                                        start_range__lte=exercises[i]['value'],
                                                        end_range__gte=exercises[i]['value'])['score']
