@@ -19,24 +19,22 @@ from api.crud import get_all_exercises, post_student_exercises_result_crud, get_
 
 
 def convert_exercises(t) -> dict:
-    res = None
     try:
-        res = {
-        "name": t.exercise.exercise_name,
-        "unit": t.exercise.value_unit,
-        "score": t.score,
-        "start_range": t.start_range,
-        "end_range": t.end_range
+        return {
+            "name": t.exercise.exercise_name,
+            "unit": t.exercise.value_unit,
+            "score": t.score,
+            "start_range": t.start_range,
+            "end_range": t.end_range
         }
     except Exception as ex:
-        res = {
+        return {
             "name": t['exercise']['exercise_name'],
             "unit": t['exercise']['value_unit'],
             "score": t['score'],
             "start_range": t['start_range'],
             "end_range": t['end_range']
         }
-    return res
 
 
 @api_view(["GET"])
