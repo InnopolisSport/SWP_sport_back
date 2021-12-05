@@ -7,4 +7,5 @@ class FitnessTestResult(serializers.Serializer):
 
 
 class FitnessTestResults(serializers.Serializer):
+    student_email = serializers.CharField()
     result = FitnessTestResult(many=True)
