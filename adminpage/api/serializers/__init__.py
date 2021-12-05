@@ -53,4 +53,5 @@ from .training import (
 )
 from .fitness_test import (
     FitnessTestResult,
+    FitnessTestResults
 )
