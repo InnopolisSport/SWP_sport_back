@@ -16,11 +16,16 @@ def post_student_exercises_result_crud(student_email: str, exercises: list) -> i
                                                        start_range__lte=exercises[i]["value"],
                                                        end_range__gte=exercises[i]["value"]).score
         score += grading_score
-        result = FitnessTestResult.objects.get_or_create(exercise=exercise, semester=get_ongoing_semester(),
-                                                         student=student)
-        a = exercises[i]['value']
-        result.value = a
-        result.save()
+        result, created = FitnessTestResult.objects.get_or_create(exercise=exercise, semester=get_ongoing_semester(),
+                                                                  student=student)
+        if created:
+            result = FitnessTestResult.objects.get(exercise=exercise, semester=get_ongoing_semester(),
+                                                   student=student)
+            result.value = exercises[i]['value']
+            result.save()
+        else:
+            result.value = exercises[i]['value']
+            result.save()
     return score
 
 
