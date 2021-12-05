@@ -49,7 +49,6 @@ def get_exercises(request, **kwargs):
     method="POST",
     request_body=FitnessTestResults,
     responses={
-        status.HTTP_200_OK: EmptySerializer,
         status.HTTP_404_NOT_FOUND: NotFoundSerializer,
         status.HTTP_400_BAD_REQUEST: ErrorSerializer,
     },
