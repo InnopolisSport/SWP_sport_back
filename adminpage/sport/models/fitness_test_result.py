@@ -23,4 +23,7 @@ class FitnessTestResult(models.Model):
         blank=False,
     )
 
-    value = models.IntegerField()
+    value = models.IntegerField(
+        null=True,
+        blank=True
+    )
