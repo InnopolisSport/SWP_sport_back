@@ -51,3 +51,6 @@ from .tmp import (
 from .training import (
     TrainingInfoSerializer,
 )
+from .fitness_test import (
+    FitnessTestResult,
+)

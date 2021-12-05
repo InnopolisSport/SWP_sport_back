@@ -11,6 +11,7 @@ from api.views import (
     calendar,
     reference,
     self_sport_report,
+    fitness_test,
 )
 
 
@@ -64,7 +65,11 @@ urlpatterns = [
     # self sport report
     path(r"selfsport/upload", self_sport_report.self_sport_upload),
     path(r"selfsport/types", self_sport_report.get_self_sport_types),
-    path(r"selfsport/strava_parsing", self_sport_report.get_strava_activity_info)
+    path(r"selfsport/strava_parsing", self_sport_report.get_strava_activity_info),
+
+    # fitness test
+    path(r"fitnesstest/upload", fitness_test.post_student_exercises_result),
+    path(r"fitnesstest/exercises", fitness_test.get_all_exercises),
 ]
 
 urlpatterns.extend([

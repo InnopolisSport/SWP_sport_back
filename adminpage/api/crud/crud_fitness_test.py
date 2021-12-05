@@ -6,12 +6,12 @@ def get_all_exercises():
     return FitnessTestGrading.objects.filter(semester=get_ongoing_semester())
 
 
-# input: array of dicts, where dict: {"name": <name of exercise>, "value": <score of student result>}
-def post_student_exercises_result(student_email, exercises):
+# input: array of dicts, where dict: {"exercise_name": <name of exercise>, "value": <score of student result>}
+def post_student_exercises_result(student_email: str, exercises: dict) -> int:
     student = Student.objects.get(email=student_email)
     score = 0
     for i in range(len(exercises)):
-        exercise = FitnessTestExercise.objects.filter(exercise_name=exercises[i]['name'])
+        exercise = FitnessTestExercise.objects.filter(exercise_name=exercises[i]['exercise_name'])
         grading_score = FitnessTestGrading.objects.filter(exercise=exercise, semester=get_ongoing_semester(),
                                                           start_range__lqt=exercises[i]['score'],
                                                           end_range__gqt=exercises[i]['score']).score
@@ -23,7 +23,7 @@ def post_student_exercises_result(student_email, exercises):
     return score
 
 
-def get_student_pass(score: int):
+def get_student_pass(score: int) -> bool:
     if score <= 50:
         return False
     else:

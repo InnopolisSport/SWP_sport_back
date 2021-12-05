@@ -6,3 +6,4 @@ from .crud_semester import *
 from .crud_training import *
 from .crud_users import *
 from .crud_faq import *
+from .crud_fitness_test import *
