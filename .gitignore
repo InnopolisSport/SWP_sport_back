@@ -17,3 +17,5 @@ htmlcov/
 /media/
 
 venv/
+
+frontend/
