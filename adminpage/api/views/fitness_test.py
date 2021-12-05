@@ -29,7 +29,7 @@ def convert_exercises(t) -> dict:
 
 
 @api_view(["GET"])
-def get_all_exercises(request, **kwargs):
+def get_exercises(request, **kwargs):
     exercises = get_all_exercises()
     return Response(list(map(convert_exercises, exercises)))
 
