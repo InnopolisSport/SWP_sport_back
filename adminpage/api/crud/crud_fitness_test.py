@@ -7,7 +7,7 @@ def get_all_exercises():
 
 
 # input: array of dicts, where dict: {"exercise_name": <name of exercise>, "value": <score of student result>}
-def post_student_exercises_result(student_email: str, exercises: dict) -> int:
+def post_student_exercises_result(student_email: str, exercises: list) -> int:
     student = Student.objects.get(email=student_email)
     score = 0
     for i in range(len(exercises)):
