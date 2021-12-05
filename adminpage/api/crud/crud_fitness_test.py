@@ -8,7 +8,7 @@ def get_all_exercises():
 
 # input: array of dicts, where dict: {"exercise_name": <name of exercise>, "value": <score of student result>}
 def post_student_exercises_result_crud(student_email, exercises) -> int:
-    student = Student.objects.get(email=student_email)
+    student = Student.objects.get(user__email=student_email)
     score = 0
     for i in range(len(exercises)):
         exercise = FitnessTestExercise.objects.filter(exercise_name=exercises[i]['exercise_name'])
