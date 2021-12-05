@@ -15,7 +15,7 @@ from api.serializers import (
     ErrorSerializer
 )
 
-from api.crud import get_all_exercises, post_student_exercises_result, get_student_pass
+from api.crud import get_all_exercises, _post_student_exercises_result, get_student_pass
 
 
 def convert_exercises(t) -> dict:
@@ -59,5 +59,5 @@ def post_student_exercises_result(request, **kwargs):
     serializer = FitnessTestResults(data=request.data)
     serializer.is_valid(raise_exception=True)
     exercises = serializer.validated_data['result']
-    score = post_student_exercises_result(serializer.validated_data['student_email'], exercises)
+    score = _post_student_exercises_result(serializer.validated_data['student_email'], exercises)
     return Response({"score": score})
