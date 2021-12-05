@@ -63,6 +63,9 @@
                                 </span>
                             {% endfor %}
                         </p>
+                        <a href="{% url 'fitness_test' %}" class="btn btn-dark mb-3">
+                            Conduct a fitness test
+                        </a>
                     {% else %}
                         <p id="trainer-list">
                             <h4><span class="badge badge-warning">You are not teaching in the current semester</span></h4>
