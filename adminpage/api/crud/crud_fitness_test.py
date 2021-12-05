@@ -18,7 +18,8 @@ def post_student_exercises_result_crud(student_email: str, exercises: list) -> i
         score += grading_score
         result = FitnessTestResult.objects.get_or_create(exercise=exercise, semester=get_ongoing_semester(),
                                                          student=student)
-        result.value = exercises[i]['value']
+        a = exercises[i]['value']
+        result.value = a
         result.save()
     return score
 
