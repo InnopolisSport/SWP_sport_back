@@ -59,5 +59,5 @@ def get_exercises(request, **kwargs):
 def post_student_exercises_result(request, **kwargs):
     serializer = FitnessTestResults(data=request.data)
     serializer.is_valid(raise_exception=True)
-    score = post_student_exercises_result(serializer['result'])
+    score = post_student_exercises_result(serializer['student_email'], serializer['result'])
     return Response({"score": score})
