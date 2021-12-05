@@ -26,3 +26,6 @@ from .custompermissionAdmin import CustomPermissionAdmin
 from .medicalGroupHistoryAdmin import MedicalGroupHistoryAdmin
 from .debtAdmin import DebtAdmin
 from .FAQAdmin import FAQAdmin
+from .fitnessTestResultAdmin import FitnessTestResultAdmin
+from .fitnessTestGradingAdmin import FitnessTestGradingAdmin
+from .fitnessTestExerciseAdmin import FitnessTestExerciseAdmin
