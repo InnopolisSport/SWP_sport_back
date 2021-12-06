@@ -27,3 +27,8 @@ class FitnessTestResult(models.Model):
         null=True,
         blank=True
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['student', 'semester', 'exercise'], name='')
+        ]
