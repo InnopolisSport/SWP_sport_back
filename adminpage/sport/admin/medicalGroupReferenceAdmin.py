@@ -17,7 +17,7 @@ class MedicalGroupReferenceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance.student_id is not None:
             if MedicalGroupHistory.objects.filter(medical_group_reference=self.instance).exists():
-                self.fields['medical_group'].initial = MedicalGroupHistory.objects.get(medical_group_reference=self.instance).medical_group
+                self.fields['medical_group'].initial = MedicalGroupHistory.objects.filter(medical_group_reference=self.instance).last().medical_group
             else:
                 self.fields['medical_group'].initial = self.instance.student.medical_group_id
 
