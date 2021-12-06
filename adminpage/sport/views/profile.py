@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 from api.crud import get_ongoing_semester, get_student_groups, \
     get_brief_hours, \
-    get_trainer_groups, get_negative_hours, get_student_hours, better_than, get_faq
+    get_trainer_groups, get_negative_hours, get_student_hours, better_than, get_faq, get_student_score
 from api.permissions import IsStudent
 from sport.models import Student, MedicalGroupReference, Debt
 from sport.utils import set_session_notification
@@ -67,6 +67,7 @@ def profile_view(request, **kwargs):
         del request.session["notify"]
 
     if student is not None:
+        fitness_test_result = get_student_score(student)
         student_groups = get_student_groups(student)
         student_groups_parsed = list(map(
             parse_group,
@@ -104,7 +105,11 @@ def profile_view(request, **kwargs):
                 "init_debt_hours": student_debt.first().debt if student_debt.exists() else 0,
                 "debt_hours": get_negative_hours(student.pk),
                 "all_hours": get_student_hours(student.pk)['ongoing_semester'],
-                "better_than": better_than(student.pk)
+                "better_than": better_than(student.pk),
+                "fitness_test": {
+                    "result": fitness_test_result['result'],
+                    "score": fitness_test_result['score']
+                }
             },
             "faq": get_faq(),
         })
