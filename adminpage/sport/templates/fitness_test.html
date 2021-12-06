@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Fitness test{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+    <link rel="stylesheet" href="{% static "sport/css/bootstrap-tourist.css" %}?{{JS_VERSION}}">
+    <link rel="stylesheet" href="{% static "sport/css/profile.css" %}?{{JS_VERSION}}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script src="{% static "sport/js/bootstrap-tourist.js" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/networking.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/enrollment.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/modals.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/tour.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/category.js" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/fitness_test.js" %}?{{JS_VERSION}}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <div class="container-xl">
+                <h1 class="mb-3">Fitness test session</h1>  <!-- Maybe add a date of conducting -->
+                <form class="student_email_suggestor" onsubmit="return false;">
+                    <div class="container">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-sm-6 col-12 col-lg-6 mb-3">
+                                <input id="student_emails" class="form-control w-100 trainer-editable"
+                                    size="30" placeholder="Enter student name or email">
+                            </div>
+                            <div class="col-sm-6 col-12 col-lg-6 mb-3">
+                                <button id="student_emails" class="btn btn-primary form-control w-100 trainer-editable" onclick="save_table()">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- Results & Exercises -->
+                <ul id="exercise-tabs" class="nav nav-tabs">
+                    {% comment %} <li class="nav-item">
+                        <a class="nav-link" href="#results-table"><b>Results table</b></a>
+                    </li> {% endcomment %}
+                </ul>
+                <!-- Table of students & results -->
+                <div id="student-exercise-table" class="tab-content">
+
+                </div>
+{% endblock %}

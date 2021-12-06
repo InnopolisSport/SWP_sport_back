@@ -18,7 +18,7 @@ from api.serializers import (
 from api.crud import get_all_exercises, post_student_exercises_result_crud, get_student_pass
 
 
-def convert_exercises(t) -> dict:
+def convert_exercises(t) -> dict:  # TODO: Why two possible data structures here?
     try:
         return {
             "name": t.exercise.exercise_name,
@@ -57,5 +57,5 @@ def post_student_exercises_result(request, **kwargs):
     serializer = FitnessTestResults(data=request.data)
     serializer.is_valid(raise_exception=True)
     exercises = serializer.validated_data['result']
-    score = post_student_exercises_result_crud(serializer.validated_data['student_email'], exercises)
-    return Response({"score": score})
+    post_student_exercises_result_crud(exercises)
+    return Response({})

@@ -63,6 +63,9 @@
                                 </span>
                             {% endfor %}
                         </p>
+                        <a href="{% url 'fitness_test' %}" class="btn btn-primary mb-3">
+                            Conduct a fitness test
+                        </a>
                     {% else %}
                         <p id="trainer-list">
                             <h4><span class="badge badge-warning">You are not teaching in the current semester</span></h4>
@@ -385,11 +388,11 @@
                     <form class="student_email_suggestor" onsubmit="return false;">
                         <div class="container">
                         <div class="row align-items-center">
-                                <div class="col-lg-6 sol-sm-12 mb-3">
+                                <div class="col-lg-6 col-sm-12 mb-3">
                                     <input id="student_emails" class="form-control w-100 trainer-editable"
                                         size="30" placeholder="Enter student name or email">
                                 </div>
-                                <div class="col-lg-6 sol-sm-12 mb-3">
+                                <div class="col-lg-6 col-sm-12 mb-3">
                                     <div class="custom-file">
                                         <label for="csv-file-input" class="custom-file-label">Upload moodle CSV attendance</label>
                                         <input name="image" type="file" class="custom-file-input form-control-file trainer-editable"
