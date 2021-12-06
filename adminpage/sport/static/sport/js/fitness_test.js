@@ -57,14 +57,15 @@ function add_student_ex_row(student_id, full_name, email, med_group) {
     let row = null;
     for (let i = 0; i < exercises.length; i++) {
         row = $(`<tr id="student_${student_id}_${i}">
-        <td>${full_name} 
-        ${med_group === "Special 1" ? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>` : ""}
-        </td>
-        <td style="cursor: pointer">
-            <form onsubmit="return false;">
-                <input class="studentHourField form-control trainer-editable" type="number" min="0" value="0" step="1"/>
-        </form></td>
-    </tr>`);
+            <td>${full_name} 
+            ${med_group === "Special 1" ? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>` : ""}
+            </td>
+            <td style="cursor: pointer">
+                <form onsubmit="return false;">
+                    <input class="form-control w-50" type="number" min="0" value="0" step="1"/>
+                </form>
+            </td>
+        </tr>`);
         $(`#ex-table-${i}`).prepend(row);
     }
     students_in_table[student_id] = 1;
@@ -93,7 +94,7 @@ $(function () {
         .autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: '/api/attendance/suggest_student',
+                    url: '/api/fitnesstest/suggest_student',
                     data: {term: request.term},
                     dataType: "json",
                     success: response,
@@ -113,7 +114,14 @@ function save_table() {
         let ex_name = exercises[i];
         student_ids.forEach((sid) => {
             let val = document.getElementById(`student_${sid}_${i}`).getElementsByTagName('input')[0].value;
-            console.log(val);
+            if (val === "") {
+                toastr.error(`There are no values for some students in <b>${ex_name} exercise</b>`, "Value error");
+                return;
+            }
+            else if (parseInt(val) < 0) {
+                toastr.error(`Values should be <b>positive</b>. Check <b>${ex_name} exercise</b>`, "Value error");
+                return;
+            }
             res.push({student_id: sid, exercise_name: ex_name, value: val});
         });
     }

@@ -22,29 +22,44 @@ from api.serializers.attendance import SuggestionQueryFTSerializer
 from sport.models import Group
 
 
-def convert_exercises(t) -> dict:  # TODO: Why two possible data structures here?
+def convert_exercise(t) -> dict:  # TODO: Why two possible data structures here?
     try:
         return {
             "name": t.exercise.exercise_name,
             "unit": t.exercise.value_unit,
-            "score": t.score,
-            "start_range": t.start_range,
-            "end_range": t.end_range
+            "score": [t.score],
+            "start_range": [t.start_range],
+            "end_range": [t.end_range]
         }
     except Exception as ex:
         return {
             "name": t['exercise']['exercise_name'],
             "unit": t['exercise']['value_unit'],
-            "score": t['score'],
-            "start_range": t['start_range'],
-            "end_range": t['end_range']
+            "score": [t['score']],
+            "start_range": [t['start_range']],
+            "end_range": [t['end_range']]
         }
 
 
 @api_view(["GET"])
 def get_exercises(request, **kwargs):
     exercises = get_all_exercises()
-    return Response(list(map(convert_exercises, exercises)))
+    result_exercises = []
+    
+    for exercise in exercises:
+        exercise_dict = convert_exercise(exercise)
+        x = list(map(lambda x: x if x['name'] == exercise_dict['name'] else None, result_exercises))
+        x = [element for element in x if element != None]
+        if len(x) != 0:
+            print(x)
+            print(result_exercises)
+            exercise_index = result_exercises.index(x[0])
+            result_exercises[exercise_index]['score'].append(exercise_dict['score'][0])
+            result_exercises[exercise_index]['start_range'].append(exercise_dict['start_range'][0])
+            result_exercises[exercise_index]['end_range'].append(exercise_dict['end_range'][0])
+        else:
+            result_exercises.append(exercise_dict)
+    return Response(result_exercises)
 
 
 @swagger_auto_schema(
