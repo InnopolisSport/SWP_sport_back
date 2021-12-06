@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
@@ -55,9 +56,17 @@ def compose_bad_grade_report(email: str, hours: float) -> dict:
 def suggest_student(request, **kwargs):
     serializer = SuggestionQuerySerializer(data=request.GET)
     serializer.is_valid(raise_exception=True)
+
+    group = Group.objects.get(id=serializer.validated_data["group_id"])
+    medical_group_condition = Q(pk=None)
+    for medical_group in group.allowed_medical_groups.all():
+        medical_group_condition = medical_group_condition | Q(medical_group__id=medical_group.id)
+
+    sport_condition = Q(sport=group.sport) if group.sport is not None else ~Q(pk=None)
+
     suggested_students = get_email_name_like_students(
-        serializer.validated_data["group_id"],
-        serializer.validated_data["term"]
+        serializer.validated_data["term"],
+        requirement=(medical_group_condition & sport_condition)
     )
     return Response([
         {

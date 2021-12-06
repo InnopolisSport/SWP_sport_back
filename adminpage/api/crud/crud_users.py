@@ -8,22 +8,13 @@ from api.crud.utils import dictfetchall
 from sport.models import Student, Group
 
 
-def get_email_name_like_students(group_id: int, pattern: str, limit: int = 5):
+def get_email_name_like_students(pattern: str, limit: int = 5, requirement=~Q(pk=None)):
     """
     Retrieve at most <limit students> which emails start with <email_pattern>
     @param pattern - beginning of student email/name
     @param limit - how many student will be retrieved maximum
     @return list of students that are
     """
-    if group_id is not None:
-        group = Group.objects.get(id=group_id)
-        medical_group_condition = Q(pk=None)
-        for medical_group in group.allowed_medical_groups.all():
-            medical_group_condition = medical_group_condition | Q(medical_group__id=medical_group.id)
-        sport_condition = Q(sport=group.sport) if group.sport is not None else ~Q(pk=None)
-    else:
-        medical_group_condition = ~Q(pk=None)
-        sport_condition = ~Q(pk=None)
 
     query = Student.objects.annotate(
         id=F('user__id'),
@@ -32,7 +23,7 @@ def get_email_name_like_students(group_id: int, pattern: str, limit: int = 5):
         email=F('user__email'),
         full_name=Concat('user__first_name', Value(' '), 'user__last_name')
     ).filter(
-        medical_group_condition & sport_condition & (
+        requirement & (
             Q(email__icontains=pattern) |
             Q(full_name__icontains=pattern) |
             Q(last_name__icontains=pattern)

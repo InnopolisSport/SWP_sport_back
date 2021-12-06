@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
@@ -12,10 +13,13 @@ from api.serializers import (
     FitnessTestResults,
     EmptySerializer,
     NotFoundSerializer,
-    ErrorSerializer
+    ErrorSerializer, SuggestionQuerySerializer, SuggestionSerializer
 )
 
-from api.crud import get_all_exercises, post_student_exercises_result_crud
+from api.crud import get_all_exercises, post_student_exercises_result_crud, \
+    get_email_name_like_students
+from api.serializers.attendance import SuggestionQueryFTSerializer
+from sport.models import Group
 
 
 def convert_exercises(t) -> dict:  # TODO: Why two possible data structures here?
@@ -59,3 +63,33 @@ def post_student_exercises_result(request, **kwargs):
     exercises = serializer.validated_data['result']
     post_student_exercises_result_crud(exercises)
     return Response({})
+
+
+@swagger_auto_schema(
+    method="GET",
+    query_serializer=SuggestionQueryFTSerializer,
+    responses={
+        status.HTTP_200_OK: SuggestionSerializer(many=True),
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsTrainer])
+def suggest_fitness_test_student(request, **kwargs):
+    serializer = SuggestionQueryFTSerializer(data=request.GET)
+    serializer.is_valid(raise_exception=True)
+
+    suggested_students = get_email_name_like_students(
+        serializer.validated_data["term"],
+        requirement=(~Q(fitnesstestresult__semester=15))
+    )
+    return Response([
+        {
+            "value": f"{student['id']}_"
+                     f"{student['full_name']}_"
+                     f"{student['email']}_"
+                     f"{student['medical_group__name']}",
+            "label": f"{student['full_name']} "
+                     f"({student['email']})",
+        }
+        for student in suggested_students
+    ])
