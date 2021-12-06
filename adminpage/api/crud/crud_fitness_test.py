@@ -20,3 +20,7 @@ def get_student_score(student: Student):
     for result in results:
         score += FitnessTestGrading.objects.get(exercise=result.exercise, semester=get_ongoing_semester(),
                                                 start_range__lte=result.value, end_range__gte=result.value).score
+    if score < get_ongoing_semester().points_fitness_test:
+        return {"score": score, "result": 0}
+    else:
+        return {"score": score, "result": 1}
