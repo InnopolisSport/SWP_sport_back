@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 class SuggestionQuerySerializer(serializers.Serializer):
     term = serializers.CharField()
-    group_id = serializers.IntegerField()
+    group_id = serializers.IntegerField(required=False, default=None)
 
 
 class SuggestionSerializer(serializers.Serializer):

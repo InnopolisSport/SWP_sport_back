@@ -15,12 +15,15 @@ def get_email_name_like_students(group_id: int, pattern: str, limit: int = 5):
     @param limit - how many student will be retrieved maximum
     @return list of students that are
     """
-    group = Group.objects.get(id=group_id)
-    medical_group_condition = Q(pk=None)
-    for medical_group in group.allowed_medical_groups.all():
-        medical_group_condition = medical_group_condition | Q(medical_group__id=medical_group.id)
-
-    sport_condition = Q(sport=group.sport) if group.sport is not None else ~Q(pk=None)
+    if group_id is not None:
+        group = Group.objects.get(id=group_id)
+        medical_group_condition = Q(pk=None)
+        for medical_group in group.allowed_medical_groups.all():
+            medical_group_condition = medical_group_condition | Q(medical_group__id=medical_group.id)
+        sport_condition = Q(sport=group.sport) if group.sport is not None else ~Q(pk=None)
+    else:
+        medical_group_condition = ~Q(pk=None)
+        sport_condition = ~Q(pk=None)
 
     query = Student.objects.annotate(
         id=F('user__id'),
