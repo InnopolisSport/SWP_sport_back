@@ -73,6 +73,11 @@ def get_exercises(request, **kwargs):
 @api_view(["POST"])
 @permission_classes([IsTrainer])
 def post_student_exercises_result(request, **kwargs):
+    trainer = request.user
+    if not trainer.has_perm('sport.change_fitness_test'):
+        return Response(
+            status=400,
+        )
     serializer = FitnessTestResults(data=request.data)
     serializer.is_valid(raise_exception=True)
     exercises = serializer.validated_data['result']
