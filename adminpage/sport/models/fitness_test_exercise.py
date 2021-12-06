@@ -9,9 +9,9 @@ class FitnessTestExercise(models.Model):
     )
 
     value_unit = models.CharField(
-        max_length=10,
-        null=False,
-        blank=False
+        max_length=1000,
+        null=True,
+        blank=True
     )
 
     def __str__(self):

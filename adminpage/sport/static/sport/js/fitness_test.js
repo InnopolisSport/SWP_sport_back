@@ -57,14 +57,15 @@ function add_student_ex_row(student_id, full_name, email, med_group) {
     let row = null;
     for (let i = 0; i < exercises.length; i++) {
         row = $(`<tr id="student_${student_id}_${i}">
-        <td>${full_name} 
-        ${med_group === "Special 1" ? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>` : ""}
-        </td>
-        <td style="cursor: pointer">
-            <form onsubmit="return false;">
-                <input class="studentHourField form-control trainer-editable" type="number" min="0" value="0" step="1"/>
-        </form></td>
-    </tr>`);
+            <td>${full_name} 
+            ${med_group === "Special 1" ? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>` : ""}
+            </td>
+            <td style="cursor: pointer">
+                <form onsubmit="return false;">
+                    <input class="form-control" type="number" min="0" value="0" step="1"/>
+                </form>
+            </td>
+        </tr>`);
         $(`#ex-table-${i}`).prepend(row);
     }
     students_in_table[student_id] = 1;
