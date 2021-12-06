@@ -6,7 +6,6 @@ def get_all_exercises():
     return list(FitnessTestGrading.objects.filter(semester=get_ongoing_semester()))
 
 
-
 def post_student_exercises_result_crud(results):
     for res in results:
         student = Student.objects.get(user__id=res['student_id'])
@@ -15,8 +14,9 @@ def post_student_exercises_result_crud(results):
                                                 student=student, defaults={'value': res['value']})
 
 
-def get_student_pass(score: int) -> bool:
-    if score <= 50:
-        return False
-    else:
-        return True
+def get_student_score(student: Student):
+    score = 0
+    results = FitnessTestResult.objects.filter(student=student, semester=get_ongoing_semester())
+    for result in results:
+        score += FitnessTestGrading.objects.get(exercise=result.exercise, semester=get_ongoing_semester(),
+                                                start_range__lte=result.value, end_range__gte=result.value).score

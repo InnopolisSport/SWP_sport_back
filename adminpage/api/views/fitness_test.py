@@ -15,7 +15,7 @@ from api.serializers import (
     ErrorSerializer
 )
 
-from api.crud import get_all_exercises, post_student_exercises_result_crud, get_student_pass
+from api.crud import get_all_exercises, post_student_exercises_result_crud
 
 
 def convert_exercises(t) -> dict:  # TODO: Why two possible data structures here?
