@@ -27,6 +27,7 @@ def convert_exercise(t) -> dict:  # TODO: Why two possible data structures here?
         return {
             "name": t.exercise.exercise_name,
             "unit": t.exercise.value_unit,
+            "select": t.exercise.select.split(',') if t.exercise.select is not None else None,
             "score": [t.score],
             "start_range": [t.start_range],
             "end_range": [t.end_range]
