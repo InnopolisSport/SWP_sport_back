@@ -10,6 +10,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name='fitnesstestexercise',
+            name='select',
+            field=models.CharField(blank=True, max_length=1000, null=True),
+        ),
         migrations.AlterField(
             model_name='custompermission',
             name='id',
