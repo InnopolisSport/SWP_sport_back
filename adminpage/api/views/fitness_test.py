@@ -22,24 +22,15 @@ from api.serializers.attendance import SuggestionQueryFTSerializer
 from sport.models import Group
 
 
-def convert_exercise(t) -> dict:  # TODO: Why two possible data structures here?
-    try:
-        return {
-            "name": t.exercise.exercise_name,
-            "unit": t.exercise.value_unit,
-            "select": t.exercise.select.split(',') if t.exercise.select is not None else None,
-            "score": [t.score],
-            "start_range": [t.start_range],
-            "end_range": [t.end_range]
-        }
-    except Exception as ex:
-        return {
-            "name": t['exercise']['exercise_name'],
-            "unit": t['exercise']['value_unit'],
-            "score": [t['score']],
-            "start_range": [t['start_range']],
-            "end_range": [t['end_range']]
-        }
+def convert_exercise(t) -> dict:
+    return {
+        "name": t.exercise.exercise_name,
+        "unit": t.exercise.value_unit,
+        "select": t.exercise.select.split(',') if t.exercise.select is not None else None,
+        "score": [t.score],
+        "start_range": [t.start_range],
+        "end_range": [t.end_range]
+    }
 
 
 @api_view(["GET"])
