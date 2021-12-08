@@ -40,30 +40,18 @@
                 <h1 class="mb-3">Fitness test</h1>
                 <h2 class="mb-3">Sessions</h2>
                 <a href="{% url 'fitness_test_session_new' %}" class="btn btn-success mb-3 w-100">
-                    Conduct a new fitness test
+                    Conduct a new fitness test session
                 </a>
                 <!-- Table of sessions -->
                 <div id="ft-sessions-table" class="table-responsive">
-                    <table class="table table-hover text-center">
+                    <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th scope="col">Session</th>
+                            <th scope="col">Fitness test at (date)</th>
                             <th scope="col">Teacher</th>
-                            <!-- TODO: Number of attended students-->
                         </tr>
                         </thead>
-                        <tbody>
-                            <tr style="cursor: pointer"> <!--onclick="location.href='{% url "fitness_test_session_old" fitness_test_session_id %}'">-->
-                                <th scope="row" class="align-middle">
-                                    <span>
-                                    Fitness test on <i><!-- Date--></i>
-                                    </span>
-                                </th>
-                                <td class="align-middle">
-                                    <span class="badge badge-pill badge-light"><!--Teacher--></span>
-                                </td>
-                                <!--<td></td>-->
-                            </tr>
+                        <tbody id="ft-session-table-body">
                         </tbody>
                     </table>
                 </div>

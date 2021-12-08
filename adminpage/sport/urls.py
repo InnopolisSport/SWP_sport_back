@@ -9,7 +9,7 @@ urlpatterns = [
     path('category/', category_view, name='category'),
     path('fitness_test/', fitness_test_view, name='fitness_test'),
     path('fitness_test/new', fitness_test_session_view, name='fitness_test_session_new'),
-    # path('fitness_test/<int:fitness_test_session_id>', fitness_test_session_view, name='fitness_test_session_old'), # TODO: Add handler for ID
+    #path('fitness_test/<int:fitness_test_session_id>', fitness_test_session_view, name='fitness_test_session_old'), # TODO: Add handler for ID
     path(
         'calendar/sport/<int:sport_id>',
         calendar_view,
