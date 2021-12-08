@@ -16,6 +16,9 @@
         {% if user.is_staff or user.is_superuser %}
             <a href="{% url 'admin:index' %}" class="btn btn-outline-light">Admin panel</a>
         {% endif %}
+        {% if user.is_staff %} <!-- Add good condition for teacher user-->
+            <a href="{% url 'fitness_test' %}" class="btn btn-outline-light">Fitness test</a>
+        {% endif %}
     </div>
     <div>
         {% if user.is_authenticated %}
