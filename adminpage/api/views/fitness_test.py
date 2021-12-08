@@ -18,29 +18,21 @@ from api.serializers import (
 from api.crud import get_all_exercises, post_student_exercises_result_crud, get_student_pass
 
 
-def convert_exercises(t) -> dict:  # TODO: Why two possible data structures here?
-    try:
-        return {
-            "name": t.exercise.exercise_name,
-            "unit": t.exercise.value_unit,
-            "score": t.score,
-            "start_range": t.start_range,
-            "end_range": t.end_range
-        }
-    except Exception as ex:
-        return {
-            "name": t['exercise']['exercise_name'],
-            "unit": t['exercise']['value_unit'],
-            "score": t['score'],
-            "start_range": t['start_range'],
-            "end_range": t['end_range']
-        }
+def convert_exercise(t) -> dict:
+    return {
+        "name": t.exercise.exercise_name,
+        "unit": t.exercise.value_unit,
+        "select": t.exercise.select.split(',') if t.exercise.select is not None else None,
+        "score": [t.score],
+        "start_range": [t.start_range],
+        "end_range": [t.end_range]
+    }
 
 
 @api_view(["GET"])
 def get_exercises(request, **kwargs):
     exercises = get_all_exercises()
-    return Response(list(map(convert_exercises, exercises)))
+    return Response(list(map(convert_exercise, exercises)))
 
 
 @swagger_auto_schema(
