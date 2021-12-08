@@ -23,6 +23,13 @@ class FitnessTestResult(models.Model):
         blank=False,
     )
 
+    session = models.ForeignKey(
+        'FitnessTestSession',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
     value = models.IntegerField(
         null=True,
         blank=True

@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -19,7 +21,8 @@ from api.serializers import (
 from api.crud import get_all_exercises, post_student_exercises_result_crud, \
     get_email_name_like_students
 from api.serializers.attendance import SuggestionQueryFTSerializer
-from sport.models import Group
+from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull
+from sport.models import Group, FitnessTestSession, FitnessTestResult
 
 
 def convert_exercise(t) -> dict:  # TODO: Why two possible data structures here?
@@ -61,6 +64,41 @@ def get_exercises(request, **kwargs):
         else:
             result_exercises.append(exercise_dict)
     return Response(result_exercises)
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: FitnessTestSessions
+    }
+)
+@api_view(["GET"])
+def get_sessions(request, **kwargs):
+    sessions = FitnessTestSession.objects.all()
+    resp = [{'id': s.id, 'date': s.date, 'teacher': str(s.teacher)} for s in sessions]
+
+    return Response(resp)
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: FitnessTestSessionFull,
+    }
+)
+@api_view(["GET"])
+def get_session_info(request, session_id, **kwargs):
+    s = FitnessTestSession.objects.get(id=session_id)
+    session = {'id': s.id, 'date': s.date, 'teacher': str(s.teacher)}
+
+    results = FitnessTestResult.objects.filter(session_id=s.id)
+    r = defaultdict(list)
+    for result in results:
+        r[result.exercise.exercise_name].append({'student_name': f"{result.student.user.first_name} {result.student.user.last_name}",
+                                                  'student_email': result.student.user.email,
+                                                  'value': result.value})
+    print(r)
+
+    return Response(r)
 
 
 @swagger_auto_schema(

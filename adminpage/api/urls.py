@@ -70,6 +70,8 @@ urlpatterns = [
     # fitness test
     path(r"fitnesstest/upload", fitness_test.post_student_exercises_result),
     path(r"fitnesstest/exercises", fitness_test.get_exercises),
+    path(r"fitnesstest/sessions", fitness_test.get_sessions),
+    path(r"fitnesstest/sessions/<int:session_id>", fitness_test.get_session_info),
     path(r"fitnesstest/suggest_student", fitness_test.suggest_fitness_test_student),
 ]
 

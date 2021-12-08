@@ -9,3 +9,19 @@ class FitnessTestResult(serializers.Serializer):
 
 class FitnessTestResults(serializers.Serializer):
     result = FitnessTestResult(many=True)
+
+
+class FitnessTestSession(serializers.Serializer):
+    date = serializers.DateTimeField()
+    teacher = serializers.CharField()
+
+
+class FitnessTestSessionFull(FitnessTestSession):
+    results = FitnessTestResult(many=True)
+
+
+class FitnessTestSessions(serializers.Serializer):
+    session = FitnessTestSession(many=True)
+
+
+
