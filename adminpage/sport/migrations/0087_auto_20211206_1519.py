@@ -16,11 +16,6 @@ class Migration(migrations.Migration):
             field=models.CharField(blank=True, max_length=1000, null=True),
         ),
         migrations.AlterField(
-            model_name='custompermission',
-            name='id',
-            field=models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID'),
-        ),
-        migrations.AlterField(
             model_name='fitnesstestexercise',
             name='value_unit',
             field=models.CharField(blank=True, max_length=1000, null=True),
