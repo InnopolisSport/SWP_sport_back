@@ -173,6 +173,6 @@ function save_table() {
         })
       }).then( () => {
         toastr.success('The fitness test has been successfuly saved', 'Saved', 1500);
-        setTimeout(() => {window.location.href = '/'}, 1500);
+        setTimeout(() => {window.location.href = '/fitness_test'}, 1500);
       });
 }
