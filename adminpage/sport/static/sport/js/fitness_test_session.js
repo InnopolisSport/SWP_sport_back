@@ -129,11 +129,13 @@ function add_student_single_ex_row(
                 <td style="cursor: pointer">
                     <div class="input-group" onsubmit="return false;">
                         <input class="form-control" id="ex_${index}_value" type="number" min="0" value="0" step="1"/>
-                        <div class="input-group-append">
-                            <span class="input-group-text">${
-								exercises[index].ex_unit
-							}</span>
-                        </div>
+                        ${
+							exercises[index].ex_unit
+								? `<div class="input-group-append">
+                            <span class="input-group-text">${exercises[index].ex_unit}</span>
+                            </div>`
+								: ''
+						}
                     </div>
                 </td>
             </tr>`);
@@ -182,11 +184,13 @@ function add_student_ex_row(student_id, full_name, email, med_group) {
                 <td style="cursor: pointer">
                     <div class="input-group" onsubmit="return false;">
                         <input class="form-control" id="ex_${i}_value" type="number" min="0" value="0" step="1"/>
-                        <div class="input-group-append">
-                            <span class="input-group-text">${
-								exercises[i].ex_unit
-							}</span>
-                        </div>
+                        ${
+							exercises[i].ex_unit
+								? `<div class="input-group-append">
+                            <span class="input-group-text">${exercises[i].ex_unit}</span>
+                            </div>`
+								: ''
+						}
                     </div>
                 </td>
             </tr>`);
