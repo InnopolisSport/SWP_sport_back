@@ -71,16 +71,24 @@ if (session_id !== 'new') {
 			return response.json();
 		})
 		.then((data) => {
+			let ses_data = data['session'];
+			let d = new Date(ses_data['date']);
+			let mon = d.toLocaleString('en-US', { month: 'short' });
+			$('#session-info-date').html(
+				`<i>${d.getHours()}:${d.getMinutes()}, ${mon} ${d.getDate()}, ${d.getFullYear()}</i>`
+			);
+			$('#session-info-teacher').html(ses_data['teacher']);
+			let res_data = data['results'];
 			for (let i = 0; i < exercises.length; i++) {
 				let ex_index = exercises_map[exercises[i].ex_name];
-				let student_list = data[exercises[i].ex_name];
+				let student_list = res_data[exercises[i].ex_name];
 				for (let j = 0; j < student_list.length; j++) {
 					add_student_single_ex_row(
 						ex_index,
-						'STUDENT_ID',
+						student_list[j].student_id,
 						student_list[j].student_name,
 						student_list[j].student_email,
-						'MEDGROUP'
+						student_list[j].student_medical_group
 					);
 					if (exercises[ex_index].ex_select) {
 						$(
@@ -121,11 +129,13 @@ function add_student_single_ex_row(
                 <td style="cursor: pointer">
                     <div class="input-group" onsubmit="return false;">
                         <input class="form-control" id="ex_${index}_value" type="number" min="0" value="0" step="1"/>
-                        <div class="input-group-append">
-                            <span class="input-group-text">${
-								exercises[index].ex_unit
-							}</span>
-                        </div>
+                        ${
+							exercises[index].ex_unit
+								? `<div class="input-group-append">
+                            <span class="input-group-text">${exercises[index].ex_unit}</span>
+                            </div>`
+								: ''
+						}
                     </div>
                 </td>
             </tr>`);
@@ -174,11 +184,13 @@ function add_student_ex_row(student_id, full_name, email, med_group) {
                 <td style="cursor: pointer">
                     <div class="input-group" onsubmit="return false;">
                         <input class="form-control" id="ex_${i}_value" type="number" min="0" value="0" step="1"/>
-                        <div class="input-group-append">
-                            <span class="input-group-text">${
-								exercises[i].ex_unit
-							}</span>
-                        </div>
+                        ${
+							exercises[i].ex_unit
+								? `<div class="input-group-append">
+                            <span class="input-group-text">${exercises[i].ex_unit}</span>
+                            </div>`
+								: ''
+						}
                     </div>
                 </td>
             </tr>`);
@@ -211,11 +223,18 @@ function add_student_ex_row(student_id, full_name, email, med_group) {
 	students_in_table[student_id] = 1;
 }
 
+let current_student;
+
 function parse_student_from_server(data) {
-	const [student_id, full_name, email, med_group] = data.split('_');
+	const [student_id, full_name, email, med_group, gender] = data.split('_');
+	current_student = parseInt(student_id);
 	const student_row = students_in_table[student_id];
 	if (student_row == null) {
 		// check if current student is in the table
+		if (gender === '-1') {
+			$('#gender-modal-name').text(full_name);
+			$('#gender-modal').modal('show');
+		}
 		add_student_ex_row(student_id, full_name, email, med_group); // add if student isn't present
 	} else {
 		// student_row[0].scrollIntoView(); // scroll to the row with student
@@ -290,26 +309,89 @@ function save_table() {
 	if (cant_submit) {
 		return;
 	}
-	fetch('/api/fitnesstest/upload', {
+	if (session_id === 'new') {
+		fetch('/api/fitnesstest/upload', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrf_token,
+			},
+			body: JSON.stringify({
+				result: res,
+			}),
+		})
+			.then((response) => {
+				if (response.ok) {
+					return response.text();
+				}
+				$('#ft-session-save').attr('disabled', '');
+				throw new Error('Something went wrong.');
+			})
+			.then(() => {
+				toastr.success(
+					'The fitness test has been successfuly saved',
+					'Saved',
+					1500
+				);
+				setTimeout(() => {
+					window.location.href = '/fitness_test';
+				}, 1500);
+			})
+			.catch(function (error) {
+				toastr.error(`${error}`, 'Server error');
+			});
+	} else {
+		fetch(`/api/fitnesstest/upload/${session_id}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrf_token,
+			},
+			body: JSON.stringify({
+				result: res,
+			}),
+		})
+			.then((response) => {
+				if (response.ok) {
+					return response.text();
+				}
+				$('#ft-session-save').attr('disabled', '');
+				throw new Error('Something went wrong.');
+			})
+			.then(() => {
+				toastr.success(
+					'The fitness test has been successfuly saved',
+					'Saved',
+					1500
+				);
+				setTimeout(() => {
+					window.location.href = '/fitness_test';
+				}, 1500);
+			})
+			.catch(function (error) {
+				toastr.error(`${error}`, 'Server error');
+			});
+	}
+}
+
+function save_gender(val) {
+	fetch('/api/profile/change_gender', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			'X-CSRFToken': csrf_token,
 		},
-		body: JSON.stringify({
-			result: res,
-		}),
+		body: JSON.stringify({ student_id: current_student, gender: val }),
 	})
+		.then((response) => {
+			if (response.ok) {
+				return response.text();
+			}
+			throw new Error('Something went wrong.');
+		})
 		.then(() => {
-			$('#ft-session-save').attr('disabled', '');
-			toastr.success(
-				'The fitness test has been successfuly saved',
-				'Saved',
-				1500
-			);
-			setTimeout(() => {
-				window.location.href = '/fitness_test';
-			}, 1500);
+			toastr.success('The gender has been successfuly set', 'Set', 1000);
+			$('#gender-modal').modal('hide');
 		})
 		.catch(function (error) {
 			toastr.error(`${error}`, 'Server error');

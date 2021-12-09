@@ -10,14 +10,15 @@ from api.crud.crud_attendance import (
     get_detailed_hours, get_detailed_hours_and_self,
 )
 from api.permissions import (
-    IsStudent,
+    IsStudent, IsTrainer, IsStaff,
 )
 from api.serializers import (
     get_error_serializer,
     IsIllSerializer,
-    TrainingHourSerializer,
+    TrainingHourSerializer, EmptySerializer,
 )
-from sport.models import Semester
+from api.serializers.profile import GenderSerializer
+from sport.models import Semester, Student
 
 
 @swagger_auto_schema(
@@ -36,6 +37,28 @@ def toggle_sick(request, **kwargs):
     toggle_illness(student)
     serializer = IsIllSerializer(student)
     return Response(serializer.data)
+
+
+@swagger_auto_schema(
+    method="POST",
+    request_body=GenderSerializer,
+    responses={
+        status.HTTP_200_OK: EmptySerializer,
+    }
+)
+@api_view(["POST"])
+@permission_classes([IsStaff])
+def change_gender(request, **kwargs):
+    serializer = GenderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    print(serializer.validated_data['student_id'])
+
+    student = Student.objects.get(user_id=serializer.validated_data['student_id'])
+    student.gender = serializer.validated_data['gender']
+    student.save()
+
+    return Response({})
 
 
 @swagger_auto_schema(

@@ -73,7 +73,8 @@ def test_get_email_name_like_students_filtered_by_group(
         "last_name": user.last_name,
         "email": user.email,
         "full_name": f"{user.first_name} {user.last_name}",
-        "medical_group__name": "Medical checkup not passed"
+        "medical_group__name": "Medical checkup not passed",
+        "gender": -1
     }]
     assert len(get_email_name_like_students_filtered_by_group("Kir", group=group.id)) == 1
     assert len(get_email_name_like_students_filtered_by_group("Kirill Fed", group=group.id)) == 1
