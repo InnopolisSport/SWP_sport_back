@@ -10,7 +10,8 @@ from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.response import Response
 
 from api.crud import get_email_name_like_students, Training, \
-    get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, get_student_hours, get_negative_hours
+    get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, \
+    get_student_hours, get_negative_hours, get_email_name_like_students_filtered_by_group
 from api.permissions import IsTrainer
 from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
@@ -57,16 +58,9 @@ def suggest_student(request, **kwargs):
     serializer = SuggestionQuerySerializer(data=request.GET)
     serializer.is_valid(raise_exception=True)
 
-    group = Group.objects.get(id=serializer.validated_data["group_id"])
-    medical_group_condition = Q(pk=None)
-    for medical_group in group.allowed_medical_groups.all():
-        medical_group_condition = medical_group_condition | Q(medical_group__id=medical_group.id)
-
-    sport_condition = Q(sport=group.sport) if group.sport is not None else ~Q(pk=None)
-
-    suggested_students = get_email_name_like_students(
+    suggested_students = get_email_name_like_students_filtered_by_group(
         serializer.validated_data["term"],
-        requirement=(medical_group_condition & sport_condition)
+        group=serializer.validated_data["group_id"]
     )
     return Response([
         {
