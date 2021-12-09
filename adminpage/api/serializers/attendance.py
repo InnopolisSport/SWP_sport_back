@@ -6,6 +6,10 @@ class SuggestionQuerySerializer(serializers.Serializer):
     group_id = serializers.IntegerField()
 
 
+class SuggestionQueryFTSerializer(serializers.Serializer):
+    term = serializers.CharField()
+
+
 class SuggestionSerializer(serializers.Serializer):
     value = serializers.CharField()
     label = serializers.CharField()

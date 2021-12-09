@@ -24,6 +24,10 @@ from .custom_permission import CustomPermission
 from .debt import Debt
 from .faq_category import FAQCategory
 from .faq_element import FAQElement
+from .fitness_test_result import FitnessTestResult
+from .fitness_test_grading import FitnessTestGrading
+from .fitness_test_exercise import FitnessTestExercise
+from .fitness_test_session import FitnessTestSession
 
 DjangoGroup.add_to_class(
     'verbose_name',

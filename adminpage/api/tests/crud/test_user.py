@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 from sport.models import Student, Group
 from sport.models import MedicalGroups
-from api.crud import get_email_name_like_students
+from api.crud import get_email_name_like_students_filtered_by_group
 
 
 User = get_user_model()
@@ -29,7 +29,7 @@ def test_student_delete(student_factory):
 
 
 @pytest.mark.django_db
-def test_get_email_name_like_students(
+def test_get_email_name_like_students_filtered_by_group(
         student_factory,
         semester_factory,
         sport_factory,
@@ -67,7 +67,7 @@ def test_get_email_name_like_students(
     user.student.sport = sport
     user.student.save()
 
-    assert get_email_name_like_students(group.id, "Kirill") == [{
+    assert get_email_name_like_students_filtered_by_group("Kirill", group=group.id) == [{
         "id": user.student.pk,
         "first_name": user.first_name,
         "last_name": user.last_name,
@@ -75,14 +75,14 @@ def test_get_email_name_like_students(
         "full_name": f"{user.first_name} {user.last_name}",
         "medical_group__name": "Medical checkup not passed"
     }]
-    assert len(get_email_name_like_students(group.id, "Kir")) == 1
-    assert len(get_email_name_like_students(group.id, "Kirill Fed")) == 1
-    assert len(get_email_name_like_students(group.id, "Kirill Fedoseev")) == 1
-    assert len(get_email_name_like_students(group.id, "k.fedoseev")) == 1
+    assert len(get_email_name_like_students_filtered_by_group("Kir", group=group.id)) == 1
+    assert len(get_email_name_like_students_filtered_by_group("Kirill Fed", group=group.id)) == 1
+    assert len(get_email_name_like_students_filtered_by_group("Kirill Fedoseev", group=group.id)) == 1
+    assert len(get_email_name_like_students_filtered_by_group("k.fedoseev", group=group.id)) == 1
     assert len(
-        get_email_name_like_students(group.id,"k.fedoseev@innopolis.university")
+        get_email_name_like_students_filtered_by_group("k.fedoseev@innopolis.university", group=group.id)
     ) == 1
-    assert len(get_email_name_like_students(group.id, "kfedoseev")) == 0
+    assert len(get_email_name_like_students_filtered_by_group("kfedoseev", group=group.id)) == 0
 
     wrong_sport = sport_factory(
         name="wrong",
@@ -102,10 +102,10 @@ def test_get_email_name_like_students(
         MedicalGroups.GENERAL
     ])
 
-    assert len(get_email_name_like_students(wrong_group.id, "Kir")) == 0
-    assert len(get_email_name_like_students(wrong_group.id, "Kirill Fed")) == 0
-    assert len(get_email_name_like_students(wrong_group.id, "Kirill Fedoseev")) == 0
-    assert len(get_email_name_like_students(wrong_group.id, "k.fedoseev")) == 0
+    assert len(get_email_name_like_students_filtered_by_group("Kir", group=wrong_group.id)) == 0
+    assert len(get_email_name_like_students_filtered_by_group("Kirill Fed", group=wrong_group.id)) == 0
+    assert len(get_email_name_like_students_filtered_by_group("Kirill Fedoseev", group=wrong_group.id)) == 0
+    assert len(get_email_name_like_students_filtered_by_group("k.fedoseev", group=wrong_group.id)) == 0
     assert len(
-        get_email_name_like_students(wrong_group.id, "k.fedoseev@innopolis.university")
+        get_email_name_like_students_filtered_by_group("k.fedoseev@innopolis.university", group=wrong_group.id)
     ) == 0

@@ -22,6 +22,7 @@ class Semester(models.Model):
     end = models.DateField(null=False, default=today)
     academic_leave_students = models.ManyToManyField(Student, blank=True)
     hours = models.IntegerField(default=30)
+    points_fitness_test = models.IntegerField(default=40)
     number_hours_one_week_ill = models.IntegerField(default=2)
     nullify_groups = models.ManyToManyField(MedicalGroup, blank=True)
     increase_course = models.BooleanField(default=False)
