@@ -102,7 +102,7 @@ def get_session_info(request, session_id, **kwargs):
 )
 @api_view(["POST"])
 @permission_classes([IsTrainer])
-def post_student_exercises_result(request, **kwargs):
+def post_student_exercises_result(request, session_id=None, **kwargs):
     trainer = request.user
     if not trainer.has_perm('sport.change_fitness_test'):
         return Response(
@@ -111,7 +111,7 @@ def post_student_exercises_result(request, **kwargs):
     serializer = FitnessTestResults(data=request.data)
     serializer.is_valid(raise_exception=True)
     exercises = serializer.validated_data['result']
-    post_student_exercises_result_crud(exercises)
+    post_student_exercises_result_crud(exercises, session_id, request.user)
     return Response({})
 
 
