@@ -19,3 +19,9 @@ class StudentStatuses(models.IntegerChoices):
     DROPPED = 1, "dropped"
     ACADEMIC_LEAVE = 2, "academic leave"
     ALUMNUS = 3, "alumnus"
+
+
+class Gender(models.IntegerChoices):
+    UNKNOWN = -1, "unknown"
+    MALE = 0, "male"
+    FEMALE = 1, "female"

@@ -142,7 +142,8 @@ def suggest_fitness_test_student(request, **kwargs):
             "value": f"{student['id']}_"
                      f"{student['full_name']}_"
                      f"{student['email']}_"
-                     f"{student['medical_group__name']}",
+                     f"{student['medical_group__name']}_",
+                     f"{student['gender']}"
             "label": f"{student['full_name']} "
                      f"({student['email']})",
         }

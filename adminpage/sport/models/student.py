@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 
-from sport.models import MedicalGroupHistory
+from sport.models import MedicalGroupHistory, Gender
 from sport.utils import get_current_study_year
 
 
@@ -24,6 +24,10 @@ class Student(models.Model):
             'groups__verbose_name': settings.STUDENT_AUTH_GROUP_VERBOSE_NAME
         },
         primary_key=True,
+    )
+
+    gender = models.IntegerField(
+        choices=Gender.choices,
     )
 
     is_ill = models.BooleanField(
