@@ -14,7 +14,6 @@ from api.permissions import (
 )
 from api.serializers import (
     get_error_serializer,
-    IsIllSerializer,
     TrainingHourSerializer, EmptySerializer,
     HasQRSerializer,
 )
