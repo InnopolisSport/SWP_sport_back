@@ -7,7 +7,7 @@ class IsIllSerializer(serializers.Serializer):
 
 class GenderSerializer(serializers.Serializer):
     student_id = serializers.IntegerField()
-    gender = serializers.IntegerField(min_value=-1, max_value=2)
+    gender = serializers.IntegerField(min_value=-1, max_value=1)
 
 
 class TrainingHourSerializer(serializers.Serializer):
