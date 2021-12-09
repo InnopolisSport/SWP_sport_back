@@ -324,10 +324,10 @@ function save_table() {
 				if (response.ok) {
 					return response.text();
 				}
-				$('#ft-session-save').attr('disabled', '');
 				throw new Error('Something went wrong.');
 			})
 			.then(() => {
+				$('#ft-session-save').attr('disabled', '');
 				toastr.success(
 					'The fitness test has been successfuly saved',
 					'Saved',
@@ -355,10 +355,10 @@ function save_table() {
 				if (response.ok) {
 					return response.text();
 				}
-				$('#ft-session-save').attr('disabled', '');
 				throw new Error('Something went wrong.');
 			})
 			.then(() => {
+				$('#ft-session-save').attr('disabled', '');
 				toastr.success(
 					'The fitness test has been successfuly saved',
 					'Saved',
