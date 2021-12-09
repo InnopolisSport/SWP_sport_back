@@ -19,7 +19,7 @@ from api.serializers import (
 )
 
 from api.crud import get_all_exercises, post_student_exercises_result_crud, \
-    get_email_name_like_students
+    get_email_name_like_students, get_ongoing_semester
 from api.serializers.attendance import SuggestionQueryFTSerializer
 from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull
 from sport.models import Group, FitnessTestSession, FitnessTestResult
@@ -78,18 +78,23 @@ def get_sessions(request, **kwargs):
 )
 @api_view(["GET"])
 def get_session_info(request, session_id, **kwargs):
-    s = FitnessTestSession.objects.get(id=session_id)
-    session = {'id': s.id, 'date': s.date, 'teacher': str(s.teacher)}
+    session = FitnessTestSession.objects.get(id=session_id)
+    session_dict = {'id': session.id, 'date': session.date, 'teacher': str(session.teacher)}
 
-    results = FitnessTestResult.objects.filter(session_id=s.id)
-    r = defaultdict(list)
+    results = FitnessTestResult.objects.filter(session_id=session.id)
+
+    results_dict = defaultdict(list)
     for result in results:
-        r[result.exercise.exercise_name].append({'student_name': f"{result.student.user.first_name} {result.student.user.last_name}",
-                                                  'student_email': result.student.user.email,
-                                                  'value': result.value})
-    print(r)
+        results_dict[result.exercise.exercise_name].append(
+            {'student_name': f"{result.student.user.first_name} {result.student.user.last_name}",
+             'student_email': result.student.user.email,
+             'student_id': result.student.user.id,
+             'student_medical_group': result.student.medical_group.name,
+             'value': result.value})
 
-    return Response(r)
+    response = {'session': session_dict, 'results': results_dict}
+
+    return Response(response)
 
 
 @swagger_auto_schema(
@@ -130,7 +135,7 @@ def suggest_fitness_test_student(request, **kwargs):
 
     suggested_students = get_email_name_like_students(
         serializer.validated_data["term"],
-        requirement=(~Q(fitnesstestresult__semester=15))
+        requirement=(~Q(fitnesstestresult__semester=get_ongoing_semester()))
     )
     return Response([
         {
