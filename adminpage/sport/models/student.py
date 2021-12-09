@@ -28,6 +28,7 @@ class Student(models.Model):
 
     gender = models.IntegerField(
         choices=Gender.choices,
+        default=-1
     )
 
     is_ill = models.BooleanField(
