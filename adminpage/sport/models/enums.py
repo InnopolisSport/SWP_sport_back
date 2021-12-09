@@ -25,3 +25,9 @@ class Gender(models.IntegerChoices):
     UNKNOWN = -1, "unknown"
     MALE = 0, "male"
     FEMALE = 1, "female"
+
+
+class GenderInFTGrading(models.IntegerChoices):
+    BOTH = -1, "both"
+    MALE = 0, "male"
+    FEMALE = 1, "female"
