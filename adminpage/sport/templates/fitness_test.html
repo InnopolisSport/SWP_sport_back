@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Fitness test{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+    <link rel="stylesheet" href="{% static "sport/css/bootstrap-tourist.css" %}?{{JS_VERSION}}">
+    <link rel="stylesheet" href="{% static "sport/css/profile.css" %}?{{JS_VERSION}}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script src="{% static "sport/js/bootstrap-tourist.js" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/networking.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/enrollment.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/modals.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/modules/tour.mjs" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/category.js" %}?{{JS_VERSION}}"></script>
+    <script src="{% static "sport/js/fitness_test.js" %}?{{JS_VERSION}}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <div class="container-xl">
+                <h1 class="mb-3">Fitness test</h1>
+                <h2 class="mb-3">Sessions</h2>
+                <a href="{% url 'fitness_test_session_new' %}" class="btn btn-success mb-3 w-100">
+                    Conduct a new fitness test session
+                </a>
+                <!-- Table of sessions -->
+                <div id="ft-sessions-table" class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Fitness test at (date)</th>
+                            <th scope="col">Teacher</th>
+                        </tr>
+                        </thead>
+                        <tbody id="ft-session-table-body">
+                        </tbody>
+                    </table>
+                </div>
+{% endblock %}

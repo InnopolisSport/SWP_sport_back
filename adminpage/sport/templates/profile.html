@@ -90,7 +90,7 @@
                             Sport types' schedule
                         </a>
                     {% endif %}
-                    <meta id="illness-data" data-ill="{{ student.is_ill }}">
+                    <meta id="QR-data" data-QR="{{ student.has_QR }}">
                     {% if student.obj.student_status.id == 0 %}
                         <p class="d-flex justify-content-center align-content-between flex-wrap">
                             {% if student.is_online %}
@@ -385,11 +385,11 @@
                     <form class="student_email_suggestor" onsubmit="return false;">
                         <div class="container">
                         <div class="row align-items-center">
-                                <div class="col-lg-6 sol-sm-12 mb-3">
+                                <div class="col-lg-6 col-sm-12 mb-3">
                                     <input id="student_emails" class="form-control w-100 trainer-editable"
                                         size="30" placeholder="Enter student name or email">
                                 </div>
-                                <div class="col-lg-6 sol-sm-12 mb-3">
+                                <div class="col-lg-6 col-sm-12 mb-3">
                                     <div class="custom-file">
                                         <label for="csv-file-input" class="custom-file-label">Upload moodle CSV attendance</label>
                                         <input name="image" type="file" class="custom-file-input form-control-file trainer-editable"

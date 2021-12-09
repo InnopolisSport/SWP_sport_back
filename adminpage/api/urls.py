@@ -11,6 +11,7 @@ from api.views import (
     calendar,
     reference,
     self_sport_report,
+    fitness_test,
 )
 
 
@@ -28,7 +29,8 @@ register_converter(NegativeIntConverter, 'negint')
 urlpatterns = [
     path(r"test/", tmp.test),
     # profile
-    path(r"profile/sick/toggle", profile.toggle_sick),
+    path(r"profile/change_gender", profile.change_gender),
+    path(r"profile/QR/toggle", profile.toggle_QR_presence),
     path(r"profile/history/<int:semester_id>", profile.get_history),
     path(r"profile/history_with_self/<int:semester_id>", profile.get_history_with_self),
 
@@ -64,7 +66,15 @@ urlpatterns = [
     # self sport report
     path(r"selfsport/upload", self_sport_report.self_sport_upload),
     path(r"selfsport/types", self_sport_report.get_self_sport_types),
-    path(r"selfsport/strava_parsing", self_sport_report.get_strava_activity_info)
+    path(r"selfsport/strava_parsing", self_sport_report.get_strava_activity_info),
+
+    # fitness test
+    path(r"fitnesstest/upload", fitness_test.post_student_exercises_result),
+    path(r"fitnesstest/upload/<int:session_id>", fitness_test.post_student_exercises_result),
+    path(r"fitnesstest/exercises", fitness_test.get_exercises),
+    path(r"fitnesstest/sessions", fitness_test.get_sessions),
+    path(r"fitnesstest/sessions/<int:session_id>", fitness_test.get_session_info),
+    path(r"fitnesstest/suggest_student", fitness_test.suggest_fitness_test_student),
 ]
 
 urlpatterns.extend([

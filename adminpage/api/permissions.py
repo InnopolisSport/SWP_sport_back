@@ -17,3 +17,8 @@ class SportSelected(IsStudent):
 class IsTrainer(permissions.BasePermission):
     def has_permission(self, request, view):
         return hasattr(request.user, 'trainer')
+
+
+class IsStaff(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_staff
