@@ -197,7 +197,7 @@ class StudentAdmin(ImportExportActionModelAdmin):
         return (
             "user",
             "gender",
-            "is_ill",
+            "has_QR",
             "is_online",
             "medical_group",
             "enrollment_year",

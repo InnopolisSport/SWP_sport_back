@@ -229,10 +229,10 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
             "full_name": f"{student.user.first_name} {student.user.last_name}",
         }
     ])
-
-    student.is_ill = True
+    
+    student.has_QR = True
     student.save()
-    other_student.is_ill = True
+    other_student.has_QR = True
     other_student.save()
 
     assert get_students_grades(t1.pk) == [{

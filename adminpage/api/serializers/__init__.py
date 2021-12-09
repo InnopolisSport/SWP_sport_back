@@ -36,7 +36,7 @@ from .group import (
     GroupInfoSerializer,
 )
 from .profile import (
-    IsIllSerializer,
+    HasQRSerializer,
     TrainingHourSerializer,
 )
 from .reference import (
