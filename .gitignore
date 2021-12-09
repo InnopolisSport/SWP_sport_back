@@ -17,3 +17,6 @@ htmlcov/
 /media/
 
 venv/
+.prettierrc
+
+frontend/

@@ -10,7 +10,8 @@ from import_export.admin import ImportExportActionModelAdmin
 from import_export.results import RowResult
 
 from api.crud import get_ongoing_semester, get_negative_hours, SumSubquery
-from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance, Debt
+from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance, Debt, FitnessTestGrading, \
+    FitnessTestResult
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
@@ -25,6 +26,20 @@ class MedicalGroupWidget(widgets.ForeignKeyWidget):
 class StudentStatusWidget(widgets.ForeignKeyWidget):
     def render(self, value: StudentStatus, obj=None):
         return str(value)
+
+
+class FitnessTestExcerciseInline(admin.TabularInline):
+    model = FitnessTestResult
+    extra = 0
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        print(db_field.name)
+        if db_field.name == 'semester':
+            kwargs['initial'] = get_ongoing_semester()
+            return db_field.formfield(**kwargs)
+        return super().formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
 
 
 class HoursFilter(admin.SimpleListFilter):
@@ -181,7 +196,8 @@ class StudentAdmin(ImportExportActionModelAdmin):
             )
         return (
             "user",
-            "is_ill",
+            "gender",
+            "has_QR",
             "is_online",
             "medical_group",
             "enrollment_year",
@@ -249,6 +265,7 @@ class StudentAdmin(ImportExportActionModelAdmin):
         ViewMedicalGroupHistoryInline,
         ViewAttendanceInline,
         AddAttendanceInline,
+        FitnessTestExcerciseInline
     )
 
     # https://stackoverflow.com/a/66730984

@@ -36,7 +36,7 @@ from .group import (
     GroupInfoSerializer,
 )
 from .profile import (
-    IsIllSerializer,
+    HasQRSerializer,
     TrainingHourSerializer,
 )
 from .reference import (
@@ -50,4 +50,8 @@ from .tmp import (
 )
 from .training import (
     TrainingInfoSerializer,
+)
+from .fitness_test import (
+    FitnessTestResult,
+    FitnessTestResults
 )

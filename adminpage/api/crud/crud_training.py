@@ -216,7 +216,6 @@ def get_students_grades(training_id: int):
                        'LEFT JOIN medical_group m ON m.id = s.medical_group_id '
                        'WHERE s.user_id = e.student_id '
                        'AND d.id = e.student_id '
-                       'AND s.is_ill = FALSE '
                        'AND t.id = %(training_id)s '
                        'AND t.group_id = e.group_id ', {"training_id": training_id})
         return dictfetchall(cursor)

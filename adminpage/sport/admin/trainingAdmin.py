@@ -169,6 +169,7 @@ class TrainingAdmin(DefaultFilterMixIn):
             "group",
             cache_dependent_filter({"group__semester": "semester"}, ("name",), select_related=["semester"])
         ),
+        "group__sport",
         ("training_class", admin.RelatedOnlyFieldListFilter),
         ("start", cache_alternative_filter(admin.DateFieldListFilter, ["group__semester"])),
     )

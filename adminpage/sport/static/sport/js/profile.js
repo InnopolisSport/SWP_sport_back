@@ -37,7 +37,7 @@ async function fetch_detailed_hours(e) {
 //     if (elem.id === "recovered-btn") {
 //         open_recovered_modal();
 //     } else {
-//         sendResults("/api/profile/sick/toggle", {})
+//         sendResults("/api/profile/QR/toggle", {})
 //             .then(data => {
 //                 goto_profile();
 //             })
@@ -445,7 +445,6 @@ async function submit_reference() {
     formData.append(commentField.name, commentField.value)
     try {
         await sendResults('/api/reference/upload', formData, 'POST', false)
-        await sendResults("/api/profile/sick/toggle", {})
         toastr.success("Your medical reference was submitted.")
         close_modal('#recovered-modal');
     } catch (error) {
