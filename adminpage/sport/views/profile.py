@@ -67,7 +67,7 @@ def profile_view(request, **kwargs):
         del request.session["notify"]
 
     if student is not None:
-        fitness_test_result = get_student_score(student)
+        # fitness_test_result = get_student_score(student)
         student_groups = get_student_groups(student)
         student_groups_parsed = list(map(
             parse_group,
@@ -105,11 +105,11 @@ def profile_view(request, **kwargs):
                 "init_debt_hours": student_debt.first().debt if student_debt.exists() else 0,
                 "debt_hours": get_negative_hours(student.pk),
                 "all_hours": get_student_hours(student.pk)['ongoing_semester'],
-                "better_than": better_than(student.pk),
-                "fitness_test": {
-                    "result": fitness_test_result['result'],
-                    "score": fitness_test_result['score']
-                }
+                "better_than": better_than(student.pk)
+                # "fitness_test": {
+                #     "result": fitness_test_result['result'],
+                #     "score": fitness_test_result['score']
+                # }
             },
             "faq": get_faq(),
         })
