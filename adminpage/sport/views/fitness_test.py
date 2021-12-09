@@ -8,6 +8,6 @@ def fitness_test_view(request, **kwargs):
 
 
 @login_required
-def fitness_test_session_view(request, **kwargs):
+def fitness_test_session_view(request, fitness_test_session_id, **kwargs):
     # TODO: add fitness_test_session_id
     return render(request, "fitness_test_session.html")
