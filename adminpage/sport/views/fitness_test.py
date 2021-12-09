@@ -9,5 +9,9 @@ def fitness_test_view(request, **kwargs):
 
 @login_required
 def fitness_test_session_view(request, fitness_test_session_id, **kwargs):
-    # TODO: add fitness_test_session_id
+    return render(request, "fitness_test_session.html")
+
+
+@login_required
+def fitness_test_session_new_view(request, **kwargs):
     return render(request, "fitness_test_session.html")

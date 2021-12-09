@@ -107,6 +107,7 @@ function add_student_single_ex_row(
 	med_group
 ) {
 	// Adds single row at particular exercise
+	$('#ft-session-save').removeAttr('disabled');
 	let row = null;
 	if (exercises[index].ex_select === null) {
 		row = $(`<tr id="student_${student_id}_${index}">
@@ -158,6 +159,7 @@ function add_student_single_ex_row(
 
 function add_student_ex_row(student_id, full_name, email, med_group) {
 	// Adds multiple rows i.e., at each exercise
+	$('#ft-session-save').removeAttr('disabled');
 	let row = null;
 	for (let i = 0; i < exercises.length; i++) {
 		if (exercises[i].ex_select === null) {
@@ -251,6 +253,10 @@ function save_table() {
 	let res = [];
 	let cant_submit = false;
 	for (let i = 0; i < exercises.length; i++) {
+		if (student_ids.length === 0) {
+			cant_submit = true;
+			break;
+		}
 		let ex_name = exercises[i].ex_name;
 		student_ids.forEach((sid) => {
 			let val;
