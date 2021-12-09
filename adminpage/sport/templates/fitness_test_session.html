@@ -65,6 +65,27 @@
                 </ul>
                 <!-- Table of students & results -->
                 <div id="student-exercise-table" class="tab-content">
-
                 </div>
+                <div class="modal fade" id="gender-modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Choose gender for <span id="gender-modal-name"></span></h5>
+                            </div>
+                            <div class="modal-body">
+                                <p class="d-flex">
+                                    <button id="ft-session-save" class="btn btn-primary btn-lg w-100 mx-2 d-inline" onclick="save_gender(0)">
+                                        Male
+                                    </button>
+                                    <button id="ft-session-save" class="btn btn-danger btn-lg mx-2 w-100 d-inline" onclick="save_gender(1)">
+                                        Female
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
