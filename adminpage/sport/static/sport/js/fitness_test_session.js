@@ -71,16 +71,24 @@ if (session_id !== 'new') {
 			return response.json();
 		})
 		.then((data) => {
+			let ses_data = data['session'];
+			let d = new Date(ses_data['date']);
+			let mon = d.toLocaleString('en-US', { month: 'short' });
+			$('#session-info-date').html(
+				`<i>${d.getHours()}:${d.getMinutes()}, ${mon} ${d.getDate()}, ${d.getFullYear()}</i>`
+			);
+			$('#session-info-teacher').html(ses_data['teacher']);
+			let res_data = data['results'];
 			for (let i = 0; i < exercises.length; i++) {
 				let ex_index = exercises_map[exercises[i].ex_name];
-				let student_list = data[exercises[i].ex_name];
+				let student_list = res_data[exercises[i].ex_name];
 				for (let j = 0; j < student_list.length; j++) {
 					add_student_single_ex_row(
 						ex_index,
-						'STUDENT_ID',
+						student_list[j].student_id,
 						student_list[j].student_name,
 						student_list[j].student_email,
-						'MEDGROUP'
+						student_list[j].student_medical_group
 					);
 					if (exercises[ex_index].ex_select) {
 						$(
@@ -290,28 +298,67 @@ function save_table() {
 	if (cant_submit) {
 		return;
 	}
-	fetch('/api/fitnesstest/upload', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRFToken': csrf_token,
-		},
-		body: JSON.stringify({
-			result: res,
-		}),
-	})
-		.then(() => {
-			$('#ft-session-save').attr('disabled', '');
-			toastr.success(
-				'The fitness test has been successfuly saved',
-				'Saved',
-				1500
-			);
-			setTimeout(() => {
-				window.location.href = '/fitness_test';
-			}, 1500);
+	if (session_id === 'new') {
+		fetch('/api/fitnesstest/upload', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrf_token,
+			},
+			body: JSON.stringify({
+				result: res,
+			}),
 		})
-		.catch(function (error) {
-			toastr.error(`${error}`, 'Server error');
-		});
+			.then((response) => {
+				if (response.ok) {
+					return response.text();
+				}
+				$('#ft-session-save').attr('disabled', '');
+				throw new Error('Something went wrong.');
+			})
+			.then(() => {
+				toastr.success(
+					'The fitness test has been successfuly saved',
+					'Saved',
+					1500
+				);
+				setTimeout(() => {
+					window.location.href = '/fitness_test';
+				}, 1500);
+			})
+			.catch(function (error) {
+				toastr.error(`${error}`, 'Server error');
+			});
+	} else {
+		fetch(`/api/fitnesstest/upload/${session_id}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrf_token,
+			},
+			body: JSON.stringify({
+				result: res,
+			}),
+		})
+			.then((response) => {
+				if (response.ok) {
+					return response.text();
+				}
+				$('#ft-session-save').attr('disabled', '');
+				throw new Error('Something went wrong.');
+			})
+			.then(() => {
+				toastr.success(
+					'The fitness test has been successfuly saved',
+					'Saved',
+					1500
+				);
+				setTimeout(() => {
+					window.location.href = '/fitness_test';
+				}, 1500);
+			})
+			.catch(function (error) {
+				toastr.error(`${error}`, 'Server error');
+			});
+	}
 }
