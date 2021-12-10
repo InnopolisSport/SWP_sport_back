@@ -326,7 +326,7 @@ function save_table() {
 				}
 				throw new Error('Something went wrong.');
 			})
-			.then(() => {
+			.then((response) => {
 				$('#ft-session-save').attr('disabled', '');
 				toastr.success(
 					'The fitness test has been successfuly saved',
@@ -334,7 +334,7 @@ function save_table() {
 					1500
 				);
 				setTimeout(() => {
-					window.location.href = '/fitness_test';
+					window.location.href = `/fitness_test/${response['session_id']}`;
 				}, 1500);
 			})
 			.catch(function (error) {
@@ -365,7 +365,7 @@ function save_table() {
 					1500
 				);
 				setTimeout(() => {
-					window.location.href = '/fitness_test';
+					window.location.href = `/fitness_test/${session_id}`;
 				}, 1500);
 			})
 			.catch(function (error) {
