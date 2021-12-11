@@ -1,5 +1,7 @@
 import datetime
 
+from django.db.models import QuerySet, Q
+
 from sport.models import FitnessTestResult, FitnessTestExercise, FitnessTestGrading, Student, FitnessTestSession
 from api.crud import get_ongoing_semester
 
@@ -20,14 +22,15 @@ def post_student_exercises_result_crud(results, session_id, teacher):
     return session.id
 
 
-def get_student_score(student: Student):
-    score = 0
-    results = FitnessTestResult.objects.filter(
-        student=student, semester=get_ongoing_semester())
-    for result in results:
-        score += FitnessTestGrading.objects.get(exercise=result.exercise, semester=get_ongoing_semester(),
-                                                start_range__lt=result.value, end_range__gte=result.value).score
-    if score < get_ongoing_semester().points_fitness_test:
-        return {"score": score, "result": 0}
-    else:
-        return {"score": score, "result": 1}
+def get_grading_scheme(student: Student, result: FitnessTestResult):
+    return FitnessTestGrading.objects.filter(Q(gender__exact=-1) | Q(gender__exact=student.gender),
+                                             exercise=result.exercise,
+                                             semester=get_ongoing_semester())
+
+
+def get_score(student: Student, result: FitnessTestResult):
+    return get_grading_scheme(student, result).get(start_range__lte=result.value, end_range__gt=result.value).score
+
+
+def get_max_score(student: Student, result: FitnessTestResult):
+    return max(map(lambda x: x[0], get_grading_scheme(student, result).values_list('score')))
