@@ -8,7 +8,7 @@ from .site import site
 class FitnessTestResultInline(admin.TabularInline):
     model = FitnessTestResult
 
-    autocomplete_fields = ("student", )
+    readonly_fields = ("student", )
 
     extra = 0
 
