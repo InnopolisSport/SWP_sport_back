@@ -86,8 +86,7 @@ def get_result(request, **kwargs):
     result_list = [{
         'exercise': result.exercise.exercise_name,
         'unit': result.exercise.value_unit,
-        'select': result.exercise.select.split(',') if result.exercise.select is not None else None,
-        'value': result.value,
+        'value': result.value if result.exercise.select is None else result.exercise.select.split(',')[result.value],
         'score': get_score(request.user.student, result),
         'max_score': get_max_score(request.user.student, result)
     } for result in results]
