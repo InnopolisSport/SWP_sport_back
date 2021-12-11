@@ -16,3 +16,6 @@ class FitnessTestResultAdmin(admin.ModelAdmin):
         'semester',
         'value',
     )
+
+    def has_add_permission(self, request, obj=None):
+        return False
