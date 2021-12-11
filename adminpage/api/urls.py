@@ -69,6 +69,7 @@ urlpatterns = [
     path(r"selfsport/strava_parsing", self_sport_report.get_strava_activity_info),
 
     # fitness test
+    path(r"fitnesstest/result", fitness_test.get_result),
     path(r"fitnesstest/upload", fitness_test.post_student_exercises_result),
     path(r"fitnesstest/upload/<int:session_id>", fitness_test.post_student_exercises_result),
     path(r"fitnesstest/exercises", fitness_test.get_exercises),

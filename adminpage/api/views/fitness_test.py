@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api.permissions import (
-    IsTrainer,
+    IsTrainer, IsStudent,
 )
 from api.serializers import (
     FitnessTestResults,
@@ -19,7 +19,7 @@ from api.serializers import (
 )
 
 from api.crud import get_all_exercises, post_student_exercises_result_crud, \
-    get_email_name_like_students, get_ongoing_semester
+    get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.serializers.attendance import SuggestionQueryFTSerializer
 from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull
 from sport.models import Group, FitnessTestSession, FitnessTestResult
@@ -69,6 +69,34 @@ def get_sessions(request, **kwargs):
     resp = [{'id': s.id, 'date': s.date, 'teacher': str(s.teacher)} for s in sessions]
 
     return Response(resp)
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: FitnessTestSessions
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsStudent])
+def get_result(request, **kwargs):
+    results = FitnessTestResult.objects.filter(student_id=request.user.student.user_id, semester=get_ongoing_semester())
+    result_list = [{
+        'exercise': result.exercise.exercise_name,
+        'value': result.value,
+        'score': get_score(request.user.student, result),
+        'max_score': get_max_score(request.user.student, result)
+    } for result in results]
+
+    total_score = sum(r['score'] for r in result_list)
+
+    return Response({
+        'semester': get_ongoing_semester().name,
+        'grade': total_score >= get_ongoing_semester().points_fitness_test,
+        'total_score': total_score,
+        'details': result_list,
+    })
+
 
 @swagger_auto_schema(
     method="GET",
