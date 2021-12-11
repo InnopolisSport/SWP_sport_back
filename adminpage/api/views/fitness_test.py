@@ -116,8 +116,8 @@ def post_student_exercises_result(request, session_id=None, **kwargs):
     serializer = FitnessTestResults(data=request.data)
     serializer.is_valid(raise_exception=True)
     exercises = serializer.validated_data['result']
-    post_student_exercises_result_crud(exercises, session_id, request.user)
-    return Response({})
+    session = post_student_exercises_result_crud(exercises, session_id, request.user)
+    return Response({'session_id': session})
 
 
 @swagger_auto_schema(

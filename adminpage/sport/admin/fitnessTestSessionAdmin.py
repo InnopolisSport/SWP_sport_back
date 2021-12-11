@@ -8,9 +8,13 @@ from .site import site
 class FitnessTestResultInline(admin.TabularInline):
     model = FitnessTestResult
 
-    autocomplete_fields = ("student", )
+    fields = ("student", "semester", "exercise", "value")
+    readonly_fields = ("student", "semester", "exercise")
 
     extra = 0
+
+    def has_add_permission(self, request, obj):
+        return False
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         print(db_field.name)
@@ -20,6 +24,18 @@ class FitnessTestResultInline(admin.TabularInline):
         return super().formfield_for_foreignkey(
             db_field, request, **kwargs
         )
+
+
+class AddFitnessTestResultInline(FitnessTestResultInline):
+    extra = 4
+    readonly_fields = ()
+    autocomplete_fields = ("student", "semester")
+
+    def has_view_or_change_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj):
+        return True
 
 
 @admin.register(FitnessTestSession, site=site)
@@ -33,4 +49,4 @@ class FitnessTestSessionAdmin(admin.ModelAdmin):
         'teacher',
     )
 
-    inlines = (FitnessTestResultInline,)
+    inlines = (FitnessTestResultInline, AddFitnessTestResultInline)

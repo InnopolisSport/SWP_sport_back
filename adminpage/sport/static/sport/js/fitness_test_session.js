@@ -57,54 +57,60 @@ fetch('/api/fitnesstest/exercises', {
 			});
 			exercises_map[ex.name] = index;
 		});
+		setTimeout(load_session, 10);
 	})
 	.catch(function (err) {
 		console.log(err);
 	});
 
-if (session_id !== 'new') {
-	fetch(`/api/fitnesstest/sessions/${session_id}`, {
-		method: 'GET',
-		'X-CSRFToken': csrf_token,
-	})
-		.then((response) => {
-			return response.json();
+function load_session() {
+	if (session_id !== 'new') {
+		fetch(`/api/fitnesstest/sessions/${session_id}`, {
+			method: 'GET',
+			'X-CSRFToken': csrf_token,
 		})
-		.then((data) => {
-			let ses_data = data['session'];
-			let d = new Date(ses_data['date']);
-			let mon = d.toLocaleString('en-US', { month: 'short' });
-			$('#session-info-date').html(
-				`<i>${d.getHours()}:${d.getMinutes()}, ${mon} ${d.getDate()}, ${d.getFullYear()}</i>`
-			);
-			$('#session-info-teacher').html(ses_data['teacher']);
-			let res_data = data['results'];
-			for (let i = 0; i < exercises.length; i++) {
-				let ex_index = exercises_map[exercises[i].ex_name];
-				let student_list = res_data[exercises[i].ex_name];
-				for (let j = 0; j < student_list.length; j++) {
-					add_student_single_ex_row(
-						ex_index,
-						student_list[j].student_id,
-						student_list[j].student_name,
-						student_list[j].student_email,
-						student_list[j].student_medical_group
-					);
-					if (exercises[ex_index].ex_select) {
-						$(
-							`#ex_${ex_index}_select option[value=${student_list[j].value}]`
-						).attr('selected', 'selected');
-					} else {
-						document
-							.getElementById(`ex_${ex_index}_value`)
-							.setAttribute('value', `${student_list[j].value}`);
+			.then((response) => {
+				return response.json();
+			})
+			.then((data) => {
+				let ses_data = data['session'];
+				let d = new Date(ses_data['date']);
+				let mon = d.toLocaleString('en-US', { month: 'short' });
+				$('#session-info-date').html(
+					`<i>${d.getHours()}:${d.getMinutes()}, ${mon} ${d.getDate()}, ${d.getFullYear()}</i>`
+				);
+				$('#session-info-teacher').html(ses_data['teacher']);
+				let res_data = data['results'];
+				for (let i = 0; i < exercises.length; i++) {
+					let ex_index = exercises_map[exercises[i].ex_name];
+					let student_list = res_data[exercises[i].ex_name];
+					for (let j = 0; j < student_list.length; j++) {
+						add_student_single_ex_row(
+							ex_index,
+							student_list[j].student_id,
+							student_list[j].student_name,
+							student_list[j].student_email,
+							student_list[j].student_medical_group
+						);
+						if (exercises[ex_index].ex_select) {
+							$(
+								`#ex_${ex_index}_select option[value=${student_list[j].value}]`
+							).attr('selected', 'selected');
+						} else {
+							document
+								.getElementById(`ex_${ex_index}_value`)
+								.setAttribute(
+									'value',
+									`${student_list[j].value}`
+								);
+						}
 					}
 				}
-			}
-		})
-		.catch(function (err) {
-			console.log(err);
-		});
+			})
+			.catch(function (err) {
+				console.log(err);
+			});
+	}
 }
 
 function add_student_single_ex_row(
@@ -322,11 +328,11 @@ function save_table() {
 		})
 			.then((response) => {
 				if (response.ok) {
-					return response.text();
+					return response.json();
 				}
 				throw new Error('Something went wrong.');
 			})
-			.then(() => {
+			.then((response) => {
 				$('#ft-session-save').attr('disabled', '');
 				toastr.success(
 					'The fitness test has been successfuly saved',
@@ -334,7 +340,7 @@ function save_table() {
 					1500
 				);
 				setTimeout(() => {
-					window.location.href = '/fitness_test';
+					window.location.href = `/fitness_test/${response['session_id']}`;
 				}, 1500);
 			})
 			.catch(function (error) {
@@ -353,20 +359,16 @@ function save_table() {
 		})
 			.then((response) => {
 				if (response.ok) {
-					return response.text();
+					return response.json();
 				}
 				throw new Error('Something went wrong.');
 			})
 			.then(() => {
-				$('#ft-session-save').attr('disabled', '');
 				toastr.success(
 					'The fitness test has been successfuly saved',
 					'Saved',
 					1500
 				);
-				setTimeout(() => {
-					window.location.href = '/fitness_test';
-				}, 1500);
 			})
 			.catch(function (error) {
 				toastr.error(`${error}`, 'Server error');
