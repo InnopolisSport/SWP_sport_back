@@ -13,6 +13,9 @@ class FitnessTestResultInline(admin.TabularInline):
 
     extra = 0
 
+    def has_add_permission(self, request, obj):
+        return False
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         print(db_field.name)
         if db_field.name == 'semester':
@@ -21,6 +24,17 @@ class FitnessTestResultInline(admin.TabularInline):
         return super().formfield_for_foreignkey(
             db_field, request, **kwargs
         )
+
+
+class AddFitnessTestResultInline(FitnessTestResultInline):
+    extra = 4
+    readonly_fields = ()
+
+    def has_view_or_change_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj):
+        return True
 
 
 @admin.register(FitnessTestSession, site=site)
