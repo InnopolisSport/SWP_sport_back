@@ -48,4 +48,4 @@ class FitnessTestSessionAdmin(admin.ModelAdmin):
         'teacher',
     )
 
-    inlines = (FitnessTestResultInline,)
+    inlines = (FitnessTestResultInline, AddFitnessTestResultInline)
