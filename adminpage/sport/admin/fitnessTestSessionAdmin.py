@@ -29,6 +29,7 @@ class FitnessTestResultInline(admin.TabularInline):
 class AddFitnessTestResultInline(FitnessTestResultInline):
     extra = 4
     readonly_fields = ()
+    autocomplete_fields = ("student", "semester")
 
     def has_view_or_change_permission(self, request, obj=None):
         return False
