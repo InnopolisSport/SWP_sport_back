@@ -8,7 +8,8 @@ from .site import site
 class FitnessTestResultInline(admin.TabularInline):
     model = FitnessTestResult
 
-    readonly_fields = ("student", )
+    fields = ("student", "semester", "exercise", "value")
+    readonly_fields = ("student", "semester", "exercise")
 
     extra = 0
 
