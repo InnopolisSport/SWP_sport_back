@@ -81,9 +81,12 @@ def get_sessions(request, **kwargs):
 @permission_classes([IsStudent])
 def get_result(request, **kwargs):
     results = FitnessTestResult.objects.filter(student_id=request.user.student.user_id, semester=get_ongoing_semester())
+    if len(results) == 0:
+        return Response(status=404)
     result_list = [{
         'exercise': result.exercise.exercise_name,
         'unit': result.exercise.value_unit,
+        'select': result.exercise.select.split(',') if result.exercise.select is not None else None,
         'value': result.value,
         'score': get_score(request.user.student, result),
         'max_score': get_max_score(request.user.student, result)
