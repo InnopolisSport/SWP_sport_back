@@ -153,9 +153,61 @@
                             Closing the debt is <b>required to pass the sport course</b>.</p>
                         </div>
                         <h3>Progress</h3>
+                        <!-- Better than percantage-->
                         {% if student.better_than is not None and student.better_than >= 30 %}
                             <span>You are better than {{student.better_than}}% of the students!</span>
                         {% endif %}
+                        <!-- Fitness test results -->
+                        <div class="d-none" id="ft-student-results">
+                            <h5 class="text-left ml-3">Fitness test</h5>
+                            <div id="ft-student-results-table" class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Semester</th>
+                                            <th scope="col">Total grade</th>
+                                            <th scope="col">Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ft-student-results-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="ft-results-modal" tabindex="-1" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            Fitness test exercises for the
+                                            <span id="ft-results-modal-sem" class="text-uppercase"></span> 
+                                            semester
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="ft-results-modal-table" class="table-responsive">
+                                            <table class="table table-sm table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Exercise</th>
+                                                        <th scope="col" class="text-left">Result</th>
+                                                        <th scope="col">Grade</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ft-results-modal-table-body">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Hours bars-->
+                        <h5 class="text-left ml-3">Current sport hours</h5>
                         <!-- Debt bar-->
                         <div id="debtor_bar" class="d-none">
                             <div class="progress mt-3" style="width: 100%; height: 2rem;">
@@ -186,6 +238,7 @@
                         </div>
                         <div id="medical-group-info-modal"></div>
                         {% if student.semesters|length > 0 %}
+                        <h5 class="text-left ml-3">Overall sport hours</h5>
                             <div class="container" id="semester-hours">
                                 <table class="table table-hover">
                                     <thead>
@@ -203,11 +256,7 @@
                                                 onclick="fetch_detailed_hours(this)" data-toggle="modal"
                                                 data-target="#hours-modal-{{ sem.semester_id }}">
                                                 <th scope="row">
-                                                    {% if sem.semester_name == common.semester_name %} 
-                                                        <span class="badge badge-light text-uppercase">{{ sem.semester_name }}</span>
-                                                    {% else %}
-                                                        <span class="text-uppercase">{{ sem.semester_name }}</span>
-                                                    {% endif %}
+                                                    <span class="text-uppercase">{{ sem.semester_name }}</span>
                                                 </th>
                                                 <td>{{ sem.semester_start }}</td>
                                                 <td>{{ sem.semester_end }}</td>
