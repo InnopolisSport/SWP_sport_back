@@ -224,7 +224,8 @@ class StudentAdmin(ImportExportActionModelAdmin):
         "is_online",
         "medical_group",
         'student_status',
-        'sport',
+        'sport', 
+        'has_QR',
         HoursFilter
     )
 
