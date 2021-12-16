@@ -1,13 +1,17 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from safedelete.models import SafeDeleteModel
+from safedelete.models import HARD_DELETE_NOCASCADE
 
 
 def validate_hours(hours):
     if hours < 0:
         raise ValidationError('Only positive values are allowed')
 
-class Attendance(models.Model):
+
+class Attendance(SafeDeleteModel):
+    _safedelete_policy = HARD_DELETE_NOCASCADE
     training = models.ForeignKey('Training', on_delete=models.SET_NULL, null=True)
     student = models.ForeignKey(
         "Student",

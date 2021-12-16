@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     'sport.apps.SportConfig',
     'api',
     'media',
+    'safedelete',
 ]
 
 MIDDLEWARE = [
