@@ -1,0 +1,24 @@
+{% load i18n static %} {% block content %}
+<link
+	rel="stylesheet"
+	type="text/css"
+	href="{% static 'hijack/hijack.min.css' %}"
+	media="screen"
+/>
+<div class="djhj" id="djhj" style="left: 0%; transform: translateX(0%)">
+	<div class="djhj-notification" style="max-width: 100px">
+		<div class="djhj-message">You are hijacking</div>
+		<form
+			action="{% url 'hijack:release' %}"
+			method="POST"
+			class="djhj-actions"
+		>
+			{% csrf_token %}
+			<input type="hidden" name="next" value="/admin/sport/student/" />
+			<button class="djhj-button" type="submit">
+				{% trans 'release' %}
+			</button>
+		</form>
+	</div>
+</div>
+{% endblock content %}
