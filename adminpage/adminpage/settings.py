@@ -128,6 +128,8 @@ INSTALLED_APPS = [
     'sport.apps.SportConfig',
     'api',
     'media',
+    'hijack',
+    'hijack.contrib.admin',
 ]
 
 MIDDLEWARE = [
@@ -141,6 +143,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_prometheus.middleware.PrometheusAfterMiddleware',
+    'hijack.middleware.HijackUserMiddleware',
 ]
 
 ROOT_URLCONF = 'adminpage.urls'
