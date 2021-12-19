@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from hijack.contrib.admin import HijackUserAdminMixin
 from django.db.models import ForeignKey, IntegerField, F, Sum
 from django.db.models.expressions import Value, Case, When, Subquery, OuterRef, ExpressionWrapper
 from django.db.models.functions import Coalesce, Least
@@ -181,7 +182,7 @@ class StudentResource(resources.ModelResource):
 
 
 @admin.register(Student, site=site)
-class StudentAdmin(ImportExportActionModelAdmin):
+class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin):
     resource_class = StudentResource
 
     def get_fields(self, request, obj=None):
@@ -204,7 +205,8 @@ class StudentAdmin(ImportExportActionModelAdmin):
             "course",
             "sport",
             "student_status",
-            "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
+            "telegram" if obj.telegram is None or len(
+                obj.telegram) == 0 else ("telegram", "write_to_telegram"),
         )
 
     autocomplete_fields = (
@@ -224,7 +226,8 @@ class StudentAdmin(ImportExportActionModelAdmin):
         "is_online",
         "medical_group",
         'student_status',
-        'sport',
+        'sport', 
+        'has_QR',
         HoursFilter
     )
 
@@ -288,7 +291,8 @@ class StudentAdmin(ImportExportActionModelAdmin):
             0
         ))
         qs = qs.annotate(_ongoing_semester_hours=Coalesce(
-            SumSubquery(Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
+            SumSubquery(Attendance.objects.filter(
+                training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
             0
         ))
         qs = qs.annotate(complex_hours=ExpressionWrapper(
@@ -297,6 +301,8 @@ class StudentAdmin(ImportExportActionModelAdmin):
 
         return qs
 
+    def get_hijack_user(self, obj):
+        return obj.user
 
     list_select_related = (
         "user",
