@@ -21,8 +21,7 @@ def get_sports(all=False, student: Optional[Student] = None):
     """
     groups = Group.objects.filter(semester__pk=api.crud.get_ongoing_semester().pk)
     if student:
-        groups = groups.filter(allowed_medical_groups=student.medical_group_id)
-
+        groups = groups.filter(allowed_medical_groups=student.medical_group_id, allowed_qr__in=[-1, int(student.has_QR)])
 
     # w/o distinct returns a lot of duplicated
     sports = Sport.objects.filter(id__in=groups.values_list('sport')).distinct()
@@ -50,46 +49,6 @@ def get_sports(all=False, student: Optional[Student] = None):
 
     return sports_list
 
-
-def get_clubs(student: Optional[Student] = None):
-    """
-    Retrieves existing clubs
-    @return list of all club
-    """
-    medical_group_condition = Q(allowed_medical_groups__id=1) | Q(allowed_medical_groups__id=2)
-    if student is not None:
-        medical_group_condition = Q(allowed_medical_groups__id=student.medical_group.id)
-
-    query = Group.objects.select_related(
-        'sport',
-        'enrolls',
-        'semester',
-    ).filter(
-        Q(is_club='True') &
-        medical_group_condition &
-        Q(semester__id=get_ongoing_semester().id)
-    ).values(
-        'id',
-        'name',
-        'sport__name',
-        'semester__name',
-        'capacity',
-        'description',
-        'is_club',
-    ).annotate(
-        current_load=Count('enrolls__id'),
-        sport_name=F('sport__name'),
-        semester=F('semester__name'),
-    ).order_by(
-        'id',
-        'sport__id',
-        'semester__id',
-    )
-
-    for entry in query:
-        entry['trainers'] = get_trainers_group(entry['id'])
-
-    return query
 
 def get_student_groups(student: Student):
     """
