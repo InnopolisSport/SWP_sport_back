@@ -96,7 +96,7 @@ def validate_semester(sender, instance, *args, **kwargs):
 
     if instance.pk is None:
         try:
-            qs = Student.objects.all()
+            qs = Student.objects.filter(student_status_id=0)
             qs = qs.annotate(_debt=Coalesce(
                 SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
                                                 student_id=OuterRef("pk")), 'debt'),
