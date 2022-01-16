@@ -95,24 +95,27 @@ def validate_semester(sender, instance, *args, **kwargs):
             raise ValueError("Last semester has a intersection with other semester")
 
     if instance.pk is None:
-        qs = Student.objects.all()
-        qs = qs.annotate(_debt=Coalesce(
-            SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
-                                            student_id=OuterRef("pk")), 'debt'),
-            0
-        ))
-        qs = qs.annotate(_ongoing_semester_hours=Coalesce(
-            SumSubquery(Attendance.objects.filter(
-                training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
-            0
-        ))
-        qs = qs.annotate(complex_hours=ExpressionWrapper(
-            F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
-        ))
+        try:
+            qs = Student.objects.all()
+            qs = qs.annotate(_debt=Coalesce(
+                SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
+                                                student_id=OuterRef("pk")), 'debt'),
+                0
+            ))
+            qs = qs.annotate(_ongoing_semester_hours=Coalesce(
+                SumSubquery(Attendance.objects.filter(
+                    training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
+                0
+            ))
+            qs = qs.annotate(complex_hours=ExpressionWrapper(
+                F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
+            ))
 
-        for s in qs:
-            if s.complex_hours < get_ongoing_semester().hours:
-                Debt.objects.get_or_create(student_id=s.pk, semester=None, debt=get_ongoing_semester().hours - s.complex_hours)
+            for s in qs:
+                if s.complex_hours < get_ongoing_semester().hours:
+                    Debt.objects.get_or_create(student_id=s.pk, semester=None, debt=get_ongoing_semester().hours - s.complex_hours)
+        except:
+            pass
 
 
 @receiver(m2m_changed, sender=Semester.nullify_groups.through)
