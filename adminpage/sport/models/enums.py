@@ -27,6 +27,12 @@ class Gender(models.IntegerChoices):
     FEMALE = 1, "female"
 
 
+class GroupQR(models.IntegerChoices):
+    NOT_MATTER = -1, "Does not matter"
+    NO = 0, "No"
+    YES = 1, "Yes"
+
+
 class GenderInFTGrading(models.IntegerChoices):
     BOTH = -1, "both"
     MALE = 0, "male"

@@ -15,5 +15,5 @@ def calendar_view(request, sport_id, **kwargs):
     
     
 @login_required
-def calendar_view_without_sport(request, **kwargs):
+def calendar_view_without_sport(request, **kwargs):  # for extrasport
     return render(request, "calendar_without_sport.html")
