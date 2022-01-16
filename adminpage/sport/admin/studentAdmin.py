@@ -234,7 +234,7 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin):
     list_display = (
         "__str__",
         user__role,
-        "is_online",
+        "has_QR",
         "course",
         "medical_group",
         "sport",
