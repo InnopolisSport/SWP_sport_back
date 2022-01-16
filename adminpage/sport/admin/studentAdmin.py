@@ -132,6 +132,7 @@ class StudentResource(resources.ModelResource):
             "user__last_name",
             "enrollment_year",
             "course",
+            "has_QR",
             "telegram",
             "is_online",
         )
@@ -142,6 +143,7 @@ class StudentResource(resources.ModelResource):
             "user__last_name",
             "enrollment_year",
             "course",
+            "has_QR",
             "medical_group",
             "student_status",
             "is_online",
@@ -168,6 +170,7 @@ class StudentResource(resources.ModelResource):
                 row.get('medical_group'),
                 row.get('enrollment_year'),
                 row.get('course'),
+                row.get('has_QR'),
                 row.get('telegram'),
             ]
             # Add a column with the error message
