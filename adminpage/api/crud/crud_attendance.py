@@ -231,7 +231,6 @@ def create_debt(last_semester, **kwargs):
     pass
 
 
-# TODO: api method
 def better_than(student_id):
     qs = Student.objects.all().annotate(_debt=Coalesce(
         SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
