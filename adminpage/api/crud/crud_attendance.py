@@ -247,16 +247,14 @@ def better_than(student_id):
         F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
     ))
 
-    # all = qs.filter(ongoing_semester_hours__gt=0, ).count()
-    all = qs.filter(complex_hours__gt=0, ).count()
-    if all == 0 or all == 1:
-        return None
-    all -= 1
-
     student_hours = qs.get(pk=student_id).complex_hours
     if student_hours <= 0:
-        return None
+        return 0
+
+    all = qs.filter(complex_hours__gt=0, ).count()
+    if all == 1:
+        return 100
 
     worse = qs.filter(complex_hours__gt=0, complex_hours__lt=student_hours).count()
 
-    return round(worse / all * 100, 1)
+    return round(worse / (all - 1) * 100, 1)
