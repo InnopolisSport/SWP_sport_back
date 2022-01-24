@@ -66,7 +66,7 @@ MEDICAL_LEAVE_GROUP_NAME = "Medical leave"
 OTHER_SPORT_NAME = "Other"
 
 TRAINING_EDITABLE_INTERVAL = timedelta(
-    days=2
+    days=3
 )
 
 BACHELOR_STUDY_PERIOD_YEARS = 4
