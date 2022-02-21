@@ -35,14 +35,16 @@ handler404 = "sport.views.errors.handler404"
 handler500 = "sport.views.errors.handler500"
 
 urlpatterns = [
-                  path(settings.PREFIX, include([
-                      path("", include("sport.urls")),
-                      path('', include('django_prometheus.urls')),  # only /metrics
-                      path('admin/', site.urls),
-                      path('oauth2/', include('django_auth_adfs.urls')),
+    path(settings.PREFIX, include([
+        path("", include("sport.urls")),
+        # only /metrics
+        path('', include('django_prometheus.urls')),
+        path('admin/', site.urls),
+        path('oauth2/', include('django_auth_adfs.urls')),
 
-                      path("api/", include("api.urls")),
-                      path("media/", include('media.urls')),
-                  ]))
-              ] \
-              + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+        path("api/", include("api.urls")),
+        path("media/", include('media.urls')),
+        path('hijack/', include('hijack.urls')),
+    ]))
+] \
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

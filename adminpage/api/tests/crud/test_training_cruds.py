@@ -192,6 +192,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
         "first_name": student.user.first_name,
         "last_name": student.user.last_name,
         "email": student.user.email,
+        "med_group": "Medical checkup not passed",
         "hours": a1.hours,
         "full_name": f"{student.user.first_name} {student.user.last_name}",
     }]
@@ -200,6 +201,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
         "first_name": student.user.first_name,
         "last_name": student.user.last_name,
         "email": student.user.email,
+        "med_group": "Medical checkup not passed",
         "hours": 0,
         "full_name": f"{student.user.first_name} {student.user.last_name}",
 
@@ -213,6 +215,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
             "first_name": student.user.first_name,
             "last_name": student.user.last_name,
             "email": student.user.email,
+            "med_group": "Medical checkup not passed",
             "hours": a1.hours,
             "full_name": f"{student.user.first_name} {student.user.last_name}",
         },
@@ -221,14 +224,15 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
             "first_name": other_student.user.first_name,
             "last_name": other_student.user.last_name,
             "email": other_student.user.email,
+            "med_group": "Medical checkup not passed",
             "hours": 0,
             "full_name": f"{student.user.first_name} {student.user.last_name}",
         }
     ])
-
-    student.is_ill = True
+    
+    student.has_QR = True
     student.save()
-    other_student.is_ill = True
+    other_student.has_QR = True
     other_student.save()
 
     assert get_students_grades(t1.pk) == [{
@@ -236,6 +240,7 @@ def test_training_info(student_factory, trainer_factory, sport_factory,
         "first_name": student.user.first_name,
         "last_name": student.user.last_name,
         "email": student.user.email,
+        "med_group": "Medical checkup not passed",
         "hours": a1.hours,
         "full_name": f"{student.user.first_name} {student.user.last_name}",
     }]

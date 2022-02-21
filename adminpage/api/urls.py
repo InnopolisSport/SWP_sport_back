@@ -1,5 +1,5 @@
 from adminpage.swagger import schema_view
-from django.urls import path, re_path
+from django.urls import path, re_path, register_converter
 
 from api.views import (
     tmp,
@@ -11,12 +11,26 @@ from api.views import (
     calendar,
     reference,
     self_sport_report,
+    fitness_test,
 )
+
+
+class NegativeIntConverter:
+    regex = '-?\d+'
+
+    def to_python(self, value):
+        return int(value)
+
+    def to_url(self, value):
+        return '%d' % value
+register_converter(NegativeIntConverter, 'negint')
+
 
 urlpatterns = [
     path(r"test/", tmp.test),
     # profile
-    path(r"profile/sick/toggle", profile.toggle_sick),
+    path(r"profile/change_gender", profile.change_gender),
+    path(r"profile/QR/toggle", profile.toggle_QR_presence),
     path(r"profile/history/<int:semester_id>", profile.get_history),
     path(r"profile/history_with_self/<int:semester_id>", profile.get_history_with_self),
 
@@ -41,9 +55,10 @@ urlpatterns = [
     path(r"attendance/mark", attendance.mark_attendance),
     path(r"attendance/<int:student_id>/hours", attendance.get_student_hours_info),
     path(r"attendance/<int:student_id>/negative_hours", attendance.get_negative_hours_info),
+    path(r"attendance/<int:student_id>/better_than", attendance.get_better_than_info),
 
     # calendar
-    path(r"calendar/<int:sport_id>/schedule", calendar.get_schedule),
+    path(r"calendar/<negint:sport_id>/schedule", calendar.get_schedule),
     path(r"calendar/trainings", calendar.get_personal_schedule),
 
     # reference management
@@ -52,7 +67,16 @@ urlpatterns = [
     # self sport report
     path(r"selfsport/upload", self_sport_report.self_sport_upload),
     path(r"selfsport/types", self_sport_report.get_self_sport_types),
-    path(r"selfsport/strava_parsing", self_sport_report.get_strava_activity_info)
+    path(r"selfsport/strava_parsing", self_sport_report.get_strava_activity_info),
+
+    # fitness test
+    path(r"fitnesstest/result", fitness_test.get_result),
+    path(r"fitnesstest/upload", fitness_test.post_student_exercises_result),
+    path(r"fitnesstest/upload/<int:session_id>", fitness_test.post_student_exercises_result),
+    path(r"fitnesstest/exercises", fitness_test.get_exercises),
+    path(r"fitnesstest/sessions", fitness_test.get_sessions),
+    path(r"fitnesstest/sessions/<int:session_id>", fitness_test.get_session_info),
+    path(r"fitnesstest/suggest_student", fitness_test.suggest_fitness_test_student),
 ]
 
 urlpatterns.extend([

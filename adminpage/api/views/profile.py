@@ -6,36 +6,59 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api.crud.crud_attendance import (
-    toggle_illness,
+    toggle_has_QR,
     get_detailed_hours, get_detailed_hours_and_self,
 )
 from api.permissions import (
-    IsStudent,
+    IsStudent, IsTrainer, IsStaff,
 )
 from api.serializers import (
     get_error_serializer,
-    IsIllSerializer,
-    TrainingHourSerializer,
+    TrainingHourSerializer, EmptySerializer,
+    HasQRSerializer,
 )
-from sport.models import Semester
+from api.serializers.profile import GenderSerializer
+from sport.models import Semester, Student
 
 
 @swagger_auto_schema(
     method="POST",
     responses={
-        status.HTTP_200_OK: IsIllSerializer,
+        status.HTTP_200_OK: HasQRSerializer,
     }
 )
 @api_view(["POST"])
 @permission_classes([IsStudent])
-def toggle_sick(request, **kwargs):
+def toggle_QR_presence(request, **kwargs):
     """
-    Toggle is_sick status
+    Toggles has_QR status
     """
     student = request.user.student
-    toggle_illness(student)
-    serializer = IsIllSerializer(student)
+    toggle_has_QR(student)
+    serializer = HasQRSerializer(student)
     return Response(serializer.data)
+
+
+@swagger_auto_schema(
+    method="POST",
+    request_body=GenderSerializer,
+    responses={
+        status.HTTP_200_OK: EmptySerializer,
+    }
+)
+@api_view(["POST"])
+@permission_classes([IsStaff])
+def change_gender(request, **kwargs):
+    serializer = GenderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    print(serializer.validated_data['student_id'])
+
+    student = Student.objects.get(user_id=serializer.validated_data['student_id'])
+    student.gender = serializer.validated_data['gender']
+    student.save()
+
+    return Response({})
 
 
 @swagger_auto_schema(

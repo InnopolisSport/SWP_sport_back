@@ -1,11 +1,8 @@
 name: Production deploy
 on:
-  workflow_dispatch:
-  workflow_run:
-    workflows: ["Tests"]
-    branches: [master]
-    types:
-      - completed
+  push:
+    tags:        
+      - v**
 jobs:
   deploy:
     name: Deploy to production server

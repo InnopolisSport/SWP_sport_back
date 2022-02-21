@@ -31,6 +31,7 @@ class SemesterAdmin(admin.ModelAdmin):
         "start",
         "end",
         "hours",
+        "points_fitness_test",
     )
 
     fields = (
@@ -38,6 +39,7 @@ class SemesterAdmin(admin.ModelAdmin):
         "start",
         "end",
         "hours",
+        "points_fitness_test",
         "academic_leave_students",
         "number_hours_one_week_ill",
         "nullify_groups",

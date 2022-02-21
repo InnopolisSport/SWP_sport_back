@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from hijack.contrib.admin import HijackUserAdminMixin
 from django.db.models import ForeignKey, IntegerField, F, Sum
 from django.db.models.expressions import Value, Case, When, Subquery, OuterRef, ExpressionWrapper
 from django.db.models.functions import Coalesce, Least
@@ -9,21 +10,13 @@ from import_export import resources, widgets, fields
 from import_export.admin import ImportExportActionModelAdmin
 from import_export.results import RowResult
 
-from api.crud import get_ongoing_semester, get_negative_hours
-from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance, Debt
+from api.crud import get_ongoing_semester, get_negative_hours, SumSubquery
+from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance, Debt, FitnessTestGrading, \
+    FitnessTestResult
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
-from .utils import user__role
-
-
-class SumSubquery(Subquery):
-    output_field = None
-
-    def __init__(self, queryset, sum_by, output_field=IntegerField(), **extra):
-        super().__init__(queryset, output_field, **extra)
-        self.output_field = output_field
-        self.template = "(SELECT sum({}) FROM (%(subquery)s) _sum)".format(sum_by)
+from .utils import user__role, DefaultFilterMixIn
 
 
 class MedicalGroupWidget(widgets.ForeignKeyWidget):
@@ -36,22 +29,45 @@ class StudentStatusWidget(widgets.ForeignKeyWidget):
         return str(value)
 
 
+class FitnessTestExcerciseInline(admin.TabularInline):
+    model = FitnessTestResult
+    extra = 0
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        print(db_field.name)
+        if db_field.name == 'semester':
+            kwargs['initial'] = get_ongoing_semester()
+            return db_field.formfield(**kwargs)
+        return super().formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
+
+
 class HoursFilter(admin.SimpleListFilter):
-    title = 'debt'
-    parameter_name = 'debt'
+    title = 'hours'
+    parameter_name = 'hours'
 
     def lookups(self, request, model_admin):
         return (
-            ('Yes', 'Yes'),
-            ('No', 'No'),
+            ('less', 'Less -60'),
+            ('-31', 'From -60 to -31'),
+            ('-1', 'From -30 to -1'),
+            ('29', 'From 0 to 29'),
+            ('more', 'More 30')
         )
 
     def queryset(self, request, queryset):
         value = self.value()
-        if value == 'Yes':
-            return queryset.filter(complex_hours__lt=0)
-        elif value == 'No':
-            return queryset.exclude(complex_hours__lt=0)
+        if value == 'less':
+            return queryset.filter(complex_hours__lt=-60)
+        if value == '-31':
+            return queryset.filter(complex_hours__lt=-30).filter(complex_hours__gte=-60)
+        if value == '-1':
+            return queryset.filter(complex_hours__lt=0).filter(complex_hours__gte=-30)
+        if value == '29':
+            return queryset.filter(complex_hours__lt=30).filter(complex_hours__gte=0)
+        elif value == 'more':
+            return queryset.filter(complex_hours__gte=30)
         return queryset
 
 
@@ -116,6 +132,7 @@ class StudentResource(resources.ModelResource):
             "user__last_name",
             "enrollment_year",
             "course",
+            "has_QR",
             "telegram",
             "is_online",
         )
@@ -126,6 +143,7 @@ class StudentResource(resources.ModelResource):
             "user__last_name",
             "enrollment_year",
             "course",
+            "has_QR",
             "medical_group",
             "student_status",
             "is_online",
@@ -152,6 +170,7 @@ class StudentResource(resources.ModelResource):
                 row.get('medical_group'),
                 row.get('enrollment_year'),
                 row.get('course'),
+                row.get('has_QR'),
                 row.get('telegram'),
             ]
             # Add a column with the error message
@@ -166,7 +185,8 @@ class StudentResource(resources.ModelResource):
 
 
 @admin.register(Student, site=site)
-class StudentAdmin(ImportExportActionModelAdmin):
+class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFilterMixIn):
+    default_filters = ['student_status__id__exact=0']
     resource_class = StudentResource
 
     def get_fields(self, request, obj=None):
@@ -181,14 +201,16 @@ class StudentAdmin(ImportExportActionModelAdmin):
             )
         return (
             "user",
-            "is_ill",
+            "gender",
+            "has_QR",
             "is_online",
             "medical_group",
             "enrollment_year",
             "course",
             "sport",
             "student_status",
-            "telegram" if obj.telegram is None or len(obj.telegram) == 0 else ("telegram", "write_to_telegram"),
+            "telegram" if obj.telegram is None or len(
+                obj.telegram) == 0 else ("telegram", "write_to_telegram"),
         )
 
     autocomplete_fields = (
@@ -208,14 +230,15 @@ class StudentAdmin(ImportExportActionModelAdmin):
         "is_online",
         "medical_group",
         'student_status',
-        'sport',
+        'sport', 
+        'has_QR',
         HoursFilter
     )
 
     list_display = (
         "__str__",
         user__role,
-        "is_online",
+        "has_QR",
         "course",
         "medical_group",
         "sport",
@@ -249,6 +272,7 @@ class StudentAdmin(ImportExportActionModelAdmin):
         ViewMedicalGroupHistoryInline,
         ViewAttendanceInline,
         AddAttendanceInline,
+        FitnessTestExcerciseInline
     )
 
     # https://stackoverflow.com/a/66730984
@@ -271,7 +295,8 @@ class StudentAdmin(ImportExportActionModelAdmin):
             0
         ))
         qs = qs.annotate(_ongoing_semester_hours=Coalesce(
-            SumSubquery(Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
+            SumSubquery(Attendance.objects.filter(
+                training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
             0
         ))
         qs = qs.annotate(complex_hours=ExpressionWrapper(
@@ -280,6 +305,8 @@ class StudentAdmin(ImportExportActionModelAdmin):
 
         return qs
 
+    def get_hijack_user(self, obj):
+        return obj.user
 
     list_select_related = (
         "user",

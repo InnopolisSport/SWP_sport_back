@@ -19,3 +19,21 @@ class StudentStatuses(models.IntegerChoices):
     DROPPED = 1, "dropped"
     ACADEMIC_LEAVE = 2, "academic leave"
     ALUMNUS = 3, "alumnus"
+
+
+class Gender(models.IntegerChoices):
+    UNKNOWN = -1, "unknown"
+    MALE = 0, "male"
+    FEMALE = 1, "female"
+
+
+class GroupQR(models.IntegerChoices):
+    NOT_MATTER = -1, "Does not matter"
+    NO = 0, "No"
+    YES = 1, "Yes"
+
+
+class GenderInFTGrading(models.IntegerChoices):
+    BOTH = -1, "both"
+    MALE = 0, "male"
+    FEMALE = 1, "female"

@@ -84,6 +84,7 @@ class GroupAdmin(DefaultFilterMixIn):
         "semester",
         # "trainer",
         "trainers",
+        "allowed_qr",
         "allowed_medical_groups",
     )
 

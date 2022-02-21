@@ -7,10 +7,20 @@ urlpatterns = [
     path('', login_redirect, name="login"),
     path('profile/', profile_view, name='profile'),
     path('category/', category_view, name='category'),
+    path('fitness_test/', fitness_test_view, name='fitness_test'),
+    path('fitness_test/new', fitness_test_session_new_view,
+         name='fitness_test_session_new'),
+    path('fitness_test/<int:fitness_test_session_id>',
+         fitness_test_session_view, name='fitness_test_session_old'),
     path(
         'calendar/sport/<int:sport_id>',
         calendar_view,
         name="sport_schedule_calendar"
+    ),
+    path(
+        'calendar/extrasport',
+        calendar_view_without_sport,
+        name="extrasport_schedule_calendar"
     ),
     path(
         'form/meg_group',

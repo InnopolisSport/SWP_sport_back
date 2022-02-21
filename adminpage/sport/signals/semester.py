@@ -3,14 +3,15 @@ import datetime
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group as AuthGroup
+from django.db.models.functions import Coalesce
 from django.db.models.signals import post_save, pre_save, m2m_changed
 from django.dispatch.dispatcher import receiver
-from django.db.models import F
+from django.db.models import F, OuterRef, ExpressionWrapper, IntegerField
 from datetime import datetime
 
-from sport.models import Semester, Sport, Trainer, Group, Schedule, Student
+from sport.models import Semester, Sport, Trainer, Group, Schedule, Student, Debt, Attendance
 
-from api.crud import get_free_places_for_sport
+from api.crud import get_free_places_for_sport, SumSubquery, get_ongoing_semester
 
 User = get_user_model()
 
@@ -93,6 +94,29 @@ def validate_semester(sender, instance, *args, **kwargs):
         else:
             raise ValueError("Last semester has a intersection with other semester")
 
+    if instance.pk is None:
+        try:
+            qs = Student.objects.filter(student_status_id=0)
+            qs = qs.annotate(_debt=Coalesce(
+                SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
+                                                student_id=OuterRef("pk")), 'debt'),
+                0
+            ))
+            qs = qs.annotate(_ongoing_semester_hours=Coalesce(
+                SumSubquery(Attendance.objects.filter(
+                    training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
+                0
+            ))
+            qs = qs.annotate(complex_hours=ExpressionWrapper(
+                F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
+            ))
+
+            for s in qs:
+                if s.complex_hours < get_ongoing_semester().hours:
+                    Debt.objects.get_or_create(student_id=s.pk, semester=None, debt=get_ongoing_semester().hours - s.complex_hours)
+        except:
+            pass
+
 
 @receiver(m2m_changed, sender=Semester.nullify_groups.through)
 def nullify_medical_groups(instance, action, reverse, pk_set, **kwargs):
@@ -101,8 +125,12 @@ def nullify_medical_groups(instance, action, reverse, pk_set, **kwargs):
 
 @receiver(post_save, sender=Semester)
 def increase_course(sender, instance, created, **kwargs):
+    Debt.objects.filter(semester=None).update(semester=instance)
     if not created:
         return
+    Student.objects.all().update(sport=None)
     if instance.increase_course is True:
         Student.objects.filter(student_status_id=0, course__lte=3).update(course=F('course') + 1)
         Student.objects.filter(student_status_id=0, course__gte=4).update(course=None, student_status_id=3)
+
+

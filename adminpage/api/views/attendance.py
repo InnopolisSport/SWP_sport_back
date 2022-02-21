@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
@@ -9,12 +10,14 @@ from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.response import Response
 
 from api.crud import get_email_name_like_students, Training, \
-    get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, get_student_hours, get_negative_hours
+    get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, \
+    get_student_hours, get_negative_hours, better_than, get_email_name_like_students_filtered_by_group
 from api.permissions import IsTrainer
 from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
     TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, \
     BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer, HoursInfoSerializer, HoursInfoFullSerializer
+from api.serializers.attendance import BetterThanInfoSerializer
 from sport.models import Group, Student, Semester, SelfSportReport, Attendance
 
 User = get_user_model()
@@ -55,15 +58,17 @@ def compose_bad_grade_report(email: str, hours: float) -> dict:
 def suggest_student(request, **kwargs):
     serializer = SuggestionQuerySerializer(data=request.GET)
     serializer.is_valid(raise_exception=True)
-    suggested_students = get_email_name_like_students(
-        serializer.validated_data["group_id"],
-        serializer.validated_data["term"]
+
+    suggested_students = get_email_name_like_students_filtered_by_group(
+        serializer.validated_data["term"],
+        group=serializer.validated_data["group_id"]
     )
     return Response([
         {
             "value": f"{student['id']}_"
                      f"{student['full_name']}_"
-                     f"{student['email']}",
+                     f"{student['email']}_"
+                     f"{student['medical_group__name']}",
             "label": f"{student['full_name']} "
                      f"({student['email']})",
         }
@@ -146,6 +151,20 @@ def get_negative_hours_info(request, student_id, **kwargs):
 @api_view(["GET"])
 def get_student_hours_info(request, student_id, **kwargs):
     return Response(get_student_hours(student_id))
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: BetterThanInfoSerializer,
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer,
+        status.HTTP_403_FORBIDDEN: InbuiltErrorSerializer,
+    }
+)
+@api_view(["GET"])
+def get_better_than_info(request, student_id, **kwargs):
+    return Response(better_than(student_id))
+
 
 @swagger_auto_schema(
     method="POST",

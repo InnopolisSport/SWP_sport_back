@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 
-from sport.models import MedicalGroupHistory
+from sport.models import MedicalGroupHistory, Gender
 from sport.utils import get_current_study_year
 
 
@@ -26,7 +26,12 @@ class Student(models.Model):
         primary_key=True,
     )
 
-    is_ill = models.BooleanField(
+    gender = models.IntegerField(
+        choices=Gender.choices,
+        default=-1
+    )
+
+    has_QR = models.BooleanField(
         default=False,
     )
 

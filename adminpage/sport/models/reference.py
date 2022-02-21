@@ -35,8 +35,10 @@ class Reference(models.Model):
     )
     image = fields.ImageField(dependencies=[
         FileDependency(processor=ImageProcessor(
-            format='JPEG', scale={'max_width': 2000, 'max_height': 2000}), upload_to=get_reference_path)
-    ])
+            format='JPEG', scale={'max_width': 2000, 'max_height': 2000}))],
+        upload_to=get_reference_path
+    )
+
     start = models.DateField(null=False, default=today)
     end = models.DateField(null=False, default=today)
     hours = models.IntegerField(default=0)

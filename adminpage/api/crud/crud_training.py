@@ -90,24 +90,6 @@ def get_group_info(group_id: int, student: Student):
 
         return info
 
-    # query = Group.objects.filter(
-    #     id=group_id,
-    # ).values(
-    #     'id',
-    #     'name',
-    #     'description',
-    #     'link_name',
-    #     'link',
-    #     'capacity',
-    #     'is_club',
-    # ).annotate(
-    #     group_id=F('id'),
-    #     group_name=F('name'),
-    #     group_desctiption=F('description'),
-    # )
-    #
-    # return query
-
 
 def get_trainings_for_student(student: Student, start: datetime, end: datetime):
     """
@@ -164,22 +146,6 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
     @param end - range end date
     @return list of trainings for trainer
     """
-    # with connection.cursor() as cursor:
-    #     cursor.execute('SELECT '
-    #                    't.id AS id, '
-    #                    't.start AS start, '
-    #                    't."end" AS "end", '
-    #                    'g.id AS group_id, '
-    #                    'g.name AS group_name, '
-    #                    'tc.name AS training_class, '
-    #                    'TRUE AS can_grade '
-    #                    'FROM "group" g, training t LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-    #                    'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
-    #                    'AND t.group_id = g.id '
-    #                    'AND g.trainer_id = %(trainer_id)s WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."
-    #                    'AND g.semester_id = current_semester()', {"start": start, "end": end, "trainer_id": trainer.pk})
-    #     return dictfetchall(cursor)
-
     query = Training.objects.select_related(
         'group',
         'training_class',
@@ -228,9 +194,12 @@ def get_students_grades(training_id: int):
                        'd.last_name AS last_name, '
                        'd.email AS email, '
                        'a.hours AS hours, '
+                       'm.name AS med_group, '
                        'concat(d.first_name, \' \', d.last_name) as full_name '
-                       'FROM training t, attendance a, auth_user d '
-                       'WHERE d.id = a.student_id '
+                       'FROM training t, attendance a, auth_user d, student s '
+                       'LEFT JOIN medical_group m ON m.id = s.medical_group_id '
+                       'WHERE s.user_id = a.student_id '
+                       'AND d.id = a.student_id '
                        'AND a.training_id = %(training_id)s '
                        'AND t.id = %(training_id)s '
                        'UNION DISTINCT '
@@ -240,12 +209,13 @@ def get_students_grades(training_id: int):
                        'd.last_name AS last_name, '
                        'd.email AS email, '
                        'COALESCE(a.hours, 0) AS hours, '
+                       'm.name AS med_group, '
                        'concat(d.first_name, \' \', d.last_name) as full_name '
                        'FROM training t, enroll e, auth_user d, student s '
                        'LEFT JOIN attendance a ON a.student_id = s.user_id AND a.training_id = %(training_id)s '
+                       'LEFT JOIN medical_group m ON m.id = s.medical_group_id '
                        'WHERE s.user_id = e.student_id '
                        'AND d.id = e.student_id '
-                       'AND s.is_ill = FALSE '
                        'AND t.id = %(training_id)s '
                        'AND t.group_id = e.group_id ', {"training_id": training_id})
         return dictfetchall(cursor)
