@@ -28,6 +28,9 @@ import re
 
 
 class SelfSportErrors:
+    NO_CURRENT_SEMESTER = (
+        7, "You can submit self-sport only during semester"
+    )
     MEDICAL_DISALLOWANCE = (
         6, "You can't submit self-sport reports "
            "unless you pass a medical checkup"
@@ -61,12 +64,22 @@ def get_self_sport_types(request, **kwargs):
     responses={
         status.HTTP_200_OK: EmptySerializer,
         status.HTTP_400_BAD_REQUEST: ErrorSerializer,
+        status.HTTP_403_FORBIDDEN: ErrorSerializer
     }
 )
 @api_view(["POST"])
 @permission_classes([IsStudent])
 @parser_classes([MultiPartParser])
 def self_sport_upload(request, **kwargs):
+    current_time = datetime.now()
+    semester_start = datetime.combine(get_ongoing_semester().start, datetime.min.time())
+    semester_end = datetime.combine(get_ongoing_semester().end, datetime.max.time())
+    if not semester_start <= current_time <= semester_end:
+        return Response(
+            status=status.HTTP_403_FORBIDDEN,
+            data=error_detail(*SelfSportErrors.NO_CURRENT_SEMESTER)
+        )
+
     serializer = SelfSportReportUploadSerializer(data=request.data)
     url = serializer.initial_data['link']
     if SelfSportReport.objects.filter(link=url).exists() or re.match(r'https?://www\.strava\.com/.*', url, re.IGNORECASE) is None:
