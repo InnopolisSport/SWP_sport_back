@@ -29,3 +29,4 @@ from .FAQAdmin import FAQAdmin
 from .fitnessTestResultAdmin import FitnessTestResultAdmin
 from .fitnessTestExerciseAdmin import FitnessTestExerciseAdmin
 from .fitnessTestSessionAdmin import FitnessTestSessionAdmin
+from .normalStudentAdmin import NormalStudentAdmin
