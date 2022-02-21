@@ -154,9 +154,25 @@
                         </div>
                         <h3>Progress</h3>
                         <!-- Better than percantage-->
-                        {% if student.better_than is not None and student.better_than >= 30 %}
-                            <span>You are better than {{student.better_than}}% of the students!</span>
-                        {% endif %}
+                        <script type="text/javascript">
+                            fetch(`/api/attendance/${student_id}/better_than`, {
+                                method: 'GET',
+                                'X-CSRFToken': csrf_token,
+                            })
+                                .then((response) => {
+                                    if (response.ok) {
+                                        return response.json();
+                                    }
+                                    throw new Error('Something went wrong.');
+                                })
+                                .then((data) => {
+                                    if (data >= 30) {
+                                        document.getElementById('better-than').innerHTML = `You are better than ${data}% of the students!`;
+                                    }
+                                })
+                                .catch(() => {});
+                        </script>
+                        <span id="better-than"></span>
                         <!-- Fitness test results -->
                         <div class="d-none" id="ft-student-results">
                             <h5 class="text-left ml-3">Fitness test</h5>

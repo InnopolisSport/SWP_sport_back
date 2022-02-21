@@ -79,3 +79,6 @@ class HoursInfoSerializer(serializers.Serializer):
 class HoursInfoFullSerializer(serializers.Serializer):
     final_hours = serializers.IntegerField()
 
+
+class BetterThanInfoSerializer(serializers.Serializer):
+    better_than = serializers.FloatField()

@@ -3,12 +3,11 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view, permission_classes
 
 from api.crud import get_ongoing_semester, get_student_groups, \
     get_brief_hours, \
-    get_trainer_groups, get_negative_hours, get_student_hours, better_than, get_faq
+    get_trainer_groups, get_negative_hours, get_student_hours, get_faq
 from api.permissions import IsStudent
 from sport.models import Student, MedicalGroupReference, Debt
 from sport.utils import set_session_notification
@@ -78,8 +77,9 @@ def profile_view(request, **kwargs):
             student=student,
             semester=current_semester,
         ).exists()
-        student_debt = Debt.objects.filter(student=student, semester=get_ongoing_semester())
-        
+        student_debt = Debt.objects.filter(
+            student=student, semester=get_ongoing_semester())
+
         has_unresolved_med_group_submission = MedicalGroupReference.objects.filter(
             student=student,
             semester=current_semester,
@@ -104,7 +104,6 @@ def profile_view(request, **kwargs):
                 "init_debt_hours": student_debt.first().debt if student_debt.exists() else 0,
                 "debt_hours": get_negative_hours(student.pk),
                 "all_hours": get_student_hours(student.pk)['ongoing_semester'],
-                "better_than": better_than(student.pk),
             },
             "faq": get_faq(),
         })
