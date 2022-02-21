@@ -7,7 +7,7 @@ import django_quill.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sport', '0081_faqcategory_faqelement'),
+        ('sport', '0099_auto_20220117_0025'),
     ]
 
     operations = [
