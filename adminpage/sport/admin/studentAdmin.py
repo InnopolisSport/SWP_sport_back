@@ -16,7 +16,7 @@ from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, 
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
-from .utils import user__role
+from .utils import user__role, DefaultFilterMixIn
 
 
 class MedicalGroupWidget(widgets.ForeignKeyWidget):
@@ -185,7 +185,8 @@ class StudentResource(resources.ModelResource):
 
 
 @admin.register(Student, site=site)
-class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin):
+class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFilterMixIn):
+    default_filters = ['student_status__id__exact=0']
     resource_class = StudentResource
 
     def get_fields(self, request, obj=None):
