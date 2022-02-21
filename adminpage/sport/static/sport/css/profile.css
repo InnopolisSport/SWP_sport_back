@@ -6,6 +6,10 @@ body.profile {
     background-color: #f0f0f0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 /*img.profile {
     display: block;
     margin-left: auto;
