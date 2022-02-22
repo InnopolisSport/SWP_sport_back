@@ -95,11 +95,11 @@ def enroll(request, **kwargs):
             data=error_detail(*EnrollErrors.MEDICAL_DISALLOWANCE)
         )
 
-    if group.allowed_qr not in [-1, int(student.has_QR)]:
-        return Response(
-            status=status.HTTP_400_BAD_REQUEST,
-            data=error_detail(*EnrollErrors.QR_ERROR)
-        )
+    # if group.allowed_qr not in [-1, int(student.has_QR)]:
+    #     return Response(
+    #         status=status.HTTP_400_BAD_REQUEST,
+    #         data=error_detail(*EnrollErrors.QR_ERROR)
+    #     )
 
     try:
         enroll_student(group, student)

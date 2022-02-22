@@ -21,7 +21,8 @@ def get_sports(all=False, student: Optional[Student] = None):
     """
     groups = Group.objects.filter(semester__pk=api.crud.get_ongoing_semester().pk)
     if student:
-        groups = groups.filter(allowed_medical_groups=student.medical_group_id, allowed_qr__in=[-1, int(student.has_QR)])
+        groups = groups.filter(allowed_medical_groups=student.medical_group_id)
+        # groups = groups.filter(allowed_qr__in=[-1, int(student.has_QR)])
 
     # w/o distinct returns a lot of duplicated
     sports = Sport.objects.filter(id__in=groups.values_list('sport')).distinct()
