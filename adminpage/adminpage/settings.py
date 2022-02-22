@@ -116,7 +116,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django_sendfile',
-    'django_quill',
     'smartfields',
     'import_export',
     'rangefilter',
