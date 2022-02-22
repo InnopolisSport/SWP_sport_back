@@ -38,6 +38,10 @@ def get_brief_hours(student: Student) -> List[BriefHours]:
     brief_hours: List[BriefHours] = []
     for sem in hours:
         semester = Semester.objects.get(id=sem['id_sem'])
+
+        if not (student.enrollment_year < semester.start.year or (
+                student.enrollment_year == semester.start.year and semester.start.month > 9)):
+            continue
         element: BriefHours = {
             'semester_id': semester.id,
             'semester_name': semester.name,
