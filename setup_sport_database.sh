@@ -4,32 +4,32 @@
 # sh setup_sport_database.sh ~/Desktop/sport_16_12_2021_at_04_00.sql
 
 # load backup into the database container
-sudo docker-compose -f ./compose/docker-compose.yml stop
-sudo docker start compose_db_1
+docker-compose -f ./compose/docker-compose.yml stop
+docker start compose_db_1
 
-sudo docker cp $1 compose_db_1:/database_backup.sql
-sudo docker exec compose_db_1 psql -U user -f database_backup.sql postgres
-sudo docker exec compose_db_1 rm database_backup.sql
+docker cp $1 compose_db_1:/database_backup.sql
+docker exec compose_db_1 psql -U user -f database_backup.sql postgres
+docker exec compose_db_1 rm database_backup.sql
 
-sudo docker-compose -f ./compose/docker-compose.yml start
+docker-compose -f ./compose/docker-compose.yml start
 
 # save the latest applied sport migration
-SPORT_STATE=$(sudo docker exec compose_adminpanel_1 python manage.py showmigrations sport | grep "[X]" | tail -n 1 | cut -c 6-9)
+SPORT_STATE=$(docker exec compose_adminpanel_1 python manage.py showmigrations sport | grep "[X]" | tail -n 1 | cut -c 6-9)
 
 # purge inconsistent migration history and apply migrations appropriately
-sudo docker exec compose_db_1 psql -U user -d sport_database -c "DELETE FROM django_migrations"
+docker exec compose_db_1 psql -U user -d sport_database -c "DELETE FROM django_migrations"
 
-sudo docker exec compose_adminpanel_1 python manage.py migrate --fake contenttypes
+docker exec compose_adminpanel_1 python manage.py migrate --fake contenttypes
 
-sudo docker exec compose_adminpanel_1 python manage.py migrate --fake auth 0011
-sudo docker exec compose_adminpanel_1 python manage.py migrate auth 0012
-sudo docker exec compose_adminpanel_1 python manage.py migrate --fake auth
+docker exec compose_adminpanel_1 python manage.py migrate --fake auth 0011
+docker exec compose_adminpanel_1 python manage.py migrate auth 0012
+docker exec compose_adminpanel_1 python manage.py migrate --fake auth
 
-sudo docker exec compose_adminpanel_1 python manage.py migrate --fake accounts
-sudo docker exec compose_adminpanel_1 python manage.py migrate --fake admin
-sudo docker exec compose_adminpanel_1 python manage.py migrate --fake sessions
-sudo docker exec compose_adminpanel_1 python manage.py migrate --fake sites
+docker exec compose_adminpanel_1 python manage.py migrate --fake accounts
+docker exec compose_adminpanel_1 python manage.py migrate --fake admin
+docker exec compose_adminpanel_1 python manage.py migrate --fake sessions
+docker exec compose_adminpanel_1 python manage.py migrate --fake sites
 
-sudo docker exec compose_adminpanel_1 python manage.py migrate --fake sport $SPORT_STATE
-sudo docker exec compose_adminpanel_1 python manage.py makemigrations
-sudo docker exec compose_adminpanel_1 python manage.py migrate sport
+docker exec compose_adminpanel_1 python manage.py migrate --fake sport $SPORT_STATE
+docker exec compose_adminpanel_1 python manage.py makemigrations
+docker exec compose_adminpanel_1 python manage.py migrate sport
