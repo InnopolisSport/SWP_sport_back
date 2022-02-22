@@ -39,10 +39,10 @@ jobs:
           export DOCKER_HOST=ssh://${{ secrets.USER }}@${{ secrets.HOST }}
 
       - name: Tear down existing services
-        run: docker-compose down
+        run: docker-compose -f compose/docker-compose-stage.yml down
 
       - name: Build and up services
-        run: docker-compose up -d --build
+        run: docker-compose -f compose/docker-compose-stage.yml up -d --build
 
 
 
