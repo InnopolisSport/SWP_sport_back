@@ -22,8 +22,14 @@ jobs:
 
       - name: Install keys
         run: |
-          tee ~/.ssh/id_rsa << END ${{ secrets.PRIVATE_KEY }} END;
-          tee ~/.ssh/id_rsa.pub << END ${{ secrets.PUBLIC_KEY }} END;
+          tee ~/.ssh/id_rsa << END
+          ${{ secrets.PRIVATE_KEY }}
+          END
+
+          tee ~/.ssh/id_rsa.pub << END
+          ${{ secrets.PUBLIC_KEY }}
+          END
+          
           export DOCKER_HOST=ssh://${{ secrets.USER }}@${{ secrets.HOST }}
 
       - name: Check
