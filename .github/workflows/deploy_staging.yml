@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows: ["Tests"]
-    branches: [master]
+    branches: [master, build-action]
     types:
       - completed
 jobs:
@@ -11,25 +11,40 @@ jobs:
     name: Deploy to staging server
     runs-on: self-hosted
     environment:
-      name: development
+      name: stage
       url: https://stage.sport.innopolis.university
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cd ${{ secrets.REPOSITORY_PATH }}/compose
-            git reset --hard
-            git checkout ${GITHUB_REF}
-            git pull
-            docker-compose -f docker-compose-prod.yml build
-            docker-compose -f docker-compose-prod.yml down
-            docker-compose -f docker-compose-prod.yml up -d
-            docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
-            docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c './manage.py collectstatic --noinput && ./manage.py migrate'
-            docker-compose -f docker-compose-prod.yml build nginx
-            docker-compose -f docker-compose-prod.yml restart nginx
+          images: ghcr.io/${{ github.repository }}
+
+      - name: Install keys
+        run: |
+          echo ${{ secrets.PRIVATE_KEY }} >> ~/.ssh/id_rsa
+          echo ${{ secrets.PUBLIC_KEY }} >> ~/.ssh/id_rsa.pub
+          export DOCKER_HOST=ssh://${{ secrets.USER }}@${{ secrets.HOST }}
+
+      - name: Check
+        run: docker ps
+
+#      - name: Deploy via SSH
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.HOST }}
+#          username: ${{ secrets.USERNAME }}
+#          password: ${{ secrets.PASSWORD }}
+#          port: ${{ secrets.PORT }}
+#          script: |
+#            cd ${{ secrets.REPOSITORY_PATH }}/compose
+#            git reset --hard
+#            git checkout ${GITHUB_REF}
+#            git pull
+#            docker-compose -f docker-compose-prod.yml build
+#            docker-compose -f docker-compose-prod.yml down
+#            docker-compose -f docker-compose-prod.yml up -d
+#            docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
+#            docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c './manage.py collectstatic --noinput && ./manage.py migrate'
+#            docker-compose -f docker-compose-prod.yml build nginx
+#            docker-compose -f docker-compose-prod.yml restart nginx
