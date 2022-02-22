@@ -20,6 +20,12 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
 
+      - name: Set env
+        run: echo "IMAGE=${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Install keys
         run: |
           tee ~/.ssh/id_rsa << END
@@ -29,11 +35,16 @@ jobs:
           tee ~/.ssh/id_rsa.pub << END
           ${{ secrets.PUBLIC_KEY }}
           END
-          
+
           export DOCKER_HOST=ssh://${{ secrets.USER }}@${{ secrets.HOST }}
 
-      - name: Check
-        run: docker ps
+      - name: Tear down existing services
+        run: docker-compose down
+
+      - name: Build and up services
+        run: docker-compose up -d --build
+
+
 
 #      - name: Deploy via SSH
 #        uses: appleboy/ssh-action@master
