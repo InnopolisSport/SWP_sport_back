@@ -37,7 +37,7 @@ def get_sport_schedule(
     ).filter(
         (Q(sport__id=sport_id) if sport_id != -1 else Q(sport=None)) &
         medical_group_condition &
-        qr_condition &
+        # qr_condition &
         Q(schedule__isnull=False) &
         Q(semester__id=get_ongoing_semester().id)
     ).values(
