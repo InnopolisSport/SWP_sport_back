@@ -1,11 +1,53 @@
-name: Tests
+name: Tests, build and push
 on: [push, workflow_dispatch]
 jobs:
-  run_tests:
+  build-push:
+    name: Build and push image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ghcr.io/${{ github.repository }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./adminpage
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  tests:
+    needs: [ build-push ]
     name: Run tests
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ghcr.io/${{ github.repository }}
+
+      - name: Set env
+        run: echo "IMAGE=${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -27,12 +69,3 @@ jobs:
 
       - name: Run tests
         run: docker-compose -p test_sport -f compose/docker-compose-test.yml exec -T adminpanel pytest
-
-#  cleanup:
-#    name: Cleanup test containers
-#    if: always()
-#    needs: run_tests
-#    runs-on: self-hosted
-#    steps:
-#      - name: Remove docker containers
-#        run: docker-compose -p test_sport -f compose/docker-compose-test.yml down --volumes --rmi all

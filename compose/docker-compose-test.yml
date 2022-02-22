@@ -1,11 +1,7 @@
 version: '3.5'
 services:
   adminpanel:
-    build:
-      context: ../adminpage
-      dockerfile: Dockerfile
-      args:
-        PYTHON_VERSION: 3.7
+    image: ${IMAGE}
     #   Wait for postgres to startup before running server
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
     restart: always
