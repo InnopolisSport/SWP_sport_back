@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION
 
-FROM python:${PYTHON_VERSION}-slim
+FROM python:3.9-slim
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /src
 WORKDIR /src
