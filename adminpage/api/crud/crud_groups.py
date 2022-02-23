@@ -27,7 +27,7 @@ def get_sports(all=False, student: Optional[Student] = None):
     # w/o distinct returns a lot of duplicated
     sports = Sport.objects.filter(id__in=groups.values_list('sport')).distinct()
     if not all:
-        sports = sports.filter(special=False)
+        sports = sports.filter(special=False, visible=True)
 
     sports_list = []
     for sport in sports.all().values():
