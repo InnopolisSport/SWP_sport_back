@@ -13,6 +13,7 @@ class SportAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "special",
+        "visible"
     )
 
     list_filter = (
