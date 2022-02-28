@@ -116,7 +116,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django_sendfile',
-    'django_quill',
     'smartfields',
     'import_export',
     'rangefilter',
@@ -131,6 +130,7 @@ INSTALLED_APPS = [
     'media',
     'hijack',
     'hijack.contrib.admin',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -339,3 +339,9 @@ if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", None)
+
+TINYMCE_DEFAULT_CONFIG = {
+    'height' : 400,
+    'plugins': "link",
+    'toolbar': "styleselect | undo redo | bold italic | alignleft aligncenter alignright | link"
+}

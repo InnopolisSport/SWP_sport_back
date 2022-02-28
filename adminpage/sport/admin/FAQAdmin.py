@@ -12,7 +12,7 @@ class FAQAdmin(admin.ModelAdmin):
 
     list_display = (
         'question',
-        'format_answer',
+        'formated_answer',
         'category',
     )
 
@@ -20,8 +20,8 @@ class FAQAdmin(admin.ModelAdmin):
         "category",
     )
 
-    def format_answer(self, obj):
-        return format_html(obj.answer.html)
+    def formated_answer(self, obj):
+        return format_html(obj.answer)
 
 
 @admin.register(FAQCategory, site=site)
