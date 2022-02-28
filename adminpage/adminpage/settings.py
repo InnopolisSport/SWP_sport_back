@@ -340,8 +340,3 @@ if DEBUG:
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", None)
 
-TINYMCE_DEFAULT_CONFIG = {
-    'height' : 400,
-    'plugins': "link",
-    'toolbar': "styleselect | undo redo | bold italic | alignleft aligncenter alignright | link"
-}
