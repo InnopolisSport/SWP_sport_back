@@ -1,7 +1,6 @@
 from admin_auto_filters.filters import AutocompleteFilter
 from django import forms
 from django.conf import settings
-from django.contrib import admin
 from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils.html import format_html
@@ -16,35 +15,10 @@ from .utils import custom_order_filter, DefaultFilterMixIn
 import json
 import logging
 
-from django.db.models import JSONField 
 from django.contrib import admin
-from django.forms import widgets
-
 
 logger = logging.getLogger(__name__)
 
-
-class PrettyJSONWidget(widgets.Textarea):
-    
-
-    def format_value(self, value):
-        self.attrs['disabled'] = True
-        try:
-            value = json.dumps(json.loads(value), indent=2, sort_keys=True)
-            # these lines will try to adjust size of TextArea to fit to content
-            row_lengths = [len(r) for r in value.split('\n')]
-            self.attrs['rows'] = len(row_lengths)
-            self.attrs['cols'] = max(row_lengths)
-            return value
-        except Exception as e:
-            logger.warning("Error while formatting JSON: {}".format(e))
-            return super(PrettyJSONWidget, self).format_value(value)
-
-
-class JsonAdmin(DefaultFilterMixIn):
-    formfield_overrides = {
-        JSONField: {'widget': PrettyJSONWidget}
-    }
 
 class StudentTextFilter(AutocompleteFilter):
     title = "student"
@@ -75,7 +49,7 @@ class ReferenceAcceptRejectForm(forms.ModelForm):
 
 
 @admin.register(SelfSportReport, site=site)
-class SelfSportAdmin(JsonAdmin):
+class SelfSportAdmin(DefaultFilterMixIn):
     semester_filter = 'semester__id__exact'
 
     form = ReferenceAcceptRejectForm
@@ -103,7 +77,7 @@ class SelfSportAdmin(JsonAdmin):
         "training_type",
         ("medical_group", "student_status"),
         ("hours", "obtained_self_hours", "obtained_hours"),
-        ("parsed_data", "student_comment"),
+        ("parsed_data_json", "student_comment"),
         "comment",
         "link",
         # "reference_image",
@@ -125,7 +99,8 @@ class SelfSportAdmin(JsonAdmin):
         "attendance_link",
         "medical_group",
         "debt",
-        "student_comment"
+        "student_comment",
+        "parsed_data_json"
     )
 
     def attendance_link(self, obj):
@@ -183,6 +158,11 @@ class SelfSportAdmin(JsonAdmin):
     reference_image.allow_tags = True
 
     ordering = (F("approval").asc(nulls_first=True), "uploaded")
+
+    def parsed_data_json(self, obj: SelfSportReport):
+        return json.dumps(obj.parsed_data, indent=4)
+
+    parsed_data_json.short_description = "Parsed data"
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

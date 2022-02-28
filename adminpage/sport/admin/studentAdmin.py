@@ -12,7 +12,7 @@ from import_export.results import RowResult
 
 from api.crud import get_ongoing_semester, get_negative_hours, SumSubquery
 from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance, Debt, FitnessTestGrading, \
-    FitnessTestResult
+    FitnessTestResult, Enroll
 from sport.signals import get_or_create_student_group
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
@@ -307,6 +307,13 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
 
     def get_hijack_user(self, obj):
         return obj.user
+
+    def delete_sport(self, request, queryset):
+        queryset.update(sport=None)
+        Enroll.objects.filter(student__in=queryset, group__semester=get_ongoing_semester()).delete()
+    delete_sport.short_description = 'Deselect sport type and group'
+
+    actions = [delete_sport]
 
     list_select_related = (
         "user",
