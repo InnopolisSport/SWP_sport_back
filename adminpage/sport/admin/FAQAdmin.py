@@ -10,13 +10,16 @@ from .site import site
 class FAQAdmin(admin.ModelAdmin):
     list_display = (
         'question',
-        'answer',
+        'formated_answer',
         'category',
     )
 
     list_filter = (
         "category",
     )
+
+    def formated_answer(self, obj):
+        return format_html(obj.answer)
 
 
 @admin.register(FAQCategory, site=site)

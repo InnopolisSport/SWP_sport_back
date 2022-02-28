@@ -130,6 +130,7 @@ INSTALLED_APPS = [
     'media',
     'hijack',
     'hijack.contrib.admin',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -338,3 +339,4 @@ if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", None)
+
