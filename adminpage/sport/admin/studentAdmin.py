@@ -230,7 +230,7 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
         "is_online",
         "medical_group",
         'student_status',
-        'sport', 
+        'sport',
         'has_QR',
         HoursFilter
     )
@@ -239,6 +239,7 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
         "__str__",
         user__role,
         "has_QR",
+        "is_online",
         "course",
         "medical_group",
         "sport",
