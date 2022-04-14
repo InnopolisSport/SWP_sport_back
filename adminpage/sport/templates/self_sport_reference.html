@@ -12,46 +12,27 @@
             <form action="#" onsubmit="return false;">
                 <div class="modal-header">
                     <h5 class="modal-title">Self Sport Upload</h5>
-                    <button
-                        type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close"
-                    >
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body text-left">
                     <p>
                         Please submit <strong>a link</strong> to your
-                        <a
-                            href="https://www.strava.com/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            ><img src="{% static "sport/images/strava.png" %}"
-                            alt="strava.com" style="height: 0.7em;" ></a
+                        <a href="https://www.strava.com/" target="_blank" rel="noopener noreferrer"
+                            ><img src="{% static "sport/images/strava.png" %}" alt="strava.com" style="height: 0.7em;"
+                            ></a
                         >
                         activity.
                     </p>
-                    <div
-                        class="alert alert-info"
-                        role="alert"
-                        style="text-align: center"
-                    >
+                    <div class="alert alert-info" role="alert" style="text-align: center">
                         Checking your workouts <b>can take up to 2 weeks</b>.
                     </div>
                     <div class="form-group">
-                        <select
-                            name="training_type"
-                            class="form-control"
-                            id="self-sport-type"
-                        >
+                        <select name="training_type" class="form-control" id="self-sport-type">
                             <option disabled selected>Loading...</option>
                         </select>
-                        <small
-                            id="self-sport-type-help"
-                            class="form-text text-muted"
-                        ></small>
+                        <small id="self-sport-type-help" class="form-text text-muted"></small>
                         <input
                             name="link"
                             type="url"
@@ -65,13 +46,11 @@
                         />
                     </div>
                     <p id="description-ok">
-                        System <b>automatically set the number of hours</b> you
-                        have accumulated during the training.
+                        System <b>automatically set the number of hours</b> you have accumulated during the training.
                         <i>Change it if something went wrong</i>.
                     </p>
                     <p id="description-error" class="d-none">
-                        <b>An error has occured</b>. Please
-                        <b>specify the number of hours</b> you have accumulated
+                        <b>An error has occured</b>. Please <b>specify the number of hours</b> you have accumulated
                         during the training.
                     </p>
                     <div class="form-group mt-3">
