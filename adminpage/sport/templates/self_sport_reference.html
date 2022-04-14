@@ -19,9 +19,10 @@
                 <div class="modal-body text-left">
                     <p>
                         Please submit <strong>a link</strong> to your
-                        <a href="https://www.strava.com/" target="_blank" rel="noopener noreferrer"
-                            ><img src="{% static "sport/images/strava.png" %}" alt="strava.com" style="height: 0.7em;"
-                            ></a
+                        <a href="https://www.strava.com/" target="_blank" rel="noopener noreferrer">Strava</a>
+                        or
+                        <a href="https://www.trainingpeaks.com/" target="_blank" rel="noopener noreferrer"
+                            >TrainingPeaks</a
                         >
                         activity.
                     </p>
@@ -38,7 +39,7 @@
                             type="url"
                             class="form-control mt-3"
                             maxlength="100"
-                            placeholder="Strava activity link"
+                            placeholder="Activity link"
                             pattern="^(http|https):\/\/.*"
                             title='The link must start with "http://" or "https://"'
                             id="self-sport-text-input"
@@ -58,7 +59,7 @@
                             type="number"
                             class="form-control"
                             maxlength="10"
-                            placeholder="Waiting for the Strava link"
+                            placeholder="Waiting for the activity link"
                             title="The number format: N (integer)"
                             id="self-sport-number-input"
                             disabled
