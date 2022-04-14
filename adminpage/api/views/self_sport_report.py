@@ -42,6 +42,7 @@ class SelfSportErrors:
         4, "You can't submit link submitted previously or link is invalid."
     )
 
+
 @swagger_auto_schema(
     method="Get",
     responses={
@@ -72,8 +73,10 @@ def get_self_sport_types(request, **kwargs):
 @parser_classes([MultiPartParser])
 def self_sport_upload(request, **kwargs):
     current_time = datetime.now()
-    semester_start = datetime.combine(get_ongoing_semester().start, datetime.min.time())
-    semester_end = datetime.combine(get_ongoing_semester().end, datetime.max.time())
+    semester_start = datetime.combine(
+        get_ongoing_semester().start, datetime.min.time())
+    semester_end = datetime.combine(
+        get_ongoing_semester().end, datetime.max.time())
     if not semester_start <= current_time <= semester_end:
         return Response(
             status=status.HTTP_403_FORBIDDEN,
@@ -125,6 +128,7 @@ def self_sport_upload(request, **kwargs):
 
     return Response({})
 
+
 @swagger_auto_schema(
     method="GET",
     operation_description="Strava link parsing",
@@ -158,7 +162,8 @@ def get_strava_activity_info(request, **kwargs):
     txt = requests.get(url).text
     soup = BeautifulSoup(txt)
     try:
-        json_string = soup.html.body.find_all('div', attrs={"data-react-class":"ActivityPublic"})[0].get("data-react-props")
+        json_string = soup.html.body.find_all(
+            'div', attrs={"data-react-class": "ActivityPublic"})[0].get("data-react-props")
     except IndexError:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
@@ -169,7 +174,7 @@ def get_strava_activity_info(request, **kwargs):
 
     time_string = data['activity']["time"]
     training_type = data['activity']["type"]
-    distance_float = float(data['activity']["distance"][:-3]) # km
+    distance_float = float(data['activity']["distance"][:-3])  # km
 
     if (len(time_string) == 5):
         time_string = "00:" + time_string
@@ -184,13 +189,14 @@ def get_strava_activity_info(request, **kwargs):
     parsed_time = datetime.strptime(time_string, format_string)
     if parsed_time.second != 0:
         if parsed_time.minute == 59:
-            final_time = time(parsed_time.hour + 1, 0, 0) 
+            final_time = time(parsed_time.hour + 1, 0, 0)
         else:
             final_time = time(parsed_time.hour, parsed_time.minute + 1, 0)
     total_minutes = final_time.hour * 45 + final_time.minute
 
-    speed = round(distance_float / (total_minutes / 60), 1) # for Run, Ride, Walk
-    pace = round(total_minutes / (distance_float * 10), 1) # for Swim
+    speed = round(distance_float / (total_minutes / 60),
+                  1)  # for Run, Ride, Walk
+    pace = round(total_minutes / (distance_float * 10), 1)  # for Swim
 
     approved = None
     out_dict = dict()

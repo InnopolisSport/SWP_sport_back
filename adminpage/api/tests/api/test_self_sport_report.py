@@ -199,7 +199,7 @@ def test_valid_strava_link_parsing(
             'speed': 10.0,
             'hours': 1,
             'approved': True
-            }
+        }
         )
 
 
