@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Sports{% endblock %} {# Sport type choose #}
+{% block title %}Sports & Clubs{% endblock %} {# Sport type choose #}
 
 {% block extrahead %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -33,7 +33,7 @@
                 {% if student_sport_group|length == 0 %}
                     <div class="mb-3">
                         <div class="alert alert-success" role="alert">
-                            To choose a <span class="badge badge-dark">SPORT TYPE</span> and 
+                            To choose a <span class="badge badge-dark">SPORT TYPE</span> and
                             enroll to a <span class="badge badge-info">SPORT GROUP</span>, <strong>see the schedule</strong>.
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                                     <td class="align-middle">{{ sport.num_of_groups }}</td>
                                     <td class="align-middle">
                                         <a href="{% url "sport_schedule_calendar" sport.id %}" class="btn btn-outline-dark">
-                                            >
+                                            <i class="fa-solid fa-angle-right"></i>
                                         </a>
                                     </td>
                                 </tr>
