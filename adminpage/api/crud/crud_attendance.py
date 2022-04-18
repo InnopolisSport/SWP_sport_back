@@ -38,9 +38,9 @@ def get_brief_hours(student: Student) -> List[BriefHours]:
     brief_hours: List[BriefHours] = []
     for sem in hours:
         semester = Semester.objects.get(id=sem['id_sem'])
-
-        if not (student.enrollment_year < semester.start.year or (
-                student.enrollment_year == semester.start.year and semester.start.month > 9)):
+        # skip semester if it matches the enrollment_year but Spring
+        if student.enrollment_year >= semester.start.year and \
+                (student.enrollment_year != semester.start.year or semester.start.month <= 7):  # semester before august
             continue
         element: BriefHours = {
             'semester_id': semester.id,
@@ -75,36 +75,38 @@ def get_detailed_hours_and_self(student, semester: Semester):
     Retrieves statistics of hours in one semester
     """
     att = (Attendance.objects
-        .filter(training__group__semester=semester, student=student.student)
-        .annotate(
-            group=F("training__group__name"),
-            custom_name=F("training__custom_name"),
-            timestamp=Case(When(cause_report__isnull=False, then=F('cause_report__uploaded')),
-                           When(cause_reference__isnull=False, then=F('cause_reference__uploaded')),
-                           default=F('training__start')),
-            approved=Case(When(hours__gt=0, then=VTrue), default=VFalse)
-        )
-        .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
+           .filter(training__group__semester=semester, student=student.student)
+           .annotate(
+               group=F("training__group__name"),
+               custom_name=F("training__custom_name"),
+               timestamp=Case(When(cause_report__isnull=False, then=F('cause_report__uploaded')),
+                              When(cause_reference__isnull=False,
+                                   then=F('cause_reference__uploaded')),
+                              default=F('training__start')),
+               approved=Case(When(hours__gt=0, then=VTrue), default=VFalse)
+           )
+           .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
 
     self = (SelfSportReport.objects
-        .filter(semester=semester, student=student.student, attendance=None)
-        .annotate(
-            group=Value('Self training', output_field=CharField()),
-            custom_name=Concat(Value('[Self] ', output_field=CharField()), F('training_type__name')),
-            timestamp=F("uploaded"),
-            approved=F('approval')
-        )
-        .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
+            .filter(semester=semester, student=student.student, attendance=None)
+            .annotate(
+                group=Value('Self training', output_field=CharField()),
+                custom_name=Concat(
+                    Value('[Self] ', output_field=CharField()), F('training_type__name')),
+                timestamp=F("uploaded"),
+                approved=F('approval')
+            )
+            .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
 
     ref = (Reference.objects
-        .filter(semester=semester, student=student.student, attendance=None)
-        .annotate(
-            group=Value('Medical leave', output_field=CharField()),
-            custom_name=Value(None, output_field=CharField()),
-            timestamp=F("uploaded"),
-            approved=F('approval')
-        )
-        .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
+           .filter(semester=semester, student=student.student, attendance=None)
+           .annotate(
+               group=Value('Medical leave', output_field=CharField()),
+               custom_name=Value(None, output_field=CharField()),
+               timestamp=F("uploaded"),
+               approved=F('approval')
+           )
+           .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
 
     return att.union(self).union(ref).order_by('timestamp')
 
@@ -117,7 +119,8 @@ def mark_hours(training: Training, student_hours: Iterable[Tuple[int, float]]):
     """
     for student_id, student_mark in student_hours:
         if student_id <= 0 or student_mark < 0.0:
-            raise ValueError(f"All students id and marks must be non-negative, got {(student_id, student_mark)}")
+            raise ValueError(
+                f"All students id and marks must be non-negative, got {(student_id, student_mark)}")
         # Currently hours field is numeric(5,2), so
         # A field with precision 5, scale 2 must round to an absolute value less than 10^3.
         floor_max = 1000  # TODO: hardcoded limit
@@ -126,7 +129,8 @@ def mark_hours(training: Training, student_hours: Iterable[Tuple[int, float]]):
                              f"got {student_mark} -> {floor(student_mark)} >= {floor_max}")
     with connection.cursor() as cursor:
         args_add_str = b",".join(
-            cursor.mogrify("(%s, %s, %s)", (student_id, training.pk, student_mark))
+            cursor.mogrify("(%s, %s, %s)", (student_id,
+                           training.pk, student_mark))
             for student_id, student_mark in student_hours if student_mark > 0
         )
         args_del_str = b",".join(
@@ -171,7 +175,8 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
     sem_info_cur['hours_sem_max'] = get_ongoing_semester().hours
 
     try:
-        sem_info_cur['debt'] = Debt.objects.get(semester_id=get_ongoing_semester().id, student_id=student_id).debt
+        sem_info_cur['debt'] = Debt.objects.get(
+            semester_id=get_ongoing_semester().id, student_id=student_id).debt
     except Debt.DoesNotExist:
         sem_info_cur['debt'] = 0
 
@@ -187,7 +192,8 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
                 "hours_self_debt": 0.0, "hours_sem_max": 0.0, "debt": 0.0}
     last_sem_info_arr = []
 
-    last_semesters = Semester.objects.filter(end__lt=get_ongoing_semester().start).order_by('-end')
+    last_semesters = Semester.objects.filter(
+        end__lt=get_ongoing_semester().start).order_by('-end')
 
     for sem in last_semesters:
         if student in sem.academic_leave_students.all():
@@ -197,7 +203,7 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
             sem_info["hours_sem_max"] = sem.hours
             try:
                 sem_info['debt'] = Debt.objects.get(semester_id=get_ongoing_semester().id,
-                                                        student_id=student_id).debt
+                                                    student_id=student_id).debt
             except Debt.DoesNotExist:
                 sem_info['debt'] = 0
             query_attend_last_semester = Attendance.objects.filter(student_id=student_id,
@@ -219,13 +225,16 @@ def get_student_hours(student_id, **kwargs) -> TypedDict('StudentHours',
 
 
 def get_negative_hours(student_id, hours_info=None, **kwargs):
-    student_hours = get_student_hours(student_id) if hours_info is None else hours_info
+    student_hours = get_student_hours(
+        student_id) if hours_info is None else hours_info
     sem_now = student_hours['ongoing_semester']
     try:
-        debt = Debt.objects.get(student=student_id, semester=get_ongoing_semester()).debt
+        debt = Debt.objects.get(
+            student=student_id, semester=get_ongoing_semester()).debt
     except:
         debt = 0
-    res = sem_now['hours_self_debt'] + sem_now['hours_not_self'] + sem_now['hours_self_not_debt'] - debt
+    res = sem_now['hours_self_debt'] + sem_now['hours_not_self'] + \
+        sem_now['hours_self_not_debt'] - debt
 
     return res
 
@@ -243,10 +252,11 @@ def better_than(student_id):
     ))
 
     qs = qs.annotate(_ongoing_semester_hours=Coalesce(
-        SumSubquery(Attendance.objects.filter(training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
+        SumSubquery(Attendance.objects.filter(
+            training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
         0
     ))
-    
+
     qs = qs.annotate(complex_hours=ExpressionWrapper(
         F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
     ))
@@ -259,6 +269,7 @@ def better_than(student_id):
     if all == 1:
         return 100
 
-    worse = qs.filter(complex_hours__gt=0, complex_hours__lt=student_hours).count()
+    worse = qs.filter(complex_hours__gt=0,
+                      complex_hours__lt=student_hours).count()
 
     return round(worse / (all - 1) * 100, 1)
