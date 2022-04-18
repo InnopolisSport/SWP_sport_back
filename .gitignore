@@ -20,3 +20,5 @@ venv/
 .prettierrc
 
 frontend/
+
+.DS_Store
