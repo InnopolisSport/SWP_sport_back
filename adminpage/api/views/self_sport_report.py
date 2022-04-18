@@ -85,7 +85,8 @@ def self_sport_upload(request, **kwargs):
 
     serializer = SelfSportReportUploadSerializer(data=request.data)
     url = serializer.initial_data['link']
-    if SelfSportReport.objects.filter(link=url).exists() or re.match(r'https?://.*(?P<service>strava|tpks|trainingpeaks).*', url, re.IGNORECASE) is None:
+    if SelfSportReport.objects.filter(link=url).exists() or re.match(
+        r'https?://.*(?P<service>strava|tpks|trainingpeaks).*', url, re.IGNORECASE) is None:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*SelfSportErrors.INVALID_LINK)
@@ -95,7 +96,7 @@ def self_sport_upload(request, **kwargs):
 
     student = request.user  # user.pk == user.student.pk
     if request.user.student.medical_group_id \
-            < settings.SELFSPORT_MINIMUM_MEDICAL_GROUP_ID:
+        < settings.SELFSPORT_MINIMUM_MEDICAL_GROUP_ID:
         return Response(
             status=400,
             data=error_detail(*SelfSportErrors.MEDICAL_DISALLOWANCE),
@@ -103,7 +104,7 @@ def self_sport_upload(request, **kwargs):
     hours_info = get_student_hours(student.id)
     neg_hours = get_negative_hours(student.id, hours_info)
     if hours_info['ongoing_semester']['hours_self_not_debt'] >= 10 \
-            and not student.has_perm('sport.more_than_10_hours_of_self_sport'):
+        and not student.has_perm('sport.more_than_10_hours_of_self_sport'):
         return Response(
             status=400,
             data=error_detail(*SelfSportErrors.MAX_NUMBER_SELFSPORT),
@@ -194,14 +195,13 @@ def get_strava_activity_info(request, **kwargs):
             final_time = time(parsed_time.hour, parsed_time.minute + 1, 0)
     total_minutes = final_time.hour * 45 + final_time.minute
 
-    speed = round(distance_float / (total_minutes / 60),
-                  1)  # for Run, Ride, Walk
+    speed = round(distance_float / (total_minutes / 60), 1)  # for Run, Ride, Walk
     pace = round(total_minutes / (distance_float * 10), 1)  # for Swim
 
     approved = None
     out_dict = dict()
     out_dict['distance_km'] = distance_float
-    k = 0.95                                        # 5% bonus for distanse
+    k = 0.95  # 5% bonus for distanse
     if training_type == "Run":
         academic_hours = round(distance_float / (5 * k))
         out_dict['type'] = 'RUNNING'
@@ -209,7 +209,7 @@ def get_strava_activity_info(request, **kwargs):
         if speed >= 8.6:
             approved = True
     elif training_type == "Swim":
-        distance_float += 0.05      # bonus 50m because Strava unauth rounds by 1 digit
+        distance_float += 0.05  # bonus 50m because Strava unauth rounds by 1 digit
         if distance_float < 3.95:
             academic_hours = round(distance_float / (1.5 * k))
         else:
