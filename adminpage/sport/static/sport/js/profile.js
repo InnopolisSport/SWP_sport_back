@@ -570,10 +570,10 @@ async function submit_self_sport() {
         return false;
     }
 
-    if (!link) {
-        toastr.error('You should submit a link to your Strava activity');
-        return false;
-    }
+	if (!link) {
+		toastr.error('You should submit a link to your Strava or TrainingPeaks activity');
+		return false;
+	}
 
     if (!hours) {
         toastr.error('You should input hours');
@@ -601,17 +601,16 @@ async function submit_self_sport() {
     //     formData.append(fileInput.name, file);
     // }
 
-    if (link) {
-        if (
-            (link.startsWith('http://') || link.startsWith('https://')) &&
-            link.match('https?://.*strava.*')
-        ) {
-            formData.append(linkInput.name, link);
-        } else {
-            toastr.error('You should submit a link to your Strava activity');
-            return false;
-        }
-    }
+	if (link) {
+		if (
+			link.match('https?:\/\/.*(strava|tpks|trainingpeaks).*')
+		) {
+			formData.append(linkInput.name, link);
+		} else {
+			toastr.error('You should submit a link to your Strava or TrainingPeaks activity');
+			return false;
+		}
+	}
 
     formData.append(typeInput.name, type);
     formData.append('hours', hours);

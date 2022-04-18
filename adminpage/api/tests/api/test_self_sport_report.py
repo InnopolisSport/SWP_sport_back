@@ -107,7 +107,7 @@ def test_reference_upload_valid_link(
     response = client.post(
         f"/{settings.PREFIX}api/selfsport/upload",
         data={
-            "link": "https://www.strava.com/activities/5324378543",
+            "link": "http://tpks.ws/CYU4LCMPDI6E7TI4FEYTRMETSU",
             "hours": 2,
             "training_type": selfsport_type.pk,
         },
@@ -199,7 +199,7 @@ def test_valid_strava_link_parsing(
             'speed': 10.0,
             'hours': 1,
             'approved': True
-            }
+        }
         )
 
 
