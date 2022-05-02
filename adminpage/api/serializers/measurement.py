@@ -2,8 +2,9 @@ from rest_framework import serializers
 
 
 class Measurement(serializers.Serializer):
-    name = serializers.CharField()
-    value_unit = serializers.CharField()
+    student_id = serializers.IntegerField()
+    measurement_name = serializers.CharField()
+    value = serializers.IntegerField()
 
 
 class MeasurementSession(serializers.Serializer):
