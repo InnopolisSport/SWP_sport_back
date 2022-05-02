@@ -8,7 +8,7 @@ class MeasurementSession(models.Model):
         null=False,
         blank=False
     )
-    date = models.DateTimeField(null=False)
+    date = models.DateField(null=False)
     semester = models.ForeignKey(
         'Semester',
         on_delete=models.CASCADE,

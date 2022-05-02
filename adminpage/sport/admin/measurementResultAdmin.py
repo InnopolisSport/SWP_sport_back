@@ -1,11 +1,12 @@
 from django.contrib import admin
 
-from api.crud import get_ongoing_semester
-from sport.models import FitnessTestExercise, FitnessTestGrading
+from sport.models import MeasurementResult
+
 
 from .site import site
 
 
+@admin.register(MeasurementResult, site=site)
 class MeasurementResult(admin.ModelAdmin):
     list_display = (
         "session",

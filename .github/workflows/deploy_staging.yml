@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            cd ${{ secrets.REPOSITORY_PATH }}/compose
+            cd ${{ secrets.REPOSITORY_PATH }}/GITHUB_REF
             git reset --hard
             git checkout ${GITHUB_REF}
             git pull
