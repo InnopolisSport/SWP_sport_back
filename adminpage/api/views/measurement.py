@@ -18,6 +18,7 @@ from api.permissions import (
 from api.serializers import (
     Measurement as MeasurementSerializer,
     MeasurementResult,
+    MeasurementResults,
     EmptySerializer,
     NotFoundSerializer,
     ErrorSerializer, SuggestionQuerySerializer, SuggestionSerializer
@@ -35,11 +36,12 @@ def get_measurement(request, **kwargs):
 def get_sessions(request, **kwargs):
     return Response(MeasurementSession.objects.all())
 
+
 @swagger_auto_schema(
     method="GET",
-    query_serializer=MeasurementResult,
+    query_serializer=MeasurementResults,
     responses={
-        status.HTTP_200_OK: MeasurementResult(many=True),
+        status.HTTP_200_OK: MeasurementResults,
     }
 )
 @api_view(["GET"])

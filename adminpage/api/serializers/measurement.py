@@ -14,3 +14,7 @@ class MeasurementResult(serializers.Serializer):
     approved = serializers.BooleanField()
     date = serializers.DateField()
     semester = serializers.CharField()
+
+
+class MeasurementResults(serializers.Serializer):
+    results = MeasurementResult(many=True)
