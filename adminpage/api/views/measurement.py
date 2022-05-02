@@ -36,14 +36,6 @@ def get_measurement(request, **kwargs):
 def get_sessions(request, **kwargs):
     return Response(MeasurementSession.objects.all())
 
-@swagger_auto_schema(
-    method="GET",
-    request_body=Measurement,
-    responses={
-        status.HTTP_404_NOT_FOUND: NotFoundSerializer,
-        status.HTTP_400_BAD_REQUEST: ErrorSerializer,
-    },
-)
 @api_view(["GET"])
 @permission_classes([IsStudent])
 def get_results(request, **kwargs):
