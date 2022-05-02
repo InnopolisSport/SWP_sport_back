@@ -15,5 +15,5 @@ class MeasurementSession(serializers.Serializer):
 
 class MeasurementResult(serializers.Serializer):
     session_id = serializers.IntegerField()
-    measurement = serializers.IntegerField()
+    measurement_id = serializers.IntegerField()
     value = serializers.IntegerField()

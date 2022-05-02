@@ -55,3 +55,8 @@ from .fitness_test import (
     FitnessTestResult,
     FitnessTestResults
 )
+from .measurement import (
+    Measurement,
+    MeasurementResult,
+    MeasurementSession
+)

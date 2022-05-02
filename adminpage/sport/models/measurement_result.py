@@ -16,4 +16,4 @@ class MeasurementResult(models.Model):
         blank=False
     )
 
-    value = models.IntegerField()
+    value = models.IntegerField(default=0)
