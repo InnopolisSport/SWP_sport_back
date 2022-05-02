@@ -87,18 +87,25 @@ def get_result(request, **kwargs):
     data = []
     for semester_name in results.values('semester__name').distinct():
         semester = Semester.objects.get(name=semester_name['semester__name'])
-        result_list = [{
-            'exercise': result.exercise.exercise_name,
-            'unit': result.exercise.value_unit,
-            'value': result.value if result.exercise.select is None else result.exercise.select.split(',')[result.value],
-            'score': get_score(request.user.student, result),
-            'max_score': get_max_score(request.user.student, result),
-        } for result in results.filter(semester__name=semester.name)]
-        total_score = sum(r['score'] for r in result_list)
+
+        grade = True
+        total_score = 0
+        result_list = []
+        for result in results.filter(semester__name=semester.name):
+            result_list.append({
+                'exercise': result.exercise.exercise_name,
+                'unit': result.exercise.value_unit,
+                'value': (result.value if result.exercise.select is None
+                          else result.exercise.select.split(',')[result.value]),
+                'score': get_score(request.user.student, result),
+                'max_score': get_max_score(request.user.student, result),
+            })
+            grade = grade and result_list[-1]['score'] >= result.exercise.threshold
+            total_score += result_list[-1]['score']
 
         data.append({
             'semester': semester.name,
-            'grade': total_score >= semester.points_fitness_test,
+            'grade': grade,
             'total_score': total_score,
             'details': result_list,
         })
