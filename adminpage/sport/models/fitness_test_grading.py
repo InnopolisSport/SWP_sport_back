@@ -11,12 +11,6 @@ class FitnessTestGrading(models.Model):
         null=False,
         blank=False,
     )
-    semester = models.ForeignKey(
-        'Semester',
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-    )
 
     gender = models.IntegerField(
         choices=GenderInFTGrading.choices,

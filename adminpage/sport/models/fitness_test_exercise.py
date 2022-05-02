@@ -8,6 +8,13 @@ class FitnessTestExercise(models.Model):
         blank=False
     )
 
+    semester = models.ForeignKey(
+        'Semester',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
     value_unit = models.CharField(
         max_length=1000,
         null=True,
@@ -27,4 +34,4 @@ class FitnessTestExercise(models.Model):
     )
 
     def __str__(self):
-        return self.exercise_name
+        return f"[{self.semester}] {self.exercise_name}"
