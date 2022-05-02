@@ -7,7 +7,7 @@ from sport.models import FitnessTestResult, FitnessTestExercise, FitnessTestGrad
 
 
 def get_all_exercises():
-    return list(FitnessTestGrading.objects.filter(semester=get_ongoing_semester()))
+    return list(FitnessTestExercise.objects.filter(semester=get_ongoing_semester()))
 
 
 def post_student_exercises_result_crud(results, session_id, teacher):

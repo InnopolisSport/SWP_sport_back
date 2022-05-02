@@ -18,36 +18,21 @@ from api.serializers import (
 )
 from api.serializers.attendance import SuggestionQueryFTSerializer
 from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull, FitnessTestStudentResults
-from sport.models import FitnessTestSession, FitnessTestResult, Semester
+from sport.models import Group, FitnessTestSession, FitnessTestResult, FitnessTestExercise, Semester
 
 
-def convert_exercise(t) -> dict:
+def convert_exercise(t: FitnessTestExercise) -> dict:
     return {
-        "name": t.exercise.exercise_name,
-        "unit": t.exercise.value_unit,
-        "select": t.exercise.select.split(',') if t.exercise.select is not None else None,
-        "score": [t.score],
-        "start_range": [t.start_range],
-        "end_range": [t.end_range]
+        "name": t.exercise_name,
+        "unit": t.value_unit,
+        "select": t.select.split(',') if t.select is not None else None,
     }
 
 
 @api_view(["GET"])
 def get_exercises(request, **kwargs):
     exercises = get_all_exercises()
-    result_exercises = []
-
-    for exercise in exercises:
-        exercise_dict = convert_exercise(exercise)
-        x = list(map(lambda x: x if x['name'] == exercise_dict['name'] else None, result_exercises))
-        x = [element for element in x if element != None]
-        if len(x) != 0:
-            exercise_index = result_exercises.index(x[0])
-            result_exercises[exercise_index]['score'].append(exercise_dict['score'][0])
-            result_exercises[exercise_index]['start_range'].append(exercise_dict['start_range'][0])
-            result_exercises[exercise_index]['end_range'].append(exercise_dict['end_range'][0])
-        else:
-            result_exercises.append(exercise_dict)
+    result_exercises = [convert_exercise(exercise) for exercise in exercises]
     return Response(result_exercises)
 
 
@@ -58,9 +43,12 @@ def get_exercises(request, **kwargs):
     }
 )
 @api_view(["GET"])
-def get_sessions(request, **kwargs):
-    sessions = FitnessTestSession.objects.all()
-    resp = [{'id': s.id, 'date': s.date, 'teacher': str(s.teacher)} for s in sessions]
+def get_sessions(request, semester_id=None, **kwargs):
+    if semester_id is None:
+        sessions = FitnessTestSession.objects.all()
+    else:
+        sessions = FitnessTestSession.objects.filter(semester_id=semester_id)
+    resp = [{'id': s.id, 'semester': s.semester.name, 'date': s.date, 'teacher': str(s.teacher)} for s in sessions]
 
     return Response(resp)
 
