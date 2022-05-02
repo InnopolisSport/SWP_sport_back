@@ -16,9 +16,7 @@ from api.permissions import (
 )
 
 from api.serializers import (
-    Measurement as Meas,
-    MeasurementResult,
-    MeasurementSession,
+    Measurement as MeasurementSerializer,
     EmptySerializer,
     NotFoundSerializer,
     ErrorSerializer, SuggestionQuerySerializer, SuggestionSerializer
@@ -60,7 +58,7 @@ def get_results(request, **kwargs):
 
 @swagger_auto_schema(
     method="POST",
-    request_body=Meas,
+    request_body=MeasurementSerializer,
     responses={
         status.HTTP_404_NOT_FOUND: NotFoundSerializer,
         status.HTTP_400_BAD_REQUEST: ErrorSerializer,
