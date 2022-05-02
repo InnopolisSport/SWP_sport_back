@@ -1,9 +1,9 @@
 import datetime
 
-from django.db.models import QuerySet, Q
+from django.db.models import Q
 
-from sport.models import FitnessTestResult, FitnessTestExercise, FitnessTestGrading, Student, FitnessTestSession
 from api.crud import get_ongoing_semester
+from sport.models import FitnessTestResult, FitnessTestExercise, FitnessTestGrading, Student, FitnessTestSession
 
 
 def get_all_exercises():

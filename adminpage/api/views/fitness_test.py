@@ -1,28 +1,24 @@
 from collections import defaultdict
 
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, get_list_or_404
-from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
+from api.crud import get_all_exercises, post_student_exercises_result_crud, \
+    get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.permissions import (
     IsTrainer, IsStudent,
 )
 from api.serializers import (
     FitnessTestResults,
-    EmptySerializer,
     NotFoundSerializer,
-    ErrorSerializer, SuggestionQuerySerializer, SuggestionSerializer
+    ErrorSerializer, SuggestionSerializer
 )
-
-from api.crud import get_all_exercises, post_student_exercises_result_crud, \
-    get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.serializers.attendance import SuggestionQueryFTSerializer
 from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull
-from sport.models import Group, FitnessTestSession, FitnessTestResult, Semester
+from sport.models import FitnessTestSession, FitnessTestResult, Semester
 
 
 def convert_exercise(t) -> dict:
@@ -46,8 +42,6 @@ def get_exercises(request, **kwargs):
         x = list(map(lambda x: x if x['name'] == exercise_dict['name'] else None, result_exercises))
         x = [element for element in x if element != None]
         if len(x) != 0:
-            print(x)
-            print(result_exercises)
             exercise_index = result_exercises.index(x[0])
             result_exercises[exercise_index]['score'].append(exercise_dict['score'][0])
             result_exercises[exercise_index]['start_range'].append(exercise_dict['start_range'][0])
