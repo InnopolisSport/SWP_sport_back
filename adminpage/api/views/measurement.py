@@ -34,12 +34,15 @@ def get_measurement(request, **kwargs):
 def get_sessions(request, **kwargs):
     return Response(MeasurementSession.objects.all())
 
+
 @api_view(["GET"])
 @permission_classes([IsStudent])
 def get_results(request, **kwargs):
-    session = MeasurementSession.objects.filter(date=datetime.datetime.today(), semester=get_ongoing_semester()).get(0, None)
-    if session is None:
+    session = MeasurementSession.objects.filter(student=request.user.student)
+    if len(session) == 0:
         return Response([])
+    else:
+        session = session[0]
     results = MeasurementResult.objects.filter(session=session)
     response = []
     if len(results) == 0:
@@ -55,6 +58,7 @@ def get_results(request, **kwargs):
         }
         response.append(_result)
     return Response(response)
+
 
 @swagger_auto_schema(
     method="POST",
