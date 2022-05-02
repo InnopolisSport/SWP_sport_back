@@ -5,3 +5,12 @@ class Measurement(serializers.Serializer):
     student_id = serializers.IntegerField()
     measurement_name = serializers.CharField()
     value = serializers.IntegerField()
+
+
+class MeasurementResult(serializers.Serializer):
+    measurement = serializers.CharField()
+    uint = serializers.CharField()
+    value = serializers.IntegerField()
+    approved = serializers.BooleanField()
+    date = serializers.DateField()
+    semester = serializers.CharField()
