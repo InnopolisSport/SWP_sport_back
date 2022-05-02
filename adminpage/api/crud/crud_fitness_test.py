@@ -25,7 +25,7 @@ def post_student_exercises_result_crud(results, session_id, teacher):
 def get_grading_scheme(student: Student, result: FitnessTestResult):
     return FitnessTestGrading.objects.filter(Q(gender__exact=-1) | Q(gender__exact=student.gender),
                                              exercise=result.exercise,
-                                             semester=get_ongoing_semester())
+                                             semester=result.semester)
 
 
 def get_score(student: Student, result: FitnessTestResult):

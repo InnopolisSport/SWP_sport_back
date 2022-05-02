@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -22,7 +22,7 @@ from api.crud import get_all_exercises, post_student_exercises_result_crud, \
     get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.serializers.attendance import SuggestionQueryFTSerializer
 from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull
-from sport.models import Group, FitnessTestSession, FitnessTestResult
+from sport.models import Group, FitnessTestSession, FitnessTestResult, Semester
 
 
 def convert_exercise(t) -> dict:
@@ -40,7 +40,7 @@ def convert_exercise(t) -> dict:
 def get_exercises(request, **kwargs):
     exercises = get_all_exercises()
     result_exercises = []
-    
+
     for exercise in exercises:
         exercise_dict = convert_exercise(exercise)
         x = list(map(lambda x: x if x['name'] == exercise_dict['name'] else None, result_exercises))
@@ -80,25 +80,30 @@ def get_sessions(request, **kwargs):
 @api_view(["GET"])
 @permission_classes([IsStudent])
 def get_result(request, **kwargs):
-    results = FitnessTestResult.objects.filter(student_id=request.user.student.user_id, semester=get_ongoing_semester())
-    if len(results) == 0:
-        return Response(status=404)
-    result_list = [{
-        'exercise': result.exercise.exercise_name,
-        'unit': result.exercise.value_unit,
-        'value': result.value if result.exercise.select is None else result.exercise.select.split(',')[result.value],
-        'score': get_score(request.user.student, result),
-        'max_score': get_max_score(request.user.student, result)
-    } for result in results]
+    results = FitnessTestResult.objects.filter(student_id=request.user.student.user_id)
+    if not len(results):
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    total_score = sum(r['score'] for r in result_list)
+    data = []
+    for semester_name in results.values('semester__name').distinct():
+        semester = Semester.objects.get(name=semester_name['semester__name'])
+        result_list = [{
+            'exercise': result.exercise.exercise_name,
+            'unit': result.exercise.value_unit,
+            'value': result.value if result.exercise.select is None else result.exercise.select.split(',')[result.value],
+            'score': get_score(request.user.student, result),
+            'max_score': get_max_score(request.user.student, result),
+        } for result in results.filter(semester__name=semester.name)]
+        total_score = sum(r['score'] for r in result_list)
 
-    return Response({
-        'semester': get_ongoing_semester().name,
-        'grade': total_score >= get_ongoing_semester().points_fitness_test,
-        'total_score': total_score,
-        'details': result_list,
-    })
+        data.append({
+            'semester': semester.name,
+            'grade': total_score >= semester.points_fitness_test,
+            'total_score': total_score,
+            'details': result_list,
+        })
+
+    return Response(data=data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(
