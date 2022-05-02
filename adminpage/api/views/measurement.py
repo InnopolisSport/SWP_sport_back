@@ -32,12 +32,6 @@ def get_measurement(request, **kwargs):
     return Response(Measurement.objects.all())
 
 
-@swagger_auto_schema(
-    method="GET",
-    responses={
-        status.HTTP_200_OK: MeasurementSession
-    }
-)
 @api_view(["GET"])
 def get_sessions(request, **kwargs):
     return Response(MeasurementSession.objects.all())
@@ -46,7 +40,9 @@ def get_sessions(request, **kwargs):
 @api_view(["GET"])
 @permission_classes([IsStudent])
 def get_results(request, **kwargs):
-    session = MeasurementSession.objects.get_or_create(date=datetime.datetime.today(), semester=get_ongoing_semester())
+    session = MeasurementSession.objects.filter(date=datetime.datetime.today(), semester=get_ongoing_semester()).get(0, None)
+    if session is None:
+        return Response([])
     results = MeasurementResult.objects.filter(session=session)
     response = []
     if len(results) == 0:
@@ -70,7 +66,7 @@ def post_student_measurement(request, **kwargs):
     if hasattr(request.user, 'trainer'):
         approved = True
     student = request.user.student if approved is False else Student.objects.get(id=request.data.student_id)
-    measurement = Measurement.objects.get(name=request.data.measurement_name)
+    measurement = Measurement.objects.filter(name=request.data.measurement_name).get(0, None)
     session = MeasurementSession.objects.get_or_create(student=student, approved=approved,
                                                        date=datetime.datetime.today(),
                                                        semester=get_ongoing_semester())
