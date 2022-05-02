@@ -22,7 +22,7 @@ class FitnessTestExcerciseInline(admin.TabularInline):
 @admin.register(FitnessTestExercise, site=site)
 class FitnessTestExerciseAdmin(admin.ModelAdmin):
     list_display = (
-        'exercise_name',
+        '__str__',
         'value_unit',
         'threshold'
     )

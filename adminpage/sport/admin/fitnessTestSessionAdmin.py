@@ -8,8 +8,8 @@ from .site import site
 class FitnessTestResultInline(admin.TabularInline):
     model = FitnessTestResult
 
-    fields = ("student", "semester", "exercise", "value")
-    readonly_fields = ("student", "semester", "exercise")
+    fields = ("student", "exercise", "value")
+    readonly_fields = ("student", "exercise")
 
     extra = 0
 
@@ -29,7 +29,7 @@ class FitnessTestResultInline(admin.TabularInline):
 class AddFitnessTestResultInline(FitnessTestResultInline):
     extra = 4
     readonly_fields = ()
-    autocomplete_fields = ("student", "semester")
+    autocomplete_fields = ("student", )
 
     def has_view_or_change_permission(self, request, obj=None):
         return False
