@@ -9,8 +9,9 @@ class MeasurementResult(models.Model):
         blank=False
     )
 
-    measurement = models.ForeignKey(
-        'MeasurementStudent',
+    measurement = mo
+    dels.ForeignKey(
+        'Measurement',
         on_delete=models.CASCADE,
         null=False,
         blank=False
