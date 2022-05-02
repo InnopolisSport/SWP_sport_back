@@ -72,11 +72,16 @@ def post_student_measurement(request, **kwargs):
     if hasattr(request.user, 'trainer'):
         approved = True
     student = request.user.student if approved is False else Student.objects.get(user_id=request.data['student_id'])
-    measurement = Measurement.objects.filter(name=request.data['measurement_name']).get(0, None)
+    measurement = Measurement.objects.filter(name=request.data['measurement_name'])
+    if len(measurement) == 0:
+        return Response({})
+    else:
+        measurement = measurement[0]
     session = MeasurementSession.objects.get_or_create(student=student, approved=approved,
                                                        date=datetime.datetime.today(),
-                                                       semester=get_ongoing_semester())
+                                                       semester=get_ongoing_semester())[0]
+
     result = MeasurementResult.objects.get_or_create(measurement=measurement, session=session)
-    result.value = max(result.value, request.data['value'])
-    result.save()
-    return Response({'result_id': result.id})
+    result[0].value = max(result[0].value, request.data['value'])
+    result[0].save()
+    return Response({'result_id': result[0].id})
