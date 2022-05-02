@@ -57,4 +57,5 @@ from .fitness_test import (
 )
 from .measurement import (
     Measurement,
+    MeasurementResult
 )
