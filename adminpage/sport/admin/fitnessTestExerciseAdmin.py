@@ -18,6 +18,7 @@ class FitnessTestExcerciseInline(admin.TabularInline):
             db_field, request, **kwargs
         )
 
+
 @admin.register(FitnessTestExercise, site=site)
 class FitnessTestExerciseAdmin(admin.ModelAdmin):
     list_display = (
