@@ -37,7 +37,7 @@ def get_sessions(request, **kwargs):
     return Response(MeasurementSession.objects.all())
 
 @swagger_auto_schema(
-    method="POST",
+    method="GET",
     request_body=Measurement,
     responses={
         status.HTTP_404_NOT_FOUND: NotFoundSerializer,
