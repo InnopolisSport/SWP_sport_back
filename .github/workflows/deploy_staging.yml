@@ -25,9 +25,9 @@ jobs:
             cd ${{ secrets.REPOSITORY_PATH }}/compose
             git reset --hard
             echo "TEST!!!!!!!!!!!!!!!!!!!!!!"
-            echo ${{ GITHUB_REF_NAME }}
+            echo ${{ github.ref }}
             echo "end TEST!!!!!!!!!!!!!!!!!!!!!!"
-            git checkout ${{ GITHUB_REF_NAME }}
+            git checkout ${{ github.ref }}
             git pull
             docker-compose -f docker-compose-prod.yml build
             docker-compose -f docker-compose-prod.yml down
