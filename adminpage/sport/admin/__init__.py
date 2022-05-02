@@ -30,3 +30,7 @@ from .fitnessTestResultAdmin import FitnessTestResultAdmin
 from .fitnessTestExerciseAdmin import FitnessTestExerciseAdmin
 from .fitnessTestSessionAdmin import FitnessTestSessionAdmin
 from .fitnessTestGradingAdmin import FitnessTestGradingAdmin
+from .measurementAdmin import Measurement
+from .measurementSessionAdmin import MeasurementSession
+from .measurementResultAdmin import MeasurementResult
+
