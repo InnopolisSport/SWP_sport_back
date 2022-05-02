@@ -731,9 +731,11 @@ fetch('/api/fitnesstest/result', {
                     </th>
                     <td class="text-left">
                         ${
-                            ex['unit']
+                            (ex['unit'] && ex['unit'] !== 'second(s)')
                                 ? `${ex['value']} ${ex['unit']}`
-                                : `${ex['value']}`
+                                : (ex['unit'] === 'second(s)') 
+                                    ? new Date(ex['value'] * 1000).toISOString().substr(14, 5)
+                                    : `${ex['value']}`
                         }
                     </td>
                     <td>
