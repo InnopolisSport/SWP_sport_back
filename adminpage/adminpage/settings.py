@@ -79,7 +79,7 @@ SCHEMA = os.getenv("SCHEMA", "http")
 HOSTNAME = os.getenv("HOSTNAME", "localhost")
 PORT = os.getenv("PORT", 80)
 
-BASE_URL = compose_base_url(SCHEMA, HOSTNAME, PORT)
+BASE_URL = compose_base_url(SCHEMA, HOSTNAME, 80)
 
 PREFIX = ""
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
