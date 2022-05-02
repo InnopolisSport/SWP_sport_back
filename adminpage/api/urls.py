@@ -81,7 +81,6 @@ urlpatterns = [
 
     path(r"measurement/student_measurement", measurement.post_student_measurement),
     path(r"measurement/get_results", measurement.get_results),
-    path(r"")
 ]
 
 urlpatterns.extend([
