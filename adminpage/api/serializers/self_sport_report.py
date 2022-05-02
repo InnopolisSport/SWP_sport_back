@@ -24,7 +24,7 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
     # start = serializers.DateTimeField(required=True)
     # end = serializers.DateTimeField(required=True)
     hours = serializers.IntegerField()
-    student_comment = serializers.CharField(required=False)
+    student_comment = serializers.CharField(required=False, allow_blank=True)
     parsed_data = serializers.JSONField(required=False)
 
     class Meta:
@@ -37,14 +37,16 @@ class SelfSportReportUploadSerializer(serializers.ModelSerializer):
             'parsed_data'
         )
 
-class ParseStrava(serializers.Serializer):
+
+class ActivitySerializer(serializers.Serializer):
     link = serializers.URLField(required=True)
 
-class ParsedStravaSerializer(serializers.Serializer):
+
+class ParsedActivitySerializer(serializers.Serializer):
     training_type = serializers.CharField()
-    pace = serializers.CharField(required=False)
-    speed = serializers.CharField(required=False)
-    distance_km = serializers.IntegerField()
+    avg_pace = serializers.CharField(required=False)  # Intended to be used by teachers
+    avg_speed = serializers.CharField(required=False)  # Measured in km/h
+    avg_heart_rate = serializers.CharField(required=False)  # Measured in bpm
+    distance = serializers.IntegerField()  # Measured in km
     hours = serializers.IntegerField()
     approved = serializers.BooleanField()
-    
