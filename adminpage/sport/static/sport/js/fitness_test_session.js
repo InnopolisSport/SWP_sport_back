@@ -131,10 +131,6 @@ function add_student_row_for_exercise(exercise, student) {
                         text: option
                     })
                 );
-            // let _option = document.createElement('option');
-            // _option.setAttribute('value', `${index}`);
-            // _option.innerHTML = option;
-            // $(`#ex_${exercise.id}_select`).first().append(_option);
         });
 	} else {
         row += `<td style="cursor: pointer">
@@ -165,58 +161,6 @@ function add_new_student_rows(student) {
 	$('#ft-session-save').removeAttr('disabled');
 	exercises_global.forEach((exercise) => {
         add_student_row_for_exercise(exercise, student);
-		// if (!exercise.select) {
-		// 	row = $(`<tr id="student_${student_id}_${exercise.id}">
-        //         <td>${full_name}
-        //         ${
-		// 			med_group === 'Special 1'
-		// 				? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>`
-		// 				: ''
-		// 		}
-        //         </td>
-        //         <td style="cursor: pointer">
-        //             <div class="input-group" onsubmit="return false;">
-        //                 <input class="form-control" id="ex_${exercise.id}_value" ${
-		// 					exercise.unit === 'second(s)'
-		// 						? 'type="time" min="00:00:00" value="00:00:00"'
-		// 						: 'type="number" min="0" value="0"'
-		// 					}"
-		// 				step="1"/>
-        //                 ${
-		// 					(exercise.unit && exercise.unit !== 'second(s)')
-		// 						? `<div class="input-group-append">
-        //                     <span class="input-group-text">${exercise.unit}</span>
-        //                     </div>`
-		// 						: ''
-		// 				}
-        //             </div>
-        //         </td>
-        //     </tr>`);
-		// } else {
-		// 	row = $(`<tr id="student_${student_id}_${exercise.id}">
-        //         <td>${full_name}
-        //         ${
-		// 			med_group === 'Special 1'
-		// 				? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>`
-		// 				: ''
-		// 		}
-        //         </td>
-        //         <td style="cursor: pointer">
-        //             <select class="custom-select" id="ex_${exercise.id}_select">
-        //                 <option selected disabled value="-1">Choose...</option>
-        //             </select>
-        //         </td>
-        //     </tr>`);
-		// }
-		// $(`#ex-table-${exercise.id}`).prepend(row);
-		// if (exercise.select !== null) {
-		// 	for (let j = 0; j < exercises_global[i].ex_select.length; j++) {
-		// 		let option = document.createElement('option');
-		// 		option.setAttribute('value', `${j}`);
-		// 		option.innerHTML = exercises_global[i].ex_select[j];
-		// 		$(`#ex_${i}_select`).first().append(option);
-		// 	}
-		// }
     });
 }
 
@@ -271,7 +215,7 @@ $(function () {
 
 function save_table() {
 	const student_ids = Object.keys(students_in_table);
-	let res = [];
+	let result = [];
 	let cant_submit = false;
 	for (let i = 0; i < exercises_global.length; i++) {
 		if (student_ids.length === 0) {
@@ -309,7 +253,7 @@ function save_table() {
 				);
 				cant_submit = true;
 			}
-			res.push({
+			result.push({
                 student_id: sid,
                 exercise_id: exercise.id,
                 value: val });
@@ -325,9 +269,7 @@ function save_table() {
 				'Content-Type': 'application/json',
 				'X-CSRFToken': csrf_token,
 			},
-			body: JSON.stringify({
-				result: res,
-			}),
+			body: JSON.stringify(result),
 		})
 			.then((response) => {
 				if (response.ok) {
@@ -356,9 +298,7 @@ function save_table() {
 				'Content-Type': 'application/json',
 				'X-CSRFToken': csrf_token,
 			},
-			body: JSON.stringify({
-				result: res,
-			}),
+			body: JSON.stringify(result),
 		})
 			.then((response) => {
 				if (response.ok) {
