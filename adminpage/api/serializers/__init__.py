@@ -52,6 +52,6 @@ from .training import (
     TrainingInfoSerializer,
 )
 from .fitness_test import (
-    FitnessTestResult,
+    FitnessTestResultSerializer,
     FitnessTestResults
 )

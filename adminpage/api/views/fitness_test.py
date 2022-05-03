@@ -19,27 +19,19 @@ from api.serializers import (
 from api.crud import get_exercises_crud, post_student_exercises_result_crud, \
     get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.serializers.attendance import SuggestionQueryFTSerializer
-from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull, FitnessTestStudentResults, \
-    ExercisesSerializer
-from api.serializers.semester import SemesterSerializer, SemesterInSerializer
-from sport.models import Group, FitnessTestSession, FitnessTestResult, FitnessTestExercise, Semester
-
-
-def convert_exercise(t: FitnessTestExercise) -> dict:
-    return {
-        "id": t.id,
-        "semester": SemesterSerializer(t.semester).data,
-        "name": t.exercise_name,
-        "unit": t.value_unit,
-        "select": t.select.split(',') if t.select is not None else None,
-    }
+from api.serializers.fitness_test import FitnessTestExerciseSerializer, FitnessTestSessionSerializer, \
+    FitnessTestSessionWithResult, FitnessTestStudentResult
+from api.serializers.semester import SemesterInSerializer
+from sport.models import FitnessTestSession, FitnessTestResult, FitnessTestExercise, Semester
 
 
 @swagger_auto_schema(
     method="GET",
-    query_serializer=SemesterInSerializer,
+    operation_description='Get all exercises by `semester_id`. If `semester_id` is not set, returns current semester '
+                          'exercises.',
+    query_serializer=SemesterInSerializer(),
     responses={
-        status.HTTP_200_OK: SuggestionSerializer(many=True),
+        status.HTTP_200_OK: FitnessTestExerciseSerializer(many=True),
     }
 )
 @api_view(["GET"])
@@ -47,43 +39,40 @@ def get_exercises(request, **kwargs):
     serializer = SemesterInSerializer(data=request.GET)
     serializer.is_valid(raise_exception=True)
     semester_id = serializer.validated_data.get('semester_id')
-    # return Response(SemesterSerializer(get_object_or_404(Semester, id=data['semester_id'])).data)
+
     if semester_id is None:
         semester_id = get_ongoing_semester()
     exercises = get_exercises_crud(semester_id)
 
-    return Response(ExercisesSerializer(exercises).data)
-
-
-@api_view(["GET"])
-def get_all_exercises(request, **kwargs):
-    exercises = get_exercises_crud()
-    result_exercises = [convert_exercise(exercise) for exercise in exercises]
-
-    return Response(result_exercises)
+    return Response(FitnessTestExerciseSerializer(exercises, many=True).data)
 
 
 @swagger_auto_schema(
     method="GET",
+    operation_description='Get all sessions by `semester_id`. If `semester_id` is not set, returns all sessions.',
+    query_serializer=SemesterInSerializer(),
     responses={
-        status.HTTP_200_OK: FitnessTestSessions
+        status.HTTP_200_OK: FitnessTestSessionSerializer(many=True)
     }
 )
 @api_view(["GET"])
-def get_sessions(request, semester_id=None, **kwargs):
+def get_sessions(request, **kwargs):
+    serializer = SemesterInSerializer(data=request.GET)
+    serializer.is_valid(raise_exception=True)
+    semester_id = serializer.validated_data.get('semester_id')
+
     if semester_id is None:
         sessions = FitnessTestSession.objects.all()
     else:
         sessions = FitnessTestSession.objects.filter(semester_id=semester_id)
-    resp = [{'id': s.id, 'semester': SemesterSerializer(s.semester).data, 'date': s.date, 'teacher': str(s.teacher)} for s in sessions]
 
-    return Response(resp)
+    return Response(FitnessTestSessionSerializer(sessions, many=True).data)
 
 
 @swagger_auto_schema(
     method="GET",
     responses={
-        status.HTTP_200_OK: FitnessTestStudentResults
+        status.HTTP_200_OK: FitnessTestStudentResult(many=True)
     }
 )
 @api_view(["GET"])
@@ -127,28 +116,22 @@ def get_result(request, **kwargs):
 @swagger_auto_schema(
     method="GET",
     responses={
-        status.HTTP_200_OK: FitnessTestSessionFull,
+        status.HTTP_200_OK: FitnessTestSessionWithResult()
     }
 )
 @api_view(["GET"])
 def get_session_info(request, session_id, **kwargs):
-    session = FitnessTestSession.objects.get(id=session_id)
-    session_dict = {'id': session.id, 'semester': SemesterSerializer(session.semester).data, 'date': session.date, 'teacher': str(session.teacher)}
-
-    results = FitnessTestResult.objects.filter(session_id=session.id)
-
     results_dict = defaultdict(list)
-    for result in results:
-        results_dict[result.exercise.exercise_name].append(
-            {'student_name': f"{result.student.user.first_name} {result.student.user.last_name}",
-             'student_email': result.student.user.email,
-             'student_id': result.student.user.id,
-             'student_medical_group': result.student.medical_group.name,
-             'value': result.value})
+    for result in FitnessTestResult.objects.filter(session_id=session_id):
+        results_dict[result.exercise.id].append(result)
 
-    response = {'session': session_dict, 'results': results_dict}
-
-    return Response(response)
+    return Response(FitnessTestSessionWithResult({
+        'session': FitnessTestSession.objects.get(id=session_id),
+        'exercises': FitnessTestExercise.objects.filter(
+            id__in=FitnessTestResult.objects.filter(session_id=session_id).values_list('exercise').distinct()
+        ),
+        'results': results_dict
+    }).data)
 
 
 @swagger_auto_schema(
@@ -174,6 +157,7 @@ def post_student_exercises_result(request, session_id=None, **kwargs):
     return Response({'session_id': session})
 
 
+# TODO: Rewrite suggest to JSON
 @swagger_auto_schema(
     method="GET",
     query_serializer=SuggestionQueryFTSerializer,
