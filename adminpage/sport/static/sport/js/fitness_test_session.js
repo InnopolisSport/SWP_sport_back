@@ -123,7 +123,6 @@ function add_student_single_ex_row(
 	// Adds single row at particular exercise
 	$('#ft-session-save').removeAttr('disabled');
 	let row = null;
-	console.log("sdad");
 	if (exercises[index].ex_select === null) {
 		row = $(`<tr id="student_${student_id}_${index}">
                 <td>${full_name} 
