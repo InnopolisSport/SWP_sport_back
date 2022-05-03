@@ -14,6 +14,12 @@ class FitnessTestExercise(models.Model):
         blank=True
     )
 
+    threshold = models.IntegerField(
+        default=0,
+        null=False,
+        blank=False,
+    )
+
     select = models.CharField(
         max_length=1000,
         null=True,
