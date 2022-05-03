@@ -16,6 +16,7 @@ from api.permissions import (
 )
 
 from api.serializers import (
+    MeasurementPost,
     Measurement as MeasurementSerializer,
     MeasurementResult,
     MeasurementResults,
@@ -27,14 +28,20 @@ from api.serializers import (
 from sport.models import Group, Measurement, MeasurementSession, MeasurementResult, Student
 
 
+@swagger_auto_schema(
+    method="GET",
+    query_serializer=MeasurementSerializer(many=True),
+    responses={
+        status.HTTP_200_OK: MeasurementResults,
+    }
+)
 @api_view(["GET"])
-def get_measurement(request, **kwargs):
-    return Response(Measurement.objects.all())
-
-
-@api_view(["GET"])
-def get_sessions(request, **kwargs):
-    return Response(MeasurementSession.objects.all())
+def get_measurements(request, **kwargs):
+    measurements = Measurement.objects.all()
+    result = []
+    for measurement in measurements:
+        result.append({"name": measurement.name, "value_unit": measurement.value_unit})
+    return Response(result)
 
 
 @swagger_auto_schema(
@@ -48,14 +55,14 @@ def get_sessions(request, **kwargs):
 @permission_classes([IsStudent])
 def get_results(request, **kwargs):
     session = MeasurementSession.objects.filter(student=request.user.student)
-    if len(session) == 0:
+    if not len(session):
         return Response([])
     else:
         session = session[0]
     results = MeasurementResult.objects.filter(session=session)
-    response = []
-    if len(results) == 0:
-        return Response({"code": "There is no such results"})
+    response = {}
+    if not len(results):
+        return Response({"code": "There is no results"})
     for result in results:
         _result = {
             'measurement': result.measurement.name,
@@ -63,15 +70,17 @@ def get_results(request, **kwargs):
             'value': result.value,
             'approved': result.session.approved,
             'date': result.session.date,
-            'semester': result.session.semester.name
         }
-        response.append(_result)
-    return Response(response)
+        if response.get(result.session.semester.name, None) is None:
+            response[result.session.semester.name] = [_result]
+        else:
+            response[result.session.semester.name].append(_result)
+    return Response([{"semester": key, "result": response[key]} for key in response.keys()])
 
 
 @swagger_auto_schema(
     method="POST",
-    request_body=MeasurementSerializer,
+    request_body=MeasurementPost,
     responses={
         status.HTTP_404_NOT_FOUND: NotFoundSerializer,
         status.HTTP_400_BAD_REQUEST: ErrorSerializer,
@@ -83,8 +92,8 @@ def post_student_measurement(request, **kwargs):
     if hasattr(request.user, 'trainer'):
         approved = True
     student = request.user.student if approved is False else Student.objects.get(user_id=request.data['student_id'])
-    measurement = Measurement.objects.filter(name=request.data['measurement_name'])
-    if len(measurement) == 0:
+    measurement = Measurement.objects.filter(id=request.data['measurement_id'])
+    if not len(measurement):
         return Response({})
     else:
         measurement = measurement[0]
@@ -93,6 +102,6 @@ def post_student_measurement(request, **kwargs):
                                                        semester=get_ongoing_semester())[0]
 
     result = MeasurementResult.objects.get_or_create(measurement=measurement, session=session)
-    result[0].value = max(result[0].value, request.data['value'])
+    result[0].value = request.data['value']
     result[0].save()
     return Response({'result_id': result[0].id})

@@ -10,6 +10,8 @@ from .site import site
 class MeasurementResult(admin.ModelAdmin):
     list_display = (
         "student",
+        "date",
+        "semester",
         "measurement",
         "value"
     )
@@ -17,6 +19,12 @@ class MeasurementResult(admin.ModelAdmin):
     exclude = (
         "session",
     )
+
+    def semester(self, object):
+        return object.session.semester
+
+    def date(self, object):
+        return object.session.date
 
     def student(self, object):
         return object.session.student
