@@ -1,10 +1,35 @@
 from rest_framework import serializers
 
+from api.serializers.semester import SemesterSerializer
+from api.serializers.student import StudentSerializer
+from sport.models import FitnessTestExercise, FitnessTestSession, FitnessTestResult
 
-class FitnessTestResult(serializers.Serializer):
-    student_id = serializers.IntegerField()
-    exercise_name = serializers.CharField()
-    value = serializers.IntegerField()
+
+class FitnessTestExerciseSelectSerializer(serializers.ListSerializer):
+    def to_internal_value(self, data):
+        return ','.join(data)
+
+    def to_representation(self, data):
+        return data.split(',')
+
+
+class FitnessTestExerciseSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='exercise_name')
+    semester = SemesterSerializer()
+    unit = serializers.CharField(source='value_unit')
+    select = FitnessTestExerciseSelectSerializer(child=serializers.CharField())
+
+    class Meta:
+        model = FitnessTestExercise
+        fields = ('id', 'semester', 'name', 'unit', 'select')
+
+
+class FitnessTestResultSerializer(serializers.ModelSerializer):
+    student = StudentSerializer()
+
+    class Meta:
+        model = FitnessTestResult
+        fields = ('student', 'value')
 
 
 class FitnessTestDetail(serializers.Serializer):
@@ -22,25 +47,26 @@ class FitnessTestStudentResult(serializers.Serializer):
     details = FitnessTestDetail(many=True)
 
 
-class FitnessTestStudentResults(serializers.ListSerializer):
-    child = FitnessTestStudentResult()
-
-
 class FitnessTestResults(serializers.Serializer):
-    result = FitnessTestResult(many=True)
+    result = FitnessTestResultSerializer(many=True)
 
 
-class FitnessTestSession(serializers.Serializer):
-    date = serializers.DateTimeField()
-    teacher = serializers.CharField()
+class FitnessTestPureResult(serializers.Serializer):
+    student_id = serializers.IntegerField()
+    exercise_id = serializers.IntegerField()
+    value = serializers.CharField()
 
 
-class FitnessTestSessionFull(FitnessTestSession):
-    results = FitnessTestResult(many=True)
+class FitnessTestSessionSerializer(serializers.ModelSerializer):
+    semester = SemesterSerializer()
+    teacher = serializers.CharField(source='teacher.__str__')  # TODO: return object
+
+    class Meta:
+        model = FitnessTestSession
+        fields = ('id', 'date', 'teacher', 'semester')
 
 
-class FitnessTestSessions(serializers.Serializer):
-    session = FitnessTestSession(many=True)
-
-
-
+class FitnessTestSessionWithResult(serializers.Serializer):
+    session = FitnessTestSessionSerializer()
+    exercises = FitnessTestExerciseSerializer(many=True)
+    results = serializers.DictField(child=FitnessTestResultSerializer(many=True))

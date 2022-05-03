@@ -102,6 +102,9 @@ class Student(models.Model):
         db_table = "student"
         verbose_name_plural = "students"
 
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} " \
                f"({self.user.email})"
