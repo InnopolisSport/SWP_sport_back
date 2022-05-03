@@ -94,8 +94,16 @@ function fill_exercises_with_results(exercises, results) {
                 $(`#ex_${exercise.id}_select option[value=${student_result.value}]`)
                     .attr('selected', 'selected');
             } else {
-                $(`#ex_${exercise.id}_value`)
-                    .attr('value',`${student_result.value}`);
+                if (exercise.unit === 'second(s)') {
+                    $(`#ex_${exercise.id}_value`)
+                        .attr('value', `${
+                            new Date(student_result.value * 1000).toISOString().substring(14, 19)
+                        }`);
+                }
+                else {
+                    $(`#ex_${exercise.id}_value`)
+                        .attr('value', `${student_result.value}`);
+                }
             }
         });
     });
@@ -138,7 +146,7 @@ function add_student_row_for_exercise(exercise, student) {
                         <input class="form-control" id="ex_${exercise.id}_value"
                             ${
                                 exercise.unit === 'second(s)'
-                                    ? 'type="time" min="00:00:00" value="00:00:00"'
+                                    ? 'type="text" value="" placeholder="00:00"'
                                     : 'type="number" min="0" value="0"'
                             }
 							step="1"/>
@@ -153,6 +161,10 @@ function add_student_row_for_exercise(exercise, student) {
                 </td>
             </tr>`;
         $(`#ex-table-${exercise.id}`).prepend($(row));
+        if (exercise.unit === 'second(s)') {
+            $.mask.definitions['S']='[0-5]';
+            $(`#ex_${exercise.id}_value`).mask("99:S9");
+        }
 	}
 	students_in_table[student.id] = 1;
 }
