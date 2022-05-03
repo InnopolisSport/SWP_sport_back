@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -18,27 +19,41 @@ from api.serializers import (
 from api.crud import get_exercises_crud, post_student_exercises_result_crud, \
     get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.serializers.attendance import SuggestionQueryFTSerializer
-from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull, FitnessTestStudentResults
+from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull, FitnessTestStudentResults, \
+    ExercisesSerializer
+from api.serializers.semester import SemesterSerializer, SemesterInSerializer
 from sport.models import Group, FitnessTestSession, FitnessTestResult, FitnessTestExercise, Semester
 
 
 def convert_exercise(t: FitnessTestExercise) -> dict:
     return {
         "id": t.id,
-        "semester": t.semester.id,
+        "semester": SemesterSerializer(t.semester).data,
         "name": t.exercise_name,
         "unit": t.value_unit,
         "select": t.select.split(',') if t.select is not None else None,
     }
 
 
+@swagger_auto_schema(
+    method="GET",
+    query_serializer=SemesterInSerializer,
+    responses={
+        status.HTTP_200_OK: SuggestionSerializer(many=True),
+    }
+)
 @api_view(["GET"])
-def get_exercises(request, semester_id=None, **kwargs):
+def get_exercises(request, **kwargs):
+    serializer = SemesterInSerializer(data=request.GET)
+    serializer.is_valid(raise_exception=True)
+    semester_id = serializer.validated_data.get('semester_id')
+    # return Response(SemesterSerializer(get_object_or_404(Semester, id=data['semester_id'])).data)
     if semester_id is None:
         semester_id = get_ongoing_semester()
     exercises = get_exercises_crud(semester_id)
-    result_exercises = [convert_exercise(exercise) for exercise in exercises]
-    return Response(result_exercises)
+
+    return Response(ExercisesSerializer(exercises).data)
+
 
 @api_view(["GET"])
 def get_all_exercises(request, **kwargs):
@@ -60,7 +75,7 @@ def get_sessions(request, semester_id=None, **kwargs):
         sessions = FitnessTestSession.objects.all()
     else:
         sessions = FitnessTestSession.objects.filter(semester_id=semester_id)
-    resp = [{'id': s.id, 'semester': s.semester.name, 'date': s.date, 'teacher': str(s.teacher)} for s in sessions]
+    resp = [{'id': s.id, 'semester': SemesterSerializer(s.semester).data, 'date': s.date, 'teacher': str(s.teacher)} for s in sessions]
 
     return Response(resp)
 
@@ -118,7 +133,7 @@ def get_result(request, **kwargs):
 @api_view(["GET"])
 def get_session_info(request, session_id, **kwargs):
     session = FitnessTestSession.objects.get(id=session_id)
-    session_dict = {'id': session.id, 'semester': session.semester.id, 'date': session.date, 'teacher': str(session.teacher)}
+    session_dict = {'id': session.id, 'semester': SemesterSerializer(session.semester).data, 'date': session.date, 'teacher': str(session.teacher)}
 
     results = FitnessTestResult.objects.filter(session_id=session.id)
 

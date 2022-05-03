@@ -1,5 +1,26 @@
 from rest_framework import serializers
 
+from api.serializers.semester import SemesterSerializer
+from sport.models import FitnessTestExercise
+
+
+class ExerciseSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='exercise_name')
+    semester = SemesterSerializer()
+    unit = serializers.CharField(source='value_unit')
+    select = serializers.ListSerializer(child=serializers.CharField())
+
+    def set_select(self, x):
+        return x.split(',')
+
+    class Meta:
+        model = FitnessTestExercise
+        fields = ('id', 'semester', 'name', 'unit', 'select')
+
+
+class ExercisesSerializer(serializers.ListSerializer):
+    child = ExerciseSerializer()
+
 
 class FitnessTestResult(serializers.Serializer):
     student_id = serializers.IntegerField()
