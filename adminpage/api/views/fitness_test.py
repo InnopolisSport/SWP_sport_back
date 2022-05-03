@@ -79,24 +79,26 @@ def get_result(request, **kwargs):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     data = []
-    for semester_name in results.values('exercise__semester_id').distinct():
-        semester = Semester.objects.get(name=semester_name['semester__name'])
+    for result_distinct_semester in results.values('exercise__semester_id').distinct():
+        semester_id = result_distinct_semester['exercise__semester_id']
+        semester = Semester.objects.get(id=semester_id)
 
-        grade = True
         total_score = 0
         result_list = []
-        for result in results.filter(exercise__semester__name=semester.name):
+        for result in results.filter(exercise__semester_id=semester_id):
             result_list.append({
                 'exercise': result.exercise.exercise_name,
                 'unit': result.exercise.value_unit,
-                'value': (result.value if result.exercise.select is None
+                'value': (result.value
+                          if result.exercise.select is None
                           else result.exercise.select.split(',')[result.value]),
                 'score': get_score(request.user.student, result),
                 'max_score': get_max_score(request.user.student, result),
             })
-            grade = grade and result_list[-1]['score'] >= result.exercise.threshold
+            grade = result_list[-1]['score'] >= result.exercise.threshold
             total_score += result_list[-1]['score']
 
+        grade = grade and total_score >= semester.points_fitness_test
         data.append({
             'semester': semester.name,
             'grade': grade,
