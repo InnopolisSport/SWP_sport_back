@@ -263,7 +263,7 @@ function add_student_row(
     maxHours
 ) {
     const row = $(`<tr id="student_${student_id}">
-                    <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name} 
+                    <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name}
                     ${
                         med_group === 'Special 1'
                             ? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>`
@@ -771,9 +771,11 @@ fetch('/api/fitnesstest/result', {
                         </th>
                         <td class="text-left">
                             ${
-                                ex['unit']  // if unit is not empty
+                                (ex['unit'] && ex['unit'] !== 'second(s)')
                                     ? `${ex['value']} ${ex['unit']}`
-                                    : `${ex['value']}`
+                                    : (ex['unit'] === 'second(s)')
+                                        ? new Date(ex['value'] * 1000).toISOString().substring(14, 19)  // converting seconds to MM:SS format
+                                        : `${ex['value']}`
                             }
                         </td>
                         <td>

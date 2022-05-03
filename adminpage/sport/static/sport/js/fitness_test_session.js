@@ -134,9 +134,14 @@ function add_student_single_ex_row(
                 </td>
                 <td style="cursor: pointer">
                     <div class="input-group" onsubmit="return false;">
-                        <input class="form-control" id="ex_${index}_value" type="number" min="0" value="0" step="1"/>
+                        <input class="form-control" id="ex_${index}_value"  ${
+							exercises[index].ex_unit === 'second(s)'
+								? 'type="time" min="00:00:00" value="00:00:00"'
+								: 'type="number" min="0" value="0"'
+							}"
+							step="1"/>
                         ${
-							exercises[index].ex_unit
+							(exercises[index].ex_unit && exercises[index].ex_unit !== 'second(s)')
 								? `<div class="input-group-append">
                             <span class="input-group-text">${exercises[index].ex_unit}</span>
                             </div>`
@@ -189,9 +194,14 @@ function add_student_ex_row(student_id, full_name, email, med_group) {
                 </td>
                 <td style="cursor: pointer">
                     <div class="input-group" onsubmit="return false;">
-                        <input class="form-control" id="ex_${i}_value" type="number" min="0" value="0" step="1"/>
+                        <input class="form-control" id="ex_${i}_value" ${
+							exercises[i].ex_unit === 'second(s)'
+								? 'type="time" min="00:00:00" value="00:00:00"'
+								: 'type="number" min="0" value="0"'
+							}"
+						step="1"/>
                         ${
-							exercises[i].ex_unit
+							(exercises[i].ex_unit && exercises[i].ex_unit !== 'second(s)')
 								? `<div class="input-group-append">
                             <span class="input-group-text">${exercises[i].ex_unit}</span>
                             </div>`
@@ -292,7 +302,11 @@ function save_table() {
 				.getElementById(`student_${sid}_${i}`)
 				.getElementsByTagName('select')[0];
 			if (inp_field) {
-				val = inp_field.value;
+				if (exercises[i]["ex_unit"] === 'second(s)') {
+					val = inp_field.value.split(':').reduce((acc, time) => (60 * acc) + +time);
+				} else {
+					val = inp_field.value;
+				}
 			} else {
 				val = sel_field.value;
 			}
