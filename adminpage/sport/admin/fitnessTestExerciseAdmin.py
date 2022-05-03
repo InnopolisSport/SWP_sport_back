@@ -24,5 +24,6 @@ class FitnessTestExerciseAdmin(admin.ModelAdmin):
     list_display = (
         'exercise_name',
         'value_unit',
+        'threshold'
     )
     inlines = (FitnessTestExcerciseInline,)

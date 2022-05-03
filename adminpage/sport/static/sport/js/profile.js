@@ -263,7 +263,7 @@ function add_student_row(
     maxHours
 ) {
     const row = $(`<tr id="student_${student_id}">
-                    <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name} 
+                    <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name}
                     ${
                         med_group === 'Special 1'
                             ? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>`
@@ -697,52 +697,56 @@ fetch('/api/fitnesstest/result', {
         if (response.ok) {
             return response.json();
         }
-        throw new Error('Something went wrong.');
+        throw new Error('Something went wrong with getting fitness test results.');
     })
     .then((data) => {
-        if (data) {
-            $('#ft-student-results').removeAttr('class');
-            let row =
-                $(`<tr style="cursor: pointer" onclick="$('#ft-results-modal').modal('show');">
-                <th>
-                    ${data['semester']}
-                </th>
-                <td>
-                    ${data['total_score']}/100 points
-                </td>
-                <td>
-                    ${
-                        data['grade']
-                            ? `<span class="badge badge-success">PASS</span>`
-                            : `<span class="badge badge-danger">FAIL</span>`
-                    }
-                </td>
-            </tr>`);
-            $('#ft-student-results-table-body').prepend(row);
-
-            $('#ft-results-modal-sem').text(data['semester']);
-            let detailed = data['details'];
-            detailed.forEach((ex) => {
-                let ex_row = $(`<tr style="cursor: pointer">
+        if (data) {  // if data is not empty
+            $('#ft-student-results').removeAttr('class');  // remove d-none attribute
+            data.forEach((semester_result) => {
+                // add row with semester result
+                let row =
+                    $(`<tr style="cursor: pointer" onclick="$('#ft-results-modal').modal('show');">
                     <th>
-                        <span class="badge badge-info text-uppercase">${
-                            ex['exercise']
-                        }</span>
+                        ${semester_result['semester']}
                     </th>
-                    <td class="text-left">
-                        ${
-                            (ex['unit'] && ex['unit'] !== 'second(s)')
-                                ? `${ex['value']} ${ex['unit']}`
-                                : (ex['unit'] === 'second(s)') 
-                                    ? new Date(ex['value'] * 1000).toISOString().substring(14, 19)  // converting seconds to MM:SS format
-                                    : `${ex['value']}`
-                        }
+                    <td>
+                        ${semester_result['total_score']}/100 points
                     </td>
                     <td>
-                    ${ex['score']}/${ex['max_score']}
+                        ${
+                            semester_result['grade']
+                                ? `<span class="badge badge-success">PASS</span>`
+                                : `<span class="badge badge-danger">FAIL</span>`
+                        }
                     </td>
                 </tr>`);
-                $('#ft-results-modal-table-body').prepend(ex_row);
+                $('#ft-student-results-table-body').prepend(row);
+
+                $('#ft-results-modal-sem').text(semester_result['semester']);  // append semester title
+                let detailed = semester_result['details'];
+                detailed.forEach((ex) => {
+                    // add row with exercise result
+                    let ex_row = $(`<tr style="cursor: pointer">
+                        <th>
+                            <span class="badge badge-info text-uppercase">${
+                                ex['exercise']
+                            }</span>
+                        </th>
+                        <td class="text-left">
+                            ${
+                                (ex['unit'] && ex['unit'] !== 'second(s)')
+                                    ? `${ex['value']} ${ex['unit']}`
+                                    : (ex['unit'] === 'second(s)')
+                                        ? new Date(ex['value'] * 1000).toISOString().substring(14, 19)  // converting seconds to MM:SS format
+                                        : `${ex['value']}`
+                            }
+                        </td>
+                        <td>
+                        ${ex['score']}/${ex['max_score']}
+                        </td>
+                    </tr>`);
+                    $('#ft-results-modal-table-body').prepend(ex_row);
+                });
             });
         }
     })
