@@ -51,6 +51,12 @@ class FitnessTestResults(serializers.Serializer):
     result = FitnessTestResultSerializer(many=True)
 
 
+class FitnessTestPureResult(serializers.Serializer):
+    student_id = serializers.IntegerField()
+    exercise_id = serializers.IntegerField()
+    value = serializers.CharField()
+
+
 class FitnessTestSessionSerializer(serializers.ModelSerializer):
     semester = SemesterSerializer()
     teacher = serializers.CharField(source='teacher.__str__')  # TODO: return object

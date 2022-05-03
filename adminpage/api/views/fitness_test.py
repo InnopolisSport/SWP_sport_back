@@ -3,7 +3,7 @@ from collections import defaultdict
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
@@ -13,14 +13,14 @@ from api.permissions import (
 from api.serializers import (
     FitnessTestResults,
     NotFoundSerializer,
-    ErrorSerializer, SuggestionSerializer
+    ErrorSerializer, SuggestionSerializer, EmptySerializer
 )
 
 from api.crud import get_exercises_crud, post_student_exercises_result_crud, \
     get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.serializers.attendance import SuggestionQueryFTSerializer
 from api.serializers.fitness_test import FitnessTestExerciseSerializer, FitnessTestSessionSerializer, \
-    FitnessTestSessionWithResult, FitnessTestStudentResult
+    FitnessTestSessionWithResult, FitnessTestStudentResult, FitnessTestPureResult
 from api.serializers.semester import SemesterInSerializer
 from sport.models import FitnessTestSession, FitnessTestResult, FitnessTestExercise, Semester
 
@@ -134,12 +134,19 @@ def get_session_info(request, session_id, **kwargs):
     }).data)
 
 
+# TODO: do same thing everywhere
+class PostStudentExerciseResult(serializers.Serializer):
+    result = serializers.CharField(default='ok')
+    session_id = serializers.IntegerField()
+
+
 @swagger_auto_schema(
     method="POST",
-    request_body=FitnessTestResults,
+    request_body=FitnessTestPureResult(many=True),
     responses={
-        status.HTTP_404_NOT_FOUND: NotFoundSerializer,
-        status.HTTP_400_BAD_REQUEST: ErrorSerializer,
+        status.HTTP_200_OK: PostStudentExerciseResult(),
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer(),
+        status.HTTP_400_BAD_REQUEST: ErrorSerializer(),
     },
 )
 @api_view(["POST"])
@@ -150,11 +157,12 @@ def post_student_exercises_result(request, session_id=None, **kwargs):
         return Response(
             status=400,
         )
-    serializer = FitnessTestResults(data=request.data)
+    serializer = FitnessTestPureResult(data=request.data, many=True)
     serializer.is_valid(raise_exception=True)
-    exercises = serializer.validated_data['result']
+
+    exercises = serializer.validated_data
     session = post_student_exercises_result_crud(exercises, session_id, request.user)
-    return Response({'session_id': session})
+    return Response(PostStudentExerciseResult({'session_id': session}).data)
 
 
 # TODO: Rewrite suggest to JSON

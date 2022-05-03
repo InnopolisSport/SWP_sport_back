@@ -19,7 +19,7 @@ def post_student_exercises_result_crud(results, session_id, teacher):
     for res in results:
         student = Student.objects.get(user__id=res['student_id'])
         exercise = FitnessTestExercise.objects.get(
-            exercise_name=res['exercise_name'], semester=get_ongoing_semester())
+            id=res['exercise_id'])
         FitnessTestResult.objects.update_or_create(exercise=exercise,
                                                    student=student, defaults={'value': res['value']}, session=session)
     return session.id
