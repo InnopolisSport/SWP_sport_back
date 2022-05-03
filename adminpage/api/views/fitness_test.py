@@ -17,7 +17,7 @@ from api.serializers import (
     ErrorSerializer, SuggestionSerializer
 )
 from api.serializers.attendance import SuggestionQueryFTSerializer
-from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull
+from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull, FitnessTestStudentResults
 from sport.models import FitnessTestSession, FitnessTestResult, Semester
 
 
@@ -68,7 +68,7 @@ def get_sessions(request, **kwargs):
 @swagger_auto_schema(
     method="GET",
     responses={
-        status.HTTP_200_OK: FitnessTestSessions
+        status.HTTP_200_OK: FitnessTestStudentResults
     }
 )
 @api_view(["GET"])

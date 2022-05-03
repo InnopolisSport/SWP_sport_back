@@ -7,6 +7,25 @@ class FitnessTestResult(serializers.Serializer):
     value = serializers.IntegerField()
 
 
+class FitnessTestDetail(serializers.Serializer):
+    exercise = serializers.CharField()
+    unit = serializers.CharField(allow_null=True)
+    value = serializers.Field()
+    score = serializers.IntegerField()
+    max_score = serializers.IntegerField()
+
+
+class FitnessTestStudentResult(serializers.Serializer):
+    semester = serializers.CharField()
+    grade = serializers.BooleanField()
+    total_score = serializers.IntegerField()
+    details = FitnessTestDetail(many=True)
+
+
+class FitnessTestStudentResults(serializers.ListSerializer):
+    child = FitnessTestStudentResult()
+
+
 class FitnessTestResults(serializers.Serializer):
     result = FitnessTestResult(many=True)
 
