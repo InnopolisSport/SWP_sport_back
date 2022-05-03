@@ -6,8 +6,6 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
-from api.crud import get_all_exercises, post_student_exercises_result_crud, \
-    get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.permissions import (
     IsTrainer, IsStudent,
 )
@@ -16,38 +14,37 @@ from api.serializers import (
     NotFoundSerializer,
     ErrorSerializer, SuggestionSerializer
 )
+
+from api.crud import get_exercises_crud, post_student_exercises_result_crud, \
+    get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.serializers.attendance import SuggestionQueryFTSerializer
 from api.serializers.fitness_test import FitnessTestSessions, FitnessTestSessionFull, FitnessTestStudentResults
-from sport.models import FitnessTestSession, FitnessTestResult, Semester
+from sport.models import Group, FitnessTestSession, FitnessTestResult, FitnessTestExercise, Semester
 
 
-def convert_exercise(t) -> dict:
+def convert_exercise(t: FitnessTestExercise) -> dict:
     return {
-        "name": t.exercise.exercise_name,
-        "unit": t.exercise.value_unit,
-        "select": t.exercise.select.split(',') if t.exercise.select is not None else None,
-        "score": [t.score],
-        "start_range": [t.start_range],
-        "end_range": [t.end_range]
+        "id": t.id,
+        "semester": t.semester.id,
+        "name": t.exercise_name,
+        "unit": t.value_unit,
+        "select": t.select.split(',') if t.select is not None else None,
     }
 
 
 @api_view(["GET"])
-def get_exercises(request, **kwargs):
-    exercises = get_all_exercises()
-    result_exercises = []
+def get_exercises(request, semester_id=None, **kwargs):
+    if semester_id is None:
+        semester_id = get_ongoing_semester()
+    exercises = get_exercises_crud(semester_id)
+    result_exercises = [convert_exercise(exercise) for exercise in exercises]
+    return Response(result_exercises)
 
-    for exercise in exercises:
-        exercise_dict = convert_exercise(exercise)
-        x = list(map(lambda x: x if x['name'] == exercise_dict['name'] else None, result_exercises))
-        x = [element for element in x if element != None]
-        if len(x) != 0:
-            exercise_index = result_exercises.index(x[0])
-            result_exercises[exercise_index]['score'].append(exercise_dict['score'][0])
-            result_exercises[exercise_index]['start_range'].append(exercise_dict['start_range'][0])
-            result_exercises[exercise_index]['end_range'].append(exercise_dict['end_range'][0])
-        else:
-            result_exercises.append(exercise_dict)
+@api_view(["GET"])
+def get_all_exercises(request, **kwargs):
+    exercises = get_exercises_crud()
+    result_exercises = [convert_exercise(exercise) for exercise in exercises]
+
     return Response(result_exercises)
 
 
@@ -58,9 +55,12 @@ def get_exercises(request, **kwargs):
     }
 )
 @api_view(["GET"])
-def get_sessions(request, **kwargs):
-    sessions = FitnessTestSession.objects.all()
-    resp = [{'id': s.id, 'date': s.date, 'teacher': str(s.teacher)} for s in sessions]
+def get_sessions(request, semester_id=None, **kwargs):
+    if semester_id is None:
+        sessions = FitnessTestSession.objects.all()
+    else:
+        sessions = FitnessTestSession.objects.filter(semester_id=semester_id)
+    resp = [{'id': s.id, 'semester': s.semester.name, 'date': s.date, 'teacher': str(s.teacher)} for s in sessions]
 
     return Response(resp)
 
@@ -79,24 +79,26 @@ def get_result(request, **kwargs):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     data = []
-    for semester_name in results.values('semester__name').distinct():
-        semester = Semester.objects.get(name=semester_name['semester__name'])
+    for result_distinct_semester in results.values('exercise__semester_id').distinct():
+        semester_id = result_distinct_semester['exercise__semester_id']
+        semester = Semester.objects.get(id=semester_id)
 
-        grade = True
         total_score = 0
         result_list = []
-        for result in results.filter(semester__name=semester.name):
+        for result in results.filter(exercise__semester_id=semester_id):
             result_list.append({
                 'exercise': result.exercise.exercise_name,
                 'unit': result.exercise.value_unit,
-                'value': (result.value if result.exercise.select is None
+                'value': (result.value
+                          if result.exercise.select is None
                           else result.exercise.select.split(',')[result.value]),
                 'score': get_score(request.user.student, result),
                 'max_score': get_max_score(request.user.student, result),
             })
-            grade = grade and result_list[-1]['score'] >= result.exercise.threshold
+            grade = result_list[-1]['score'] >= result.exercise.threshold
             total_score += result_list[-1]['score']
 
+        grade = grade and total_score >= semester.points_fitness_test
         data.append({
             'semester': semester.name,
             'grade': grade,
@@ -116,7 +118,7 @@ def get_result(request, **kwargs):
 @api_view(["GET"])
 def get_session_info(request, session_id, **kwargs):
     session = FitnessTestSession.objects.get(id=session_id)
-    session_dict = {'id': session.id, 'date': session.date, 'teacher': str(session.teacher)}
+    session_dict = {'id': session.id, 'semester': session.semester.id, 'date': session.date, 'teacher': str(session.teacher)}
 
     results = FitnessTestResult.objects.filter(session_id=session.id)
 
@@ -172,7 +174,7 @@ def suggest_fitness_test_student(request, **kwargs):
 
     suggested_students = get_email_name_like_students(
         serializer.validated_data["term"],
-        requirement=(~Q(fitnesstestresult__semester=get_ongoing_semester()))
+        requirement=(~Q(fitnesstestresult__exercise__semester=get_ongoing_semester()))
     )
     return Response([
         {
