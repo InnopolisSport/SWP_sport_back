@@ -734,7 +734,7 @@ fetch('/api/fitnesstest/result', {
                             (ex['unit'] && ex['unit'] !== 'second(s)')
                                 ? `${ex['value']} ${ex['unit']}`
                                 : (ex['unit'] === 'second(s)') 
-                                    ? new Date(ex['value'] * 1000).toISOString().substr(14, 5)
+                                    ? new Date(ex['value'] * 1000).toISOString().substring(14, 19)  // converting seconds to MM:SS format
                                     : `${ex['value']}`
                         }
                     </td>
