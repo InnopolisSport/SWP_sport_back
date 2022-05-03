@@ -9,13 +9,6 @@ class FitnessTestResult(models.Model):
         blank=False,
     )
 
-    semester = models.ForeignKey(
-        'Semester',
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-    )
-
     exercise = models.ForeignKey(
         'FitnessTestExercise',
         on_delete=models.CASCADE,
@@ -26,8 +19,8 @@ class FitnessTestResult(models.Model):
     session = models.ForeignKey(
         'FitnessTestSession',
         on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        null=False,
+        blank=False
     )
 
     value = models.IntegerField(
@@ -37,5 +30,5 @@ class FitnessTestResult(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['student', 'semester', 'exercise'], name='student_semester_exercise')
+            models.UniqueConstraint(fields=['student', 'exercise'], name='student_exercise')
         ]

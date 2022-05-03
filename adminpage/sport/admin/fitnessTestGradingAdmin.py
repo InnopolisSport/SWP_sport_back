@@ -8,7 +8,6 @@ from .site import site
 class FitnessTestGradingAdmin(admin.ModelAdmin):
     list_display = (
         "exercise",
-        "semester",
         "gender",
         "score",
         "start_range",

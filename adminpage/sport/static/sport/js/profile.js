@@ -705,7 +705,7 @@ fetch('/api/fitnesstest/result', {
             data.forEach((semester_result) => {
                 // add row with semester result
                 let row =
-                    $(`<tr style="cursor: pointer" onclick="$('#ft-results-modal').modal('show');">
+                    $(`<tr style="cursor: pointer" onclick="$('#ft-results-modal-${semester_result['semester']}').modal('show');">
                     <th>
                         ${semester_result['semester']}
                     </th>
@@ -721,8 +721,45 @@ fetch('/api/fitnesstest/result', {
                     </td>
                 </tr>`);
                 $('#ft-student-results-table-body').prepend(row);
-
-                $('#ft-results-modal-sem').text(semester_result['semester']);  // append semester title
+                // add semester modal with results
+                let sem_modal = $(`
+                    <div class="modal fade" id="ft-results-modal-${semester_result['semester']}" tabindex="-1" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            Fitness test exercises for the
+                                            <span id="ft-results-modal-sem-${semester_result['semester']}" class="text-uppercase"></span> 
+                                            semester
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Exercise</th>
+                                                        <th scope="col" class="text-left">Result</th>
+                                                        <th scope="col">Grade</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ft-results-modal-table-body-${semester_result['semester']}">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                `)
+                $('#ft-results-modals').prepend(sem_modal);
+                // append semester title
+                $(`#ft-results-modal-sem-${semester_result['semester']}`).text(semester_result['semester']);
+                // fill the modal with results
                 let detailed = semester_result['details'];
                 detailed.forEach((ex) => {
                     // add row with exercise result
@@ -745,7 +782,7 @@ fetch('/api/fitnesstest/result', {
                         ${ex['score']}/${ex['max_score']}
                         </td>
                     </tr>`);
-                    $('#ft-results-modal-table-body').prepend(ex_row);
+                    $(`#ft-results-modal-table-body-${semester_result['semester']}`).prepend(ex_row);
                 });
             });
         }
