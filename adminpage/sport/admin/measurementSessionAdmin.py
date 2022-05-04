@@ -1,20 +1,47 @@
+import datetime
+
 from django.contrib import admin
+from django.forms import BaseInlineFormSet
+
+from api.crud import get_ongoing_semester
 from .site import site
-from sport.models import MeasurementSession, MeasurementResult
-from api.crud.crud_semester import get_ongoing_semester
+from sport.models import MeasurementSession, MeasurementResult, Measurement
+
+
+class MeasurementResultInlineFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        kwargs['initial'] = [{'measurement': e.id} for e in Measurement.objects.all()]
+        super().__init__(*args, **kwargs)
 
 
 class MeasurementResultInline(admin.TabularInline):
     model = MeasurementResult
-
     fields = ("measurement", "value")
-    readonly_fields = ("measurement", )
+
+    # TODO: get qty of measures
+    max_num = 2
+    extra = 2
+
+    formset = MeasurementResultInlineFormSet
 
 
-    extra = 0
+@admin.register(MeasurementSession, site=site)
+class MeasurementSession(admin.ModelAdmin):
+    autocomplete_fields = (
+        "student",
+    )
 
-    def has_add_permission(self, request, obj):
-        return False
+    list_display = (
+        "student",
+        "date",
+        "semester",
+        "approved"
+    )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['approved'].initial = True
+        return form
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'semester':
@@ -24,27 +51,4 @@ class MeasurementResultInline(admin.TabularInline):
             db_field, request, **kwargs
         )
 
-
-class AddMeasurementResultInline(MeasurementResultInline):
-    extra = 4
-    readonly_fields = ()
-
-
-
-    def has_view_or_change_permission(self, request, obj=None):
-        return False
-
-    def has_add_permission(self, request, obj):
-        return True
-
-@admin.register(MeasurementSession, site=site)
-class MeasurementSession(admin.ModelAdmin):
-    list_display = (
-        "student",
-        "date",
-        "semester",
-        "approved"
-    )
-
-    inlines = (MeasurementResultInline, AddMeasurementResultInline)
-
+    inlines = (MeasurementResultInline, )

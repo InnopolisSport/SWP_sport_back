@@ -17,3 +17,8 @@ class MeasurementResult(models.Model):
     )
 
     value = models.IntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['session', 'measurement'], name='session_measurement')
+        ]
