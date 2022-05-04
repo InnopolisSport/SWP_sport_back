@@ -16,10 +16,6 @@ class MeasurementResult(admin.ModelAdmin):
         "value"
     )
 
-    exclude = (
-        "session",
-    )
-
     def semester(self, object):
         return object.session.semester
 
