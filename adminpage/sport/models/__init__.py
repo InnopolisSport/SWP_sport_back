@@ -27,6 +27,9 @@ from .fitness_test_result import FitnessTestResult
 from .fitness_test_grading import FitnessTestGrading
 from .fitness_test_exercise import FitnessTestExercise
 from .fitness_test_session import FitnessTestSession
+from .measurement_session import MeasurementSession
+from .measurement_result import MeasurementResult
+from .measurement import Measurement
 
 DjangoGroup.add_to_class(
     'verbose_name',
