@@ -7,7 +7,7 @@ from django.db.models.functions import Coalesce, Least
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from import_export import resources, widgets, fields
-from import_export.admin import ImportExportActionModelAdmin
+from import_export.admin import ImportExportActionModelAdmin, ExportActionMixin
 from import_export.results import RowResult
 
 from api.crud import get_ongoing_semester, get_negative_hours, SumSubquery
@@ -314,7 +314,7 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
         Enroll.objects.filter(student__in=queryset, group__semester=get_ongoing_semester()).delete()
     delete_sport.short_description = 'Deselect sport type and group'
 
-    actions = [delete_sport]
+    actions = [ExportActionMixin.export_admin_action, delete_sport]
 
     list_select_related = (
         "user",
