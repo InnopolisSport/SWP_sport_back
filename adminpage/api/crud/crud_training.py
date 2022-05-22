@@ -230,13 +230,13 @@ def get_students_grades(training_id: int):
                        'COALESCE(a.hours, 0) AS hours, '
                        'm.name AS med_group, '
                        'concat(d.first_name, \' \', d.last_name) as full_name '
-                       'FROM training t, enroll e, auth_user d, student s '
+                       'FROM training t, sport_trainingcheckin e, auth_user d, student s '
                        'LEFT JOIN attendance a ON a.student_id = s.user_id AND a.training_id = %(training_id)s '
                        'LEFT JOIN medical_group m ON m.id = s.medical_group_id '
                        'WHERE s.user_id = e.student_id '
                        'AND d.id = e.student_id '
                        'AND t.id = %(training_id)s '
-                       'AND t.group_id = e.group_id ', {"training_id": training_id})
+                       'AND t.id = e.training_id ', {"training_id": training_id})
         return dictfetchall(cursor)
 
 
