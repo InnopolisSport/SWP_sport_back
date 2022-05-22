@@ -402,11 +402,11 @@
                     {% endif %}
                 {% endif %}
 
-                {% if student.sport_groups|length > 0 and student.obj.student_status.id == 0 or trainer.sport_groups %}
+                {% comment %} {% if student.sport_groups|length > 0 and student.obj.student_status.id == 0 or trainer.sport_groups %} {% endcomment %}
                     <hr>
                     <h2>Schedule</h2>
                     <div id='calendar'></div>
-                {% endif %}
+                {% comment %} {% endif %} {% endcomment %}
             </div>
         </div>
     </div>

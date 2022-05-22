@@ -21,7 +21,7 @@ function render(info) {
 
     let props = event.extendedProps;
     element.style.fontSize = "99";
-    element.style.backgroundColor = (props.current_load >= props.capacity) ? '#f00' : get_color(props.group_id)
+    element.style.backgroundColor = (props.load >= props.capacity) ? '#f00' : get_color(props.group_id)
     element.style.cursor = 'pointer';
 }
 
@@ -51,7 +51,11 @@ $(function () {
         eventRender: render,
         // Event format: yyyy-mm-dd
         events: '/api/calendar/' + calendarEl.getAttribute('data-sport') + '/schedule',
-        eventTimeFormat: { hour: 'numeric', minute: '2-digit', meridiem: 'short'}
+        eventTimeFormat: { // like '14:30'
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }
     });
 
     calendar.render();

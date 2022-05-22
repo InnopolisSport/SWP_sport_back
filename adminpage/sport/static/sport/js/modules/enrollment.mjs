@@ -21,3 +21,21 @@ async function  enroll(group_id, action, errorHandler=function(group_id){}) {
             toastr.error(error.message);
         })
 }
+
+function training_check_in(training_id) {
+    sendResults(`/api/training/${training_id}/check_in`)
+        .then()
+        .catch(function (error) {
+            errorHandler(training_id);
+            toastr.error(error.message);
+        })
+}
+
+function training_cancel_check_in(training_id) {
+    sendResults(`/api/training/${training_id}/cancel_check_in`)
+        .then()
+        .catch(function (error) {
+            errorHandler(training_id);
+            toastr.error(error.message);
+        })
+}
