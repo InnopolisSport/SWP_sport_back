@@ -159,7 +159,7 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
 
 async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0) {
     const {data, title, body, footer} = await openModal('#group-info-modal', apiUrl)
-    const {training, can_check_in, checked_in} = data;
+    const {training, can_check_in, checked_in, hours} = data;
     const group = training.group;
     const date = (new Date(training.start)).toLocaleDateString('en-GB');
     const start_time = new Date(training.start);
@@ -171,7 +171,7 @@ async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0)
             <div class="container">
                 <div class="row justify-content-between">
                     <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
-                    <div><button type="button" class="btn btn-danger>Cancel check in</button></div>
+                    <div><button type="button" class="btn btn-danger">Cancel check in</button></div>
                 </div>
             </div>
         `);
@@ -189,15 +189,16 @@ async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0)
     }
 
     title.text(''); // To clear after loading
-    // if (!!custom_name) {
+    if (!!training.custom_name) {
+        title.append(`<h2> <span class="badge badge-info text-uppercase">${training.custom_name}</span></h2>`);
+    } else {
         title.append(`<h2> <span class="badge badge-info text-uppercase">${group.name}</span></h2>`);
-    // } else {
-        // title.append(`<h2> <span class="badge badge-info text-uppercase">${custom_name}</span></h2>`);
-    // }
-
-    if (training.hours) {
-        body.append(`<div class="alert alert-success" role="alert">You got <strong>${training.hours}</strong> hour${training.hours > 1 ? 's': ''}.</div>`);
     }
+
+    if (hours) {
+        body.append(`<div class="alert alert-success" role="alert">You got <strong>${hours}</strong> hour${hours > 1 ? 's': ''}.</div>`);
+    }
+
     body.append(`<div>Time and date: <b>${formatTime(start_time.toLocaleTimeString('en-GB'))} - ${formatTime(end_time.toLocaleTimeString('en-GB'))}, ${date}</b></div>`);
     if (group.capacity) {
         body.append(`<div>Available places: <b>${group.capacity - training.load}/${group.capacity}</b></div>`);
