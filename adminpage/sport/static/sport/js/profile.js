@@ -23,8 +23,8 @@ function make_hours_table(trainings) {
                                 approved === null
                                     ? 'Awaiting'
                                     : approved
-                                    ? 'Yes'
-                                    : 'No'
+                                        ? 'Yes'
+                                        : 'No'
                             }</td>
                         </tr>`)
         );
@@ -137,10 +137,10 @@ function render(info) {
 
     let props = event.extendedProps;
     element.style.fontSize = '99';
-    element.style.backgroundColor = get_color(event.title);
     element.style.cursor = 'pointer';
     if (props.can_grade) {
-        let dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
+        element.style.backgroundColor = get_color(event.title);
+        let dotEl = element.getElementsByClassName('fc-event-dot')[0];
         if (dotEl) {
             dotEl.style.visibility = 'visible';
             dotEl.style.backgroundColor = 'white';
@@ -150,6 +150,14 @@ function render(info) {
             element.style.backgroundPosition = 'right bottom';
             element.style.backgroundRepeat = 'no-repeat';
             element.style.backgroundSize = '40%';
+        }
+    } else {
+        if (props.checked_in) {
+            element.style.backgroundColor = '#28a745' // success
+        } else if (props.can_check_in) {
+            element.style.backgroundColor = '#007bff' // primary
+        } else {
+            element.style.backgroundColor = '#dc3545' // danger
         }
     }
 }
@@ -372,7 +380,7 @@ async function open_modal(info) {
     if (info.event.extendedProps.can_grade) {
         return await open_trainer_modal(info);
     }
-    return await openGroupInfoModalForStudent(
+    return await openTrainingInfoModalForStudent(
         `/api/training/${info.event.extendedProps.id}`
     );
 }
@@ -431,7 +439,7 @@ async function open_trainer_modal({ event }) {
         show_alert('hours-alert', 'warning', "You can't change this training");
     }
 }
-
+let calendar;
 document.addEventListener('DOMContentLoaded', function () {
     let calendarEl = document.getElementById('calendar');
 
@@ -468,9 +476,15 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: open_modal,
         // Event format: yyyy-mm-dd
         events: '/api/calendar/trainings',
+        eventBackgroundColor: 'black',
+        eventTimeFormat: { // like '14:30'
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }
     };
 
-    let calendar = new SwipeCalendar(calendarEl, calendar_settings);
+    calendar = new SwipeCalendar(calendarEl, calendar_settings);
     calendar.render();
 });
 

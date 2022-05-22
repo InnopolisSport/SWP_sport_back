@@ -34,7 +34,7 @@ def convert_personal_training(t) -> dict:
     end_time = timezone.localtime(
             t["end"],
         )
-    return {
+    r = {
         "title": t["group_name"],
         "start": start_time,
         "end": end_time,
@@ -48,6 +48,11 @@ def convert_personal_training(t) -> dict:
             "training_class": t["training_class"],
         }
     }
+    if 'can_check_in' in t:
+        r["extendedProps"]['can_check_in'] = t['can_check_in']
+    if 'checked_in' in t:
+        r["extendedProps"]['checked_in'] = t['checked_in']
+    return r
 
 
 @swagger_auto_schema(

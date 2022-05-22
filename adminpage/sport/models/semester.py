@@ -3,6 +3,7 @@ from datetime import timedelta, date
 from django.db import models
 from django.db.models import Q, F
 from django.utils import timezone
+from sport.utils import today
 
 from . import MedicalGroup
 from .student import Student
@@ -10,10 +11,6 @@ from .student import Student
 
 def now_offset(offset=0):
     return timezone.now() + timedelta(seconds=offset)
-
-
-def today() -> date:
-    return timezone.now().date()
 
 
 class Semester(models.Model):

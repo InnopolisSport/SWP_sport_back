@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 from django.conf import settings
 from django.db import connection
@@ -6,7 +7,8 @@ from django.db.models import Q, F
 
 from api.crud.utils import dictfetchone, dictfetchall, get_trainers, get_trainers_group
 from api.crud.crud_semester import get_ongoing_semester
-from sport.models import Student, Trainer, Group, Training, Sport
+from sport.models import Student, Trainer, Group, Training, Sport, TrainingCheckIn
+
 
 def get_attended_training_info(training_id: int, student: Student):
     """
@@ -91,6 +93,17 @@ def get_group_info(group_id: int, student: Student):
         return info
 
 
+def can_check_in(student: Student, training: Training):
+    return student.medical_group in training.group.allowed_medical_groups.all() \
+           and TrainingCheckIn.objects.filter(student=student, training__start__day=training.start.day).count() < 2 \
+           and TrainingCheckIn.objects.filter(student=student, training__start__day=training.start.day,
+                                              training__group__sport=training.group.sport).count() < 1 \
+           and training.start < (timezone.now() + timedelta(days=7)) \
+           and training.end > timezone.now()
+
+
+
+# TODO: Rewrite
 def get_trainings_for_student(student: Student, start: datetime, end: datetime):
     """
     Retrieves existing trainings in the given range for given student
@@ -110,11 +123,12 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'FALSE AS can_grade '
                        'FROM enroll e, "group" g, sport s, training t '
                        'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
+                       'WHERE ((t.start > %(start)s AND t.start < %(end)s) '
+                       'OR (t."end" > %(start)s AND t."end" < %(end)s) '
+                       'OR (t.start < %(start)s AND t."end" > %(end)s)) '
                        'AND g.sport_id = s.id '
                        'AND s.name != %(extra_sport)s '
                        'AND t.group_id = g.id '
-                       'AND e.group_id = g.id '
                        'AND e.student_id = %(student_id)s '
                        'AND g.semester_id = current_semester() '
                        'UNION DISTINCT '
@@ -135,7 +149,12 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'AND g.semester_id = current_semester()',
                        {"start": start, "end": end, "extra_sport": settings.OTHER_SPORT_NAME, "student_id": student.pk}
                        )
-        return dictfetchall(cursor)
+        d = dictfetchall(cursor)
+        for e in d:
+            t = Training.objects.get(pk=e['id'])
+            e['can_check_in'] = can_check_in(student, t)
+            e['checked_in'] = t.checkins.filter(student=student).exists()
+        return d
 
 
 def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
@@ -211,13 +230,13 @@ def get_students_grades(training_id: int):
                        'COALESCE(a.hours, 0) AS hours, '
                        'm.name AS med_group, '
                        'concat(d.first_name, \' \', d.last_name) as full_name '
-                       'FROM training t, enroll e, auth_user d, student s '
+                       'FROM training t, sport_trainingcheckin e, auth_user d, student s '
                        'LEFT JOIN attendance a ON a.student_id = s.user_id AND a.training_id = %(training_id)s '
                        'LEFT JOIN medical_group m ON m.id = s.medical_group_id '
                        'WHERE s.user_id = e.student_id '
                        'AND d.id = e.student_id '
                        'AND t.id = %(training_id)s '
-                       'AND t.group_id = e.group_id ', {"training_id": training_id})
+                       'AND t.id = e.training_id ', {"training_id": training_id})
         return dictfetchall(cursor)
 
 

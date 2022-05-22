@@ -30,6 +30,7 @@ from .fitness_test_session import FitnessTestSession
 from .measurement_session import MeasurementSession
 from .measurement_result import MeasurementResult
 from .measurement import Measurement
+from .training_checkin import TrainingCheckIn
 
 DjangoGroup.add_to_class(
     'verbose_name',

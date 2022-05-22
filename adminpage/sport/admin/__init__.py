@@ -33,4 +33,5 @@ from .fitnessTestGradingAdmin import FitnessTestGradingAdmin
 from .measurementAdmin import Measurement
 from .measurementSessionAdmin import MeasurementSession
 from .measurementResultAdmin import MeasurementResult
+from .trainingCheckInAdmin import TrainingCheckInAdmin
 

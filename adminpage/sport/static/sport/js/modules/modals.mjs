@@ -119,10 +119,10 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
         footer.find('.btn-success').click(() => enroll(group_id, 'enroll', enrollErrorCb));
     }
     title.text('');
-    if (custom_name != undefined) {
-        title.append(`<h2> <span class="badge badge-info text-uppercase">${custom_name}</span></h2>`);
-    } else {
+    if (!!custom_name) {
         title.append(`<h2> <span class="badge badge-info text-uppercase">${group_name}</span></h2>`);
+    } else {
+        title.append(`<h2> <span class="badge badge-info text-uppercase">${custom_name}</span></h2>`);
     }
     renderGroupModalBody(body, data);
     if (schedule && schedule.length > 0) {
@@ -154,6 +154,75 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
         }
 
     }
+    return data;
+}
+
+async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0) {
+    const {data, title, body, footer} = await openModal('#group-info-modal', apiUrl)
+    const {training, can_check_in, checked_in, hours} = data;
+    const group = training.group;
+    const date = (new Date(training.start)).toLocaleDateString('en-GB');
+    const start_time = new Date(training.start);
+    const end_time = new Date(training.end);
+    let disabled_attr = (training.load >= group.capacity || !can_check_in) ? 'disabled' : ''
+
+    if (checked_in) {
+        footer.html(`
+            <div class="container">
+                <div class="row justify-content-between">
+                    <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+                    <div><button type="button" class="btn btn-danger">Cancel check in</button></div>
+                </div>
+            </div>
+        `);
+        footer.find('.btn-danger').click(() => training_cancel_check_in(training.id));
+    } else {
+        footer.html(`
+            <div class="container">
+                <div class="row justify-content-between">
+                    <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+                    <div><button type="button" class="btn btn-success ${disabled_attr}" ${disabled_attr}>Check in</button></div>
+                </div>
+            </div>
+        `);
+        footer.find('.btn-success').click(() => training_check_in(training.id));
+    }
+
+    title.text(''); // To clear after loading
+    if (!!training.custom_name) {
+        title.append(`<h2> <span class="badge badge-info text-uppercase">${training.custom_name}</span></h2>`);
+    } else {
+        title.append(`<h2> <span class="badge badge-info text-uppercase">${group.name}</span></h2>`);
+    }
+
+    if (hours) {
+        body.append(`<div class="alert alert-success" role="alert">You got <strong>${hours}</strong> hour${hours > 1 ? 's': ''}.</div>`);
+    }
+
+    body.append(`<div>Time and date: <b>${formatTime(start_time.toLocaleTimeString('en-GB'))} - ${formatTime(end_time.toLocaleTimeString('en-GB'))}, ${date}</b></div>`);
+    if (group.capacity) {
+        body.append(`<div>Available places: <b>${group.capacity - training.load}/${group.capacity}</b></div>`);
+    }
+    if (training.class) {
+        p.append(`<div>Class: <b>${training.class}</b></div>`);
+    }
+
+    body.append('<br><b>Description</b>:')
+    if (group.link) {
+        const label = group.link_name ? `${group.link_name}: ` : '';
+        body.append(`<div>${label}<a href=${group.link}>${group.link}</a></div>`)
+    }
+    if (group.description) {
+        body.append(`<div>${group.description}</div>`);
+    }
+    body.append('<br>')
+
+    let teachers_html = [];
+    group.teachers.forEach((teacher) => {
+        teachers_html.push(`<li>${teacher.first_name} ${teacher.last_name} <a href="mailto:${teacher.email}">${teacher.email}</a></li>`);
+    });
+    body.append(`<b>Teacher${group.teachers.length > 1 ? 's': ''}</b>: ${teachers_html.join('\n')}`);
+
     return data;
 }
 
