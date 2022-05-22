@@ -47,6 +47,8 @@ urlpatterns = [
 
     # training
     path(r"training/<int:training_id>", training.training_info),
+    path(r"training/<int:training_id>/checkin", training.training_checkin),
+    path(r"training/<int:training_id>/cancel_checkin", training.training_cancel_checkin),
 
     # attendance
     path(r"attendance/suggest_student", attendance.suggest_student),

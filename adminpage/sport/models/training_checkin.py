@@ -7,3 +7,8 @@ class TrainingCheckIn(models.Model):
     training = models.ForeignKey("Training", on_delete=models.CASCADE, related_name='checkins')
     attendance = models.OneToOneField('Attendance',
                                       null=True, blank=True, on_delete=models.SET_NULL, related_name='checkin')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['student', 'training'], name='student_training_checkin')
+        ]
