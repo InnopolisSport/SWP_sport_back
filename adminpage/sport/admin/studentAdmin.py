@@ -76,6 +76,7 @@ class StudentResource(resources.ModelResource):
         column_name="medical_group",
         attribute="medical_group",
         widget=MedicalGroupWidget(MedicalGroup, "pk"),
+        saves_null_values=False,
     )
 
     student_status = fields.Field(
