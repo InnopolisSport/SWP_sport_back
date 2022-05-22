@@ -52,7 +52,7 @@ def training_checkin(request, training_id, **kwargs):
     student: Student = request.user.student
     try:
         TrainingCheckIn.objects.create(student=student, training_id=training_id)
-        return Response()
+        return Response({})
     except IntegrityError as e:
         if 'is not present in table' in str(e):
             return Response(
@@ -88,7 +88,7 @@ def training_cancel_checkin(request, training_id, **kwargs):
 
     try:
         TrainingCheckIn.objects.get(training_id=training_id, student=student).delete()
-        return Response()
+        return Response({})
     except TrainingCheckIn.DoesNotExist:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
