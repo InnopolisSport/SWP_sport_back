@@ -13,7 +13,7 @@ from sport.models import Training, Student
 @swagger_auto_schema(
     method="GET",
     responses={
-        status.HTTP_200_OK: NewTrainingInfoSerializer(),
+        status.HTTP_200_OK: NewTrainingInfoStudentSerializer(),
         status.HTTP_404_NOT_FOUND: NotFoundSerializer(),
     }
 )
