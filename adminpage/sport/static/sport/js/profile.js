@@ -439,7 +439,7 @@ async function open_trainer_modal({ event }) {
         show_alert('hours-alert', 'warning', "You can't change this training");
     }
 }
-
+let calendar;
 document.addEventListener('DOMContentLoaded', function () {
     let calendarEl = document.getElementById('calendar');
 
@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
     };
 
-    let calendar = new SwipeCalendar(calendarEl, calendar_settings);
+    calendar = new SwipeCalendar(calendarEl, calendar_settings);
     calendar.render();
 });
 

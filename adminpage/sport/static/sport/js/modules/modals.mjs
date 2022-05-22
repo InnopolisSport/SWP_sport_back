@@ -171,7 +171,7 @@ async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0)
             <div class="container">
                 <div class="row justify-content-between">
                     <div><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
-                    <div><button type="button" class="btn btn-danger>Cancel check in</button></div>
+                    <div><button type="button" class="btn btn-danger">Cancel check in</button></div>
                 </div>
             </div>
         `);
@@ -189,15 +189,16 @@ async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0)
     }
 
     title.text(''); // To clear after loading
-    // if (!!custom_name) {
+    if (!!custom_name) {
+        title.append(`<h2> <span class="badge badge-info text-uppercase">${custom_name}</span></h2>`);
+    } else {
         title.append(`<h2> <span class="badge badge-info text-uppercase">${group.name}</span></h2>`);
-    // } else {
-        // title.append(`<h2> <span class="badge badge-info text-uppercase">${custom_name}</span></h2>`);
-    // }
+    }
 
     if (training.hours) {
         body.append(`<div class="alert alert-success" role="alert">You got <strong>${training.hours}</strong> hour${training.hours > 1 ? 's': ''}.</div>`);
     }
+    
     body.append(`<div>Time and date: <b>${formatTime(start_time.toLocaleTimeString('en-GB'))} - ${formatTime(end_time.toLocaleTimeString('en-GB'))}, ${date}</b></div>`);
     if (group.capacity) {
         body.append(`<div>Available places: <b>${group.capacity - training.load}/${group.capacity}</b></div>`);
