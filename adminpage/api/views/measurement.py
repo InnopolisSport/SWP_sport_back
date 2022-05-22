@@ -1,9 +1,4 @@
 import datetime
-from collections import defaultdict
-
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -11,28 +6,25 @@ from rest_framework.response import Response
 
 from api.crud import get_ongoing_semester
 
-from api.permissions import (
-    IsTrainer, IsStudent,
-)
+from api.permissions import IsStudent
 
 from api.serializers import (
-    MeasurementPost,
-    Measurement as MeasurementSerializer,
-    MeasurementResult,
-    MeasurementResults,
-    EmptySerializer,
+    MeasurementPostSerializer,
+    MeasurementSerializer as MeasurementSerializer,
+    MeasurementResultsSerializer,
     NotFoundSerializer,
-    ErrorSerializer, SuggestionQuerySerializer, SuggestionSerializer
+    ErrorSerializer
 )
 
-from sport.models import Group, Measurement, MeasurementSession, MeasurementResult, Student
+from sport.models import Measurement, MeasurementSession, MeasurementResult, Student
 
 
 @swagger_auto_schema(
     method="GET",
-    query_serializer=MeasurementSerializer(many=True),
+    # TODO: Check
+    # query_serializer=MeasurementSerializer(many=True),
     responses={
-        status.HTTP_200_OK: MeasurementResults,
+        status.HTTP_200_OK: MeasurementResultsSerializer,
     }
 )
 @api_view(["GET"])
@@ -46,9 +38,10 @@ def get_measurements(request, **kwargs):
 
 @swagger_auto_schema(
     method="GET",
-    query_serializer=MeasurementResults,
+    # TODO: Check
+    # query_serializer=MeasurementResultsSerializer,
     responses={
-        status.HTTP_200_OK: MeasurementResults,
+        status.HTTP_200_OK: MeasurementResultsSerializer,
     }
 )
 @api_view(["GET"])
@@ -80,7 +73,7 @@ def get_results(request, **kwargs):
 
 @swagger_auto_schema(
     method="POST",
-    request_body=MeasurementPost,
+    request_body=MeasurementPostSerializer,
     responses={
         status.HTTP_404_NOT_FOUND: NotFoundSerializer,
         status.HTTP_400_BAD_REQUEST: ErrorSerializer,
