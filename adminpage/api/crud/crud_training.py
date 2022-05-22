@@ -98,7 +98,7 @@ def can_check_in(student: Student, training: Training):
            and TrainingCheckIn.objects.filter(student=student, training__start__day=training.start.day).count() < 2 \
            and TrainingCheckIn.objects.filter(student=student, training__start__day=training.start.day,
                                               training__group__sport=training.group.sport).count() < 1 \
-           and training.start > (timezone.now() + timedelta(days=7))
+           and training.start < (timezone.now() + timedelta(days=7))
 
 
 
