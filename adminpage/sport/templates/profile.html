@@ -130,19 +130,21 @@
                                     {{ student.obj.medical_group.name }} medical group
                                 </span>
                             {% endif %}
-                            {% if student.sport %}
+                            <!-- Sport Type -->
+                            <!--{% if student.sport %}
                                 <span class="badge badge-dark text-uppercase mx-1 my-1">{{ student.sport.name }}</span>
                             {% else %}
                                 <span class="badge badge-dark mx-1 my-1">NO SPORT TYPE</span>
-                            {% endif %}
-                            {% if student.sport_groups|length > 0 %}
+                            {% endif %} -->
+                            <!-- Sport Group -->
+                            <!-- {% if student.sport_groups|length > 0 %}
                                 <span class="badge badge-info text-uppercase mx-1 my-1"
                                     id="student-span"
                                     onclick="openGroupInfoModalForStudent('/api/group/{{ student.sport_groups.0.id }}')"
                                     style="cursor: pointer;">{{ student.sport_groups.0.name }}</span>
                             {% else %}
                                 <span class="badge badge-info mx-1 my-1">NO SPORT GROUP</span>
-                            {% endif %}
+                            {% endif %} -->
                         </p>
                         <div id="debtor_alert" class="d-none alert alert-danger" role="alert">
                             <h5>Dear student!</h5>
@@ -306,7 +308,7 @@
                                 {% endif %}
                             </div>
                             <div class="my-2 mx-2">
-                                {% if not student.sport %}
+                                {% comment %} {% if not student.sport %}
                                     <a href="{% url 'category' %}" class="btn btn-danger">
                                         Choose sport type
                                     </a>
@@ -314,11 +316,11 @@
                                     <a href="{% url 'category' %}" class="btn btn-danger">
                                         Choose sport group
                                     </a>
-                                {% else %}
+                                {% else %} {% endcomment %}
                                     <a href="{% url 'category' %}" class="btn btn-dark">
                                         Sport types' schedule
                                     </a>
-                                {% endif %}
+                                {% comment %} {% endif %} {% endcomment %}
                             </div>
                         </div>
                         <div class="d-flex justify-content-center align-content-center flex-wrap">
