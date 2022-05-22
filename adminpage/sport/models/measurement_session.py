@@ -1,10 +1,5 @@
 from django.db import models
-from datetime import timedelta, date
-from django.utils import timezone
-
-
-def today() -> date:
-    return timezone.now().date()
+from sport.utils import today
 
 
 class MeasurementSession(models.Model):

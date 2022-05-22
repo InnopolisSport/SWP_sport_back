@@ -4,6 +4,7 @@ from enum import IntEnum
 from django.conf import settings
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.utils import timezone
 
 class SubmissionType(IntEnum):
     LINK = 1
@@ -38,3 +39,6 @@ def get_current_study_year() -> int:
 
 def set_session_notification(request, msg: str, msg_type: str):
     request.session["notify"] = (msg_type, msg)
+
+def today() -> date:
+    return timezone.now().date()
