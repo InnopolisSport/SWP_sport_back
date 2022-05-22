@@ -85,12 +85,6 @@
                             If your status is incorrect, please contact <a href="https://t.me/loban4">Alexandr Lobanov</a>
                         </p>
                     {% endif %}
-                    {% if student.obj.student_status.id == 2  %}
-                        <hr>
-                        <a href="{% url 'category' %}" class="btn btn-dark" style="width: 100%">
-                            Sport types' schedule
-                        </a>
-                    {% endif %}
                     <!-- <meta id="QR-data" data-QR="{{ student.has_QR }}"> -->
                     {% if student.obj.student_status.id == 0 %}
                         <p class="d-flex justify-content-center align-content-between flex-wrap">
@@ -307,21 +301,6 @@
                                         Self-sport upload
                                     </button>
                                 {% endif %}
-                            </div>
-                            <div class="my-2 mx-2">
-                                {% comment %} {% if not student.sport %}
-                                    <a href="{% url 'category' %}" class="btn btn-danger">
-                                        Choose sport type
-                                    </a>
-                                {% elif not student.sport_groups%}
-                                    <a href="{% url 'category' %}" class="btn btn-danger">
-                                        Choose sport group
-                                    </a>
-                                {% else %} {% endcomment %}
-                                    <a href="{% url 'category' %}" class="btn btn-dark">
-                                        Sport types' schedule
-                                    </a>
-                                {% comment %} {% endif %} {% endcomment %}
                             </div>
                         </div>
                         <div class="d-flex justify-content-center align-content-center flex-wrap">
