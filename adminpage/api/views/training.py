@@ -1,5 +1,6 @@
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -8,7 +9,7 @@ from rest_framework.response import Response
 from api.crud.crud_training import can_check_in
 from api.permissions import IsStudent
 from api.serializers import NotFoundSerializer, EmptySerializer, ErrorSerializer, error_detail
-from api.serializers.training import NewTrainingInfoSerializer, NewTrainingInfoStudentSerializer
+from api.serializers.training import NewTrainingInfoStudentSerializer
 from sport.models import Training, Student, TrainingCheckIn, Attendance
 
 
@@ -49,19 +50,28 @@ def training_info(request, training_id, **kwargs):
 @api_view(["POST"])
 @permission_classes([IsStudent])
 def training_checkin(request, training_id, **kwargs):
+    try:
+        training = Training.objects.get(id=training_id)
+    except Training.DoesNotExist:
+        return Response(
+            status=status.HTTP_404_NOT_FOUND,
+            data=NotFoundSerializer({'detail': 'Training not found'}).data
+        )
     student: Student = request.user.student
+
+    if not can_check_in(student, training):
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(2, "You cannot check in at this training")
+        )
+
     try:
         TrainingCheckIn.objects.create(student=student, training_id=training_id)
         return Response({})
     except IntegrityError as e:
-        if 'is not present in table' in str(e):
-            return Response(
-                status=status.HTTP_404_NOT_FOUND,
-                data=NotFoundSerializer({'detail': 'Training not found'}).data
-            )
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
-            data=error_detail(1, "You already checked in this training")
+            data=error_detail(1, "You have already checked in at this training")
         )
 
 
@@ -77,7 +87,7 @@ def training_checkin(request, training_id, **kwargs):
 @permission_classes([IsStudent])
 def training_cancel_checkin(request, training_id, **kwargs):
     try:
-        Training.objects.get(id=training_id)
+        training = Training.objects.get(id=training_id)
     except Training.DoesNotExist:
         return Response(
             status=status.HTTP_404_NOT_FOUND,
@@ -86,11 +96,17 @@ def training_cancel_checkin(request, training_id, **kwargs):
 
     student: Student = request.user.student
 
+    if training.end < timezone.now():
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data=error_detail(2, "You cannot cancel check in at passed training")
+        )
+
     try:
         TrainingCheckIn.objects.get(training_id=training_id, student=student).delete()
         return Response({})
     except TrainingCheckIn.DoesNotExist:
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
-            data=error_detail(1, "You did not check in this training")
+            data=error_detail(1, "You did not check in at this training")
         )
