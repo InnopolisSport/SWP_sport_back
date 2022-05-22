@@ -33,12 +33,13 @@ class NewTrainingInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Training
-        fields = ('id', 'group', 'start', 'end', 'load')
+        fields = ('id', 'custom_name', 'group', 'start', 'end', 'load')
 
 class NewTrainingInfoStudentSerializer(serializers.Serializer):
     training = NewTrainingInfoSerializer()
     can_check_in = serializers.BooleanField()
     checked_in = serializers.BooleanField()
+    hours = serializers.IntegerField(required=False, allow_null=True)
 
 
 class TrainingInfoSerializer(serializers.Serializer):

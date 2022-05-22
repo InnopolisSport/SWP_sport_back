@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from api.permissions import IsStudent
 from api.serializers import NotFoundSerializer, EmptySerializer, ErrorSerializer, error_detail
 from api.serializers.training import NewTrainingInfoSerializer, NewTrainingInfoStudentSerializer
-from sport.models import Training, Student, TrainingCheckIn
+from sport.models import Training, Student, TrainingCheckIn, Attendance
 
 
 @swagger_auto_schema(
@@ -25,10 +25,16 @@ def training_info(request, training_id, **kwargs):
     student: Student = request.user.student
     checked_in = training.checkins.filter(student=student).exists()
     can_check_in = student.medical_group in training.group.allowed_medical_groups.all()
+    try:
+        hours = Attendance.objects.get(training=training, student=student).hours
+    except Attendance.DoesNotExist:
+        hours = None
+
     return Response(NewTrainingInfoStudentSerializer({
         'training': training,
         'can_check_in': can_check_in,
-        'checked_in': checked_in
+        'checked_in': checked_in,
+        'hours': hours
     }).data)
 
 
