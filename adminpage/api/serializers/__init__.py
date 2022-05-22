@@ -56,8 +56,8 @@ from .fitness_test import (
     FitnessTestResults
 )
 from .measurement import (
-    Measurement,
-    MeasurementPost,
-    MeasurementResult,
-    MeasurementResults
+    MeasurementSerializer,
+    MeasurementPostSerializer,
+    MeasurementResultSerializer,
+    MeasurementResultsSerializer
 )

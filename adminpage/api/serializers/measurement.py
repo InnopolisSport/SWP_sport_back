@@ -1,18 +1,18 @@
 from rest_framework import serializers
 
 
-class Measurement(serializers.Serializer):
+class MeasurementSerializer(serializers.Serializer):
     name = serializers.CharField()
     value_unit = serializers.CharField()
 
 
-class MeasurementPost(serializers.Serializer):
+class MeasurementPostSerializer(serializers.Serializer):
     student_id = serializers.IntegerField()
     measurement_id = serializers.IntegerField()
     value = serializers.IntegerField()
 
 
-class MeasurementResult(serializers.Serializer):
+class MeasurementResultSerializer(serializers.Serializer):
     measurement = serializers.CharField()
     uint = serializers.CharField()
     value = serializers.IntegerField()
@@ -20,6 +20,6 @@ class MeasurementResult(serializers.Serializer):
     date = serializers.DateField()
 
 
-class MeasurementResults(serializers.Serializer):
+class MeasurementResultsSerializer(serializers.Serializer):
     semester = serializers.CharField()
-    result = MeasurementResult(many=True)
+    result = MeasurementResultSerializer(many=True)
