@@ -105,7 +105,7 @@
                                     });
                             </script>
                             <span id="debtor_status" class="d-none badge badge-pill badge-danger mx-1 my-1">DEBTOR</span>
-                            {% if student.obj.medical_group.id != -2 and not student.has_unresolved_med_group_submission %}
+                            {% if student.obj.medical_group.id != -2 %}
                                 <span id="medical-group" class="badge badge-pill badge-success text-uppercase my-1 mx-1"
                                     onclick="openMedicalInfoModal(
                                             `{{ student.obj.medical_group.name }}`,
@@ -266,7 +266,7 @@
                                         style="cursor: pointer;">
                                         Submit medical group reference
                                     </button>
-                                {% elif student.has_unresolved_med_group_submission %}
+                                {% elif student.obj.medical_group.id == -2 and student.has_unresolved_med_group_submission %}
                                     <button type="button" class="btn btn-warning" disabled style="cursor: default; opacity: 1;">
                                         Awaiting medical group reference approval
                                     </button>
@@ -276,6 +276,21 @@
                                     </button>
                                 {% endif %}
                             </div>
+                            {% if student.obj.medical_group.id != -2 and not student.has_unresolved_med_group_submission %}
+                            <div class="my-2 mx-2">
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="open_med_group_modal()"
+                                    style="cursor: pointer;">
+                                    Change medical group
+                                </button>
+                            </div>
+                            {% elif student.obj.medical_group.id != -2 and student.has_unresolved_med_group_submission %}
+                            <div class="my-2 mx-2">
+                                <button type="button" class="btn btn-warning" disabled style="cursor: default; opacity: 1;">
+                                    Awaiting medical group reference approval
+                                </button>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="d-flex justify-content-center align-content-center flex-wrap">
                             <div class="my-2 mx-2 align-self-center">
