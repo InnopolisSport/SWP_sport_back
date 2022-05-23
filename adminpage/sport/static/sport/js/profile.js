@@ -115,15 +115,14 @@ async function openMedicalInfoModal(groupName, groupDescription) {
         '#medical-group-info-modal',
         null
     );
-    title.text(`Medical group info - ${groupName}`);
+    title.html(`Medical group <span class="badge badge-pill badge-success text-uppercase">${groupName}</span> info`);
     body.append(groupDescription);
     footer.html(
-        '<div class="container">' +
-            '<div class="row justify-content-between">' +
-            '<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="open_med_group_modal()">Change medical group</button> ' +
-            '<button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>' +
-            '</div>' +
-            '</div>'
+        `<div class="container">
+            <div class="row justify-content-end">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>`
     );
 }
 
