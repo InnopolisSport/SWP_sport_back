@@ -125,27 +125,11 @@
                                     {{ student.obj.medical_group.name }} medical group
                                 </span>
                             {% endif %}
-                            <!-- Sport Type -->
-                            <!--{% if student.sport %}
-                                <span class="badge badge-dark text-uppercase mx-1 my-1">{{ student.sport.name }}</span>
-                            {% else %}
-                                <span class="badge badge-dark mx-1 my-1">NO SPORT TYPE</span>
-                            {% endif %} -->
-                            <!-- Sport Group -->
-                            <!-- {% if student.sport_groups|length > 0 %}
-                                <span class="badge badge-info text-uppercase mx-1 my-1"
-                                    id="student-span"
-                                    onclick="openGroupInfoModalForStudent('/api/group/{{ student.sport_groups.0.id }}')"
-                                    style="cursor: pointer;">{{ student.sport_groups.0.name }}</span>
-                            {% else %}
-                                <span class="badge badge-info mx-1 my-1">NO SPORT GROUP</span>
-                            {% endif %} -->
                         </p>
                         <div id="debtor_alert" class="d-none alert alert-danger" role="alert">
                             <h5>Dear student!</h5>
-                            <p><b>To remove</b> the <span class="badge badge-pill badge-danger">DEBTOR</span> status you should make your <b>number of hours positive</b> (clear debt bar),
-                            <br>
-                            <i>either</i>  on <b>self-sport</b> or <span class="badge badge-info">SPORT GROUP</span> trainings.
+                            <p><b>To remove</b> the <span class="badge badge-pill badge-danger">DEBTOR</span> status you should clear the debt bar,
+                            attending <b>on trainings</b>.
                             <br>
                             Closing the debt is <b>required to pass the sport course</b>.</p>
                         </div>
@@ -204,7 +188,7 @@
                             {% if student.is_online %}
                                 <div class="progress-bar bg-light text-primary" style="width: 100%; height: 2rem;"><b>Self-sport</b></div>
                             {% else %}
-                                <div class="progress-bar bg-light text-primary" style="width: 40%; height: 2rem;"><b>Self-sport (max 10h)</b></div>
+                                <div class="progress-bar bg-light text-primary" style="width: 40%; height: 2rem;"><b>Self-sport</b></div>
                                 <div class="progress-bar bg-light text-info" style="width: 60%; height: 2rem;"><b>Sport group</b></div>
                             {% endif %}
                         </div>
