@@ -6,9 +6,10 @@ from django.db.models.expressions import Value, Case, When, Subquery, OuterRef, 
 from django.db.models.functions import Coalesce, Least
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from import_export import resources, widgets, fields
+from import_export import resources, fields
 from import_export.admin import ImportExportActionModelAdmin, ExportActionMixin
 from import_export.results import RowResult
+from import_export.widgets import ForeignKeyWidget
 
 from api.crud import get_ongoing_semester, get_negative_hours, SumSubquery
 from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance, Debt, FitnessTestGrading, \
@@ -19,22 +20,11 @@ from .site import site
 from .utils import user__role, DefaultFilterMixIn
 
 
-class MedicalGroupWidget(widgets.ForeignKeyWidget):
-    def render(self, value: MedicalGroup, obj=None):
-        return str(value)
-
-
-class StudentStatusWidget(widgets.ForeignKeyWidget):
-    def render(self, value: StudentStatus, obj=None):
-        return str(value)
-
-
 class FitnessTestExcerciseInline(admin.TabularInline):
     model = FitnessTestResult
     extra = 0
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        print(db_field.name)
         if db_field.name == 'semester':
             kwargs['initial'] = get_ongoing_semester()
             return db_field.formfield(**kwargs)
@@ -75,20 +65,19 @@ class StudentResource(resources.ModelResource):
     medical_group = fields.Field(
         column_name="medical_group",
         attribute="medical_group",
-        widget=MedicalGroupWidget(MedicalGroup, "pk"),
-        saves_null_values=False,
+        widget=ForeignKeyWidget(MedicalGroup, "name"),
     )
 
     student_status = fields.Field(
         column_name="student_status",
         attribute="student_status",
-        widget=StudentStatusWidget(StudentStatus, "pk"),
+        widget=ForeignKeyWidget(StudentStatus, "name"),
     )
 
     sport = fields.Field(
         column_name="sport",
         attribute="sport",
-        widget=StudentStatusWidget(Sport, "pk"),
+        widget=ForeignKeyWidget(Sport, "name"),
     )
 
     complex_hours = fields.Field(attribute='complex_hours', readonly=True)
