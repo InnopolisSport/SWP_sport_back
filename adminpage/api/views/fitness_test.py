@@ -87,6 +87,7 @@ def get_result(request, **kwargs):
         semester_id = result_distinct_semester['exercise__semester_id']
         semester = Semester.objects.get(id=semester_id)
 
+        grade = True
         total_score = 0
         result_list = []
         for result in results.filter(exercise__semester_id=semester_id):
@@ -99,7 +100,7 @@ def get_result(request, **kwargs):
                 'score': get_score(request.user.student, result),
                 'max_score': get_max_score(request.user.student, result),
             })
-            grade = result_list[-1]['score'] >= result.exercise.threshold
+            grade = grade and result_list[-1]['score'] >= result.exercise.threshold
             total_score += result_list[-1]['score']
 
         grade = grade and total_score >= semester.points_fitness_test
