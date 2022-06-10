@@ -1,3 +1,4 @@
+from curses.ascii import SP
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
@@ -10,6 +11,8 @@ from api.permissions import IsStudent, IsTrainer
 from api.serializers import GroupInfoSerializer, NotFoundSerializer, SportsSerializer, EmptySerializer, ErrorSerializer
 from api.serializers.group import SportEnrollSerializer
 from sport.models import Group, Schedule, Student, Sport
+import csv
+import os
 
 
 @swagger_auto_schema(
@@ -69,4 +72,20 @@ def select_sport(request, **kwargs):
     student.sport = sport
     student.save()
 
+    return Response({})
+
+
+@api_view(["GET"])
+@permission_classes([IsTrainer])
+def exportSportTypes(request, **kwargs):
+    file = open("./../test.csv")
+    reader = csv.reader(file)
+    for row in reader:
+        studentEmail = row[0]
+        studentSportType = row[8]
+        s = Student.objects.filter(user__email=studentEmail)
+        sport = Sport.objects.filter(name=studentSportType)
+        if len(s) == 1 and len(sport) == 1:
+            s[0].sport = sport[0]
+            s[0].save()
     return Response({})
