@@ -23,13 +23,11 @@ def get_sport_schedule(
     """
 
     medical_group_condition = Q(allowed_medical_groups__id=1) | Q(allowed_medical_groups__id=2)
-    qr_condition = Q(allowed_qr=-1)
     if student is not None:
         medical_group_condition = Q(allowed_medical_groups__id=student.medical_group.id)
-        qr_condition = Q(allowed_qr__in=[-1, int(student.has_QR)])
 
     prefetch_query = Schedule.objects.select_related('training_class')
-   
+
     query = Group.objects.prefetch_related(
         'sport',
         'enrolls',
@@ -37,7 +35,6 @@ def get_sport_schedule(
     ).filter(
         (Q(sport__id=sport_id) if sport_id != -1 else Q(sport=None)) &
         medical_group_condition &
-        # qr_condition &
         Q(schedule__isnull=False) &
         Q(semester__id=get_ongoing_semester().id)
     ).values(

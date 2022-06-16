@@ -34,7 +34,6 @@ class EnrollErrors:
     NOT_ENROLLED = (7, "Requested student is not enrolled into this group")
     SPORT_ERROR = (8, "Requested group doesn't belong to requested student's sport")
     SEMESTER_ERROR = (9, "Requested group does't belong to current semester")
-    QR_ERROR = (10, "Requested group has QR requirement")
 
 
 @swagger_auto_schema(
@@ -94,12 +93,6 @@ def enroll(request, **kwargs):
             status=status.HTTP_400_BAD_REQUEST,
             data=error_detail(*EnrollErrors.MEDICAL_DISALLOWANCE)
         )
-
-    # if group.allowed_qr not in [-1, int(student.has_QR)]:
-    #     return Response(
-    #         status=status.HTTP_400_BAD_REQUEST,
-    #         data=error_detail(*EnrollErrors.QR_ERROR)
-    #     )
 
     try:
         enroll_student(group, student)

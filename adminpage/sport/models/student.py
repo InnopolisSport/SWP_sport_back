@@ -31,10 +31,6 @@ class Student(models.Model):
         default=-1
     )
 
-    has_QR = models.BooleanField(
-        default=False,
-    )
-
     is_online = models.BooleanField(
         default=False,
     )
