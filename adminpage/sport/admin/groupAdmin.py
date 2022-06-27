@@ -39,6 +39,10 @@ class GroupAdmin(DefaultFilterMixIn):
 
     search_fields = (
         "name",
+        "sport__name",
+        "trainers__user__first_name",
+        "trainers__user__last_name",
+        "trainers__user__email",
     )
 
     autocomplete_fields = (
