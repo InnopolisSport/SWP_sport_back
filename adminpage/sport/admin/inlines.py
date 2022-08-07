@@ -91,15 +91,6 @@ class HackAttendanceInline(ViewAttendanceInline):
     fields = ('date', 'hours',)
 
 
-class ScheduleInline(admin.TabularInline):
-    model = Schedule
-    extra = 0
-    ordering = ("weekday", "start")
-    autocomplete_fields = ("training_class",)
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related("group__semester", "training_class")
-
 
 class EnrollInline(admin.TabularInline):
     model = Enroll
