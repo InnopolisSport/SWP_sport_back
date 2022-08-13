@@ -94,7 +94,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_boolean("DEBUG")
 PROJECT_ROOT = "/src/"
-ALLOWED_HOSTS = [HOSTNAME, 'adminpanel']
+ALLOWED_HOSTS = [HOSTNAME, 'adminpanel', '*']
 
 if DEBUG:
     ALLOWED_HOSTS.append('localhost')
@@ -131,6 +131,8 @@ INSTALLED_APPS = [
     'hijack',
     'hijack.contrib.admin',
     'tinymce',
+    'django_telegram_login',
+    'bot'
 ]
 
 MIDDLEWARE = [
@@ -340,3 +342,11 @@ if DEBUG:
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", None)
 
+TELEGRAM_BOT_TOKEN = '5210388390:AAHGSbn4NPLxtlK5nqDDSZUr3pTOpyUjzqo'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'bot.authentication.TelegramAuthentication',
+    ]
+}

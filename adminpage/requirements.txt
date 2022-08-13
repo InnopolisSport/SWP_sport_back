@@ -23,3 +23,4 @@ requests==2.25.1
 django-smartfields==1.1.3
 django-hijack==3.1.4
 django-tinymce==3.4.0
+django-telegram-login==0.2.3

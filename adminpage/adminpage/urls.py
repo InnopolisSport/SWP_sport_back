@@ -43,6 +43,7 @@ urlpatterns = [
         path('oauth2/', include('django_auth_adfs.urls')),
 
         path("api/", include("api.urls")),
+        path("bot/", include("bot.urls")),
         path("media/", include('media.urls')),
         path('hijack/', include('hijack.urls')),
     ]))
