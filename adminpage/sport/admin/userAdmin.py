@@ -2,13 +2,15 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
+from hijack.contrib.admin import HijackUserAdminMixin
+
 from .site import site
 
 User = get_user_model()
 
 
 @admin.register(User, site=site)
-class UserAdmin(DjangoUserAdmin):
+class UserAdmin(HijackUserAdminMixin, DjangoUserAdmin):
     """Define admin model for custom User model with no email field."""
 
     fieldsets = (

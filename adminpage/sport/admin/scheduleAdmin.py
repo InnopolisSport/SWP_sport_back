@@ -2,12 +2,16 @@ from django.contrib import admin
 
 from sport.models import Schedule
 from .inlines import ViewTrainingInline
-from .utils import cache_filter, cache_dependent_filter, custom_order_filter, DefaultFilterMixIn
+from .utils import cache_filter, cache_dependent_filter, custom_order_filter, DefaultFilterMixIn, YourModelForm
 from .site import site
+
+
+
 
 
 @admin.register(Schedule, site=site)
 class ScheduleAdmin(DefaultFilterMixIn):
+    form = YourModelForm
     semester_filter = 'group__semester__id__exact'
 
     autocomplete_fields = (
@@ -45,6 +49,14 @@ class ScheduleAdmin(DefaultFilterMixIn):
         "weekday",
         "start",
         "end",
+        "training_class",
+    )
+
+    fields = (
+        "group",
+        "weekday",
+        "start",
+        "duration",
         "training_class",
     )
 

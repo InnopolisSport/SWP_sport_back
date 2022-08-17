@@ -6,8 +6,57 @@ from django.db.models.expressions import F
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from api.crud import get_ongoing_semester
 
+from django import forms
+import datetime
+
+from api.crud import get_ongoing_semester
+from sport.models import Schedule
+
+
+class DurationWidget(forms.TimeInput):
+    class Media:
+        js = [
+            'admin/js/calendar.js',
+            'admin/js/admin/DateTimeShortcuts.js',
+        ]
+
+    def __init__(self, attrs=None, format=None):
+        attrs = {'class': 'vDurationField', 'size': '8', 'data-format': format, **(attrs or {})}
+        super().__init__(attrs=attrs, format=format)
+
+
+
+class YourModelForm(forms.ModelForm):
+    duration = forms.DurationField(widget=DurationWidget(format='%H:%M:%S'), required=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.pk is not None:
+            self.fields['duration'].initial = datetime.datetime.combine(datetime.date.today(), self.instance.end) - \
+                                              datetime.datetime.combine(datetime.date.today(), self.instance.start)
+
+    def save(self, commit=True):
+        duration = self.cleaned_data.get('duration', None)
+        self.instance.end = (datetime.datetime.combine(datetime.date.today(), self.instance.start) + duration).time()
+        return super(YourModelForm, self).save(commit=commit)
+
+    class Meta:
+        model = Schedule
+        # fields = '__all__'  # will be overridden by ModelAdmin
+        exclude = ('end',)
+
+class ScheduleInline(admin.TabularInline):
+    model = Schedule
+    form = YourModelForm
+    fields = ('weekday', 'start', 'duration', "training_class")
+
+    extra = 0
+    ordering = ("weekday", "start")
+    autocomplete_fields = ("training_class",)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("group__semester", "training_class")
 
 class DefaultFilterMixIn(admin.ModelAdmin):
     def changelist_view(self, request, *args, **kwargs):

@@ -8,8 +8,8 @@ from django.forms import CheckboxSelectMultiple
 
 from api.crud import get_ongoing_semester
 from sport.models import Group, MedicalGroup
-from .inlines import ScheduleInline, EnrollInline, TrainingInline
-from .utils import custom_titled_filter, has_free_places_filter, DefaultFilterMixIn
+from .inlines import EnrollInline, TrainingInline
+from .utils import custom_titled_filter, has_free_places_filter, DefaultFilterMixIn, ScheduleInline
 from .site import site
 
 

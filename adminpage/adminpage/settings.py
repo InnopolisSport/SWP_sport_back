@@ -106,7 +106,6 @@ if os.getenv('SCHEMA') == 'https':
 
 # Application definition
 INSTALLED_APPS = [
-    'adminpage.apps.SportAdminConfig',
     'django.contrib.auth',
     'accounts',
     'revproxy',
@@ -126,6 +125,7 @@ INSTALLED_APPS = [
     'django_prometheus',
     'drf_yasg',
     'sport.apps.SportConfig',
+    'adminpage.apps.SportAdminConfig',
     'api',
     'media',
     'hijack',
