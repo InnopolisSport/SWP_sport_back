@@ -35,10 +35,6 @@ from .group import (
     SportsSerializer,
     GroupInfoSerializer,
 )
-from .profile import (
-    HasQRSerializer,
-    TrainingHourSerializer,
-)
 from .reference import (
     ReferenceUploadSerializer,
 )

@@ -86,17 +86,13 @@ class GroupAdmin(DefaultFilterMixIn):
         "is_club",
         "sport",
         "semester",
-        # "trainer",
         "trainers",
-        # "allowed_qr",
         "allowed_medical_groups",
     )
 
     readonly_fields = (
         "free_places",
     )
-
-    # filter_horizontal = ('trainers',)
 
     def teachers(self, obj):
         return format_html(";<br>".join([t.user.first_name + ' ' + t.user.last_name for t in obj.trainers.all()]))

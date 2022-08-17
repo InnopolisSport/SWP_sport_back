@@ -1,7 +1,5 @@
 from django.db import models
 
-from sport.models.enums import GroupQR
-
 
 class Group(models.Model):
     name = models.CharField(max_length=50, null=False)
@@ -17,11 +15,6 @@ class Group(models.Model):
 
     # minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, null=True, blank=True)
     allowed_medical_groups = models.ManyToManyField('MedicalGroup', blank=True)
-    allowed_qr = models.IntegerField(
-        choices=GroupQR.choices,
-        default=-1,
-        verbose_name="Is a QR required?"
-    )
 
     class Meta:
         db_table = "group"

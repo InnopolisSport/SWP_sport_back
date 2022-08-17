@@ -230,9 +230,7 @@ assertMembers = testcase.assertCountEqual
 #         }
 #     ])
 #
-#     student.has_QR = True
 #     student.save()
-#     other_student.has_QR = True
 #     other_student.save()
 #
 #     assert get_students_grades(t1.pk) == [{
