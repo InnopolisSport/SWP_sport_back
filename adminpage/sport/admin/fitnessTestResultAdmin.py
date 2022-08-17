@@ -6,6 +6,13 @@ from .site import site
 
 @admin.register(FitnessTestResult, site=site)
 class FitnessTestResultAdmin(admin.ModelAdmin):
+    search_fields = (
+        "student__user__first_name",
+        "student__user__last_name",
+        "student__user__email",
+        "student__telegram",
+    )
+
     autocomplete_fields = (
         "student",
     )
