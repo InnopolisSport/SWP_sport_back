@@ -7,6 +7,7 @@ compose/*.sh
 __pycache__/
 /nginx/logs/error.log
 /nginx/logs/access.log
+/compose/example.env
 /compose/.env
 .coverage
 .coveragerc

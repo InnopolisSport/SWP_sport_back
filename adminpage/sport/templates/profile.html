@@ -354,13 +354,14 @@
                     {% endif %}
                 {% endif %}
 
-                {% if student.obj.student_status.id == 0 or trainer.sport_groups %}
-                    <hr>
-                    <h2>Schedule</h2>
-                    <div id='calendar'></div>
-                {% endif %}
+
             </div>
         </div>
+        {% if student.obj.student_status.id == 0 or trainer.sport_groups %}
+            <hr>
+            <h2>Schedule</h2>
+            <div id='calendar'></div>
+        {% endif %}
     </div>
     <div class="modal fade" id="grading-modal" tabindex="-1" role="dialog" aria-labelledby="grading-modal"
          aria-hidden="true">
