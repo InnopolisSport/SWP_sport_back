@@ -54,7 +54,7 @@ def profile_view(request, **kwargs):
         "forms": {
             "medical_group_reference": MedicalGroupReferenceForm()
         },
-        "sports": sports,
+        "sports": sports,  # TODO Check correctness
     }
 
     if "notify" in request.session:
