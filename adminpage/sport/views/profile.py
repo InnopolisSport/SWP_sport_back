@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 from api.crud import get_ongoing_semester, get_student_groups, \
     get_brief_hours, \
-    get_trainer_groups, get_negative_hours, get_student_hours, get_faq
+    get_trainer_groups, get_negative_hours, get_student_hours, get_faq, get_sports
 from api.permissions import IsStudent
 from sport.models import Student, MedicalGroupReference, Debt
 from sport.utils import set_session_notification
@@ -44,6 +44,7 @@ def profile_view(request, **kwargs):
 
     current_semester = get_ongoing_semester()
     utc_date = timezone.localdate(timezone=timezone.utc)
+    sports = get_sports(student=student)
 
     context = {
         "user": request.user,
@@ -53,6 +54,7 @@ def profile_view(request, **kwargs):
         "forms": {
             "medical_group_reference": MedicalGroupReferenceForm()
         },
+        "sports": sports,
     }
 
     if "notify" in request.session:

@@ -429,7 +429,66 @@
 
     <div id="medical-group-info-modal"></div>
     <div id="group-info-modal"></div>
+    <!-- Choose sport type modal-->
+    {% if student.obj.medical_group.id > -1 and not student.sport %}
+        <div class="modal fade" id="choose-sport-type-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="choose-sport-type-modal-title">Choosing a
+                            <span class="badge badge-dark text-uppercase">sport type</span></h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="alert alert-primary d-flex align-items-center" role="alert">
+                                <div>
+                                    Please select <b> the sport that you prefer the most</b>. You <b> won't be able to change </b> it later.
+                                    But you <b>still can do any kind of sport</b> depending on your medical group.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <select class="custom-select" id="sport-type-select">
+                                <option value="-1" selected>Choose...</option>
+                                {% for sport in sports %}
+                                    {% if sport.visible %}
+                                        <option value="{{sport.id}}">{{sport.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="choose_sport_type()" type="button">Choose sport type</button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <script>
+        $(window).on('load', function() {
+            $('#choose-sport-type-modal').modal('show');
+        });
+        function choose_sport_type() {
+            const selected_sport_type_id = $('#sport-type-select').val();
+            if (selected_sport_type_id == -1) {
+                toastr.error('Please select a sport type.');
+                return;
+            }
+            $.ajax({
+                url: '', // TODO paste url
+                type: 'POST',
+                data: {
+                    'sport_id': selected_sport_type_id,
+                    'student_id': '{{ student.id }}'
+                },
+                success: function(data) {
+                    if (data.status == 'success') {
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
         const interface_sport_group_hours = Math.max({{student.all_hours.hours_not_self}} - {{student.init_debt_hours}}, 0);
         const sport_group_hours = interface_sport_group_hours * 100 / {{student.all_hours.hours_sem_max}};
         const interface_debt_hours = Math.abs({{student.debt_hours}});
