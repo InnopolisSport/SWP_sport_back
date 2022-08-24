@@ -474,19 +474,36 @@
                 toastr.error('Please select a sport type.');
                 return;
             }
-            $.ajax({
-                url: '', // TODO paste url
-                type: 'POST',
-                data: {
-                    'sport_id': selected_sport_type_id,
-                    'student_id': '{{ student.id }}'
+            fetch('/api/select_sport', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrf_token,
                 },
-                success: function(data) {
-                    if (data.status == 'success') {
-                        window.location.reload();
+                body: JSON.stringify({
+                    'sport_id': selected_sport_type_id,
+                }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
                     }
-                }
-            });
+                    throw new Error('Something went wrong.');
+                })
+                .then((response) => {
+                    $('#ft-session-save').attr('disabled', '');
+                    toastr.success(
+                        'The sport type has been successfuly chosen',
+                        'Chosen',
+                        1500
+                    );
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                })
+                .catch(function (error) {
+                    toastr.error(`${error}`, 'Server error');
+                });
         }
 
         const interface_sport_group_hours = Math.max({{student.all_hours.hours_not_self}} - {{student.init_debt_hours}}, 0);
