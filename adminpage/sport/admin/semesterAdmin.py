@@ -46,7 +46,7 @@ class SemesterAdmin(admin.ModelAdmin):
                 "participating_courses",
                 "number_hours_one_week_ill",
                 "nullify_groups",
-                "increase_course"
+                # "increase_course"
             )
         return (
             "name",
