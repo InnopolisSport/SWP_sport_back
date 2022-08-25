@@ -19,6 +19,13 @@ class SportAdmin(admin.ModelAdmin):
     list_filter = (
         "special",
     )
+
+    fields = (
+        "name",
+        "description",
+        "special",
+        "visible"
+    )
     # maybe it will be inconvenient
     # inlines = (
     #     GroupInline,

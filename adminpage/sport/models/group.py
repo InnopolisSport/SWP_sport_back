@@ -1,17 +1,16 @@
 from django.db import models
+from django.db.models import Q
 
 from sport.models.enums import GroupQR
+from sport.utils import str_or_empty
 
 
 class Group(models.Model):
-    name = models.CharField(max_length=50, null=False)
-    description = models.CharField(max_length=1000, null=True, blank=True)
-    link_name = models.CharField(max_length=100, null=True, blank=True)
-    link = models.URLField(max_length=256, null=True, blank=True)
-    capacity = models.PositiveIntegerField(default=50, null=False)
-    is_club = models.BooleanField(default=False, null=False)
-    sport = models.ForeignKey('Sport', on_delete=models.CASCADE, null=True, blank=True)
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, null=False)
+    sport = models.ForeignKey('Sport', on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=50, blank=True, null=True)
+    capacity = models.PositiveIntegerField(default=20, null=False)
+    is_club = models.BooleanField(default=False, null=False)
     trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='teacher')
     trainers = models.ManyToManyField('Trainer', related_name='m2m', blank=True, verbose_name='teachers')
 
@@ -26,9 +25,16 @@ class Group(models.Model):
     class Meta:
         db_table = "group"
         verbose_name_plural = "groups"
+        constraints = [
+            models.CheckConstraint(check=Q(Q(sport__isnull=False) | (Q(name__isnull=False) & (~Q(name__exact="")))),
+                                   name='sport_or_name'),
+        ]
         indexes = [
             models.Index(fields=("name",)),
         ]
 
+    def to_frontend_name(self):
+        return f"{str_or_empty(self.sport)}{' - ' if self.sport and self.name else ''}{str_or_empty(self.name)}"
+
     def __str__(self):
-        return f"[{self.semester}] {f'{self.sport} - ' if self.sport is not None else ''}{self.name}"
+        return f"[{self.semester}] {str_or_empty(self.sport)}{' - ' if self.sport and self.name else ''}{str_or_empty(self.name)}"

@@ -46,22 +46,12 @@ async function openModal(id, apiUrl) {
 
 function renderGroupModalBody(body, data) {
     const {
-        group_description,
         trainers,
         capacity,
         current_load,
         training_class,
         hours,
-        link_name,
-        link
     } = data;
-    if (group_description) {
-        body.append(`<p>${group_description}</p>`);
-    }
-    if (link) {
-        const label = link_name ? `${link_name}: ` : '';
-        body.append(`<p>${label}<a href=${link}>${link}</a></p>`)
-    }
 
     const p = body.append('<p>').children('p:last-child');
     if (capacity) {
@@ -208,12 +198,8 @@ async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0)
     }
 
     body.append('<br><b>Description</b>:')
-    if (group.link) {
-        const label = group.link_name ? `${group.link_name}: ` : '';
-        body.append(`<div>${label}<a href=${group.link}>${group.link}</a></div>`)
-    }
-    if (group.description) {
-        body.append(`<div>${group.description}</div>`);
+    if (group.sport.description) {
+        body.append(`<div>${group.sport.description}</div>`);
     }
     body.append('<br>')
 

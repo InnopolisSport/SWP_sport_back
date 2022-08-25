@@ -83,7 +83,6 @@ def group_factory():
             defaults={
                 "capacity": capacity,
                 "sport": sport,
-                "description": description,
                 "is_club": is_club,
             }
         )

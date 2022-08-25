@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api.serializers.sport import NewSportSerializer
 from api.serializers.semester import SemesterSerializer
 from sport.models import Training, Group, Trainer
 
@@ -16,12 +17,14 @@ class NewTrainerSerializer(serializers.ModelSerializer):
 
 
 class NewGroupSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='to_frontend_name')
+    sport = NewSportSerializer()
     semester = SemesterSerializer()
     teachers = NewTrainerSerializer(source='trainers', many=True)
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'description', 'link_name', 'link', 'capacity', 'is_club', 'sport', 'semester', 'teachers')
+        fields = ('id', 'name', 'capacity', 'is_club', 'sport', 'semester', 'teachers')
 
 
 class NewTrainingInfoSerializer(serializers.ModelSerializer):

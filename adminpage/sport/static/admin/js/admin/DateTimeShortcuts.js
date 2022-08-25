@@ -11,28 +11,25 @@
         clockHours: {
             default_: [
                 [gettext_noop('Now'), -1],
-                [gettext_noop('08:00'), 8 * 60],
                 [gettext_noop('09:00'), 9 * 60],
                 [gettext_noop('10:00'), 10 * 60],
-                [gettext_noop('11:00'), 11 * 60],
-                [gettext_noop('12:00'), 12 * 60],
+                [gettext_noop('11:30'), 11 * 60 + 30],
                 [gettext_noop('13:00'), 13 * 60],
-                [gettext_noop('14:00'), 14 * 60],
+                [gettext_noop('13:30'), 13 * 60 + 30],
                 [gettext_noop('15:00'), 15 * 60],
-                [gettext_noop('16:00'), 16 * 60],
+                [gettext_noop('16:30'), 16 * 60 + 30],
                 [gettext_noop('17:00'), 17 * 60],
                 [gettext_noop('18:00'), 18 * 60],
                 [gettext_noop('19:00'), 19 * 60],
                 [gettext_noop('20:00'), 20 * 60],
-                [gettext_noop('21:00'), 21 * 60],
             ]
         },
         clockDurations: {
             default_: [
-                [gettext_noop('30 mins'), 30],
-                [gettext_noop('1 hour'), 60],
-                [gettext_noop('1 hour 30 mins'), 90],
-                [gettext_noop('2 hours'), 120]
+                [gettext_noop('1 ac. hour'), 45],
+                [gettext_noop('60 minutes'), 60],
+                [gettext_noop('2 ac. hours'), 90],
+                [gettext_noop('3 ac. hours'), 135],
             ]
         },
         dismissClockFunc: [],
