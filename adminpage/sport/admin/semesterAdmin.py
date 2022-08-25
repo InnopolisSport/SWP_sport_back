@@ -3,7 +3,6 @@ from django.forms import ModelForm, CheckboxSelectMultiple
 
 from sport.models import Semester
 from .site import site
-from ..models import Group
 
 
 class SemesterAdminForm(ModelForm):
@@ -11,7 +10,8 @@ class SemesterAdminForm(ModelForm):
         model = Semester
         fields = '__all__'  # will be overridden by ModelAdmin
         widgets = {
-            'nullify_groups': CheckboxSelectMultiple()
+            'nullify_groups': CheckboxSelectMultiple(),
+            'participating_courses': CheckboxSelectMultiple()
         }
 
 
@@ -34,17 +34,29 @@ class SemesterAdmin(admin.ModelAdmin):
         "points_fitness_test",
     )
 
-    fields = (
-        "name",
-        "start",
-        "end",
-        "hours",
-        "points_fitness_test",
-        "academic_leave_students",
-        "number_hours_one_week_ill",
-        "nullify_groups",
-        "increase_course"
-    )
+    def get_fields(self, request, obj=None):
+        if obj is None:
+            return (
+                "name",
+                "start",
+                "end",
+                "hours",
+                "points_fitness_test",
+                "academic_leave_students",
+                "participating_courses",
+                "number_hours_one_week_ill",
+                "nullify_groups",
+                "increase_course"
+            )
+        return (
+            "name",
+            "start",
+            "end",
+            "hours",
+            "points_fitness_test",
+            "academic_leave_students",
+            "number_hours_one_week_ill",
+            "participating_courses",
+        )
 
-    filter_horizontal = ('academic_leave_students',)
-
+    autocomplete_fields = ('academic_leave_students',)
