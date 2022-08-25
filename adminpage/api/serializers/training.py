@@ -17,6 +17,7 @@ class NewTrainerSerializer(serializers.ModelSerializer):
 
 
 class NewGroupSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='to_frontend_name')
     sport = NewSportSerializer()
     semester = SemesterSerializer()
     teachers = NewTrainerSerializer(source='trainers', many=True)

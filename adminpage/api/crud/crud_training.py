@@ -106,6 +106,8 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
             t = Training.objects.get(pk=e['id'])
             e['can_check_in'] = can_check_in(student, t)
             e['checked_in'] = t.checkins.filter(student=student).exists()
+            e['group_name'] = t.group.to_frontend_name()
+
         return d
 
 
