@@ -305,8 +305,8 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
     delete_sport.short_description = 'Deselect sport type and group'
 
     def increase_course(self, request, queryset):
-        queryset.filter(student_status_id=0, course__lte=3).update(course=F('course') + 1)
         queryset.filter(student_status_id=0, course__gte=4).update(course=None, student_status_id=3)
+        queryset.filter(student_status_id=0, course__lte=3).update(course=F('course') + 1)
 
     actions = [ExportActionMixin.export_admin_action, delete_sport, increase_course]
 
