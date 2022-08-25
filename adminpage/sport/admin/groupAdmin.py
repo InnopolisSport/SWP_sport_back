@@ -80,8 +80,6 @@ class GroupAdmin(DefaultFilterMixIn):
 
     fields = (
         "name",
-        "description",
-        ("link_name", "link"),
         ("capacity", "free_places"),
         "is_club",
         "sport",

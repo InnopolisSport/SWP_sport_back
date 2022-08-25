@@ -1,8 +1,10 @@
 from django.db import models
+from tinymce.models import HTMLField
 
 
 class Sport(models.Model):
     name = models.CharField(max_length=50, null=False)
+    description = HTMLField(blank=True)
     special = models.BooleanField(default=False, null=False, verbose_name="Technical")
     visible = models.BooleanField(default=True, null=False)
 

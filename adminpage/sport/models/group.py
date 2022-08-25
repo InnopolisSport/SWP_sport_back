@@ -5,9 +5,6 @@ from sport.models.enums import GroupQR
 
 class Group(models.Model):
     name = models.CharField(max_length=50, null=False)
-    description = models.CharField(max_length=1000, null=True, blank=True)
-    link_name = models.CharField(max_length=100, null=True, blank=True)
-    link = models.URLField(max_length=256, null=True, blank=True)
     capacity = models.PositiveIntegerField(default=50, null=False)
     is_club = models.BooleanField(default=False, null=False)
     sport = models.ForeignKey('Sport', on_delete=models.CASCADE, null=True, blank=True)
