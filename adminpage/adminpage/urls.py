@@ -16,7 +16,8 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
-from sport.admin.site import site
+from sport.admin.site import site as sport_admin_site
+from training_suggestor.site import site as telegram_bot_admin_site
 
 # TODO: remove when not needed
 # from django.http import JsonResponse
@@ -39,7 +40,8 @@ urlpatterns = [
         path("", include("sport.urls")),
         # only /metrics
         path('', include('django_prometheus.urls')),
-        path('admin/', site.urls),
+        path('admin/', sport_admin_site.urls),
+        path('telegram-bot-admin/', telegram_bot_admin_site.urls),
         path('oauth2/', include('django_auth_adfs.urls')),
 
         path("api/", include("api.urls")),
