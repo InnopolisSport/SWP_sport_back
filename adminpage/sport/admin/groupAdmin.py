@@ -71,7 +71,7 @@ class GroupAdminForm(ModelForm):
 
 @admin.register(Group, site=site)
 class GroupAdmin(DefaultFilterMixIn):
-    default_filters = [f'semester__id__exact={get_next_semester().pk}']
+    semester_filter = 'semester__id__exact', get_next_semester
 
     form = GroupAdminForm
 

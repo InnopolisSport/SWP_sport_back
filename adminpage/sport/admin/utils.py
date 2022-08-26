@@ -75,10 +75,13 @@ class DefaultFilterMixIn(admin.ModelAdmin):
     def changelist_view(self, request, *args, **kwargs):
         from django.http import HttpResponseRedirect
         if hasattr(self, 'semester_filter') and self.semester_filter:
+            if not isinstance(self.semester_filter, tuple):
+                self.semester_filter = (self.semester_filter, get_ongoing_semester)
+            filter = F'{self.semester_filter[0]}={self.semester_filter[1]().pk}'
             if hasattr(self, 'default_filters') and self.default_filters:
-                self.default_filters.append(F'{self.semester_filter}={get_ongoing_semester().pk}')
+                self.default_filters.append(filter)
             else:
-                self.default_filters = [F'{self.semester_filter}={get_ongoing_semester().pk}']
+                self.default_filters = [filter]
         if hasattr(self, 'default_filters') and self.default_filters:
             try:
                 test = request.META['HTTP_REFERER'].split(request.META['PATH_INFO'])
