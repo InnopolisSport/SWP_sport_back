@@ -1,17 +1,21 @@
 from admin_auto_filters.filters import AutocompleteFilter
-from django.conf import settings
+from django import forms
 from django.contrib import admin
 from django.db.models.expressions import RawSQL
-from django.utils.html import format_html
-from django.forms import ModelForm
 from django.forms import CheckboxSelectMultiple
+from django.forms import ModelForm
+from django.utils import timezone
+from django.utils.html import format_html
 
 from api.crud import get_ongoing_semester
-from sport.models import Group, MedicalGroup
+from sport.models import Group, Semester
 from .inlines import EnrollInline, TrainingInline
-from .utils import custom_titled_filter, has_free_places_filter, DefaultFilterMixIn, ScheduleInline
 from .site import site
-from django import forms
+from .utils import custom_titled_filter, DefaultFilterMixIn, ScheduleInline
+
+
+def get_next_semester():
+    return Semester.objects.filter(end__gt=timezone.now()).order_by("start").first()
 
 
 class ListTextWidget(forms.NumberInput):
@@ -63,7 +67,7 @@ class GroupAdminForm(ModelForm):
 
 @admin.register(Group, site=site)
 class GroupAdmin(DefaultFilterMixIn):
-    semester_filter = 'semester__id__exact'
+    default_filters = [f'semester__id__exact={get_next_semester().pk}']
 
     form = GroupAdminForm
 
@@ -117,7 +121,7 @@ class GroupAdmin(DefaultFilterMixIn):
     )
 
     def get_changeform_initial_data(self, request):
-        return {'semester': get_ongoing_semester()}
+        return {'semester': get_next_semester()}
 
     readonly_fields = (
         "free_places",
