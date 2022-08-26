@@ -1,5 +1,5 @@
 from django.db import models
-from adminpage.training_suggestor.enums import ExerciseTypeChoices
+from .enums import ExerciseTypeChoices
 
 
 class PowerZone(models.Model):
@@ -48,6 +48,6 @@ class TrainingExercise(models.Model):
 
 class User(models.Model):
     name = models.CharField(max_length=50, null=False)
-    student = models.ForeignKey('sport.Student', on_delete=models.SET_NULL, null=True)
+    student = models.ForeignKey('sport.Student', on_delete=models.SET_NULL, null=True, related_name="suggestor_user")
     time_ratio = models.FloatField(null=False, default=1)  # how it should work?
     working_load_ratio = models.FloatField(null=False, default=1)  # how it should work?

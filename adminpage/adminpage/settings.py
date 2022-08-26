@@ -131,6 +131,7 @@ INSTALLED_APPS = [
     'hijack',
     'hijack.contrib.admin',
     'tinymce',
+    'training_suggestor',
 ]
 
 MIDDLEWARE = [
