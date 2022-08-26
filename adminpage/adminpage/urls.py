@@ -17,7 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from sport.admin.site import site as sport_admin_site
-from training_suggestor.site import site as telegram_bot_admin_site
+from training_suggestor.admin.site import site as telegram_bot_admin_site
 
 # TODO: remove when not needed
 # from django.http import JsonResponse
