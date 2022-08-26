@@ -1,6 +1,7 @@
 from admin_auto_filters.filters import AutocompleteFilter
 from django import forms
 from django.contrib import admin
+from django.db import ProgrammingError
 from django.db.models.expressions import RawSQL
 from django.forms import CheckboxSelectMultiple
 from django.forms import ModelForm
@@ -15,7 +16,10 @@ from .utils import custom_titled_filter, DefaultFilterMixIn, ScheduleInline
 
 
 def get_next_semester():
-    return Semester.objects.filter(end__gt=timezone.now()).order_by("start").first()
+    try:
+        return Semester.objects.filter(end__gt=timezone.now()).order_by("start").first()
+    except ProgrammingError:
+        return None
 
 
 class ListTextWidget(forms.NumberInput):
