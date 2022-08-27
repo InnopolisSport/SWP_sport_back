@@ -8,19 +8,18 @@ class PowerZone(models.Model):
     pulse = models.IntegerField(null=False, help_text="per 10 sec")
     ratio = models.FloatField(null=False)
 
+    def __str__(self):
+        return f"Z{self.number}"
+
 
 class ExerciseParams(models.Model):
     exercise = models.ForeignKey('Exercise', on_delete=models.CASCADE, null=False)
+    type = models.CharField(max_length=5, choices=ExerciseTypeChoices.choices, null=False)
+    sport = models.ForeignKey('SportType', on_delete=models.CASCADE, null=False)
     power_zone = models.ForeignKey('PowerZone', on_delete=models.CASCADE, null=False)
     repeat = models.IntegerField(null=False)
     set = models.IntegerField(null=False, default=1)
     rest_interval = models.DurationField(null=False, help_text="in sec")
-
-
-class ExerciseType(models.Model):
-    type = models.CharField(max_length=50, null=False, primary_key=True, choices=ExerciseTypeChoices.choices)
-    description = models.TextField(null=True, blank=True)  # tinymce
-    exercises = models.ManyToManyField(ExerciseParams, blank=True)
 
 
 class Exercise(models.Model):
@@ -28,11 +27,16 @@ class Exercise(models.Model):
     ratio = models.FloatField(null=False)
     avg_time = models.DurationField(null=False, help_text="per 10 sec")
 
+    def __str__(self):
+        return self.name
+
 
 class SportType(models.Model):
-    type = models.CharField(max_length=50, null=False)
+    name = models.CharField(max_length=50, null=False)
     description = models.TextField(null=True, blank=True)  # tinymce
-    exercises = models.ManyToManyField(ExerciseParams, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Training(models.Model):
