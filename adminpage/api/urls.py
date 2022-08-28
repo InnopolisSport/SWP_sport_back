@@ -34,6 +34,7 @@ urlpatterns = [
     path(r"profile/QR/toggle", profile.toggle_QR_presence),
     path(r"profile/history/<int:semester_id>", profile.get_history),
     path(r"profile/history_with_self/<int:semester_id>", profile.get_history_with_self),
+    path(r"profile/me", profile.get_me),
 
     # enroll
     path(r"enrollment/enroll", enroll.enroll),
@@ -84,9 +85,9 @@ urlpatterns = [
     # measurement
     path(r"measurement/student_measurement", measurement.post_student_measurement),
     path(r"measurement/get_results", measurement.get_results),
-    path(r"measurement/get_measurements", measurement.get_measurements), 
+    path(r"measurement/get_measurements", measurement.get_measurements),
 
-    #test
+    # test
     path(r"export_sport_types", group.exportSportTypes)
 ]
 
