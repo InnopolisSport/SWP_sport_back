@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-
+from django.shortcuts import redirect
 from django_telegram_login.authentication import verify_telegram_authentication
 from django_telegram_login.errors import (
     NotTelegramDataError,
@@ -24,4 +24,4 @@ def auth_view(request):
     request.user.save()
 
     # Or handle it as you wish. For instance, save to DB.
-    return HttpResponse('Hello, ' + result['first_name'] + '!')
+    return redirect('/')

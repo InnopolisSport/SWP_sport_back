@@ -42,11 +42,13 @@
             toastr["{{ notify.type }}"]("{{ notify.msg }}")
         </script>
     {% endif %}
-    <script async src="https://telegram.org/js/telegram-widget.js?19" data-telegram-login="innosportplus_bot" data-size="large" data-auth-url="http://localhost/bot/auth" data-request-access="write"></script>
     <div class="container-fluid">
         <div class="card text-center">
             <div class="card-body">
                 <h1 class="card-title">{{ user.get_full_name }}</h1>
+                {% if not user.telegram_id %}
+                    <script async src="https://telegram.org/js/telegram-widget.js?19" data-telegram-login="innosportplus_bot" data-size="large" data-auth-url="http://localhost/bot/auth" data-request-access="write"></script>
+                {% endif %}
                 <hr style="margin-bottom: 4px;">
                 {% if trainer.sport_groups is not None  %}
                     <span class="badge badge-pill badge-primary text-uppercase mx-1 my-1">
