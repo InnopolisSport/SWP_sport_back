@@ -21,6 +21,12 @@ class ExerciseParams(models.Model):
     set = models.IntegerField(null=False, default=1)
     rest_interval = models.DurationField(null=False, help_text="in sec")
 
+    def working_time(self):
+        return self.repeat * self.set * self.exercise.avg_time
+
+    def working_load(self):
+        return self.working_time().total_seconds() * self.power_zone.pulse * self.power_zone.ratio * self.exercise.ratio
+
 
 class Exercise(models.Model):
     name = models.CharField(max_length=50, null=False)  # same as style

@@ -27,4 +27,4 @@ class ExerciseResource(resources.ModelResource):
 @admin.register(ExerciseParams, site=site)
 class ExerciseParamsAdmin(ImportMixin, admin.ModelAdmin):
     resource_class = ExerciseResource
-    list_display = ('exercise', 'type', 'sport', 'power_zone', 'repeat', 'set', 'rest_interval')
+    list_display = ('exercise', 'type', 'sport', 'power_zone', 'repeat', 'set', 'rest_interval', 'working_time', 'working_load')
