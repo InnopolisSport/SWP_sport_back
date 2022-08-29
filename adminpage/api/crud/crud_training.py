@@ -48,11 +48,17 @@ def get_group_info(group_id: int, student: Student):
 
 def can_check_in(student: Student, training: Training):
     return student.medical_group in training.group.allowed_medical_groups.all() \
-           and TrainingCheckIn.objects.filter(student=student, training__start__day=training.start.day).count() < 2 \
-           and TrainingCheckIn.objects.filter(student=student, training__start__day=training.start.day,
+           and TrainingCheckIn.objects.filter(student=student,
+                                              training__start__day=training.start.day,
+                                              training__start__month=training.start.month,
+                                              training__start__year=training.start.year).count() < 2 \
+           and TrainingCheckIn.objects.filter(student=student,
+                                              training__start__day=training.start.day,
+                                              training__start__month=training.start.month,
+                                              training__start__year=training.start.year,
                                               training__group__sport=training.group.sport).count() < 1 \
            and training.start < (timezone.now() + timedelta(days=7)) \
-           and training.end > timezone.now()
+           and training.start > timezone.now()
 
 
 
