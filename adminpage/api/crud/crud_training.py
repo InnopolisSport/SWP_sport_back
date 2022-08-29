@@ -120,7 +120,7 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
     @param end - range end date
     @return list of trainings for trainer
     """
-    query = Training.objects.select_related(
+    trainings = Training.objects.select_related(
         'group',
         'training_class',
     ).filter(
@@ -130,29 +130,16 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
                 Q(end__gt=start) & Q(end__lt=end) |
                 Q(start__lt=start) & Q(end__gt=end)
         )
-    ).values(
-        'id',
-        'start',
-        'end',
-        'group_id',
-        'group__name',
-        'training_class__name',
-    ).annotate(
-        group_name=F('group__name'),
-        training_class=F('training_class__name'),
-    ).values(
-        'id',
-        'start',
-        'end',
-        'group_id',
-        'group_name',
-        'training_class',
     )
-
-    for entry in query:
-        entry["can_grade"] = True
-
-    return list(query)
+    return [{
+        'id': e.id,
+        'start': e.start,
+        'end': e.end,
+        'group_id': e.group_id,
+        'group_name': e.group.to_frontend_name(),
+        'training_class': e.training_class.name if e.training_class else None,
+        'can_grade': True,
+    } for e in trainings]
 
 
 def get_students_grades(training_id: int):
