@@ -91,7 +91,7 @@ def get_grades(request, training_id, **kwargs):
     try:
         training = Training.objects.select_related(
             "group"
-        ).only("group__name", "group__trainer", "start").get(pk=training_id)
+        ).only("group", "start").get(pk=training_id)
     except Training.DoesNotExist:
         raise NotFound()
 
@@ -99,7 +99,7 @@ def get_grades(request, training_id, **kwargs):
 
     return Response({
         "group_id": training.group_id,
-        "group_name": training.group.name,
+        "group_name": training.group.to_frontend_name(),
         "start": training.start,
         "grades": get_students_grades(training_id)
     })
