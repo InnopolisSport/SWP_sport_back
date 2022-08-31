@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
@@ -17,7 +18,7 @@ from api.serializers import (
     TrainingHourSerializer, EmptySerializer,
     HasQRSerializer,
 )
-from api.serializers.profile import GenderSerializer
+from api.serializers.profile import GenderSerializer, UserInfoSerializer
 from sport.models import Semester, Student
 
 
@@ -118,4 +119,29 @@ def get_history_with_self(request, semester_id: int, **kwargs):
             },
             get_detailed_hours_and_self(student, semester)
         ))
+    })
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: UserInfoSerializer(many=True),
+        status.HTTP_404_NOT_FOUND: get_error_serializer(
+            "user_info",
+            error_code=404,
+            error_description="Not found",
+        )
+    }
+)
+@api_view(["GET"])
+@login_required
+def get_me(request, **kwargs):
+    """
+    Get user's info: full name and email
+    """
+    student = request.user.student
+    return Response({
+        "first_name": student.user.first_name,
+        "last_name": student.user.last_name,
+        "email": student.user.email,
     })

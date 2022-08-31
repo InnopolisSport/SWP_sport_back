@@ -14,3 +14,9 @@ class TrainingHourSerializer(serializers.Serializer):
     group = serializers.CharField()
     timestamp = serializers.DateTimeField()
     hours = serializers.IntegerField()
+
+
+class UserInfoSerializer(serializers.Serializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.CharField()

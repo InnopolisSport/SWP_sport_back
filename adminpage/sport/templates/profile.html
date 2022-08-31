@@ -46,6 +46,9 @@
         <div class="card text-center">
             <div class="card-body">
                 <h1 class="card-title">{{ user.get_full_name }}</h1>
+                {% if not user.telegram_id %}
+                    <script async src="https://telegram.org/js/telegram-widget.js?19" data-telegram-login="innosportplus_bot" data-size="large" data-auth-url="http://localhost/bot/auth" data-request-access="write"></script>
+                {% endif %}
                 <hr style="margin-bottom: 4px;">
                 {% if trainer.sport_groups is not None  %}
                     <span class="badge badge-pill badge-primary text-uppercase mx-1 my-1">
@@ -237,7 +240,7 @@
                                                         <h5 class="modal-title"
                                                             id="hours-modal-{{ sem.semester_id }}-title">
                                                             Detailed statistics for the
-                                                            <span class="badge badge-light text-uppercase">{{ sem.semester_name }}</span> 
+                                                            <span class="badge badge-light text-uppercase">{{ sem.semester_name }}</span>
                                                             semester
                                                             </h5>
                                                         <button type="button" class="close" data-dismiss="modal"
