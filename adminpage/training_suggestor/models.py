@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 from .enums import ExerciseTypeChoices
 
@@ -21,15 +23,22 @@ class ExerciseParams(models.Model):
     set = models.IntegerField(null=False, default=1)
     rest_interval = models.DurationField(null=False, help_text="in sec")
 
-    def working_time(self):
+    @property
+    def working_time(self) -> timedelta:
         return self.repeat * self.set * self.exercise.avg_time
 
-    def working_load(self):
-        return self.working_time().total_seconds() * self.power_zone.pulse * self.power_zone.ratio * self.exercise.ratio
+    @property
+    def full_time(self) -> timedelta:
+        return self.working_time + self.rest_interval * (self.set - 1) + timedelta(seconds=60)  # TODO const
+
+    @property
+    def working_load(self) -> float:
+        return self.working_time.total_seconds() * self.power_zone.pulse * self.power_zone.ratio * self.exercise.ratio
 
 
 class Exercise(models.Model):
     name = models.CharField(max_length=50, null=False)  # same as style
+    description = models.TextField(null=True, blank=True)
     ratio = models.FloatField(null=False)
     avg_time = models.DurationField(null=False, help_text="per 10 sec")
 

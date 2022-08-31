@@ -47,6 +47,8 @@ urlpatterns = [
         path("api/", include("api.urls")),
         path("media/", include('media.urls')),
         path('hijack/', include('hijack.urls')),
+
+        path("api/training_suggestor/", include("training_suggestor.urls")),
     ]))
 ] \
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

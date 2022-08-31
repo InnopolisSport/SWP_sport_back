@@ -22,4 +22,4 @@ class ExerciseResource(resources.ModelResource):
 @admin.register(Exercise, site=site)
 class ExerciseAdmin(ImportMixin, admin.ModelAdmin):
     resource_class = ExerciseResource
-    list_display = ('name', 'ratio', 'avg_time')
+    list_display = ('name', 'description', 'ratio', 'avg_time')
