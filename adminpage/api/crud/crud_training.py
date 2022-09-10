@@ -47,8 +47,6 @@ def get_group_info(group_id: int, student: Student):
 
 
 def can_check_in(student: Student, training: Training):
-    time_now = timezone.now()
-
     all_checkins = TrainingCheckIn.objects.filter(
         student=student,
         training__start__date=training.start.date()
@@ -58,11 +56,17 @@ def can_check_in(student: Student, training: Training):
         training__group__sport=training.group.sport,
         training__start__date=training.start.date()
     )
+    same_training_checkins = TrainingCheckIn.objects.filter(
+        training=training
+    )
 
     total_hours = sum(c.training.academic_duration for c in all_checkins)
     same_type_hours = sum(c.training.academic_duration for c in same_type_checkins)
+    free_places = training.group.capacity - same_training_checkins.count()
 
+    time_now = timezone.now()
     conditions = [
+        free_places > 0,
         student.medical_group in training.group.allowed_medical_groups.all(),
         total_hours + training.academic_duration <= 4,
         same_type_hours + training.academic_duration <= 2,
