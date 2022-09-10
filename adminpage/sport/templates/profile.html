@@ -56,10 +56,8 @@
                         <p class="d-flex justify-content-center align-content-between flex-wrap" id="trainer-list">
                             Teaching groups:
                             {% for group in trainer.sport_groups %}
-                                <span class="badge badge-info text-uppercase mx-1 my-1" id="trainer-span"
-                                      style="cursor: pointer"
-                                      onclick="openGroupInfoModalForTrainer(['/api/group/{{ group.id }}', '/api/attendance/{{ group.id }}/report'])">
-                                      {{ group.qualified_name }}
+                                <span class="badge badge-info text-uppercase mx-1 my-1" id="trainer-span">
+                                      {{ group.name }}
                                 </span>
                             {% endfor %}
                         </p>
@@ -237,7 +235,7 @@
                                                         <h5 class="modal-title"
                                                             id="hours-modal-{{ sem.semester_id }}-title">
                                                             Detailed statistics for the
-                                                            <span class="badge badge-light text-uppercase">{{ sem.semester_name }}</span> 
+                                                            <span class="badge badge-light text-uppercase">{{ sem.semester_name }}</span>
                                                             semester
                                                             </h5>
                                                         <button type="button" class="close" data-dismiss="modal"

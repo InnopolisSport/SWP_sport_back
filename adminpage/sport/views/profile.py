@@ -24,15 +24,6 @@ class MedicalGroupReferenceForm(forms.Form):
     )
 
 
-def parse_group(group: dict) -> dict:
-    return {
-        "id": group["id"],
-        'qualified_name': f'{group["sport_name"]} — {group["name"]}',
-        "name": group["name"],
-        "sport": group["sport_name"]
-    }
-
-
 @login_required
 def profile_view(request, **kwargs):
     user = request.user
@@ -111,10 +102,7 @@ def profile_view(request, **kwargs):
         })
 
     if trainer is not None:
-        training_groups = list(map(
-            parse_group,
-            get_trainer_groups(trainer)
-        ))
+        training_groups = get_trainer_groups(trainer)
         trainer_data = trainer.__dict__
         context.update({
             "trainer": {
