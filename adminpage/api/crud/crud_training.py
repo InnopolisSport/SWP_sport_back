@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta
-from django.utils import timezone
 
 from django.conf import settings
 from django.db import connection
-from django.db.models import Q, F
+from django.db.models import Q, Sum
+from django.utils import timezone
 
-from api.crud.utils import dictfetchone, dictfetchall, get_trainers, get_trainers_group
 from api.crud.crud_semester import get_ongoing_semester
-from sport.models import Student, Trainer, Group, Training, Sport, TrainingCheckIn
+from api.crud.utils import dictfetchone, dictfetchall, get_trainers_group
+from sport.models import Student, Trainer, Group, Training, TrainingCheckIn
 
 
 def get_group_info(group_id: int, student: Student):
@@ -47,13 +47,29 @@ def get_group_info(group_id: int, student: Student):
 
 
 def can_check_in(student: Student, training: Training):
+    time_now = timezone.now()
+
+    all_checkins = TrainingCheckIn.objects.filter(
+        student=student,
+        training__start__date=training.start.date()
+    )
+    same_type_checkins = TrainingCheckIn.objects.filter(
+        student=student,
+        training__group__sport=training.group.sport,
+        training__start__date=training.start.date()
+    )
+
+    total_hours = sum(c.training.academic_duration for c in all_checkins)
+    same_type_hours = sum(c.training.academic_duration for c in same_type_checkins)
+
     conditions = [
         student.medical_group in training.group.allowed_medical_groups.all(),
-        TrainingCheckIn.objects.filter(student=student, training__start__date=training.start.date()).count() < 2,
-        TrainingCheckIn.objects.filter(student=student, training__start__date=training.start.date(),
-                                       training__group__sport=training.group.sport).count() < 1,
-        (timezone.now() + timedelta(days=7)) > training.start > timezone.now()
+        total_hours + training.academic_duration <= 4,
+        same_type_hours + training.academic_duration <= 2,
+        training.start < (time_now + timedelta(days=7)),
+        time_now < training.end
     ]
+
     return all(conditions)
 
 
