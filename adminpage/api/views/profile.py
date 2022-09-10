@@ -18,7 +18,7 @@ from api.serializers import (
     HasQRSerializer,
 )
 from api.serializers.profile import GenderSerializer
-from sport.models import Semester, Student
+from sport.models import Semester, Student, Group
 
 
 @swagger_auto_schema(
@@ -114,6 +114,7 @@ def get_history_with_self(request, semester_id: int, **kwargs):
         "trainings": list(map(
             lambda g: {
                 **g,
+                "group": g["group"] if g["group_id"] < 0 else Group.objects.get(pk=g["group_id"]).to_frontend_name(),
                 "timestamp": timezone.localtime(g["timestamp"]).strftime("%b %d %H:%M"),
             },
             get_detailed_hours_and_self(student, semester)

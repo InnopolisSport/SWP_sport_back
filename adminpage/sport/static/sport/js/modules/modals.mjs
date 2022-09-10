@@ -66,7 +66,7 @@ function renderGroupModalBody(body, data) {
                                  ${t.trainer_first_name} ${t.trainer_last_name}
                                  <a href="mailto:${t.trainer_email}">${t.trainer_email}</a>
                              </li>`))
-        body.append(`<strong>Teacher(s)</strong>: 
+        body.append(`<strong>Teacher(s)</strong>:
                             ${trainers_html.join('\n')}
                      <p></p>`);
     }
@@ -130,7 +130,7 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
             (a, b) => (a.weekday > b.weekday) ? 1 : (a.start > b.start) ? 1 : -1
         )
         body.append(`
-            <strong>Schedule</strong>:<br>    
+            <strong>Schedule</strong>:<br>
         `)
 
         let currentDay = null;
@@ -193,8 +193,8 @@ async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0)
     if (group.capacity) {
         body.append(`<div>Available places: <b>${group.capacity - training.load}/${group.capacity}</b></div>`);
     }
-    if (training.class) {
-        p.append(`<div>Class: <b>${training.class}</b></div>`);
+    if (training.place) {
+        body.append(`<div>Place: <b>${training.place}</b></div>`);
     }
 
     body.append('<br><b>Description</b>:')

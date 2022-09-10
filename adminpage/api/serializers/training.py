@@ -30,13 +30,14 @@ class NewGroupSerializer(serializers.ModelSerializer):
 class NewTrainingInfoSerializer(serializers.ModelSerializer):
     group = NewGroupSerializer()
     load = serializers.SerializerMethodField()
+    place = serializers.CharField(source='training_class')
 
     def get_load(self, obj: Training) -> int:
         return obj.checkins.count()
 
     class Meta:
         model = Training
-        fields = ('id', 'custom_name', 'group', 'start', 'end', 'load')
+        fields = ('id', 'custom_name', 'group', 'start', 'end', 'load', 'place')
 
 class NewTrainingInfoStudentSerializer(serializers.Serializer):
     training = NewTrainingInfoSerializer()

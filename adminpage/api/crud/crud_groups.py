@@ -74,17 +74,14 @@ def get_trainer_groups(trainer: Trainer):
     For a given trainer return all groups he/she is training in current semester
     @return list of group trainer is trainings in current semester
     """
-    query = Group.objects.filter(
+    groups = Group.objects.filter(
         semester__id=get_ongoing_semester().id,
         trainers__pk=trainer.pk,
-    ).annotate(
-        sport_name=F('sport__name'),
-    ).values(
-        'id',
-        'name',
-        'sport_name',
     )
-    return query
+    return [{
+        'id': group.pk,
+        'name': group.to_frontend_name()
+    } for group in groups]
     # Currently query is a list of one dictionary
     # Will it be converted to a dictionary?
 
