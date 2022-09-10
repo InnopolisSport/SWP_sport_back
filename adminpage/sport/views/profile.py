@@ -60,10 +60,7 @@ def profile_view(request, **kwargs):
 
     if student is not None:
         student_groups = get_student_groups(student)
-        student_groups_parsed = list(map(
-            parse_group,
-            student_groups
-        ))
+        student_groups_parsed = student_groups
         student_brief_hours_info = get_brief_hours(student)
         student_data = student.__dict__
         has_med_group_submission = MedicalGroupReference.objects.filter(
