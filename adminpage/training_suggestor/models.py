@@ -1,6 +1,8 @@
 from datetime import timedelta
 
 from django.db import models
+from django.db.models import Q, F
+
 from .enums import ExerciseTypeChoices
 
 
@@ -66,7 +68,40 @@ class TrainingExercise(models.Model):
 
 class User(models.Model):
     name = models.CharField(max_length=50, null=False)
-    student = models.OneToOneField('sport.Student', on_delete=models.SET_NULL, null=True,
+    student = models.OneToOneField('sport.Student', on_delete=models.SET_NULL, null=True, blank=True,
                                    related_name="training_suggestor_user")
     time_ratio = models.FloatField(null=False, default=1)  # how it should work?
     working_load_ratio = models.FloatField(null=False, default=1)  # how it should work?
+
+
+class Poll(models.Model):
+    name = models.CharField(max_length=50, null=False)
+    pass
+
+
+class PollQuestion(models.Model):
+    poll = models.ForeignKey('Poll', on_delete=models.CASCADE, null=False, related_name="questions")
+    question = models.TextField(null=False)
+    answers = models.JSONField(null=True, blank=True, default=[], help_text="json array of answers")
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        print(self.answers)
+        if not self.answers:
+            self.answers = []
+        super().save(force_insert, force_update, using, update_fields)
+
+
+class PollResult(models.Model):
+    poll = models.ForeignKey('Poll', on_delete=models.CASCADE, null=False, related_name="results")
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('User', on_delete=models.CASCADE, null=False)
+
+
+class PollAnswer(models.Model):
+    result = models.ForeignKey('PollResult', on_delete=models.CASCADE, null=False, related_name="answers")
+    question = models.ForeignKey('PollQuestion', on_delete=models.CASCADE, null=False)
+    answer = models.TextField(null=False)
+
+    class Meta:
+        unique_together = ('result', 'question')
