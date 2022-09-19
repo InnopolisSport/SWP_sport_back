@@ -720,7 +720,7 @@ fetch('/api/fitnesstest/result', {
                 let row =
                     $(`<tr style="cursor: pointer" onclick="$('#ft-results-modal-${semester_result['semester']}').modal('show');">
                     <th>
-                        ${semester_result['semester']}
+                        ${semester_result['semester']} ${semester_result['retake'] ? '(retake)' : ''}
                     </th>
                     <td>
                         ${semester_result['total_score']}/100 points
@@ -771,7 +771,7 @@ fetch('/api/fitnesstest/result', {
                 `)
                 $('#ft-results-modals').prepend(sem_modal);
                 // append semester title
-                $(`#ft-results-modal-sem-${semester_result['semester']}`).text(semester_result['semester']);
+                $(`#ft-results-modal-sem-${semester_result['semester']}`).text(`${semester_result['semester']} ${semester_result['retake'] ? '(retake)' : ''}`);
                 // fill the modal with results
                 let detailed = semester_result['details'];
                 detailed.forEach((ex) => {

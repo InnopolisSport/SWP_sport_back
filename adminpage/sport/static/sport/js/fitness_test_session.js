@@ -16,11 +16,17 @@ function load_session() {
                 let session = data['session'];
                 let results = data['results'];
                 let exercises = data['exercises'];
+				let retake = session['retake'];
 
                 // insert info about session
                 $('#session-info-semester').html(session['semester']['name']);
                 $('#session-info-date').html(new Date(session['date']).toLocaleString('en-GB'));
                 $('#session-info-teacher').html(session['teacher']);
+				// load info about retake
+				$('#fitness-test-retake-check').attr('disabled', 'disabled');
+				if (retake) {
+					$('#fitness-test-retake-check').attr('checked', 'checked');
+				}
 
                 // construct tabs and tables for each exercise, fill the tables
                 construct_exercises(exercises);
@@ -271,6 +277,10 @@ function save_table() {
                 value: val });
 		});
 	}
+	let body = {
+		retake: $('#fitness-test-retake-check').is(':checked'),
+		results: result,
+	}
 	if (cant_submit) {
 		return;
 	}
@@ -281,7 +291,7 @@ function save_table() {
 				'Content-Type': 'application/json',
 				'X-CSRFToken': csrf_token,
 			},
-			body: JSON.stringify(result),
+			body: JSON.stringify(body),
 		})
 			.then((response) => {
 				if (response.ok) {
@@ -310,7 +320,7 @@ function save_table() {
 				'Content-Type': 'application/json',
 				'X-CSRFToken': csrf_token,
 			},
-			body: JSON.stringify(result),
+			body: JSON.stringify(body),
 		})
 			.then((response) => {
 				if (response.ok) {
