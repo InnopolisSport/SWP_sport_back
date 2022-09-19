@@ -47,14 +47,18 @@ class FitnessTestStudentResult(serializers.Serializer):
     details = FitnessTestDetail(many=True)
 
 
-class FitnessTestResults(serializers.Serializer):
-    result = FitnessTestResultSerializer(many=True)
+# class FitnessTestResults(serializers.Serializer):
+#     result = FitnessTestResultSerializer(many=True)
 
-
-class FitnessTestPureResult(serializers.Serializer):
+class FitnessTestResult(serializers.Serializer):
     student_id = serializers.IntegerField()
     exercise_id = serializers.IntegerField()
     value = serializers.CharField()
+
+
+class FitnessTestUpload(serializers.Serializer):
+    retake = serializers.BooleanField()
+    results = serializers.ListField(child=FitnessTestResult)
 
 
 class FitnessTestSessionSerializer(serializers.ModelSerializer):

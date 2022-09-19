@@ -13,15 +13,32 @@ def get_exercises_crud(semester_id):
         return list(FitnessTestExercise.objects.all())
 
 
-def post_student_exercises_result_crud(results, session_id, teacher):
-    session, created = FitnessTestSession.objects.get_or_create(id=session_id, defaults={'semester': get_ongoing_semester(), 'teacher_id': teacher.id, 'date': datetime.datetime.now()})
-    # print(session)
+def post_student_exercises_result_crud(retake, results, session_id, teacher):
+    session, created = FitnessTestSession.objects.get_or_create(
+        id=session_id,
+        defaults={
+            'semester': get_ongoing_semester(),
+            'teacher_id': teacher.id,
+            'retake': retake,
+            'date': datetime.datetime.now(),
+        }
+    )
+
+    if not created:
+        session.retake = retake
+        session.save()
+
     for res in results:
         student = Student.objects.get(user__id=res['student_id'])
-        exercise = FitnessTestExercise.objects.get(
-            id=res['exercise_id'])
-        FitnessTestResult.objects.update_or_create(exercise=exercise,
-                                                   student=student, defaults={'value': res['value']}, session=session)
+        exercise = FitnessTestExercise.objects.get(id=res['exercise_id'])
+
+        FitnessTestResult.objects.update_or_create(
+            exercise=exercise,
+            student=student,
+            defaults={'value': res['value']},
+            session=session
+        )
+
     return session.id
 
 
