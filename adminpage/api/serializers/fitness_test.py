@@ -42,6 +42,7 @@ class FitnessTestDetail(serializers.Serializer):
 
 class FitnessTestStudentResult(serializers.Serializer):
     semester = serializers.CharField()
+    retake = serializers.BooleanField()
     grade = serializers.BooleanField()
     total_score = serializers.IntegerField()
     details = FitnessTestDetail(many=True)
