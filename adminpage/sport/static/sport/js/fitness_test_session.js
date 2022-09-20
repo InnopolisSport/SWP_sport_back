@@ -3,6 +3,22 @@ const session_id = window.location.href.split('/').pop();
 let students_in_table = {};
 let exercises_global = [];
 
+function get_semester_exercises(semester_id) {
+	fetch(`/api/fitnesstest/exercises/${semester_id ? semester_id : ''}`, {
+		method: 'GET',
+		'X-CSRFToken': csrf_token,
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			construct_exercises(data);
+		})
+		.catch(function (err) {
+			console.log(err);
+		});
+}
+
 function load_session() {
 	if (session_id !== 'new') {
 		fetch(`/api/fitnesstest/sessions/${session_id}`, {
@@ -23,7 +39,7 @@ function load_session() {
                 $('#session-info-date').html(new Date(session['date']).toLocaleString('en-GB'));
                 $('#session-info-teacher').html(session['teacher']);
 				// load info about retake
-				$('#fitness-test-retake-check').attr('disabled', 'disabled');
+				$('#fitness-test-retake-check').attr('disabled', '');
 				if (retake) {
 					$('#fitness-test-retake-check').attr('checked', 'checked');
 				}
@@ -37,16 +53,7 @@ function load_session() {
         });
 	}
     else {
-        fetch('/api/fitnesstest/exercises', {
-            method: 'GET',
-            'X-CSRFToken': csrf_token,
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((exercises) => {
-                construct_exercises(exercises);
-            });
+        get_semester_exercises();
     }
 }
 function construct_exercises(exercises) {
@@ -233,7 +240,7 @@ $(function () {
 
 function save_table() {
 	const student_ids = Object.keys(students_in_table);
-	let result = [];
+	let results = [];
 	let cant_submit = false;
 	for (let i = 0; i < exercises_global.length; i++) {
 		if (student_ids.length === 0) {
@@ -271,7 +278,7 @@ function save_table() {
 				);
 				cant_submit = true;
 			}
-			result.push({
+			results.push({
                 student_id: sid,
                 exercise_id: exercise.id,
                 value: val });
@@ -279,7 +286,7 @@ function save_table() {
 	}
 	let body = {
 		retake: $('#fitness-test-retake-check').is(':checked'),
-		results: result,
+		results: results,
 	}
 	if (cant_submit) {
 		return;
@@ -363,6 +370,40 @@ function save_gender(val) {
 		.catch(function (error) {
 			toastr.error(`${error}`, 'Server error');
 		});
+}
+
+function load_semesters() {
+	// TODO fetch semesters
+	let options = [];
+	options.forEach((option) => {
+		$('#fitness-test-semester-choose').append($('<option>', {
+			value: option.value,
+			text: option.text,
+		}));
+	});
+}
+
+function retake_checked() {
+	let retake = $('#fitness-test-retake-check').is(':checked');
+	if (retake) {
+		if ($('#fitness-test-semester-choose option').length === 1)	{
+			load_semesters();
+		}
+		$('#fitness-test-semester-choose').removeAttr('disabled');
+	} else {
+		if (students_in_table.length === 0) {
+			get_semester_exercises();
+			$('#fitness-test-semester-choose').attr('disabled', '');
+		} else {
+			$('#fitness-test-semester-choose').attr('disabled', '');
+		}
+		// else if (current_semester !== chosen_semester) { // TODO
+		// 		toastr.error('You can not change the retake checkbox since you have already added the student', 'Retake error');
+		// 	} else {
+		// 		$('#fitness-test-semester-choose').attr('disabled', '');
+		// 	}
+	}
+
 }
 
 load_session();

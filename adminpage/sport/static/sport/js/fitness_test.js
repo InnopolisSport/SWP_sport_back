@@ -11,7 +11,7 @@ fetch('/api/fitnesstest/sessions', {
 				// Temporary solution, before was with the django url:
 				`<tr style="cursor: pointer" onclick="location.href='${session.id}'">
                     <td>
-                        <span class="text-uppercase font-weight-bold">${session.semester.name} ${session.retake ? '(retake)' : ''}</span>
+                        <span class="text-uppercase font-weight-bold">${session.semester.name} ${session.retake ? 'Retake' : ''}</span>
                     </td>
                     <td>
                         <span>

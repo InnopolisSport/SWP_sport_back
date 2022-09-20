@@ -161,7 +161,7 @@ def post_student_exercises_result(request, session_id=None, **kwargs):
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
         )
-    serializer = FitnessTestUpload(data=request.data, many=True)
+    serializer = FitnessTestUpload(data=request.data)
     serializer.is_valid(raise_exception=True)
 
     retake = serializer.validated_data['retake']

@@ -46,11 +46,20 @@
                 </h5>
                 <form class="student_email_suggestor" onsubmit="return false;" autocomplete="off">
                     <div class="container">
-                        <div class="session-info-retake-check">
-                            <input class="session-info-retake-input" type="checkbox" value="" id="fitness-test-retake-check">
-                            <label class="session-info-retake-label" for="fitness-test-retake-check">
-                              Retake
-                            </label>
+                        <div class="retake-semester-block row align-items-center mx-auto mb-3">
+                            <div class="session-info-retake-check custom-control custom-checkbox mr-3">
+                                <input type="checkbox" class="session-info-retake-input custom-control-input" value="" id="fitness-test-retake-check" onchange="retake_checked()">
+                                <label class="session-info-retake-label custom-control-label" for="fitness-test-retake-check">
+                                Retake
+                                </label>
+                            </div>
+                            <div class="fitness-test-semester">
+                                <select class="fitness-test-semester-select custom-select" id="fitness-test-semester-choose" style="width: inherit;" disabled
+                                        onchange="if (this.selectedIndex) get_particular_semester_exercises();">
+                                    <option value="-1" selected disabled>Choose...</option>
+                                </select>
+                                <label class="ml-1" for="fitness-test-semester-choose">Semester</label>
+                            </div>
                         </div>
                         <div class="row d-flex justify-content-between">
                             <div class="col-sm-6 col-12 col-lg-6 mb-3">
