@@ -65,6 +65,7 @@ class FitnessTestUpload(serializers.Serializer):
 
 class FitnessTestSessionSerializer(serializers.ModelSerializer):
     semester = SemesterSerializer()
+    retake = serializers.BooleanField()
     teacher = serializers.CharField(source='teacher.__str__')  # TODO: return object
 
     class Meta:
