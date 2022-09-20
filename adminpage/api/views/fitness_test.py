@@ -164,8 +164,8 @@ def post_student_exercises_result(request, session_id=None, **kwargs):
     serializer = FitnessTestUpload(data=request.data, many=True)
     serializer.is_valid(raise_exception=True)
 
-    retake = serializer.validated_data[0]
-    results = serializer.validated_data[1]
+    retake = serializer.validated_data['retake']
+    results = serializer.validated_data['results']
     session = post_student_exercises_result_crud(retake, results, session_id, request.user)
     return Response(PostStudentExerciseResult({'session_id': session}).data)
 
