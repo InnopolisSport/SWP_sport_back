@@ -84,9 +84,7 @@ def get_result(request, **kwargs):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     data = []
-    print('get_result begin')
     for result_distinct_semester in results.values('exercise__semester_id', 'session__retake').distinct():
-        print(result_distinct_semester['exercise__semester_id'], result_distinct_semester['session__retake'])
         semester_id = result_distinct_semester['exercise__semester_id']
         retake = result_distinct_semester['session__retake']
 
@@ -115,7 +113,6 @@ def get_result(request, **kwargs):
             'total_score': total_score,
             'details': result_list,
         })
-    print('get_result end')
 
     return Response(data=data, status=status.HTTP_200_OK)
 
@@ -149,7 +146,7 @@ class PostStudentExerciseResult(serializers.Serializer):
 
 @swagger_auto_schema(
     method="POST",
-    request_body=FitnessTestUpload(many=True),
+    request_body=FitnessTestUpload(),
     responses={
         status.HTTP_200_OK: PostStudentExerciseResult(),
         status.HTTP_404_NOT_FOUND: NotFoundSerializer(),
@@ -167,8 +164,8 @@ def post_student_exercises_result(request, session_id=None, **kwargs):
     serializer = FitnessTestUpload(data=request.data, many=True)
     serializer.is_valid(raise_exception=True)
 
-    retake = serializer.validated_data[0]
-    results = serializer.validated_data[1]
+    retake = serializer.validated_data['retake']
+    results = serializer.validated_data['results']
     session = post_student_exercises_result_crud(retake, results, session_id, request.user)
     return Response(PostStudentExerciseResult({'session_id': session}).data)
 
