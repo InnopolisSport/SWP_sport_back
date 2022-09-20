@@ -146,7 +146,7 @@ class PostStudentExerciseResult(serializers.Serializer):
 
 @swagger_auto_schema(
     method="POST",
-    request_body=FitnessTestUpload(many=True),
+    request_body=FitnessTestUpload(),
     responses={
         status.HTTP_200_OK: PostStudentExerciseResult(),
         status.HTTP_404_NOT_FOUND: NotFoundSerializer(),
