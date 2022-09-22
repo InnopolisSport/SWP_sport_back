@@ -3,7 +3,8 @@ import datetime
 from django.db.models import Q
 
 from api.crud import get_ongoing_semester
-from sport.models import FitnessTestResult, FitnessTestExercise, FitnessTestGrading, Student, FitnessTestSession
+from sport.models import FitnessTestResult, FitnessTestExercise, FitnessTestGrading, Student, FitnessTestSession, \
+    Semester
 
 
 def get_exercises_crud(semester_id):
@@ -13,20 +14,16 @@ def get_exercises_crud(semester_id):
         return list(FitnessTestExercise.objects.all())
 
 
-def post_student_exercises_result_crud(retake, results, session_id, teacher):
+def post_student_exercises_result_crud(semester, retake, results, session_id, teacher):
     session, created = FitnessTestSession.objects.get_or_create(
         id=session_id,
         defaults={
-            'semester': get_ongoing_semester(),
+            'semester': semester,
             'teacher_id': teacher.id,
             'retake': retake,
             'date': datetime.datetime.now(),
         }
     )
-
-    if not created:
-        session.retake = retake
-        session.save()
 
     for res in results:
         student = Student.objects.get(user__id=res['student_id'])

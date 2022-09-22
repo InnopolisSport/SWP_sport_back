@@ -164,9 +164,18 @@ def post_student_exercises_result(request, session_id=None, **kwargs):
     serializer = FitnessTestUpload(data=request.data)
     serializer.is_valid(raise_exception=True)
 
+    semester_id = serializer.validated_data['semester_id']
+    try:
+        semester = Semester.objects.get(id=semester_id)
+    except Semester.DoesNotExist:
+        return Response(
+            status=status.HTTP_404_NOT_FOUND,
+            data=NotFoundSerializer({'detail': f'No semester with id={semester_id}'})
+        )
+
     retake = serializer.validated_data['retake']
     results = serializer.validated_data['results']
-    session = post_student_exercises_result_crud(retake, results, session_id, request.user)
+    session = post_student_exercises_result_crud(semester, retake, results, session_id, request.user)
     return Response(PostStudentExerciseResult({'session_id': session}).data)
 
 

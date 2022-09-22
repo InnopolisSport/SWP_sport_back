@@ -59,6 +59,7 @@ class FitnessTestUpdateEntry(serializers.Serializer):
 
 
 class FitnessTestUpload(serializers.Serializer):
+    semester_id = serializers.IntegerField()
     retake = serializers.BooleanField()
     results = serializers.ListField(child=FitnessTestUpdateEntry())
 
