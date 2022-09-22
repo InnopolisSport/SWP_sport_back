@@ -39,9 +39,17 @@
             <div class="container-xl">
                 <h1 class="mb-3">Fitness test</h1>
                 <h2 class="mb-3">Sessions</h2>
-                <a href="{% url 'fitness_test_session_new' %}" class="btn btn-success mb-3 w-100">
-                    Conduct a new fitness test session
-                </a>
+                <div class="container d-flex flex-row mb-3 align-items-baseline">
+                    <a href="{% url 'fitness_test_session_new' %}" class="btn btn-success w-100 mr-3" id="fitness-test-session-btn">
+                        Conduct a new fitness test session
+                    </a>
+                    <div class="fitness-test-semester d-flex flex-row align-items-baseline">
+                        <select class="fitness-test-semester-select custom-select" id="fitness-test-semester-choose" style="width: inherit;"
+                                onchange="change_semester()">
+                        </select>
+                        <label class="ml-2" for="fitness-test-semester-choose">Semester</label>
+                    </div>
+                </div>
                 <!-- Table of sessions -->
                 <div id="ft-sessions-table" class="table-responsive">
                     <table class="table table-hover">

@@ -372,17 +372,6 @@ function save_gender(val) {
 		});
 }
 
-function load_semesters() {
-	// TODO fetch semesters
-	let options = [];
-	options.forEach((option) => {
-		$('#fitness-test-semester-choose').append($('<option>', {
-			value: option.value,
-			text: option.text,
-		}));
-	});
-}
-
 function retake_checked() {
 	let retake = $('#fitness-test-retake-check').is(':checked');
 	if (retake) {
