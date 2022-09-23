@@ -56,8 +56,8 @@ BLOCK_DISTRIBUTION = {
 def suggest(request, **kwargs):
     request_working_load = int(request.query_params.get("working_load"))
     request_time = int(request.query_params.get("time"))
-    request_user = request.query_params.get("user")
-    user = User.objects.get_or_create(name=request_user)
+    # request_user = request.query_params.get("user")
+    # user = User.objects.get_or_create(name=request_user)
     a: List[ExerciseParams] = []
     for key, value in BLOCK_DISTRIBUTION.items():
         exercises = ExerciseParams.objects.filter(type=key)
