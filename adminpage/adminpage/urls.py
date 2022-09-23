@@ -42,7 +42,8 @@ urlpatterns = [
         path('', include('django_prometheus.urls')),
         path('admin/', sport_admin_site.urls),
         path('telegram-bot-admin/', telegram_bot_admin_site.urls),
-        path('oauth2/', include('django_auth_adfs.urls')),
+        # path('oauth2/', include('django_auth_adfs.urls')),
+        path('accounts/', include('django.contrib.auth.urls')),
 
         path("api/", include("api.urls")),
         path("bot/", include("bot.urls")),

@@ -9,4 +9,4 @@ def login_redirect(request):
     if request.user.is_authenticated:
         return redirect(settings.LOGIN_REDIRECT_URL)
     else:
-        return redirect('django_auth_adfs:login')
+        return redirect('login')

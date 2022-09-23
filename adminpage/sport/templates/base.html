@@ -23,9 +23,7 @@
     <div>
         {% if user.is_authenticated %}
             <a class="head" href="/profile">{{ user.first_name }} {{ user.last_name }}</a>
-            <a href="{% url 'django_auth_adfs:logout' %}" class="btn btn-outline-light" id="logout-btn">Log out</a>
-        {% else %}
-            <a href="{% url 'django_auth_adfs:login' %}" class="btn btn-outline-light">Log in</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light" id="logout-btn">Log out</a>
         {% endif %}
     </div>
 </header>
