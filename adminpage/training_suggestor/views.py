@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from api.serializers import EmptySerializer, NotFoundSerializer
 from training_suggestor.algo import suggest_algo
 from training_suggestor.enums import ExerciseTypeChoices
-from training_suggestor.models import ExerciseParams, User, Poll
+from training_suggestor.models import ExerciseParams, User, Poll, PollResult
 from training_suggestor.serializers import TrainingSerializer, ExerciseParamsSerializer, PollSerializer, \
     PollResultSerializer
 
@@ -40,13 +40,13 @@ BLOCK_DISTRIBUTION = {
             description="Time",
             required=True,
         ),
-        openapi.Parameter(
-            name="user",
-            in_=openapi.IN_QUERY,
-            type=openapi.TYPE_STRING,
-            description="Telegram user id",
-            required=True,
-        ),
+        # openapi.Parameter(
+        #     name="user",
+        #     in_=openapi.IN_QUERY,
+        #     type=openapi.TYPE_STRING,
+        #     description="Telegram user id",
+        #     required=True,
+        # ),
     ],
     responses={
         status.HTTP_200_OK: TrainingSerializer(),
@@ -98,3 +98,16 @@ def add_poll_result(request, **kwargs):
         serializer.save()
         return Response({})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: PollResultSerializer(),
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer(),
+    }
+)
+@api_view(["GET"])
+def get_poll_result(request, poll_name: str, **kwargs):
+    poll = get_object_or_404(PollResult, poll__name=poll_name, user=request.user.student.training_suggestor_user)
+    return Response(PollResultSerializer(poll).data)
