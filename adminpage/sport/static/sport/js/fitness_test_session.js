@@ -20,7 +20,7 @@ function get_semester_exercises(semester_id) {
 			if (data.length !== 0) {
 				construct_exercises(data);
 			} else {
-				toastr.error(`There are no exercises for this semester`, 'Exercises error', 10000);
+				toastr.error(`There are no exercises for this semester`, 'Exercises error', 5000);
 			}
 		})
 		.catch(function (err) {

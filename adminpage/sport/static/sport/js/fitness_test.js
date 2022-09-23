@@ -1,5 +1,6 @@
 // load semesters
 let CURRENT_SEMESTER = null;
+let CURRENT_SEMESTER_HAS_EXERCISES = null;
 
 function change_semester() {
 	const semester_id = $('#fitness-test-semester-choose').val();
@@ -8,6 +9,10 @@ function change_semester() {
 		$("#fitness-test-session-btn").attr('class', 'btn btn-warning mr-3');
 		$('#fitness-test-session-btn').text('Conduct a new retake session');
 		$('#fitness-test-session-btn').attr('href', `/fitness_test/new?semester_id=${semester_id}&semester_name=${semester_name}`);
+	} else if (!CURRENT_SEMESTER_HAS_EXERCISES) {
+		$("#fitness-test-session-btn").attr('class', 'btn btn-danger mr-3 disabled');
+		$('#fitness-test-session-btn').text('There are no exercises for this semester, please add them first');
+		$('#fitness-test-session-btn').attr('href', '');
 	} else {
 		$("#fitness-test-session-btn").attr('class', 'btn btn-success mr-3');
 		$('#fitness-test-session-btn').text('Conduct a new fitness test session');
@@ -25,6 +30,10 @@ function load_semesters() {
 			return response.json();
 		})
 		.then((options) => {
+			CURRENT_SEMESTER_HAS_EXERCISES = options.includes(CURRENT_SEMESTER);
+			if (!CURRENT_SEMESTER_HAS_EXERCISES) {
+				options.push(CURRENT_SEMESTER);
+			}
 			options.sort((a, b) => b.id - a.id);
 			options.forEach((option) => {
 				$("#fitness-test-semester-choose").append(
