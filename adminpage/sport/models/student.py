@@ -4,6 +4,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from tinymce.models import HTMLField
 
 from sport.models import MedicalGroupHistory, Gender
 from sport.utils import get_current_study_year
@@ -74,6 +75,8 @@ class Student(models.Model):
         null=True,
         blank=True
     )
+
+    comment = HTMLField(null=True, blank=True, default='')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

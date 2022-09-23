@@ -201,6 +201,7 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
             "student_status",
             "telegram" if obj.telegram is None or len(
                 obj.telegram) == 0 else ("telegram", "write_to_telegram"),
+            "comment",
         )
 
     autocomplete_fields = (
