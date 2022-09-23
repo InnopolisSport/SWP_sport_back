@@ -17,7 +17,7 @@ function change_semester() {
 
 // load semesters
 function load_semesters() {
-	fetch("/api/semester?fitness_test=true", {
+	fetch("/api/semester?with_ft_exercises=true", {
 		method: "GET",
 		"X-CSRFToken": csrf_token,
 	})
