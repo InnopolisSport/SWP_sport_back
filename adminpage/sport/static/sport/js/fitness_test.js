@@ -3,38 +3,57 @@ let CURRENT_SEMESTER = null;
 
 function change_semester() {
 	const semester_id = $('#fitness-test-semester-choose').val();
-	if (semester_id != CURRENT_SEMESTER.value) {
-		$("#fitness-test-session-btn").attr('class', 'btn btn-warning w-100 mr-3');
+	const semester_name = $('#fitness-test-semester-choose').find('option:selected').text();
+	if (semester_id != CURRENT_SEMESTER.id) {
+		$("#fitness-test-session-btn").attr('class', 'btn btn-warning mr-3');
 		$('#fitness-test-session-btn').text('Conduct a new retake session');
+		$('#fitness-test-session-btn').attr('href', `/fitness_test/new?semester_id=${semester_id}&semester_name=${semester_name}`);
 	} else {
-		$("#fitness-test-session-btn").attr('class', 'btn btn-success w-100 mr-3');
+		$("#fitness-test-session-btn").attr('class', 'btn btn-success mr-3');
 		$('#fitness-test-session-btn').text('Conduct a new fitness test session');
+		$('#fitness-test-session-btn').attr('href', `/fitness_test/new?semester_id=${CURRENT_SEMESTER.id}&semester_name=${semester_name}`);
 	}
-	// TODO: change btn href
-
 }
 
-fetch("/api/semesters", { // TODO: Change to the correct link
+// load semesters
+function load_semesters() {
+	fetch("/api/semester?fitness_test=true", {
+		method: "GET",
+		"X-CSRFToken": csrf_token,
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((options) => {
+			options.sort((a, b) => b.id - a.id);
+			options.forEach((option) => {
+				$("#fitness-test-semester-choose").append(
+					$(`<option value=${option.id} ${CURRENT_SEMESTER.id == option.id ? 'selected': ''}>${option.name}</option>`)
+				);
+			});
+			change_semester();
+		})
+		.catch(function (error) {
+			toastr.error("Error while loading semesters", `Semesters error ${error}`);
+		});
+}
+
+// load current semester
+fetch("/api/semester?current=true", {
 	method: "GET",
 	"X-CSRFToken": csrf_token,
 })
 	.then((response) => {
 		return response.json();
 	})
-	.then((options) => {
-		options.forEach((option, index) => {
-			// Assuming the the first coming semester is current semester
-			if (index === 0) {
-				CURRENT_SEMESTER = option;
-			}
-			$("#fitness-test-semester-choose").append(
-				$(`<option value=${option.value} ${index === 0 ? 'selected': ''}>${option.text}</option>`)
-			);
-		});
+	.then((current_semester) => {
+		CURRENT_SEMESTER = current_semester[0];
+		load_semesters();
 	})
 	.catch(function () {
-		toastr.error("Error while loading semesters", "Semesters error");
+		toastr.error("Error while loading current semester", "Semester error");
 	});
+
 
 // load sessions
 fetch("/api/fitnesstest/sessions", {
@@ -46,11 +65,12 @@ fetch("/api/fitnesstest/sessions", {
 	})
 	.then((data) => {
 		data.forEach((session) => {
+			const semester = session.semester;
 			let session_row = $(
 				// Temporary solution, before was with the django url:
-				`<tr style="cursor: pointer" onclick="location.href='${session.id}'">
+				`<tr style="cursor: pointer" onclick="location.href='${session.id}?semester_id=${semester.id}&semester_name=${semester.name}'">
                     <td>
-                        <span class="text-uppercase font-weight-bold">${session.semester.name} ${session.retake ? "Retake" : ""}</span>
+                        <span class="text-uppercase font-weight-bold">${semester.name} ${session.retake ? "Retake" : ""}</span>
                     </td>
                     <td>
                         <span>

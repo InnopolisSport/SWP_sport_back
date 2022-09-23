@@ -39,28 +39,13 @@
         <div class="card-body">
             <div class="container-xl">
                 <h1 class="mb-3">Fitness test session</h1>
+                <h3 class="mb-1" id="session-info-semester"></h3>
                 <h5 class="mb-3">
-                    <span id="session-info-semester" class="badge badge-pill badge-light"></span>
                     <span id="session-info-date" class="badge badge-pill badge-light"></span>
                     <span id="session-info-teacher" class="badge badge-pill badge-light"></span>
                 </h5>
                 <form class="student_email_suggestor" onsubmit="return false;" autocomplete="off">
                     <div class="container">
-                        <div class="retake-semester-block row align-items-center mx-auto mb-3">
-                            <div class="session-info-retake-check custom-control custom-checkbox mr-3">
-                                <input type="checkbox" class="session-info-retake-input custom-control-input" value="" id="fitness-test-retake-check" onchange="retake_checked()">
-                                <label class="session-info-retake-label custom-control-label" for="fitness-test-retake-check">
-                                Retake
-                                </label>
-                            </div>
-                            <div class="fitness-test-semester">
-                                <select class="fitness-test-semester-select custom-select" id="fitness-test-semester-choose" style="width: inherit;" disabled
-                                        onchange="if (this.selectedIndex) get_particular_semester_exercises();">
-                                    <option value="-1" selected disabled>Choose...</option>
-                                </select>
-                                <label class="ml-1" for="fitness-test-semester-choose">Semester</label>
-                            </div>
-                        </div>
                         <div class="row d-flex justify-content-between">
                             <div class="col-sm-6 col-12 col-lg-6 mb-3">
                                 <input id="student_emails" class="form-control w-100 trainer-editable"

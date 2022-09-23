@@ -1,10 +1,15 @@
-const session_id = window.location.href.split('/').pop();
+const session_id = window.location.href.split('/').pop().split('?')[0];
+const urlSearchParams = new URLSearchParams(window.location.search);
+const params = Object.fromEntries(urlSearchParams.entries());
+const SEMESTER_ID = params['semester_id'];
+const SEMESTER_NAME = params['semester_name'];
 
 let students_in_table = {};
 let exercises_global = [];
+let CURRENT_SEMESTER = null;
 
 function get_semester_exercises(semester_id) {
-	fetch(`/api/fitnesstest/exercises/${semester_id ? semester_id : ''}`, {
+	fetch(`/api/fitnesstest/exercises?semester_id=${semester_id}`, {
 		method: 'GET',
 		'X-CSRFToken': csrf_token,
 	})
@@ -12,10 +17,14 @@ function get_semester_exercises(semester_id) {
 			return response.json();
 		})
 		.then((data) => {
-			construct_exercises(data);
+			if (data.length !== 0) {
+				construct_exercises(data);
+			} else {
+				toastr.error(`There are no exercises for this semester`, 'Exercises error', 10000);
+			}
 		})
 		.catch(function (err) {
-			console.log(err);
+			toastr.error(`Error while fetching exercises: (${err})`, 'Exercises error');
 		});
 }
 
@@ -29,20 +38,17 @@ function load_session() {
 				return response.json();
 			})
 			.then((data) => {
-                let session = data['session'];
-                let results = data['results'];
-                let exercises = data['exercises'];
-				let retake = session['retake'];
+                const session = data['session'];
+                const results = data['results'];
+                const exercises = data['exercises'];
+				const retake = session['retake'];
+				const semester = session['semester'];
 
                 // insert info about session
-                $('#session-info-semester').html(session['semester']['name']);
+				const semester_info = `${semester.name} ${retake ? 'Retake' : ''} semester`;
+                $('#session-info-semester').html(semester_info);
                 $('#session-info-date').html(new Date(session['date']).toLocaleString('en-GB'));
                 $('#session-info-teacher').html(session['teacher']);
-				// load info about retake
-				$('#fitness-test-retake-check').attr('disabled', '');
-				if (retake) {
-					$('#fitness-test-retake-check').attr('checked', 'checked');
-				}
 
                 // construct tabs and tables for each exercise, fill the tables
                 construct_exercises(exercises);
@@ -53,7 +59,9 @@ function load_session() {
         });
 	}
     else {
-        get_semester_exercises();
+		const semester_info = `${SEMESTER_NAME} ${SEMESTER_ID == CURRENT_SEMESTER.id ? '' : 'Retake'} semester`;
+		$('#session-info-semester').html(semester_info);
+        get_semester_exercises(SEMESTER_ID);
     }
 }
 function construct_exercises(exercises) {
@@ -285,7 +293,8 @@ function save_table() {
 		});
 	}
 	let body = {
-		retake: $('#fitness-test-retake-check').is(':checked'),
+		semester_id: parseInt(SEMESTER_ID),
+		retake: CURRENT_SEMESTER.id != SEMESTER_ID,
 		results: results,
 	}
 	if (cant_submit) {
@@ -372,27 +381,19 @@ function save_gender(val) {
 		});
 }
 
-function retake_checked() {
-	let retake = $('#fitness-test-retake-check').is(':checked');
-	if (retake) {
-		if ($('#fitness-test-semester-choose option').length === 1)	{
-			load_semesters();
-		}
-		$('#fitness-test-semester-choose').removeAttr('disabled');
-	} else {
-		if (students_in_table.length === 0) {
-			get_semester_exercises();
-			$('#fitness-test-semester-choose').attr('disabled', '');
-		} else {
-			$('#fitness-test-semester-choose').attr('disabled', '');
-		}
-		// else if (current_semester !== chosen_semester) { // TODO
-		// 		toastr.error('You can not change the retake checkbox since you have already added the student', 'Retake error');
-		// 	} else {
-		// 		$('#fitness-test-semester-choose').attr('disabled', '');
-		// 	}
-	}
 
-}
-
-load_session();
+// load current semester
+fetch("/api/semester?current=true", {
+	method: "GET",
+	"X-CSRFToken": csrf_token,
+})
+	.then((response) => {
+		return response.json();
+	})
+	.then((current_semester) => {
+		CURRENT_SEMESTER = current_semester[0];
+		load_session();
+	})
+	.catch(function () {
+		toastr.error("Error while loading current semester", "Semester error");
+	});
