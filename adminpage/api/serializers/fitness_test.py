@@ -42,6 +42,7 @@ class FitnessTestDetail(serializers.Serializer):
 
 class FitnessTestStudentResult(serializers.Serializer):
     semester = serializers.CharField()
+    retake = serializers.BooleanField()
     grade = serializers.BooleanField()
     total_score = serializers.IntegerField()
     details = FitnessTestDetail(many=True)
@@ -51,19 +52,26 @@ class FitnessTestResults(serializers.Serializer):
     result = FitnessTestResultSerializer(many=True)
 
 
-class FitnessTestPureResult(serializers.Serializer):
+class FitnessTestUpdateEntry(serializers.Serializer):
     student_id = serializers.IntegerField()
     exercise_id = serializers.IntegerField()
     value = serializers.CharField()
 
 
+class FitnessTestUpload(serializers.Serializer):
+    semester_id = serializers.IntegerField()
+    retake = serializers.BooleanField()
+    results = serializers.ListField(child=FitnessTestUpdateEntry())
+
+
 class FitnessTestSessionSerializer(serializers.ModelSerializer):
     semester = SemesterSerializer()
+    retake = serializers.BooleanField()
     teacher = serializers.CharField(source='teacher.__str__')  # TODO: return object
 
     class Meta:
         model = FitnessTestSession
-        fields = ('id', 'date', 'teacher', 'semester')
+        fields = ('id', 'semester', 'retake', 'date', 'teacher')
 
 
 class FitnessTestSessionWithResult(serializers.Serializer):

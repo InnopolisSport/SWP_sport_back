@@ -19,6 +19,7 @@ class FitnessTestResultAdmin(admin.ModelAdmin):
 
     list_display = (
         'student',
+        'session',
         'exercise',
         'value',
     )

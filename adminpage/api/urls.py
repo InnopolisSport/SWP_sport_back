@@ -12,7 +12,8 @@ from api.views import (
     reference,
     self_sport_report,
     fitness_test,
-    measurement
+    measurement,
+    semester
 )
 
 
@@ -84,7 +85,9 @@ urlpatterns = [
     # measurement
     path(r"measurement/student_measurement", measurement.post_student_measurement),
     path(r"measurement/get_results", measurement.get_results),
-    path(r"measurement/get_measurements", measurement.get_measurements), 
+    path(r"measurement/get_measurements", measurement.get_measurements),
+
+    path(r"semester", semester.get_semester),
 
     #test
     path(r"export_sport_types", group.exportSportTypes)
