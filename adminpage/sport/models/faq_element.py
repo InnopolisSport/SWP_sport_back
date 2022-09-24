@@ -1,5 +1,4 @@
 from django.db import models
-from sport.models import FAQCategory
 from tinymce.models import HTMLField
 
 
