@@ -7,7 +7,7 @@ import tinymce.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sport', '0114_auto_20220825_2103'),
+        ('sport', '0115_fitnesstestsession_retake'),
     ]
 
     operations = [
