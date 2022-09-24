@@ -267,13 +267,19 @@ function add_student_row(
     email,
     med_group,
     hours,
-    maxHours
+    maxHours,
+    is_debtor
 ) {
     const row = $(`<tr id="student_${student_id}">
                     <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name}
                     ${
                         med_group === 'Special 1'
-                            ? `<span class="badge badge-pill badge-danger text-uppercase">${med_group}</span>`
+                            ? `<span class="badge badge-pill badge-success text-uppercase">${med_group}</span>`
+                            : ''
+                    }
+                    ${
+                        is_debtor
+                            ? `<span class="badge badge-pill badge-danger">DEBTOR</span>`
                             : ''
                     }
                     </td>
@@ -352,14 +358,15 @@ function make_grades_table(grades, maxHours) {
             '<th scope="col" class="trainer-table-width show-name-in-trainer-table">Student</th><th scope="col" class="trainer-table-width hide-email-in-trainer-table">Email</th><th scope="col" class="hours-in-trainer-table-right">Hours</th>'
         );
     student_hours_tbody = table.append('<tbody>').children('tbody');
-    grades.forEach(({ student_id, full_name, email, med_group, hours }) => {
+    grades.forEach(({ student_id, full_name, email, med_group, hours, is_debtor }) => {
         add_student_row(
             student_id,
             full_name,
             email,
             med_group,
             hours,
-            maxHours
+            maxHours,
+            is_debtor
         );
     });
     return table;
@@ -488,7 +495,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function parse_student_from_server(data, h = 0) {
-    const [student_id, full_name, email, med_group] = data.split('_');
+    const [student_id, full_name, email, med_group, is_debtor] = data.split('_');
     const hours = h;
     const student_row = students_in_table[student_id];
     if (student_row == null) {
@@ -500,7 +507,8 @@ function parse_student_from_server(data, h = 0) {
             email,
             med_group,
             hours,
-            maxHours
+            maxHours,
+            is_debtor
         ); // add if student isn't present
         local_hours_changes[student_id] = hours;
     } else {
