@@ -59,10 +59,8 @@
                         <p class="d-flex justify-content-center align-content-between flex-wrap" id="trainer-list">
                             Teaching groups:
                             {% for group in trainer.sport_groups %}
-                                <span class="badge badge-info text-uppercase mx-1 my-1" id="trainer-span"
-                                      style="cursor: pointer"
-                                      onclick="openGroupInfoModalForTrainer(['/api/group/{{ group.id }}', '/api/attendance/{{ group.id }}/report'])">
-                                      {{ group.qualified_name }}
+                                <span class="badge badge-info text-uppercase mx-1 my-1" id="trainer-span">
+                                      {{ group.name }}
                                 </span>
                             {% endfor %}
                         </p>
@@ -345,13 +343,13 @@
                         <p>
                             <b>Any other questions?</b> Please contact your course curator
                             {% if student.obj.course == 1 %}
-                                <a href="https://t.me/yana_bogdanovich">Yana Bogdanovich</a>
-                            {% elif student.obj.course == 2 %}
-                                <a href="https://t.me/edikrvrs">Eduard Shaymardanov</a>
-                            {% elif student.obj.course == 3 %}
-                                <a href="https://t.me/linkainno">Alina Pavlova</a>
-                            {% elif student.obj.course == 4 %}
                                 <a href="https://t.me/rafil_coach">Rafil Galimzianov</a>
+                            {% elif student.obj.course == 2 %}
+                                <a href="https://t.me/yana_bogdanovich">Yana Bogdanovich</a>
+                            {% elif student.obj.course == 3 %}
+                                <a href="https://t.me/edikrvrs">Eduard Shaymardanov</a>
+                            {% elif student.obj.course == 4 %}
+                                <a href="https://t.me/linkainno">Alina Pavlova</a>
                             {% endif %}
                         </p>
                     {% endif %}
@@ -433,7 +431,83 @@
 
     <div id="medical-group-info-modal"></div>
     <div id="group-info-modal"></div>
+    <!-- Choose sport type modal-->
+    {% if student.obj.student_status.id == 0 and student.obj.medical_group.id > -1 and not student.sport %}
+        <div class="modal fade" id="choose-sport-type-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="choose-sport-type-modal-title">Choosing a
+                            <span class="badge badge-dark text-uppercase">sport type</span></h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="alert alert-primary d-flex align-items-center" role="alert">
+                                <div>
+                                    Please select the sport you plan to specialize in this semester.
+                                    You can still do any kind of sport (i.e., attend any class).
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <select class="custom-select" id="sport-type-select">
+                                <option value="-1" selected>Choose...</option>
+                                {% for sport in sports %}
+                                    {% if sport.visible %}
+                                        <option value="{{sport.id}}">{{sport.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="choose_sport_type()" type="button">Choose sport type</button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <script>
+        $(window).on('load', function() {
+            $('#choose-sport-type-modal').modal('show');
+        });
+        function choose_sport_type() {
+            const selected_sport_type_id = $('#sport-type-select').val();
+            if (selected_sport_type_id == -1) {
+                toastr.error('Please select a sport type.');
+                return;
+            }
+            fetch('/api/select_sport', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrf_token,
+                },
+                body: JSON.stringify({
+                    'sport_id': selected_sport_type_id,
+                }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Something went wrong.');
+                })
+                .then((response) => {
+                    $('#ft-session-save').attr('disabled', '');
+                    toastr.success(
+                        'The sport type has been successfuly chosen',
+                        'Chosen',
+                        1500
+                    );
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                })
+                .catch(function (error) {
+                    toastr.error(`${error}`, 'Server error');
+                });
+        }
+
         const interface_sport_group_hours = Math.max({{student.all_hours.hours_not_self}} - {{student.init_debt_hours}}, 0);
         const sport_group_hours = interface_sport_group_hours * 100 / {{student.all_hours.hours_sem_max}};
         const interface_debt_hours = Math.abs({{student.debt_hours}});

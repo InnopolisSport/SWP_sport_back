@@ -1,57 +1,13 @@
 from datetime import datetime, timedelta
-from django.utils import timezone
 
 from django.conf import settings
 from django.db import connection
-from django.db.models import Q, F
+from django.db.models import Q, Sum
+from django.utils import timezone
 
-from api.crud.utils import dictfetchone, dictfetchall, get_trainers, get_trainers_group
 from api.crud.crud_semester import get_ongoing_semester
-from sport.models import Student, Trainer, Group, Training, Sport, TrainingCheckIn
-
-
-def get_attended_training_info(training_id: int, student: Student):
-    """
-    Retrieves more detailed training info by its id
-    @param training_id - searched training id
-    @param student - request sender student
-    @return found training
-    """
-    with connection.cursor() as cursor:
-        cursor.execute(
-            'SELECT '
-            'g.id AS group_id, '
-            'g.name AS group_name, '
-            'tr.custom_name AS custom_name, '
-            'g.description AS group_description, '
-            'g.link_name AS link_name, '
-            'g.link AS link, '
-            'tc.name AS training_class, '
-            'g.capacity AS capacity, '
-            'count(e.id) AS current_load, '
-            'd.first_name AS trainer_first_name, '
-            'd.last_name AS trainer_last_name, '
-            'd.email AS trainer_email, '
-            'COALESCE(a.hours, 0) AS hours, '
-            'COALESCE(bool_or(e.student_id = %(student_pk)s), false) AS is_enrolled '
-            'FROM training tr '
-            'LEFT JOIN training_class tc ON tr.training_class_id = tc.id, "group" g '
-            'LEFT JOIN enroll e ON e.group_id = g.id '
-            'LEFT JOIN auth_user d ON g.trainer_id = d.id '
-            'LEFT JOIN attendance a ON a.training_id = %(training_pk)s AND a.student_id = %(student_pk)s '
-            'WHERE tr.group_id = g.id '
-            'AND tr.id = %(training_pk)s '
-            'GROUP BY g.id, d.id, a.id, tc.id, tr.id',
-            {
-                "student_pk": student.pk,
-                "training_pk": training_id
-            }
-        )
-
-        info = dictfetchone(cursor)
-        info['trainers'] = get_trainers(training_id)
-
-        return info
+from api.crud.utils import dictfetchone, dictfetchall, get_trainers_group
+from sport.models import Student, Trainer, Group, Training, TrainingCheckIn
 
 
 def get_group_info(group_id: int, student: Student):
@@ -66,9 +22,6 @@ def get_group_info(group_id: int, student: Student):
             'SELECT '
             'g.id AS group_id, '
             'g.name AS group_name, '
-            'g.description AS group_description, '
-            'g.link_name AS link_name, '
-            'g.link AS link, '
             'g.capacity AS capacity, '
             'g.is_club AS is_club, '
             'count(e.id) AS current_load, '
@@ -94,13 +47,34 @@ def get_group_info(group_id: int, student: Student):
 
 
 def can_check_in(student: Student, training: Training):
-    return student.medical_group in training.group.allowed_medical_groups.all() \
-           and TrainingCheckIn.objects.filter(student=student, training__start__day=training.start.day).count() < 2 \
-           and TrainingCheckIn.objects.filter(student=student, training__start__day=training.start.day,
-                                              training__group__sport=training.group.sport).count() < 1 \
-           and training.start < (timezone.now() + timedelta(days=7)) \
-           and training.end > timezone.now()
+    all_checkins = TrainingCheckIn.objects.filter(
+        student=student,
+        training__start__date=training.start.date()
+    )
+    same_type_checkins = TrainingCheckIn.objects.filter(
+        student=student,
+        training__group__sport=training.group.sport,
+        training__start__date=training.start.date()
+    )
+    same_training_checkins = TrainingCheckIn.objects.filter(
+        training=training
+    )
 
+    total_hours = sum(c.training.academic_duration for c in all_checkins)
+    same_type_hours = sum(c.training.academic_duration for c in same_type_checkins)
+    free_places = training.group.capacity - same_training_checkins.count()
+
+    time_now = timezone.now()
+    conditions = [
+        free_places > 0,
+        student.medical_group in training.group.allowed_medical_groups.all(),
+        total_hours + training.academic_duration <= 4,
+        same_type_hours + training.academic_duration <= 2,
+        training.start < (time_now + timedelta(days=7)),
+        time_now < training.end
+    ]
+
+    return all(conditions)
 
 
 # TODO: Rewrite
@@ -153,6 +127,8 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
             t = Training.objects.get(pk=e['id'])
             e['can_check_in'] = can_check_in(student, t)
             e['checked_in'] = t.checkins.filter(student=student).exists()
+            e['group_name'] = t.group.to_frontend_name()
+
         return d
 
 
@@ -164,7 +140,7 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
     @param end - range end date
     @return list of trainings for trainer
     """
-    query = Training.objects.select_related(
+    trainings = Training.objects.select_related(
         'group',
         'training_class',
     ).filter(
@@ -174,29 +150,16 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
                 Q(end__gt=start) & Q(end__lt=end) |
                 Q(start__lt=start) & Q(end__gt=end)
         )
-    ).values(
-        'id',
-        'start',
-        'end',
-        'group_id',
-        'group__name',
-        'training_class__name',
-    ).annotate(
-        group_name=F('group__name'),
-        training_class=F('training_class__name'),
-    ).values(
-        'id',
-        'start',
-        'end',
-        'group_id',
-        'group_name',
-        'training_class',
     )
-
-    for entry in query:
-        entry["can_grade"] = True
-
-    return list(query)
+    return [{
+        'id': e.id,
+        'start': e.start,
+        'end': e.end,
+        'group_id': e.group_id,
+        'group_name': e.group.to_frontend_name(),
+        'training_class': e.training_class.name if e.training_class else None,
+        'can_grade': True,
+    } for e in trainings]
 
 
 def get_students_grades(training_id: int):

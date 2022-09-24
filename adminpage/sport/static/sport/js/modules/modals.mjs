@@ -46,22 +46,12 @@ async function openModal(id, apiUrl) {
 
 function renderGroupModalBody(body, data) {
     const {
-        group_description,
         trainers,
         capacity,
         current_load,
         training_class,
         hours,
-        link_name,
-        link
     } = data;
-    if (group_description) {
-        body.append(`<p>${group_description}</p>`);
-    }
-    if (link) {
-        const label = link_name ? `${link_name}: ` : '';
-        body.append(`<p>${label}<a href=${link}>${link}</a></p>`)
-    }
 
     const p = body.append('<p>').children('p:last-child');
     if (capacity) {
@@ -76,7 +66,7 @@ function renderGroupModalBody(body, data) {
                                  ${t.trainer_first_name} ${t.trainer_last_name}
                                  <a href="mailto:${t.trainer_email}">${t.trainer_email}</a>
                              </li>`))
-        body.append(`<strong>Teacher(s)</strong>: 
+        body.append(`<strong>Teacher(s)</strong>:
                             ${trainers_html.join('\n')}
                      <p></p>`);
     }
@@ -140,7 +130,7 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
             (a, b) => (a.weekday > b.weekday) ? 1 : (a.start > b.start) ? 1 : -1
         )
         body.append(`
-            <strong>Schedule</strong>:<br>    
+            <strong>Schedule</strong>:<br>
         `)
 
         let currentDay = null;
@@ -203,17 +193,13 @@ async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0)
     if (group.capacity) {
         body.append(`<div>Available places: <b>${group.capacity - training.load}/${group.capacity}</b></div>`);
     }
-    if (training.class) {
-        p.append(`<div>Class: <b>${training.class}</b></div>`);
+    if (training.place) {
+        body.append(`<div>Place: <b>${training.place}</b></div>`);
     }
 
     body.append('<br><b>Description</b>:')
-    if (group.link) {
-        const label = group.link_name ? `${group.link_name}: ` : '';
-        body.append(`<div>${label}<a href=${group.link}>${group.link}</a></div>`)
-    }
-    if (group.description) {
-        body.append(`<div>${group.description}</div>`);
+    if (group.sport.description) {
+        body.append(`<div>${group.sport.description}</div>`);
     }
     body.append('<br>')
 

@@ -1,16 +1,43 @@
 from admin_auto_filters.filters import AutocompleteFilter
-from django.conf import settings
+from django import forms
 from django.contrib import admin
+from django.db import ProgrammingError
 from django.db.models.expressions import RawSQL
-from django.utils.html import format_html
-from django.forms import ModelForm
 from django.forms import CheckboxSelectMultiple
+from django.forms import ModelForm
+from django.utils import timezone
+from django.utils.html import format_html
 
 from api.crud import get_ongoing_semester
-from sport.models import Group, MedicalGroup
+from sport.models import Group, Semester
 from .inlines import EnrollInline, TrainingInline
-from .utils import custom_titled_filter, has_free_places_filter, DefaultFilterMixIn, ScheduleInline
 from .site import site
+from .utils import custom_titled_filter, DefaultFilterMixIn, ScheduleInline
+
+
+def get_next_semester():
+    try:
+        return Semester.objects.filter(end__gt=timezone.now()).order_by("start").first()
+    except ProgrammingError:
+        return None
+
+
+class ListTextWidget(forms.NumberInput):
+    def __init__(self, data_list, name, *args, **kwargs):
+        super(ListTextWidget, self).__init__(*args, **kwargs)
+        self._name = name
+        self._list = data_list
+
+    def render(self, name, value, attrs=None, renderer=None):
+        script = '<script>const clickButton = (name, value) => {' \
+                 'document.getElementsByName(name)[0].value = value;' \
+                 '}</script>'
+        text_html = super(ListTextWidget, self).render(name, value, attrs=attrs)
+        list_html = ''
+        for e in self._list:
+            list_html += '<button type="button" onclick="clickButton(\'%s\', \'%s\');">%s</button>' % (name, e, e)
+
+        return script + '\n' + text_html + '\n' + list_html
 
 
 class TrainerTextFilter(AutocompleteFilter):
@@ -23,17 +50,28 @@ class GroupAdminForm(ModelForm):
         model = Group
         fields = '__all__'  # will be overridden by ModelAdmin
         widgets = {
-            'allowed_medical_groups': CheckboxSelectMultiple()
+            'name': forms.TextInput(attrs={'size': '30', 'placeholder': 'Optional (e.g. Basic or Advanced)'}),
+            'allowed_medical_groups': CheckboxSelectMultiple(),
+            'capacity': ListTextWidget(data_list=(20, 25), name='capacity'),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['allowed_medical_groups'].initial = [2,1,0]
 
+    def clean(self):
+        cleaned_data = super().clean()
+        sport = cleaned_data.get('sport')
+        name = cleaned_data.get('name')
+        if sport is None and name is None:
+            self.add_error('sport', 'Sport or name must be specified')
+            self.add_error('name', 'Sport or name must be specified')
+        return super().clean()
+
 
 @admin.register(Group, site=site)
 class GroupAdmin(DefaultFilterMixIn):
-    semester_filter = 'semester__id__exact'
+    semester_filter = 'semester__id__exact', get_next_semester
 
     form = GroupAdminForm
 
@@ -53,7 +91,6 @@ class GroupAdmin(DefaultFilterMixIn):
 
     list_filter = (
         ("semester", admin.RelatedOnlyFieldListFilter),
-        has_free_places_filter(),
         ("is_club", custom_titled_filter("club status")),
         TrainerTextFilter,
         ("sport", admin.RelatedOnlyFieldListFilter),
@@ -63,7 +100,6 @@ class GroupAdmin(DefaultFilterMixIn):
         "__str__",
         "is_club",
         "teachers",  # check function below
-        "free_places",
     )
 
     inlines = (
@@ -79,18 +115,17 @@ class GroupAdmin(DefaultFilterMixIn):
     )
 
     fields = (
-        "name",
-        "description",
-        ("link_name", "link"),
-        ("capacity", "free_places"),
-        "is_club",
-        "sport",
         "semester",
-        # "trainer",
+        "sport",
+        "name",
+        "is_club",
+        "capacity",
         "trainers",
-        # "allowed_qr",
         "allowed_medical_groups",
     )
+
+    def get_changeform_initial_data(self, request):
+        return {'semester': get_next_semester()}
 
     readonly_fields = (
         "free_places",
@@ -110,6 +145,3 @@ class GroupAdmin(DefaultFilterMixIn):
         if 'extra' in request.META.get('HTTP_REFERER', []):
             return qs.filter(semester=get_ongoing_semester(), sport=None).order_by('name')
         return qs.annotate(enroll_count=RawSQL('select count(*) from enroll where group_id = "group".id', ()))
-
-    class Media:
-        pass

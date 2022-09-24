@@ -2,6 +2,7 @@ import operator
 from typing import List, Dict, Tuple
 
 from django.contrib import admin
+from django.contrib.admin.widgets import AdminTimeWidget
 from django.db.models.expressions import F
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -22,9 +23,14 @@ class DurationWidget(forms.TimeInput):
         ]
 
     def __init__(self, attrs=None, format=None):
-        attrs = {'class': 'vDurationField', 'size': '8', 'data-format': format, **(attrs or {})}
+        attrs = {'class': 'vDurationField', 'size': '8', 'data-format': format, 'data-mask': "99:99:99", **(attrs or {})}
         super().__init__(attrs=attrs, format=format)
 
+
+class TimeWidget(AdminTimeWidget):
+    def __init__(self, attrs=None, format=None):
+        attrs = {'data-mask': "99:99:99", **(attrs or {})}
+        super().__init__(attrs=attrs, format=format)
 
 
 class YourModelForm(forms.ModelForm):
@@ -35,6 +41,8 @@ class YourModelForm(forms.ModelForm):
         if self.instance.pk is not None:
             self.fields['duration'].initial = datetime.datetime.combine(datetime.date.today(), self.instance.end) - \
                                               datetime.datetime.combine(datetime.date.today(), self.instance.start)
+        else:
+            self.fields['duration'].initial = datetime.timedelta(hours=1, minutes=30)
 
     def save(self, commit=True):
         duration = self.cleaned_data.get('duration', None)
@@ -44,7 +52,11 @@ class YourModelForm(forms.ModelForm):
     class Meta:
         model = Schedule
         # fields = '__all__'  # will be overridden by ModelAdmin
+        widgets = {
+            'start': TimeWidget(),
+        }
         exclude = ('end',)
+
 
 class ScheduleInline(admin.TabularInline):
     model = Schedule
@@ -52,6 +64,7 @@ class ScheduleInline(admin.TabularInline):
     fields = ('weekday', 'start', 'duration', "training_class")
 
     extra = 0
+    min_num = 1
     ordering = ("weekday", "start")
     autocomplete_fields = ("training_class",)
 
@@ -62,10 +75,13 @@ class DefaultFilterMixIn(admin.ModelAdmin):
     def changelist_view(self, request, *args, **kwargs):
         from django.http import HttpResponseRedirect
         if hasattr(self, 'semester_filter') and self.semester_filter:
+            if not isinstance(self.semester_filter, tuple):
+                self.semester_filter = (self.semester_filter, get_ongoing_semester)
+            filter = F'{self.semester_filter[0]}={self.semester_filter[1]().pk}'
             if hasattr(self, 'default_filters') and self.default_filters:
-                self.default_filters.append(F'{self.semester_filter}={get_ongoing_semester().pk}')
+                self.default_filters.append(filter)
             else:
-                self.default_filters = [F'{self.semester_filter}={get_ongoing_semester().pk}']
+                self.default_filters = [filter]
         if hasattr(self, 'default_filters') and self.default_filters:
             try:
                 test = request.META['HTTP_REFERER'].split(request.META['PATH_INFO'])

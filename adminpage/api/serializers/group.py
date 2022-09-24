@@ -34,7 +34,6 @@ class TrainerSerializer(serializers.Serializer):
 class GroupInfoSerializer(serializers.Serializer):
     group_id = serializers.IntegerField()
     group_name = serializers.CharField()
-    group_description = serializers.CharField()
     capacity = serializers.IntegerField()
     current_load = serializers.IntegerField()
 
@@ -43,9 +42,6 @@ class GroupInfoSerializer(serializers.Serializer):
     trainer_email = serializers.CharField()
 
     trainers = TrainerSerializer(many=True)
-
-    link = serializers.URLField()
-    link_name = serializers.CharField()
 
     is_enrolled = serializers.BooleanField()
     can_enroll = serializers.BooleanField()

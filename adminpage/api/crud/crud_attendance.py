@@ -78,6 +78,7 @@ def get_detailed_hours_and_self(student, semester: Semester):
            .filter(training__group__semester=semester, student=student.student)
            .annotate(
                group=F("training__group__name"),
+               group_id=F("training__group_id"),
                custom_name=F("training__custom_name"),
                timestamp=Case(When(cause_report__isnull=False, then=F('cause_report__uploaded')),
                               When(cause_reference__isnull=False,
@@ -85,28 +86,31 @@ def get_detailed_hours_and_self(student, semester: Semester):
                               default=F('training__start')),
                approved=Case(When(hours__gt=0, then=VTrue), default=VFalse)
            )
-           .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
+           .values('group_id', 'group', 'custom_name', 'timestamp', 'hours', 'approved'))
+
 
     self = (SelfSportReport.objects
             .filter(semester=semester, student=student.student, attendance=None)
             .annotate(
                 group=Value('Self training', output_field=CharField()),
+                group_id=Value(-1, output_field=IntegerField()),
                 custom_name=Concat(
                     Value('[Self] ', output_field=CharField()), F('training_type__name')),
                 timestamp=F("uploaded"),
                 approved=F('approval')
             )
-            .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
+            .values('group_id', 'group', 'custom_name', 'timestamp', 'hours', 'approved'))
 
     ref = (Reference.objects
            .filter(semester=semester, student=student.student, attendance=None)
            .annotate(
                group=Value('Medical leave', output_field=CharField()),
+               group_id=Value(-1, output_field=IntegerField()),
                custom_name=Value(None, output_field=CharField()),
                timestamp=F("uploaded"),
                approved=F('approval')
            )
-           .values('group', 'custom_name', 'timestamp', 'hours', 'approved'))
+           .values('group_id', 'group', 'custom_name', 'timestamp', 'hours', 'approved'))
 
     return att.union(self).union(ref).order_by('timestamp')
 

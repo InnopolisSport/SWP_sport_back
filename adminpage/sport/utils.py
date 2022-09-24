@@ -42,3 +42,7 @@ def set_session_notification(request, msg: str, msg_type: str):
 
 def today() -> date:
     return timezone.now().date()
+
+
+def str_or_empty(field) -> str:
+    return str(field) if field else ""

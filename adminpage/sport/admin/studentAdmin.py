@@ -201,6 +201,7 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
             "student_status",
             "telegram" if obj.telegram is None or len(
                 obj.telegram) == 0 else ("telegram", "write_to_telegram"),
+            "comment",
         )
 
     autocomplete_fields = (
@@ -304,7 +305,11 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
         Enroll.objects.filter(student__in=queryset, group__semester=get_ongoing_semester()).delete()
     delete_sport.short_description = 'Deselect sport type and group'
 
-    actions = [ExportActionMixin.export_admin_action, delete_sport]
+    def increase_course(self, request, queryset):
+        queryset.filter(student_status_id=0, course__gte=4).update(course=None, student_status_id=3)
+        queryset.filter(student_status_id=0, course__lte=3).update(course=F('course') + 1)
+
+    actions = [ExportActionMixin.export_admin_action, delete_sport, increase_course]
 
     list_select_related = (
         "user",

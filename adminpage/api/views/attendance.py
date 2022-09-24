@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.response import Response
+from django.views.decorators.cache import cache_page
 
 from api.crud import get_email_name_like_students, Training, \
     get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, \
@@ -91,7 +92,7 @@ def get_grades(request, training_id, **kwargs):
     try:
         training = Training.objects.select_related(
             "group"
-        ).only("group__name", "group__trainer", "start").get(pk=training_id)
+        ).only("group", "start").get(pk=training_id)
     except Training.DoesNotExist:
         raise NotFound()
 
@@ -99,7 +100,7 @@ def get_grades(request, training_id, **kwargs):
 
     return Response({
         "group_id": training.group_id,
-        "group_name": training.group.name,
+        "group_name": training.group.to_frontend_name(),
         "start": training.start,
         "grades": get_students_grades(training_id)
     })
@@ -162,6 +163,7 @@ def get_student_hours_info(request, student_id, **kwargs):
     }
 )
 @api_view(["GET"])
+@cache_page(60 * 60 * 24)
 def get_better_than_info(request, student_id, **kwargs):
     return Response(better_than(student_id))
 

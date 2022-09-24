@@ -7,6 +7,7 @@ from rest_framework import status, serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
+import api.crud
 from api.permissions import (
     IsTrainer, IsStudent,
 )
@@ -20,7 +21,7 @@ from api.crud import get_exercises_crud, post_student_exercises_result_crud, \
     get_email_name_like_students, get_ongoing_semester, get_score, get_max_score
 from api.serializers.attendance import SuggestionQueryFTSerializer
 from api.serializers.fitness_test import FitnessTestExerciseSerializer, FitnessTestSessionSerializer, \
-    FitnessTestSessionWithResult, FitnessTestStudentResult, FitnessTestPureResult
+    FitnessTestSessionWithResult, FitnessTestStudentResult, FitnessTestUpload
 from api.serializers.semester import SemesterInSerializer
 from sport.models import FitnessTestSession, FitnessTestResult, FitnessTestExercise, Semester
 
@@ -83,14 +84,15 @@ def get_result(request, **kwargs):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     data = []
-    for result_distinct_semester in results.values('exercise__semester_id').distinct():
+    for result_distinct_semester in results.values('exercise__semester_id', 'session__retake').distinct():
         semester_id = result_distinct_semester['exercise__semester_id']
-        semester = Semester.objects.get(id=semester_id)
+        retake = result_distinct_semester['session__retake']
 
+        semester = Semester.objects.get(id=semester_id)
         grade = True
         total_score = 0
         result_list = []
-        for result in results.filter(exercise__semester_id=semester_id):
+        for result in results.filter(exercise__semester_id=semester_id, session__retake=retake):
             result_list.append({
                 'exercise': result.exercise.exercise_name,
                 'unit': result.exercise.value_unit,
@@ -106,6 +108,7 @@ def get_result(request, **kwargs):
         grade = grade and total_score >= semester.points_fitness_test
         data.append({
             'semester': semester.name,
+            'retake': retake,
             'grade': grade,
             'total_score': total_score,
             'details': result_list,
@@ -143,7 +146,7 @@ class PostStudentExerciseResult(serializers.Serializer):
 
 @swagger_auto_schema(
     method="POST",
-    request_body=FitnessTestPureResult(many=True),
+    request_body=FitnessTestUpload(),
     responses={
         status.HTTP_200_OK: PostStudentExerciseResult(),
         status.HTTP_404_NOT_FOUND: NotFoundSerializer(),
@@ -156,13 +159,23 @@ def post_student_exercises_result(request, session_id=None, **kwargs):
     trainer = request.user
     if not trainer.has_perm('sport.change_fitness_test'):
         return Response(
-            status=400,
+            status=status.HTTP_400_BAD_REQUEST,
         )
-    serializer = FitnessTestPureResult(data=request.data, many=True)
+    serializer = FitnessTestUpload(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    exercises = serializer.validated_data
-    session = post_student_exercises_result_crud(exercises, session_id, request.user)
+    semester_id = serializer.validated_data['semester_id']
+    try:
+        semester = Semester.objects.get(id=semester_id)
+    except Semester.DoesNotExist:
+        return Response(
+            status=status.HTTP_404_NOT_FOUND,
+            data=NotFoundSerializer({'detail': f'No semester with id={semester_id}'})
+        )
+
+    retake = serializer.validated_data['retake']
+    results = serializer.validated_data['results']
+    session = post_student_exercises_result_crud(semester, retake, results, session_id, request.user)
     return Response(PostStudentExerciseResult({'session_id': session}).data)
 
 

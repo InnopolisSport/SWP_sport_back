@@ -135,6 +135,7 @@ def test_get_student_trainer_groups(
     student_groups = get_student_groups(student)
     trainer_groups = get_trainer_groups(trainer)
 
+    # FIXME: DEPRECATED!!!!!!!!!!!!
     assertMembers(student_groups, [
         {
             "id": c2.pk,
@@ -150,6 +151,5 @@ def test_get_student_trainer_groups(
 
     assert list(trainer_groups) == [{
         "id": g2.pk,
-        "name": g2.name,
-        "sport_name": sport.name
+        "name": g2.to_frontend_name()
     }]
