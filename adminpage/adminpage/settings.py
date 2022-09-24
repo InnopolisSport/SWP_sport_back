@@ -170,6 +170,13 @@ TEMPLATES = [
     },
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_table',
+    }
+}
+
 WSGI_APPLICATION = 'adminpage.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.User'
