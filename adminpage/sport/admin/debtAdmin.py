@@ -8,6 +8,7 @@ from .site import site
 from sport.models.debt import Debt
 from import_export import resources, fields
 
+from .utils import DefaultFilterMixIn
 from ..models import Student, Semester
 
 
@@ -43,8 +44,11 @@ class DebtResource(resources.ModelResource):
 
 
 @admin.register(Debt, site=site)
-class DebtAdmin(ImportExportActionModelAdmin):
+class DebtAdmin(ImportExportActionModelAdmin, DefaultFilterMixIn):
+    semester_filter = 'semester__id__exact'
     resource_class = DebtResource
+
+    list_filter = ('semester',)
 
     autocomplete_fields = (
         "student",
