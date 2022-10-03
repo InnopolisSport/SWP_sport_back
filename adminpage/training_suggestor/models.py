@@ -81,6 +81,7 @@ class Poll(models.Model):
 
 class PollQuestion(models.Model):
     poll = models.ForeignKey('Poll', on_delete=models.CASCADE, null=False, related_name="questions")
+    state = models.CharField(max_length=50, null=True, blank=True)
     question = models.TextField(null=False)
     answers = models.JSONField(null=True, blank=True, default=[], help_text="json array of answers")
 
@@ -90,6 +91,9 @@ class PollQuestion(models.Model):
         if not self.answers:
             self.answers = []
         super().save(force_insert, force_update, using, update_fields)
+
+    class Meta:
+        unique_together = ('poll', 'state')
 
 
 class PollResult(models.Model):

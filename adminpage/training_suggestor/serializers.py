@@ -30,7 +30,7 @@ class PollQuestionSerializer(serializers.ModelSerializer):
     answers = PollQuestionAnswerSerializer(many=True)
     class Meta:
         model = PollQuestion
-        fields = ('id', 'question', 'answers')
+        fields = ('id', 'state', 'question', 'answers')
 
 
 class PollSerializer(serializers.ModelSerializer):
