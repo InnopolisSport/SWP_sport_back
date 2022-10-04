@@ -260,6 +260,7 @@ function round(num, decimal_places) {
 let student_hours_tbody = null;
 let current_duration_academic_hours = 0;
 let students_in_table = {}; // <student_id: jquery selector of a row in the table>
+let student_name_id = [];
 
 function add_student_row(
     student_id,
@@ -269,7 +270,7 @@ function add_student_row(
     hours,
     maxHours
 ) {
-    const row = $(`<tr id="student_${student_id}">
+    const row = `<tr id="student_${student_id}">
                     <td class="trainer-table-width show-name-in-trainer-table" onclick="show_email_hide_name()">${full_name}
                     ${
                         med_group === 'Special 1'
@@ -288,9 +289,18 @@ function add_student_row(
                             <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</a>
                         </div>
                      </form></td>
-                </tr>`);
-    student_hours_tbody.prepend(row);
-    students_in_table[student_id] = row;
+                </tr>`;
+    student_name_id.push({full_name: full_name, student_id: student_id});
+    student_name_id.sort((a, b) => a.full_name.localeCompare(b.full_name));
+    const insert_idx = student_name_id.indexOf(student_name_id.find(s => s.student_id == student_id)) - 1;
+    console.log(insert_idx);
+    if (insert_idx === -1) {
+        student_hours_tbody.prepend($(row));
+    } else {
+        const prev_row = student_hours_tbody.find('tr').eq(insert_idx);
+        $(row).insertAfter(prev_row);
+    }
+    students_in_table[student_id] = $(row);
     calc_marked_students();
 }
 
@@ -342,7 +352,8 @@ window.addEventListener('resize', function (event) {
 
 function make_grades_table(grades, maxHours) {
     students_in_table = {};
-    const table = $('<table class="table table-hover table-responsive-md">');
+    student_name_id = []
+    const table = $('<table class="table table-hover table-responsive-md" id="marking-students-table">');
     table
         .append('<thead class="trainer-table-width">')
         .children('thead')
@@ -352,6 +363,7 @@ function make_grades_table(grades, maxHours) {
             '<th scope="col" class="trainer-table-width show-name-in-trainer-table">Student</th><th scope="col" class="trainer-table-width hide-email-in-trainer-table">Email</th><th scope="col" class="hours-in-trainer-table-right">Hours</th>'
         );
     student_hours_tbody = table.append('<tbody>').children('tbody');
+    grades.sort((a, b) => b.full_name.localeCompare(a.full_name));
     grades.forEach(({ student_id, full_name, email, med_group, hours }) => {
         add_student_row(
             student_id,
