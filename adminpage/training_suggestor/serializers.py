@@ -70,7 +70,7 @@ class PollResultSerializer(serializers.ModelSerializer):
                 self._errors['answers'] = f'not enough answers and/or extra answers (expected {questions_ids}, got {answers_ids})'
                 return False
             for i, a in enumerate(self.validated_data['answers']):
-                if a['answer'] not in questions[a['question'].pk]:
+                if len(questions[a['question'].pk]) != 0 and a['answer'] not in questions[a['question'].pk]:
                     print(questions[a['question'].pk])
                     self._errors['answer'] = f'invalid answer {a["answer"]} for question {a["question"].pk}'
                     return False
