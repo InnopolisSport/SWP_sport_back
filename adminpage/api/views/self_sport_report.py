@@ -84,13 +84,13 @@ def self_sport_upload(request, **kwargs):
         )
 
     serializer = SelfSportReportUploadSerializer(data=request.data)
-    url = serializer.initial_data['link']
-    if SelfSportReport.objects.filter(link=url).exists() or re.match(
-        r'https?://.*(?P<service>strava|tpks|trainingpeaks).*', url, re.IGNORECASE) is None:
-        return Response(
-            status=status.HTTP_400_BAD_REQUEST,
-            data=error_detail(*SelfSportErrors.INVALID_LINK)
-        )
+    # url = serializer.initial_data['link']
+    # if SelfSportReport.objects.filter(link=url).exists() or re.match(
+    #     r'https?://.*(?P<service>strava|tpks|trainingpeaks).*', url, re.IGNORECASE) is None:
+    #     return Response(
+    #         status=status.HTTP_400_BAD_REQUEST,
+    #         data=error_detail(*SelfSportErrors.INVALID_LINK)
+    #     )
     serializer.is_valid(raise_exception=True)
     debt = False
 
