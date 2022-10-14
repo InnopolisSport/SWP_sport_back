@@ -4,7 +4,7 @@ html, body {
 }
 
 header.head {
-    background-color: rgb(128, 188, 39);
+    background-color: #05a8aa;
 
     display: flex;
     align-items: center;
