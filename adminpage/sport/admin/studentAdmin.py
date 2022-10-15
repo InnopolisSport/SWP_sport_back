@@ -13,8 +13,9 @@ from import_export.widgets import ForeignKeyWidget
 
 from api.crud import get_ongoing_semester, get_negative_hours, SumSubquery
 from sport.models import Student, MedicalGroup, StudentStatus, Semester, Sport, Attendance, Debt, FitnessTestGrading, \
-    FitnessTestResult, Enroll
+    FitnessTestResult, Enroll, MedicalGroups
 from sport.signals import get_or_create_student_group
+from training_suggestor.models import User
 from .inlines import ViewAttendanceInline, AddAttendanceInline, ViewMedicalGroupHistoryInline
 from .site import site
 from .utils import user__role, DefaultFilterMixIn
@@ -309,7 +310,14 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
         queryset.filter(student_status_id=0, course__gte=4).update(course=None, student_status_id=3)
         queryset.filter(student_status_id=0, course__lte=3).update(course=F('course') + 1)
 
-    actions = [ExportActionMixin.export_admin_action, delete_sport, increase_course]
+    def set_general_medical_group(self, request, queryset):
+        queryset.update(medical_group_id=MedicalGroups.GENERAL)
+
+    def add_to_training_suggestor(self, request, queryset):
+        for student in queryset:
+            User.objects.get_or_create(student=student, defaults={'name': str(student.user)})
+
+    actions = [ExportActionMixin.export_admin_action, delete_sport, increase_course, set_general_medical_group]
 
     list_select_related = (
         "user",
