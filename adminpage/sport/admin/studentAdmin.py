@@ -317,7 +317,8 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
         for student in queryset:
             User.objects.get_or_create(student=student, defaults={'name': str(student.user)})
 
-    actions = [ExportActionMixin.export_admin_action, delete_sport, increase_course, set_general_medical_group]
+    actions = [ExportActionMixin.export_admin_action, delete_sport, increase_course, set_general_medical_group,
+               add_to_training_suggestor]
 
     list_select_related = (
         "user",
