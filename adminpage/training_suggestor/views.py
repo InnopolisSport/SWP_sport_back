@@ -126,6 +126,7 @@ def get_poll_result(request, poll_name: str, **kwargs):
     }
 )
 @api_view(["GET"])
+@permission_classes([IsStaff])
 def get_telegram_users(request, **kwargs):
     users = djUser.objects.filter(telegram_id__isnull=False)
     return Response(UserSerializer(users, many=True).data)
