@@ -1,5 +1,6 @@
 from typing import List
 
+from django.contrib.auth import get_user_model
 from drf_yasg import openapi
 from drf_yasg.openapi import Schema
 from drf_yasg.utils import swagger_auto_schema
@@ -11,9 +12,12 @@ from rest_framework.response import Response
 from api.serializers import EmptySerializer, NotFoundSerializer
 from training_suggestor.algo import suggest_algo
 from training_suggestor.enums import ExerciseTypeChoices
-from training_suggestor.models import ExerciseParams, User, Poll, PollResult
+from training_suggestor.models import ExerciseParams, User, Poll, PollResult, PollAnswer
 from training_suggestor.serializers import TrainingSerializer, ExerciseParamsSerializer, PollSerializer, \
-    PollResultSerializer
+    PollResultSerializer, UserSerializer
+from training_suggestor.utils import recalculate_ratios
+
+djUser = get_user_model()
 
 BLOCK_DISTRIBUTION = {
     'WU': (0.2, 2),
@@ -111,3 +115,16 @@ def add_poll_result(request, **kwargs):
 def get_poll_result(request, poll_name: str, **kwargs):
     poll = get_object_or_404(PollResult, poll__name=poll_name, user=request.user.student.training_suggestor_user)
     return Response(PollResultSerializer(poll).data)
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: UserSerializer(many=True),
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer(),
+    }
+)
+@api_view(["GET"])
+def get_telegram_users(request, **kwargs):
+    users = djUser.objects.filter(telegram_id__isnull=False)
+    return Response(UserSerializer(users, many=True).data)

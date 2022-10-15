@@ -1,5 +1,14 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from training_suggestor.models import ExerciseParams, Exercise, Poll, PollQuestion, PollResult, PollAnswer
+
+User = get_user_model()
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'role', 'telegram_id']
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
