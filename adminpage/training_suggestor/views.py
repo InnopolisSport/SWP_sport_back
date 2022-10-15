@@ -99,7 +99,8 @@ def get_poll(request, name: str, **kwargs):
 def add_poll_result(request, **kwargs):
     serializer = PollResultSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
-        serializer.save()
+        result = serializer.save()
+        recalculate_ratios(result)
         return Response({})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
