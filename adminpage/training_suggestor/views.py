@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
+from api.permissions import IsStaff
 from api.serializers import EmptySerializer, NotFoundSerializer
 from training_suggestor.algo import suggest_algo
 from training_suggestor.enums import ExerciseTypeChoices
