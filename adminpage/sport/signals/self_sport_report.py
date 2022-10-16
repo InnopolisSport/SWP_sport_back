@@ -39,7 +39,8 @@ def update_hours_for_self_sport(
         instance.attendance.save()
 
     info = (
-        f'Дата: *{instance.uploaded.strftime("%H:%M, %d.%m.%Y")}*\n'
+        #                       FIXME
+        f'Дата: *{instance.uploaded.hour + 3}{instance.uploaded.strftime(":%M, %d.%m.%Y")}*\n'
         f'Вид спорта: *{instance.training_type.name}*\n'
         f'Количество часов: *{instance.hours}*'
     )
