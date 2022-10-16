@@ -20,12 +20,12 @@
             <a href="{% url 'fitness_test' %}" class="btn btn-outline-light">Fitness test</a>
         {% endif %}
     </div>
-    <div>
-        {% if user.is_authenticated %}
-            <a class="head" href="/profile">{{ user.first_name }} {{ user.last_name }}</a>
-            <a href="{% url 'logout' %}" class="btn btn-outline-light" id="logout-btn">Log out</a>
-        {% endif %}
-    </div>
+    {% if user.is_authenticated %}
+        <div>
+                <a class="head" href="/profile">{{ user.first_name }} {{ user.last_name }}</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-light" id="logout-btn">Log out</a>
+        </div>
+    {% endif %}
 </header>
 
 {% block content %}

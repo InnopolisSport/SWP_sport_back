@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block extrahead %}
+    <title>innosport+</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.min.css">
@@ -81,6 +83,12 @@
         {
             width: 100%;
         }
+
+        .btn-innosport {
+            color: #fff;
+            background-color: #05a8aa;
+            border-color: #05a8aa;
+        }
     </style>
 {% endblock %}
 
@@ -118,9 +126,11 @@
                                     {{ form.password }}
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-innosport">
                                     Login
                                 </button>
+                            </div>
                             <input type="hidden" name="next" value="{{ next }}">
                         </form>
                 </div>
