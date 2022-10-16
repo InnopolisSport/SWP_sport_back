@@ -220,6 +220,7 @@ AUTH_ADFS = {
 
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "profile"
+LOGOUT_REDIRECT_URL = "/"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
