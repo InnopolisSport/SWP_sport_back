@@ -38,9 +38,11 @@ def update_hours_for_self_sport(
         instance.attendance.hours = instance.hours
         instance.attendance.save()
 
-    info = f'Дата: *{instance.uploaded.strftime("%H:%M, %d.%m.%Y")}*\n'
-    f'Вид спорта: *{instance.training_type.name}*\n'
-    f'Количество часов: *{instance.hours}*'
+    info = (
+        f'Дата: *{instance.uploaded.strftime("%H:%M, %d.%m.%Y")}*\n'
+        f'Вид спорта: *{instance.training_type.name}*\n'
+        f'Количество часов: *{instance.hours}*'
+    )
 
     if instance.hours > 0:
         instance.student.notify_tg(
