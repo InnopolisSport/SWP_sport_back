@@ -94,7 +94,7 @@ class Student(models.Model):
         )
 
     def notify_tg(self, message):
-        send_text = 'https://api.telegram.org/bot' + settings.TELEGRAM_BOT_TOKEN + '/sendMessage?chat_id=' + self.user.telegram_id + '&parse_mode=Markdown&text=' + message
+        send_text = f'https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage?chat_id={self.user.telegram_id}&parse_mode=Markdown&text={message}'
         response = requests.get(send_text)
         return response.json()
 
