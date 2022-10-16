@@ -38,21 +38,19 @@ def update_hours_for_self_sport(
         instance.attendance.hours = instance.hours
         instance.attendance.save()
 
+    info = f'Дата: *{instance.uploaded.strftime("%H:%M, %d.%m.%Y")}*\n'
+    f'Вид спорта: *{instance.training_type.name}*\n'
+    f'Количество часов: *{instance.hours}*'
+
     if instance.hours > 0:
         instance.student.notify_tg(
             '✅ *Преподаватель подтвердил прохождение тренировки!*\n\n'
-            'Часы зачтены, можешь проверить в личном кабинете на сайте! 🎉\n\n'
-            f'Дата: {instance.uploaded.date()}\n'
-            f'Вид спорта: {instance.training_type.name}\n'
-            f'Количество часов: {instance.hours}'
+            'Часы зачтены, можешь проверить в личном кабинете на сайте! 🎉\n\n' + info
         )
     else:
         instance.attendance.delete()
         instance.student.notify_tg(
             '❌ *Преподаватель отказал в зачёте часов*\n\n'
             'Ознакомься с комментарием учителя 😢\n'
-            f'Причина отказа: _{instance.comment}_\n\n'
-            f'Дата: {instance.uploaded.date()}\n'
-            f'Вид спорта: {instance.training_type.name}\n'
-            f'Количество часов: {instance.hours}'
+            f'Причина отказа: _{instance.comment}_\n\n' + info
         )
