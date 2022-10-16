@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from tinymce.models import HTMLField
+import requests
 
 from sport.models import MedicalGroupHistory, Gender
 from sport.utils import get_current_study_year
@@ -91,6 +92,11 @@ class Student(models.Model):
             recipient_list=[self.user.email],
             html_message=msg.replace("\n", "<br>"),
         )
+
+    def notify_tg(self, message):
+        send_text = 'https://api.telegram.org/bot' + settings.TELEGRAM_BOT_TOKEN + '/sendMessage?chat_id=' + self.user.telegram_id + '&parse_mode=Markdown&text=' + message
+        response = requests.get(send_text)
+        return response.json()
 
     def save(self, *args, **kwargs):
         if self.telegram is not None and self.telegram[0] != '@':
