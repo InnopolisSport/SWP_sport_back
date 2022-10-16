@@ -7,6 +7,13 @@ from django_telegram_login.errors import (
     NotTelegramDataError,
     TelegramDataIsOutdatedError,
 )
+import requests
+
+
+def telegram_bot_sendtext(id: str, message: str):
+    send_text = 'https://api.telegram.org/bot' + settings.TELEGRAM_BOT_TOKEN + '/sendMessage?chat_id=' + id + '&parse_mode=Markdown&text=' + message
+    response = requests.get(send_text)
+    return response.json()
 
 
 def auth_view(request):
@@ -22,6 +29,8 @@ def auth_view(request):
 
     request.user.telegram_id = result['id']
     request.user.save()
+
+    telegram_bot_sendtext(result['id'], 'Hello, ' + result['first_name'] + ' ' + result['last_name'] + '!')
 
     # Or handle it as you wish. For instance, save to DB.
     return redirect('/')

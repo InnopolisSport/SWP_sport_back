@@ -69,15 +69,15 @@ class PollResultSerializer(serializers.ModelSerializer):
             questions_ids = set(questions.keys())
             answers_ids = {a['question'].pk for a in self.validated_data['answers']}
             print(questions_ids, answers_ids)
-            if questions_ids != answers_ids:
-                if questions_ids.issuperset(answers_ids):
-                    self._errors['answers'] = f'not enough answers, (expected {questions_ids}, got {answers_ids})'
-                    return False
-                if not questions_ids.intersection(answers_ids):
-                    self._errors['answers'] = f'extra answers, (expected {questions_ids}, got {answers_ids})'
-                    return False
-                self._errors['answers'] = f'not enough answers and/or extra answers (expected {questions_ids}, got {answers_ids})'
-                return False
+            # if questions_ids != answers_ids:
+            #     if questions_ids.issuperset(answers_ids):
+            #         self._errors['answers'] = f'not enough answers, (expected {questions_ids}, got {answers_ids})'
+            #         return False
+            #     if not questions_ids.intersection(answers_ids):
+            #         self._errors['answers'] = f'extra answers, (expected {questions_ids}, got {answers_ids})'
+            #         return False
+            #     self._errors['answers'] = f'not enough answers and/or extra answers (expected {questions_ids}, got {answers_ids})'
+            #     return False
             for i, a in enumerate(self.validated_data['answers']):
                 if len(questions[a['question'].pk]) != 0 and a['answer'] not in questions[a['question'].pk]:
                     print(questions[a['question'].pk])
