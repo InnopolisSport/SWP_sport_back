@@ -39,25 +39,20 @@ def update_hours_for_self_sport(
         instance.attendance.save()
 
     if instance.hours > 0:
-        instance.student.notify_tg("Ваше заявление на самостоятельную тренировку было одобрено")
-        # instance.student.notify(
-        #     *settings.EMAIL_TEMPLATES['self_sport_success'],
-        #     training_type=instance.training_type.name,
-        #     date=instance.uploaded.date(),
-        #     hours=instance.hours,
-        #     submission=format_submission_html(
-        #         *instance.get_submission_url()
-        #     )
-        # )
+        instance.student.notify_tg(
+            '✅ *Преподаватель подтвердил прохождение тренировки!*\n\n'
+            'Часы зачтены, можешь проверить в личном кабинете на сайте! 🎉\n\n'
+            f'Дата: {instance.uploaded.date()}\n'
+            f'Вид спорта: {instance.training_type.name}\n'
+            f'Количество часов: {instance.hours}'
+        )
     else:
         instance.attendance.delete()
-        instance.student.notify_tg("Ваше заявление на самостоятельную тренировку было отклонено")
-        # instance.student.notify(
-        #     *settings.EMAIL_TEMPLATES['self_sport_reject'],
-        #     training_type=instance.training_type.name,
-        #     date=instance.uploaded.date(),
-        #     comment=instance.comment,
-        #     submission=format_submission_html(
-        #         *instance.get_submission_url()
-        #     )
-        # )
+        instance.student.notify_tg(
+            '❌ *Преподаватель отказал в зачёте часов*\n\n'
+            'Ознакомься с комментарием учителя 😢\n'
+            f'Причина отказа: _{instance.comment}_\n\n'
+            f'Дата: {instance.uploaded.date()}\n'
+            f'Вид спорта: {instance.training_type.name}\n'
+            f'Количество часов: {instance.hours}'
+        )
