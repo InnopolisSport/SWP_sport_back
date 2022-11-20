@@ -71,10 +71,7 @@ services:
       - ../grafana/provisioning/:/etc/grafana/provisioning/
 
   db:
-    image: db
-    build:
-      context: ..
-      dockerfile: Dockerfile.db
+    image: postgres:11-alpine
     restart: always
     volumes:
       - db-data:/var/lib/postgresql/data
