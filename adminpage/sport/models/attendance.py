@@ -8,7 +8,7 @@ def validate_hours(hours):
         raise ValidationError('Only positive values are allowed')
 
 class Attendance(models.Model):
-    training = models.ForeignKey('Training', on_delete=models.SET_NULL, null=True)
+    training = models.ForeignKey('Training', on_delete=models.PROTECT, null=True)
     student = models.ForeignKey(
         "Student",
         limit_choices_to=~Q(medical_group__name='Medical checkup not passed'),
@@ -16,6 +16,8 @@ class Attendance(models.Model):
         db_index=True
     )
     hours = models.IntegerField(default=1, validators=[validate_hours])
+
+    # TODO: maybe PROTECT is useful here
     cause_report = models.OneToOneField('SelfSportReport', null=True, blank=True, on_delete=models.CASCADE, related_name='attendance')
     cause_reference = models.OneToOneField('Reference', null=True, blank=True, on_delete=models.CASCADE, related_name='attendance')
 
