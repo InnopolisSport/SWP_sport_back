@@ -30,7 +30,9 @@ function load_semesters() {
 			return response.json();
 		})
 		.then((options) => {
-			CURRENT_SEMESTER_HAS_EXERCISES = options.includes(CURRENT_SEMESTER);
+			const options_semester_ids = options.map(({id}) => id);
+			CURRENT_SEMESTER_HAS_EXERCISES = options_semester_ids.some((id) => id === CURRENT_SEMESTER.id);
+
 			if (!CURRENT_SEMESTER_HAS_EXERCISES) {
 				options.push(CURRENT_SEMESTER);
 			}
