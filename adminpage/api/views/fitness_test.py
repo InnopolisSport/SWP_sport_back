@@ -23,7 +23,7 @@ from api.serializers.attendance import SuggestionQueryFTSerializer
 from api.serializers.fitness_test import FitnessTestExerciseSerializer, FitnessTestSessionSerializer, \
     FitnessTestSessionWithResult, FitnessTestStudentResult, FitnessTestUpload
 from api.serializers.semester import SemesterInSerializer
-from sport.models import FitnessTestSession, FitnessTestResult, FitnessTestExercise, Semester
+from sport.models import FitnessTestSession, FitnessTestResult, FitnessTestExercise, Semester, Student
 
 
 @swagger_auto_schema(
@@ -80,6 +80,7 @@ def get_sessions(request, **kwargs):
 @permission_classes([IsStudent])
 def get_result(request, **kwargs):
     results = FitnessTestResult.objects.filter(student_id=request.user.student.user_id)
+    student = Student.objects.get(user__id=request.user.student.user_id)
     if not len(results):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -105,7 +106,13 @@ def get_result(request, **kwargs):
             grade = grade and result_list[-1]['score'] >= result.exercise.threshold
             total_score += result_list[-1]['score']
 
-        grade = grade and total_score >= semester.points_fitness_test
+        if semester_id == get_ongoing_semester().id \
+                and student.medical_group == 0 \
+                and result_list:
+            grade = True
+        else:
+            grade = grade and total_score >= semester.points_fitness_test
+
         data.append({
             'semester': semester.name,
             'retake': retake,
