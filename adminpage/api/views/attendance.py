@@ -102,7 +102,8 @@ def get_grades(request, training_id, **kwargs):
         "group_id": training.group_id,
         "group_name": training.group.to_frontend_name(),
         "start": training.start,
-        "grades": get_students_grades(training_id)
+        "grades": get_students_grades(training_id),
+        "academic_duration": training.academic_duration,
     })
 
 

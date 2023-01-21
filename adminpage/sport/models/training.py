@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q, F
 from django.forms.utils import to_current_timezone
+from django.conf import settings
 
 
 class Training(models.Model):
@@ -33,5 +34,9 @@ class Training(models.Model):
             return 0
 
         secs = (self.end - self.start).total_seconds()
-        # TODO: Move 5% (2565) to settings
-        return secs // 2700 + (1 if secs % 2700 > 2565 else 0)
+        duration_sec = 2700
+        duration_for_1h = duration_sec * settings.ACADEMIC_DURATION_PERCENTAGE
+        return min(
+            secs // duration_sec + (1 if secs % duration_sec > duration_for_1h else 0),
+            settings.ACADEMIC_DURATION_MAX
+        )

@@ -412,16 +412,15 @@ async function open_trainer_modal({ event }) {
     );
     const save_btn = $('#save-hours-btn');
     save_btn.attr('data-training-id', event.extendedProps.id);
-    const { group_id: gid, group_name, start, grades } = await response.json();
+    const { group_id: gid, group_name, start, grades, academic_duration: duration } = await response.json();
     group_id = gid;
     modal.empty();
     $('#grading-group-name').text(group_name);
     $('#grading-date').text(start.split('T')[0]);
-    const duration = event.end - event.start;
     // duration_academic_hours = (duration / 3_600_000) * (60 / 45) = duration / 2_700_000
     current_duration_academic_hours = Math.min(
         10,
-        Math.floor(duration / 2700000)
+        duration
     ); // Maximum amount of hours: 10
     const mark_all_btn = $('#put-default-hours-btn');
     mark_all_btn.attr('data-hours', current_duration_academic_hours);

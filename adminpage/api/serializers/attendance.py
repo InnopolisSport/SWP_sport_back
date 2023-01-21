@@ -31,6 +31,7 @@ class TrainingGradesSerializer(serializers.Serializer):
     group_name = serializers.CharField()
     start = serializers.DateTimeField()
     grades = GradeReportSerializer(many=True)
+    academic_duration = serializers.IntegerField()
 
 
 class LastAttendedStat(StudentInfoSerializer):
