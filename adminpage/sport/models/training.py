@@ -37,6 +37,6 @@ class Training(models.Model):
         duration_sec = 2700
         duration_for_1h = duration_sec * settings.ACADEMIC_DURATION_PERCENTAGE
         return min(
-            secs // duration_sec + (1 if secs % duration_sec > duration_for_1h else 0),
+            (secs + duration_for_1h) // duration_sec,
             settings.ACADEMIC_DURATION_MAX
         )
