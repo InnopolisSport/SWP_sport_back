@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Q
 
-from sport.models.enums import GroupQR
+from sport.models.enums import GroupQR, GenderInFTGrading
 from sport.utils import str_or_empty
 
 
@@ -16,6 +16,10 @@ class Group(models.Model):
 
     # minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, null=True, blank=True)
     allowed_medical_groups = models.ManyToManyField('MedicalGroup', blank=True)
+    allowed_gender = models.IntegerField(
+        choices=GenderInFTGrading.choices,
+        default=GenderInFTGrading.BOTH,
+    )
     allowed_qr = models.IntegerField(
         choices=GroupQR.choices,
         default=-1,
