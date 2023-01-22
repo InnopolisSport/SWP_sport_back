@@ -68,6 +68,7 @@ def can_check_in(student: Student, training: Training):
     conditions = [
         free_places > 0,
         student.medical_group in training.group.allowed_medical_groups.all(),
+        training.group.allowed_gender in [student.gender, -1],
         total_hours + training.academic_duration <= 4,
         same_type_hours + training.academic_duration <= 2,
         training.start < (time_now + timedelta(days=7)),

@@ -122,6 +122,7 @@ class GroupAdmin(DefaultFilterMixIn):
         "capacity",
         "trainers",
         "allowed_medical_groups",
+        "allowed_gender",
     )
 
     def get_changeform_initial_data(self, request):
