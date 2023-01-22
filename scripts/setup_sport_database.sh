@@ -9,7 +9,7 @@
 docker-compose -f ./compose/docker-compose.yml down
 docker-compose -f ./compose/docker-compose.yml up -d db
 
-docker cp $1 sport_db:/database_backup.sql
+docker cp "$1" sport_db:/database_backup.sql
 docker exec sport_db psql -U user -f database_backup.sql postgres
 docker exec sport_db rm database_backup.sql
 
