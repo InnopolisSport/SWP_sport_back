@@ -13,6 +13,7 @@ class Group(models.Model):
     is_club = models.BooleanField(default=False, null=False)
     trainer = models.ForeignKey('Trainer', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='teacher')
     trainers = models.ManyToManyField('Trainer', related_name='m2m', blank=True, verbose_name='teachers')
+    accredited = models.BooleanField(default=False, null=False)
 
     # minimum_medical_group = models.ForeignKey('MedicalGroup', on_delete=models.DO_NOTHING, null=True, blank=True)
     allowed_medical_groups = models.ManyToManyField('MedicalGroup', blank=True)
