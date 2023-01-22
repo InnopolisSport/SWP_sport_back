@@ -119,6 +119,7 @@ class GroupAdmin(DefaultFilterMixIn):
         "sport",
         "name",
         "is_club",
+        "accredited",
         "capacity",
         "trainers",
         "allowed_medical_groups",
