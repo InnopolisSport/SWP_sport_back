@@ -10,7 +10,7 @@ from django.utils.html import format_html
 
 from api.crud import get_ongoing_semester
 from sport.models import Group, Semester
-from .inlines import EnrollInline, TrainingInline
+# from .inlines import EnrollInline, TrainingInline
 from .site import site
 from .utils import custom_titled_filter, DefaultFilterMixIn, ScheduleInline
 
@@ -104,8 +104,8 @@ class GroupAdmin(DefaultFilterMixIn):
 
     inlines = (
         ScheduleInline,
-        TrainingInline,
-        EnrollInline,
+        # TrainingInline,
+        # EnrollInline,
     )
 
     list_select_related = (
