@@ -21,10 +21,12 @@ class NewGroupSerializer(serializers.ModelSerializer):
     sport = NewSportSerializer()
     semester = SemesterSerializer()
     teachers = NewTrainerSerializer(source='trainers', many=True)
+    accredited = serializers.BooleanField()
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'capacity', 'is_club', 'sport', 'semester', 'teachers')
+        fields = ('id', 'name', 'capacity', 'is_club', 'sport',
+                  'semester', 'teachers', 'accredited')
 
 
 class NewTrainingInfoSerializer(serializers.ModelSerializer):
@@ -37,7 +39,9 @@ class NewTrainingInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Training
-        fields = ('id', 'custom_name', 'group', 'start', 'end', 'load', 'place')
+        fields = ('id', 'custom_name', 'group',
+                  'start', 'end', 'load', 'place')
+
 
 class NewTrainingInfoStudentSerializer(serializers.Serializer):
     training = NewTrainingInfoSerializer()

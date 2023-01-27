@@ -154,7 +154,7 @@ function render(info) {
         if (props.checked_in) {
             element.style.backgroundColor = '#28a745' // success
         } else if (props.can_check_in) {
-            element.style.backgroundColor = '#007bff' // primary
+            element.style.backgroundColor = (props.group_accredited) ? '#007bff' : '#ffc107' // primary & warning
         } else {
             element.style.backgroundColor = '#dc3545' // danger
         }
