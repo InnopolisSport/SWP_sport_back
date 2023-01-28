@@ -39,9 +39,9 @@ def get_group_info(group_id: int, student: Student):
         info['trainers'] = get_trainers_group(group_id)
 
         info['can_enroll'] = student.sport is not None and \
-                             student.sport==Group.objects.get(id=info['group_id']).sport and \
-                             not Group.objects.filter(enrolls__student=student,
-                                                      semester=get_ongoing_semester()).exists()
+            student.sport == Group.objects.get(id=info['group_id']).sport and \
+            not Group.objects.filter(enrolls__student=student,
+                                     semester=get_ongoing_semester()).exists()
 
         return info
 
@@ -61,7 +61,8 @@ def can_check_in(student: Student, training: Training):
     )
 
     total_hours = sum(c.training.academic_duration for c in all_checkins)
-    same_type_hours = sum(c.training.academic_duration for c in same_type_checkins)
+    same_type_hours = sum(
+        c.training.academic_duration for c in same_type_checkins)
     free_places = training.group.capacity - same_training_checkins.count()
 
     time_now = timezone.now()
@@ -95,7 +96,8 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'g.id AS group_id, '
                        'g.name AS group_name, '
                        'tc.name AS training_class, '
-                       'FALSE AS can_grade '
+                       'FALSE AS can_grade, '
+                       'g.accredited AS group_accredited '
                        'FROM "group" g, sport s, training t '
                        'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                        'WHERE ((t.start > %(start)s AND t.start < %(end)s) '
@@ -113,7 +115,8 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'g.id AS group_id, '
                        'COALESCE(t.custom_name, g.name) AS group_name, '
                        'tc.name AS training_class, '
-                       'FALSE AS can_grade '
+                       'FALSE AS can_grade, '
+                       'g.accredited AS group_accredited '
                        'FROM attendance a, "group" g, training t '
                        'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
                        'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
@@ -121,7 +124,8 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
                        'AND t.group_id = g.id '
                        'AND a.training_id = t.id '
                        'AND g.semester_id = current_semester()',
-                       {"start": start, "end": end, "extra_sport": settings.OTHER_SPORT_NAME, "student_id": student.pk}
+                       {"start": start, "end": end,
+                           "extra_sport": settings.OTHER_SPORT_NAME, "student_id": student.pk}
                        )
         d = dictfetchall(cursor)
         for e in d:
@@ -147,9 +151,9 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
     ).filter(
         Q(group__semester__id=get_ongoing_semester().id) &
         Q(group__trainers=trainer) & (
-                Q(start__gt=start) & Q(start__lt=end) |
-                Q(end__gt=start) & Q(end__lt=end) |
-                Q(start__lt=start) & Q(end__gt=end)
+            Q(start__gt=start) & Q(start__lt=end) |
+            Q(end__gt=start) & Q(end__lt=end) |
+            Q(start__lt=start) & Q(end__gt=end)
         )
     )
     return [{

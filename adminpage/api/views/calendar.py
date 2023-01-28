@@ -32,8 +32,8 @@ def convert_personal_training(t) -> dict:
         t["start"],
     )
     end_time = timezone.localtime(
-            t["end"],
-        )
+        t["end"],
+    )
     r = {
         "title": t["group_name"],
         "start": start_time,
@@ -42,10 +42,12 @@ def convert_personal_training(t) -> dict:
         "extendedProps": {
             "id": t["id"],
             "can_edit":
-                start_time <= timezone.localtime() <= start_time + settings.TRAINING_EDITABLE_INTERVAL,
+                start_time <= timezone.localtime() <= start_time +
+            settings.TRAINING_EDITABLE_INTERVAL,
             "group_id": t["group_id"],
             "can_grade": t["can_grade"],
             "training_class": t["training_class"],
+            "group_accredited": t["group_accredited"],
         }
     }
     if 'can_check_in' in t:

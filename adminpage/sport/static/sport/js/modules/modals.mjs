@@ -149,7 +149,7 @@ async function openGroupInfoModalForStudent(apiUrl, enrollErrorCb = () => 0) {
 
 async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0) {
     const {data, title, body, footer} = await openModal('#group-info-modal', apiUrl)
-    const {training, can_check_in, checked_in, hours} = data;
+    const { training, can_check_in, checked_in, hours } = data;
     const group = training.group;
     const date = (new Date(training.start)).toLocaleDateString('en-GB');
     const start_time = new Date(training.start);
@@ -196,6 +196,12 @@ async function openTrainingInfoModalForStudent(apiUrl, checkinErrorCb = () => 0)
     if (training.place) {
         body.append(`<div>Place: <b>${training.place}</b></div>`);
     }
+    body.append(`<div>Accredited: <b>${group.accredited ? 'Yes' : 'No'}</b></div>`);
+    body.append('<br>')
+    if (!group.accredited) {
+        body.append(`<div class="alert alert-warning" role="alert">You <b>can't get</b> sport hours for this training.</div>`);
+    }
+        
 
     body.append('<br><b>Description</b>:')
     if (group.sport.description) {
