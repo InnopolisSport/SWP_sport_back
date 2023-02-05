@@ -70,19 +70,20 @@ def special_groups_create(sender, instance, created, **kwargs):
             capacity=0,
             **kwargs
         )
-    else:
-        # if semester dates changed, recalculate all future related schedules
-        old = Semester.objects.get(pk=instance.pk)
-        if old.start != instance.start or old.end != instance.end:
-            semester_schedules = Schedule.objects.filter(
-                group__semester=instance.pk
-            )
-            for schedule in semester_schedules:
-                post_save.send(
-                    sender=Schedule,
-                    instance=schedule,
-                    created=False
-                )
+    # TODO: add logic for semester update
+    # else:
+    #     # if semester dates changed, recalculate all future related schedules
+    #     old = Semester.objects.get(pk=instance.pk)
+    #     if old.start != instance.start or old.end != instance.end:
+    #         semester_schedules = Schedule.objects.filter(
+    #             group__semester=instance.pk
+    #         )
+    #         for schedule in semester_schedules:
+    #             post_save.send(
+    #                 sender=Schedule,
+    #                 instance=schedule,
+    #                 created=False
+    #             )
 
 
 @receiver(pre_save, sender=Semester)

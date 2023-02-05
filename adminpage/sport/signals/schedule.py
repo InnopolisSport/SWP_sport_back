@@ -1,8 +1,10 @@
 from datetime import date, timedelta, datetime
 from typing import Iterator
 
-from django.db.models.signals import post_save, pre_delete
+from django.conf import settings
+from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch.dispatcher import receiver
+from django.forms.utils import to_current_timezone
 from django.utils import timezone
 
 from sport.models import Schedule, Training
@@ -45,6 +47,31 @@ def remove_future_trainings_from_schedule(instance: Schedule, **kwargs):
                             start__gt=timezone.now(),  # end__lte=semester_end_datetime,  # are within semester
                             schedule=instance,  # and
                             ).delete()
+
+
+@receiver(pre_save, sender=Training)
+def notify_about_changed_time(instance: Training, **kwargs):
+    if instance.pk:
+        old = Training.objects.get(pk=instance.pk)
+        print(old.start, instance.start, old.end, instance.end)
+        if old.start != instance.start or old.end != instance.end:
+            for student in instance.checked_in_students:
+                student.notify(*settings.EMAIL_TEMPLATES['training_changed'],
+                               student_name=student.user.first_name,
+                               group_name=instance.group.to_frontend_name(),
+                               previous_time=to_current_timezone(old.start).strftime('%d.%m.%Y %H:%M'),
+                               new_time=to_current_timezone(instance.start).strftime('%d.%m.%Y %H:%M'))
+            instance.checkins.all().delete()
+
+
+
+@receiver(pre_delete, sender=Training)
+def notify_about_removed_training(instance: Training, **kwargs):
+    for student in instance.checked_in_students:
+        student.notify(*settings.EMAIL_TEMPLATES['training_deleted'],
+                       student_name=student.user.first_name,
+                       group_name=instance.group.to_frontend_name(),
+                       time=to_current_timezone(instance.start).strftime('%d.%m.%Y %H:%M'))
 
 
 @receiver(post_save, sender=Schedule)

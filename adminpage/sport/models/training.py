@@ -39,27 +39,6 @@ class Training(models.Model):
         from sport.models import Student
         return Student.objects.filter(checkins__in=self.checkins.all()).distinct()
 
-    def delete(self, using=None, keep_parents=False):
-        for student in self.checked_in_students:
-            student.notify(*settings.EMAIL_TEMPLATES['training_deleted'],
-                           student_name=student.user.first_name,
-                           group_name=self.group.to_frontend_name(),
-                           time=to_current_timezone(self.start).strftime('%d.%m.%Y %H:%M'))
-        super().delete(using, keep_parents)
-
-    def save(self, *args, **kwargs):
-        if self.pk is not None:
-            old = Training.objects.get(pk=self.pk)
-            if old.start != self.start or old.end != self.end:
-                for student in self.checked_in_students:
-                    student.notify(*settings.EMAIL_TEMPLATES['training_changed'],
-                                   student_name=student.user.first_name,
-                                   group_name=self.group.to_frontend_name(),
-                                   previous_time=to_current_timezone(old.start).strftime('%d.%m.%Y %H:%M'),
-                                   new_time=to_current_timezone(self.start).strftime('%d.%m.%Y %H:%M'))
-                self.checkins.all().delete()
-        super().save(*args, **kwargs)
-
     @property
     def academic_duration(self) -> float:
         if not self.group.accredited:
