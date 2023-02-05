@@ -9,7 +9,6 @@ from django.dispatch.dispatcher import receiver
 from django.db.models import IntegerField
 from tinymce.models import HTMLField
 
-# from api.crud import SumSubquery, get_ongoing_semester
 from sport.models import MedicalGroupHistory, Gender
 from sport.utils import get_current_study_year
 

@@ -278,24 +278,6 @@ class StudentAdmin(HijackUserAdminMixin, ImportExportActionModelAdmin, DefaultFi
                 self.inlines = (ViewAttendanceInline,)
         return super().change_view(request, object_id, form_url, extra_context)
 
-    # def get_queryset(self, request):
-    #     qs = super().get_queryset(request)
-    #
-    #     qs = qs.annotate(_debt=Coalesce(
-    #         SumSubquery(Debt.objects.filter(semester_id=get_ongoing_semester().pk,
-    #                                         student_id=OuterRef("pk")), 'debt'),
-    #         0
-    #     ))
-    #     qs = qs.annotate(_ongoing_semester_hours=Coalesce(
-    #         SumSubquery(Attendance.objects.filter(
-    #             training__group__semester_id=get_ongoing_semester().pk, student_id=OuterRef("pk")), 'hours'),
-    #         0
-    #     ))
-    #     qs = qs.annotate(complex_hours=ExpressionWrapper(
-    #         F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
-    #     ))
-    #
-    #     return qs
 
     def get_hijack_user(self, obj):
         return obj.user
