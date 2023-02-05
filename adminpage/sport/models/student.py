@@ -22,33 +22,36 @@ def validate_course(course):
 
 
 class StudentManager(models.Manager):
-
-
     def get_queryset(self):
         from api.crud import get_ongoing_semester
         from api.crud import SumSubquery
         from sport.models import Attendance, Debt
+        from django.db.utils import ProgrammingError
 
         qs = super().get_queryset()
-        qs = qs.annotate(_debt=Coalesce(
-            SumSubquery(Debt.objects.filter(
-                semester_id=get_ongoing_semester().pk,
-                student_id=OuterRef("pk")),
-                'debt',
-            ),
-            0
-        ))
-        qs = qs.annotate(_ongoing_semester_hours=Coalesce(
-            SumSubquery(Attendance.objects.filter(
-                training__group__semester_id=get_ongoing_semester().pk,
-                student_id=OuterRef("pk")),
-                'hours',
-            ),
-            0
-        ))
-        qs = qs.annotate(hours=ExpressionWrapper(
-            F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
-        ))
+
+        try:
+            qs = qs.annotate(_debt=Coalesce(
+                SumSubquery(Debt.objects.filter(
+                    semester_id=get_ongoing_semester().pk,
+                    student_id=OuterRef("pk")),
+                    'debt',
+                ),
+                0
+            ))
+            qs = qs.annotate(_ongoing_semester_hours=Coalesce(
+                SumSubquery(Attendance.objects.filter(
+                    training__group__semester_id=get_ongoing_semester().pk,
+                    student_id=OuterRef("pk")),
+                    'hours',
+                ),
+                0
+            ))
+            qs = qs.annotate(hours=ExpressionWrapper(
+                F('_ongoing_semester_hours') - F('_debt'), output_field=IntegerField()
+            ))
+        except (ProgrammingError, IndexError):
+            pass
 
         return qs
 
