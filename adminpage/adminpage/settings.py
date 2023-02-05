@@ -341,21 +341,23 @@ EMAIL_TEMPLATES = {
         'Your submission:\n{submission}'
     ),
     'training_changed': (
-        'Training Cancellation',
+        'Training Schedule Change',
         'Dear {student_name},\n\n'
-        'The training time for {group_name} has been moved from {previous_time} to {new_time}. '
-        'We kindly ask you to check in for the training again on https://sport.innopolis.unversity.\n\n'
+        'The training time for <i>{group_name}</i> has been moved from <i>{previous_time}</i> to <i>{new_time}</i>. '
+        'We kindly ask you to <b>check in for the training again</b> on '
+        '<a href="https://sport.innopolis.university">sport.innopolis.university</a>.\n\n'
         'We apologize for any inconvenience this may have caused.\n'
         'Thank you for your understanding.\n\n'
         'Best regards,\n'
         'School of Sport and Healthy Lifestyle'
     ),
     'training_deleted': (
-        'Training Schedule Change',
+        'Training Cancellation',
         'Dear {student_name},\n\n'
-        'Unfortunately, the {group_name} training session scheduled for {time} has been cancelled. '
-        'Please check the updated training calendar on https://sport.innopolis.university '
-        'for the next available session and check in again.\n\n'
+        'Unfortunately, the <i>{group_name}</i> training session scheduled for <i>{time}</i> has been cancelled. '
+        'Please check the updated training calendar on '
+        '<a href="https://sport.innopolis.university">sport.innopolis.university</a> '
+        'for the next available session and <b>check in again</b>.\n\n'
         'We apologize for any inconvenience this may have caused.\n'
         'Thank you for your understanding.\n\n'
         'Best regards,\n'
