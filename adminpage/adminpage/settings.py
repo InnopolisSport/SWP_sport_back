@@ -348,7 +348,7 @@ EMAIL_TEMPLATES = {
         'We apologize for any inconvenience this may have caused.\n'
         'Thank you for your understanding.\n\n'
         'Best regards,\n'
-        'School of Physical Education and Health Promotion'
+        'School of Sport and Healthy Lifestyle'
     ),
     'training_deleted': (
         'Training Schedule Change',
@@ -359,7 +359,7 @@ EMAIL_TEMPLATES = {
         'We apologize for any inconvenience this may have caused.\n'
         'Thank you for your understanding.\n\n'
         'Best regards,\n'
-        'School of Physical Education and Health Promotion'
+        'School of Sport and Healthy Lifestyle'
     ),
 }
 
