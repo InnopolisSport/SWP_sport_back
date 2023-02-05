@@ -340,6 +340,14 @@ EMAIL_TEMPLATES = {
         'Comment: {comment}\n\n'
         'Your submission:\n{submission}'
     ),
+    'training_deleted': (
+        '[IU Sport] Training Deleted',
+        'Your self-training proof for {training} '
+    ),
+    'training_changes': (
+        '[IU Sport] Training Deleted',
+        'Your self-training proof for {training} '
+    ),
 }
 
 if DEBUG:

@@ -1,10 +1,18 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from datetime import date
 from enum import IntEnum
 
+from django.core.mail import send_mail
 from django.conf import settings
+from django.db.models import QuerySet
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils import timezone
+
+if TYPE_CHECKING:
+    from sport.models import Student
 
 class SubmissionType(IntEnum):
     LINK = 1
@@ -46,3 +54,14 @@ def today() -> date:
 
 def str_or_empty(field) -> str:
     return str(field) if field else ""
+
+def notify_students(students: QuerySet[Student], subject, message, **kwargs):
+    msg = message.format(**kwargs)
+    emails = list(students.values_list("user__email", flat=True).distinct())
+    send_mail(
+        subject,
+        msg,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=emails,
+        html_message=msg.replace("\n", "<br>"),
+    )
