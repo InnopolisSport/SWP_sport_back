@@ -52,7 +52,7 @@ class Training(models.Model):
             old = Training.objects.get(pk=self.pk)
             if old.start != self.start or old.end != self.end:
                 for student in self.checked_in_students:
-                    student.notify(*settings.EMAIL_TEMPLATES['training_changes'],
+                    student.notify(*settings.EMAIL_TEMPLATES['training_changed'],
                                    student_name=student.user.first_name,
                                    group_name=self.group.to_frontend_name(),
                                    previous_time=to_current_timezone(old.start).strftime('%d.%m.%Y %H:%M'),

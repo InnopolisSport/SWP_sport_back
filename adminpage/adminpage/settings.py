@@ -340,7 +340,7 @@ EMAIL_TEMPLATES = {
         'Comment: {comment}\n\n'
         'Your submission:\n{submission}'
     ),
-    'training_changes': (
+    'training_changed': (
         'Training Cancellation',
         'Dear {student_name},\n\n'
         'The training time for {group_name} has been moved from {previous_time} to {new_time}. '
