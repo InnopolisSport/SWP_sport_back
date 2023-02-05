@@ -15,7 +15,7 @@ from django.utils import timezone
 import datetime
 from api.crud import get_ongoing_semester, mark_hours
 from sport.models import Training, Student, Group, Attendance
-from .inlines import ViewAttendanceInline, AddAttendanceInline, HackAttendanceInline
+from .inlines import ViewAttendanceInline, AddAttendanceInline, HackAttendanceInline, ViewTrainingCheckInInline
 from .utils import cache_filter, cache_dependent_filter, cache_alternative_filter, custom_order_filter, \
     DefaultFilterMixIn
 from .site import site
@@ -230,6 +230,7 @@ class TrainingAdmin(DefaultFilterMixIn):
             return (
                 ViewAttendanceInline,
                 AddAttendanceInline,
+                ViewTrainingCheckInInline,
             )
         return (
             AddAttendanceInline,

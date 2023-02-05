@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 
-from sport.models import Attendance, Schedule, Enroll, Group, Training, MedicalGroupHistory
+from sport.models import Attendance, Schedule, Enroll, Group, Training, MedicalGroupHistory, TrainingCheckIn
 
 
 class ViewMedicalGroupHistoryInline(admin.TabularInline):
@@ -129,4 +129,14 @@ class ViewTrainingInline(TrainingInline):
     def has_add_permission(
             self, request: HttpRequest, *args, **kwargs
     ) -> bool:
+        return False
+
+class ViewTrainingCheckInInline(admin.TabularInline):
+    model = TrainingCheckIn
+    fields = ("date", "student")
+    readonly_fields = ("date", )
+    autocomplete_fields = ("student",)
+    extra = 0
+
+    def has_change_permission(self, request, obj=None):
         return False
