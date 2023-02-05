@@ -340,13 +340,26 @@ EMAIL_TEMPLATES = {
         'Comment: {comment}\n\n'
         'Your submission:\n{submission}'
     ),
-    'training_deleted': (
-        '[IU Sport] Training Deleted',
-        'Your self-training proof for {training} '
-    ),
     'training_changes': (
-        '[IU Sport] Training Deleted',
-        'Your self-training proof for {training} '
+        'Training Cancellation',
+        'Dear {student_name},\n\n'
+        'The training time for {group_name} has been moved from {previous_time} to {new_time}. '
+        'We kindly ask you to check in for the training again on https://sport.innopolis.unversity.\n\n'
+        'We apologize for any inconvenience this may have caused.\n'
+        'Thank you for your understanding.\n\n'
+        'Best regards,\n'
+        'School of Physical Education and Health Promotion'
+    ),
+    'training_deleted': (
+        'Training Schedule Change',
+        'Dear {student_name},\n\n'
+        'Unfortunately, the {group_name} training session scheduled for {time} has been cancelled. '
+        'Please check the updated training calendar on https://sport.innopolis.university '
+        'for the next available session and check in again.\n\n'
+        'We apologize for any inconvenience this may have caused.\n'
+        'Thank you for your understanding.\n\n'
+        'Best regards,\n'
+        'School of Physical Education and Health Promotion'
     ),
 }
 
