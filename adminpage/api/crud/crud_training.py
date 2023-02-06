@@ -163,6 +163,7 @@ def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
         'group_id': e.group_id,
         'group_name': e.group.to_frontend_name(),
         'training_class': e.training_class.name if e.training_class else None,
+        'group_accredited': e.group.accredited,
         'can_grade': True,
     } for e in trainings]
 
