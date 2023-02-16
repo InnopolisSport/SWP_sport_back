@@ -33,10 +33,13 @@ class MedicalGroupReferenceForm(forms.ModelForm):
         instance = super().save(commit)
         instance.student.medical_group_id = self.cleaned_data['medical_group'].pk
         instance.student.save()
-
-        last_med_hist: MedicalGroupHistory = MedicalGroupHistory.objects.filter(student=instance.student).latest('changed')
-        last_med_hist.medical_group_reference=instance
-        last_med_hist.save()
+        
+        # FIXME: Подумать как сделать менее костыльно
+        student_history = MedicalGroupHistory.objects.filter(student=instance.student)
+        if student_history:
+            last_med_hist = student_history.latest('changed')
+            last_med_hist.medical_group_reference = instance
+            last_med_hist.save()
 
         return instance
 
