@@ -29,7 +29,6 @@ register_converter(NegativeIntConverter, 'negint')
 
 
 urlpatterns = [
-    path(r"test/", tmp.test),
     # profile
     path(r"profile/change_gender", profile.change_gender),
     path(r"profile/QR/toggle", profile.toggle_QR_presence),
