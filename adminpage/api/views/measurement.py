@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from api.crud import get_ongoing_semester
 
-from api.permissions import IsStudent
+from api.permissions import IsStudent, IsTrainer
 
 from api.serializers import (
     MeasurementPostSerializer,
@@ -80,6 +80,7 @@ def get_results(request, **kwargs):
     },
 )
 @api_view(["POST"])
+@permission_classes([IsTrainer])
 def post_student_measurement(request, **kwargs):
     approved = False
     if hasattr(request.user, 'trainer'):

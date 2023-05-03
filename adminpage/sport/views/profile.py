@@ -112,7 +112,6 @@ def profile_view(request, **kwargs):
     return render(request, "profile.html", context)
 
 
-@api_view(["POST"])
 @permission_classes([IsStudent])
 def process_med_group_form(request, *args, **kwargs):
     form = MedicalGroupReferenceForm(request.POST, request.FILES)

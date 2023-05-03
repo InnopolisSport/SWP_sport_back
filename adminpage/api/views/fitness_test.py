@@ -131,6 +131,7 @@ def get_result(request, **kwargs):
     }
 )
 @api_view(["GET"])
+@permission_classes([IsTrainer])
 def get_session_info(request, session_id, **kwargs):
     results_dict = defaultdict(list)
     for result in FitnessTestResult.objects.filter(session_id=session_id):
