@@ -17,9 +17,12 @@ from .utils import custom_titled_filter, DefaultFilterMixIn, ScheduleInline
 
 def get_next_semester():
     try:
-        return Semester.objects.filter(end__gt=timezone.now()).order_by("start").first()
+        next_sem = Semester.objects.filter(end__gt=timezone.now()).order_by("start").first()
+        if not next_sem:
+            return get_ongoing_semester()
+        return next_sem
     except ProgrammingError:
-        return None
+        return get_ongoing_semester()
 
 
 class ListTextWidget(forms.NumberInput):
