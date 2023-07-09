@@ -10,11 +10,14 @@ docker-compose -f ./compose/docker-compose.yml down
 docker-compose -f ./compose/docker-compose.yml up -d db
 
 docker cp "$1" sport_db:/database_backup.sql
+docker exec sport_db bash -c 'while !</dev/tcp/db/5432; do sleep 5; done; sleep 5;'
 docker exec sport_db psql -U user -f database_backup.sql postgres
 docker exec sport_db rm database_backup.sql
 
 docker-compose -f ./compose/docker-compose.yml down
 docker-compose -f ./compose/docker-compose.yml up -d
+
+docker exec sport_db bash -c 'while !</dev/tcp/db/5432; do sleep 1; done;'
 
 # save the latest applied sport migration
 SPORT_STATE=$(docker exec sport_adminpanel python manage.py showmigrations sport | grep "[X]" | tail -n 1 | cut -c 6-9)
