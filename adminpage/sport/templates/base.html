@@ -19,6 +19,9 @@
         {% if user.is_staff %} <!-- Add good condition for teacher user-->
             <a href="{% url 'fitness_test' %}" class="btn btn-outline-light">Fitness test</a>
         {% endif %}
+        {% if user.is_staff %} <!-- Add good condition for teacher user-->
+            <a href="{% url 'analytics' %}" class="btn btn-outline-light">Analytics</a>
+        {% endif %}
     </div>
     <div>
         {% if user.is_authenticated %}

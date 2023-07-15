@@ -1,0 +1,218 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    border: 0;
+    font-family: Heebo, sans-serif;
+    text-decoration: none;
+    list-style-type: none;
+    outline: none;
+}
+
+:root {
+    --White: #FFFFFF;
+    --Pink: #E03166;
+    --DarkBlue: #7C8DB5;
+    --LightBlue: #E6EFFF;
+    --LightestGreen: #D8F5E8;
+
+    --Header: 100;
+    --DropDown: 50;
+}
+
+.header{
+    font-size: 25px;
+    height: 12vh;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    margin-bottom: 30px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    border-bottom: 2px solid var(--LightBlue);
+    background-color: var(--White);
+    position: fixed;
+    z-index: var(--Header);
+}
+
+.logo{
+    height: 50px;
+    width: 50px;
+}
+
+.user {
+    margin-left: auto;
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.log-out{
+    margin-left: 30px;
+    color: var(--Pink);
+}
+
+.container{
+    width: 95%;
+    height: fit-content;
+    margin: 0 auto;
+}
+
+.first-coach-block{
+    height: 82vh;
+    margin-top: 15vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.child-coach-block{
+    width: 40%;
+    margin: 10px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    justify-items: center;
+    align-items: center;
+}
+
+h1{
+    font-size: 35px;
+    font-weight: bold;
+}
+
+button, input{
+    width: 100px;
+    height: 25px;
+    margin: 10px;
+    background-color: var(--White) ;
+    color: var(--DarkBlue);
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 15px;
+    border: 2px solid var(--LightBlue);
+}
+
+button:hover{
+    background-color: var(--LightBlue);
+    color: var(--DarkBlue);
+}
+
+.drop-down-bar{
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    row-gap: 20px;
+}
+
+.drop-down-content{
+    margin-top: 2px;
+    display: block;
+    z-index: var(--DropDown);
+    height: 12vh;
+    overflow: auto;
+}
+
+.drop-down-list{
+    position: relative;
+    display: none;
+    overflow: auto;
+    z-index: var(--DropDown);
+}
+
+.drop-down-item{
+    position: relative;
+    margin: 5px 0;
+}
+
+.drop-down-item:hover{
+    color: var(--Pink);
+}
+
+button:hover .drop-down-list{
+    display: initial;
+}
+
+#studentList {
+    display: none;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background-color: var(--LightBlue);
+}
+
+#studentList li {
+    padding: 5px;
+    cursor: pointer;
+}
+
+#studentList li:hover {
+    background-color: #f4f4f4;
+    display: flex;
+}
+
+.table-block{
+    width: 100%;
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.drop-down-student-progress {
+    margin-top: 30px;
+    height: 90px;
+    width: 100%;
+    background-color: var(--LightBlue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input {
+    border: 2px solid var(--DarkBlue);
+    text-align: center;
+    height: 35px;
+    width: 40%;
+}
+
+.tops-header{
+    height: 90px;
+    width: 100%;
+    background-color: var(--LightBlue);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-top: 2px solid var(--White);
+}
+
+.leaders-top{
+    color: var(--DarkBlue);
+    font-size: 30px;
+    text-align: center;
+    height: 35px;
+    margin: 0 30px;
+}
+
+.tops-block{
+    height: 640px;
+    margin: 40px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.top-text{
+    font-size: 30px;
+}
+
+.top-container{
+    background-color: #E03166;
+    height: 520px;
+    width: 100%;
+}
+

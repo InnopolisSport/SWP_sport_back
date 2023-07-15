@@ -1,0 +1,187 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CoachPage</title>
+    <link rel="stylesheet" href="{% static "analytics/css/global_styles.css" %}">
+    <link rel="stylesheet" href="{% static "analytics/css/media.css" %}">
+    <link rel="stylesheet" href="{% static "analytics/css/stylesheet.css" %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+</head>
+<body>
+<header class="header">
+
+    <div class="logo">
+        <img src="{% static "analytics/images/logo.png" %}" alt="logo">
+    </div>
+
+    <div class="user">
+        <span class="username">{{ current_user_full_name }}</span>
+        <a href="#" class="log-out">Log Out</a>
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="first-coach-block">
+
+        <div class="child-coach-block">
+            <h1>Frequency of visiting classes</h1>
+
+            <div class="drop-down-bar">
+                <button>Disciplines
+                    <div class="drop-down-content">
+                        <ul id="disciplinesListFOVS" class="drop-down-list"></ul>
+                    </div>
+                </button>
+                <button>Period
+                    <div class="drop-down-content">
+                        <ul id="periodListFOVS" class="drop-down-list"></ul>
+                    </div>
+                </button>
+                <button>Course
+                    <div class="drop-down-content">
+                        <ul id="courseListFOVS" class="drop-down-list"></ul>
+                    </div>
+                </button>
+                <button>Group
+                    <div class="drop-down-content">
+                        <ul id="groupListFOVS" class="drop-down-list"></ul>
+                    </div>
+                </button>
+            </div>
+
+            <div class="table-block">
+                <canvas id="frequencyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="child-coach-block">
+            <h1>Attendance</h1>
+
+            <div class="drop-down-bar">
+
+
+                <button>Disciplines
+                    <div class="drop-down-content">
+                        <ul id="disciplinesListAttendance" class="drop-down-list"></ul>
+                    </div>
+                </button>
+
+                <button> Period
+                    <div class="drop-down-content">
+                        <ul id="periodListAttendance" class="drop-down-list"></ul>
+                    </div>
+                </button>
+
+                <button>Course
+                    <div class="drop-down-content">
+                        <ul id="courseListAttendance" class="drop-down-list"></ul>
+                    </div>
+                </button>
+
+                <button> Group
+                    <div class="drop-down-content">
+                        <ul id="groupListAttendance" class="drop-down-list"></ul>
+                    </div>
+                </button>
+            </div>
+
+            <div class="table-block">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+<div class="drop-down-student-progress">
+    <label for="name"></label><input type="text" id="name" placeholder="Enter student email">
+    <ul id="studentList">
+        <li>student1@example.com</li>
+        <li>student2@example.com</li>
+        <li>student3@example.com</li>
+        <li>student4@example.com</li>
+    </ul>
+    <script>
+        document.getElementById('name').addEventListener('click', function () {
+            let studentList = document.getElementById('studentList');
+            if (studentList.style.display === 'none') {
+                studentList.style.display = 'block';
+            } else {
+                studentList.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('#studentList li').forEach(function (student) {
+            student.addEventListener('click', function () {
+                document.getElementById('name').value = this.innerHTML;
+                document.getElementById('studentList').style.display = 'none';
+            });
+        });
+    </script>
+</div>
+
+
+<div class="tops-header">
+    <h1 class="leaders-top">Leaders Tops</h1>
+</div>
+
+<div class="container">
+
+    <div class="tops-block">
+        <div class="child-coach-block">
+            <h1 class="top-text">Sport Hours Top</h1>
+
+            <div class="drop-down-bar">
+                <button>Course
+                    <div class="drop-down-content">
+                        <ul id="courseListSportHours" class="drop-down-list"></ul>
+                    </div>
+                </button>
+            </div>
+
+            <div class="top-container">
+
+            </div>
+
+        </div>
+        <div class="child-coach-block">
+            <h1 class="top-text">FitTest Top</h1>
+
+            <div class="drop-down-bar">
+                <button>Exercise
+                    <div class="drop-down-content">
+                        <ul id="exerciseListFittest" class="drop-down-list"></ul>
+                    </div>
+                </button>
+                <button>Course
+                    <div class="drop-down-content">
+                        <ul id="courseListFittest" class="drop-down-list"></ul>
+                    </div>
+                </button>
+            </div>
+
+            <div class="top-container">
+
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script type="module" src="attendance.js"></script>
+<script type="module" src="frequency.js"></script>
+<script type="module" src="dataForDropDowns/disciplines.js"></script>
+<script type="module" src="dataForDropDowns/group.js"></script>
+<script type="module" src="dataForDropDowns/period.js"></script>
+<script type="module" src="dataForDropDowns/course.js"></script>
+<script type="module" src="dataForDropDowns/exercise.js"></script>
+</body>
+</html>
