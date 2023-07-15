@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CoachPage</title>
+    <title>Analytics</title>
     <link rel="stylesheet" href="{% static "analytics/css/global_styles.css" %}">
     <link rel="stylesheet" href="{% static "analytics/css/media.css" %}">
     <link rel="stylesheet" href="{% static "analytics/css/stylesheet.css" %}">
@@ -176,8 +176,8 @@
     </div>
 
 </div>
-<script type="module" src="attendance.js"></script>
-<script type="module" src="frequency.js"></script>
+<script type="module" src="{% static "analytics/js/attendance.js" %}"></script>
+<script type="module" src="{% static "analytics/js/frequency.js" %}"></script>
 <script type="module" src="dataForDropDowns/disciplines.js"></script>
 <script type="module" src="dataForDropDowns/group.js"></script>
 <script type="module" src="dataForDropDowns/period.js"></script>
