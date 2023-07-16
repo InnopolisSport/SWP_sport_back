@@ -10,11 +10,11 @@
 ## Environment Variables
 See `compose/example.env` for reference.
 
-The project require a file `compose/.env` to contain 
+The project require a file `compose/.env` to contain
 following environment variables:
 
 * `POSTGRES_USER`- Username for the db
-* `POSTGRES_PASSWORD`- database password 
+* `POSTGRES_PASSWORD`- database password
 * `POSTGRES_DB` - database name
 * `POSTGRES_SERVER` - database hostname (`db` - by default)
 * `GRAFANA_DB_USER` - username for database user for grafana (will be created if not exists)
@@ -31,7 +31,7 @@ following environment variables:
 * `oauth_shared_secret` - application secret for ouath
 * `oauth_authorization_baseURL`- an URL for user auth
 * `oauth_get_infoURL`- tokeninfo URL
-* `oauth_tokenURL`- an URL to obtain token 
+* `oauth_tokenURL`- an URL to obtain token
 * `oauth_end_session_endpoint`- end oauth session endpoint
 
 
@@ -39,14 +39,15 @@ following environment variables:
 1. Clone the repository
 1. Go to repo folder
 1. `pip3 install -r ./adminpage/requirements.txt`
-1. To start server 
+1. To start server
     1. Rename file: `example.env` to `.env`
     1. From repo folder: `docker-compose -f ./compose/docker-compose.yml up`
 1. To create superuser and make migrations
-    1. `docker exec -it compose_adminpanel_1 bash`
+    1. `docker exec -it sport_adminpanel bash`
     1. `python manage.py makemigrations`
     1. `python manage.py migrate`
     1. `python manage.py createsuperuser`
+1. !!! If there is problem with migrations applying, try to run the same migrate command with --fake option.
 
 Server supports auto-reload on code change in debug mode
 
