@@ -61,3 +61,7 @@ from .measurement import (
     MeasurementResultSerializer,
     MeasurementResultsSerializer
 )
+from .medical_groups import (
+    MedicalGroupSerializer,
+    MedicalGroupsSerializer
+)

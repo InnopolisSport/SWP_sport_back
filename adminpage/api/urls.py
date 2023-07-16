@@ -15,6 +15,7 @@ from api.views import (
     measurement,
     semester,
     analytics,
+    medical_groups,
 )
 
 
@@ -93,7 +94,10 @@ urlpatterns = [
     path(r"export_sport_types", group.exportSportTypes),
 
     # analytics
-    path(r"analytics/test", analytics.test_endp)
+    path(r"analytics/attendance", analytics.attendance_analytics),
+
+    # medical groups
+    path(r"medical_groups/", medical_groups.medical_groups_view),
 ]
 
 urlpatterns.extend([
