@@ -4,3 +4,4 @@ from .fitness_test import fitness_test_session_view, fitness_test_view, fitness_
 from .calendar import calendar_view, calendar_view_without_sport
 from .grafana_proxy import GraphanaProxyView
 from .login import login_redirect
+from .analytics import analytics_view
