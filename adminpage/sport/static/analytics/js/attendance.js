@@ -1,22 +1,35 @@
-const ctx = document.getElementById('attendanceChart').getContext('2d');
+//Fetch default analytics data for all sports and all groups
+function fetchDefaultAnalytics() {
+    return fetch('/api/analytics/attendance')
+        .then(response => response.json())
+        .then(data => data);
+}
 
-// Prepare the data
-var data = [
-    { date: '2023-01-01', students: 40 },
-    { date: '2023-02-01', students: 25 },
-    { date: '2023-03-01', students: 0 },
-    { date: '2023-04-01', students: 50 },
-    { date: '2023-05-01', students: 30 }
-];
+//Create default array for all sports and all groups with date + number
+var all_analytics_array = await fetchDefaultAnalytics();
+console.log(all_analytics_array);
 
+//Create array with date + number as a dictionary
+var default_array_with_dicts = [];
+for (let key in all_analytics_array) {
+    var dict = {};
+    dict["date"] = key;
+    dict["students"] = all_analytics_array[key];
+    default_array_with_dicts.push(dict);
+}
+
+console.log(default_array_with_dicts);
 // Convert date strings to actual Date objects
-var parsedData = data.map(item => ({
-    x: new Date(item.date),
-    y: item.students
+var parsedData = default_array_with_dicts.map(item => ({
+    x: new Date(item["date"]),
+    y: item["students"],
 }));
 
+//Get HTML elements
+const ctx = document.getElementById('attendanceChart').getContext('2d');
+
 // Create a line chart
-new Chart(ctx, {
+const attendance_chart = new Chart(ctx, {
     type: 'line',
     data: {
         datasets: [{
@@ -39,7 +52,7 @@ new Chart(ctx, {
              x: {
               type: 'time',
                  time: {
-                     unit: 'month'
+                     unit: 'week'
                  },
                   ticks: {
                       source: 'data' // Force x-axis ticks to be based on data points
@@ -54,3 +67,6 @@ new Chart(ctx, {
         }
     }
 });
+
+//export {attendance_chart, getParsedData};
+export default attendance_chart;

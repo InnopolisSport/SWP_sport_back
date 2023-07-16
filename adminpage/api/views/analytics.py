@@ -17,6 +17,7 @@ def attendance_analytics(request, **kwargs):
         query = query.filter(student__medical_group__id=medical_group_id)
 
     result = {}
+    query = sorted(query, key=lambda x: x.training.start)
     for obj in query:
         time_key = obj.training.start.strftime("%Y-%m-%d")
         if time_key not in result.keys():

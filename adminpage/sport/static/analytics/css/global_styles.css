@@ -60,16 +60,16 @@
 }
 
 .first-coach-block{
-    height: 82vh;
-    margin-top: 15vh;
+    height: fit-content;
+    margin-top: 20vh;
+    margin-bottom: 10vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 
 .child-coach-block{
-    width: 40%;
-    margin: 10px 30px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -83,9 +83,10 @@ h1{
 }
 
 button, input{
-    width: 100px;
-    height: 25px;
-    margin: 10px;
+    width: fit-content;
+    padding: 5px 20px;
+    height: fit-content;
+    margin: 5px;
     background-color: var(--White) ;
     color: var(--DarkBlue);
     font-size: 15px;
@@ -96,45 +97,62 @@ button, input{
 
 button:hover{
     background-color: var(--LightBlue);
-    color: var(--DarkBlue);
 }
 
 .drop-down-bar{
-    width: 90%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     justify-items: center;
     align-items: center;
-    row-gap: 20px;
+    margin: 20px 0;
+}
+
+.drop-down-flexbox{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .drop-down-content{
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--DarkBlue);
     margin-top: 2px;
-    display: block;
+    display: none;
     z-index: var(--DropDown);
-    height: 12vh;
+    height: 20vh;
+    width: fit-content;
     overflow: auto;
+}
+
+.drop-down-content.show {
+    display: block;
 }
 
 .drop-down-list{
     position: relative;
-    display: none;
     overflow: auto;
     z-index: var(--DropDown);
+    background-color: var(--White);
+    display: block;
+    border: 2px solid var(--LightBlue);
+    border-radius: 15px;
+    padding: 5px;
+
 }
 
 .drop-down-item{
     position: relative;
-    margin: 5px 0;
+    display: block;
+    margin: 1px 0;
+    cursor: pointer;
 }
 
 .drop-down-item:hover{
     color: var(--Pink);
-}
-
-button:hover .drop-down-list{
-    display: initial;
 }
 
 #studentList {
@@ -156,7 +174,7 @@ button:hover .drop-down-list{
 
 .table-block{
     width: 100%;
-    height: 350px;
+    height: 60vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -164,55 +182,21 @@ button:hover .drop-down-list{
 
 .drop-down-student-progress {
     margin-top: 30px;
-    height: 90px;
+    height: fit-content;
     width: 100%;
     background-color: var(--LightBlue);
+    flex-direction: column;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 input {
+    margin: 3vh;
     border: 2px solid var(--DarkBlue);
     text-align: center;
     height: 35px;
     width: 40%;
 }
 
-.tops-header{
-    height: 90px;
-    width: 100%;
-    background-color: var(--LightBlue);
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    border-top: 2px solid var(--White);
-}
-
-.leaders-top{
-    color: var(--DarkBlue);
-    font-size: 30px;
-    text-align: center;
-    height: 35px;
-    margin: 0 30px;
-}
-
-.tops-block{
-    height: 640px;
-    margin: 40px 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.top-text{
-    font-size: 30px;
-}
-
-.top-container{
-    background-color: #E03166;
-    height: 520px;
-    width: 100%;
-}
 
