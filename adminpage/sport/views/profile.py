@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
-import datetime
 
 from api.crud import get_ongoing_semester, get_student_groups, \
     get_brief_hours, \
@@ -39,7 +38,6 @@ def profile_view(request, **kwargs):
     sports = get_sports(student=student)
 
     context = {
-        "now": datetime.datetime.utcnow(),
         "user": request.user,
         "common": {
             "semester_name": current_semester.name
