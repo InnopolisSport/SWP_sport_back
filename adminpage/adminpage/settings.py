@@ -204,10 +204,6 @@ AUTH_ADFS = {
     "AUDIENCE": f"microsoft:identityserver:{OAUTH_CLIENT_ID}",
     "CA_BUNDLE": True,
     "USERNAME_CLAIM": "upn",
-    # use group ids instead of name, because names are written in different languages
-    "GROUPS_CLAIM": "groupsid",
-    "GROUPS_CLAIM_REGEX": r"S-\d*-\d*-\d*-\d*-\d*-\d*-\d*",
-    "MIRROR_GROUPS": True,
     "CLAIM_MAPPING": {
         "first_name": "given_name",
         "last_name": "family_name",
