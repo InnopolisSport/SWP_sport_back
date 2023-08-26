@@ -204,6 +204,7 @@ AUTH_ADFS = {
     "AUDIENCE": f"microsoft:identityserver:{OAUTH_CLIENT_ID}",
     "CA_BUNDLE": True,
     "USERNAME_CLAIM": "upn",
+    "GROUPS_CLAIM": None,
     "CLAIM_MAPPING": {
         "first_name": "given_name",
         "last_name": "family_name",
