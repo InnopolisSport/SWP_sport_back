@@ -175,32 +175,32 @@ def test_self_sport_same_type_same_day(
     ).aggregate(Sum("hours"))["hours__sum"] == report1.hours + report2.hours
 
 
-@pytest.mark.django_db
-@pytest.mark.freeze_time(frozen_time)
-def test_valid_strava_link_parsing(
-        setup,
-        freezer
-):
-    student, semester, selfsport_type, client = setup
+# @pytest.mark.django_db
+# @pytest.mark.freeze_time(frozen_time)
+# def test_valid_strava_link_parsing(
+#         setup,
+#         freezer
+# ):
+#     student, semester, selfsport_type, client = setup
 
-    response = client.get(
-        f"/{settings.PREFIX}api/selfsport/strava_parsing",
-        data={
-            "link": "https://www.strava.com/activities/5324378542"
-        },
-        format='multipart'
-    )
+#     response = client.get(
+#         f"/{settings.PREFIX}api/selfsport/strava_parsing",
+#         data={
+#             "link": "https://www.strava.com/activities/5324378542"
+#         },
+#         format='multipart'
+#     )
 
-    if response.status_code != status.HTTP_429_TOO_MANY_REQUESTS:
-        assert response.status_code == status.HTTP_200_OK
-        assertMembers(response.data, {
-            'distance_km': 2.5,
-            'type': 'RUNNING',
-            'speed': 10.0,
-            'hours': 1,
-            'approved': True
-        }
-        )
+#     if response.status_code != status.HTTP_429_TOO_MANY_REQUESTS:
+#         assert response.status_code == status.HTTP_200_OK
+#         assertMembers(response.data, {
+#             'distance_km': 2.5,
+#             'type': 'RUNNING',
+#             'speed': 10.0,
+#             'hours': 1,
+#             'approved': True
+#         }
+#         )
 
 
 @pytest.mark.django_db

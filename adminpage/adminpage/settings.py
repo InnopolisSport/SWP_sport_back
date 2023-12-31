@@ -189,9 +189,27 @@ OAUTH_GET_INFO_URL = os.getenv("oauth_get_infoURL")
 OAUTH_TOKEN_URL = os.getenv("oauth_tokenURL")
 OAUTH_END_SESSION_URL = os.getenv("oauth_end_session_endpoint")
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'django_auth_adfs.rest_framework.AdfsAccessTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'adfs_token': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
+}
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'django_auth_adfs.backend.AdfsAuthCodeBackend',
+    'django_auth_adfs.backend.AdfsAccessTokenBackend',
 )
 
 AUTH_ADFS = {
