@@ -57,6 +57,7 @@ def get_exercises(request, **kwargs):
     }
 )
 @api_view(["GET"])
+@permission_classes([IsTrainer])
 def get_sessions(request, **kwargs):
     serializer = SemesterInSerializer(data=request.GET)
     serializer.is_valid(raise_exception=True)

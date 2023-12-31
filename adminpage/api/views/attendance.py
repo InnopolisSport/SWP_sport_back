@@ -13,7 +13,7 @@ from django.views.decorators.cache import cache_page
 from api.crud import get_email_name_like_students, Training, \
     get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, \
     get_student_hours, get_negative_hours, better_than, get_email_name_like_students_filtered_by_group
-from api.permissions import IsTrainer
+from api.permissions import IsStaff, IsStudent, IsTrainer
 from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
     TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, \
@@ -138,6 +138,7 @@ def get_last_attended_dates(request, group_id, **kwargs):
     }
 )
 @api_view(["GET"])
+@permission_classes([IsStudent | IsStaff])
 def get_negative_hours_info(request, student_id, **kwargs):
     return Response({"final_hours": get_negative_hours(student_id)})
 
@@ -151,6 +152,7 @@ def get_negative_hours_info(request, student_id, **kwargs):
     }
 )
 @api_view(["GET"])
+@permission_classes([IsStudent | IsStaff])
 def get_student_hours_info(request, student_id, **kwargs):
     return Response(get_student_hours(student_id))
 
@@ -164,6 +166,7 @@ def get_student_hours_info(request, student_id, **kwargs):
     }
 )
 @api_view(["GET"])
+@permission_classes([IsStudent | IsStaff])
 @cache_page(60 * 60 * 24)
 def get_better_than_info(request, student_id, **kwargs):
     return Response(better_than(student_id))
