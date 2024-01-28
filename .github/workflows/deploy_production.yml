@@ -24,8 +24,6 @@ jobs:
             git checkout ${GITHUB_REF}
             git pull
             python3 ${{ secrets.BACKUP_SCRIPT }}
-            docker-compose -f docker-compose-prod.yml build
-            docker-compose -f docker-compose-prod.yml down
             docker-compose -f docker-compose-prod.yml up -d
             docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
             docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c './manage.py collectstatic --noinput && ./manage.py migrate && ./manage.py createcachetable'
