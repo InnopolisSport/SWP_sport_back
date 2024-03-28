@@ -32,6 +32,7 @@ register_converter(NegativeIntConverter, 'negint')
 
 urlpatterns = [
     # profile
+    path(r"profile/student", profile.get_student_info),
     path(r"profile/change_gender", profile.change_gender),
     path(r"profile/QR/toggle", profile.toggle_QR_presence),
     path(r"profile/history/<int:semester_id>", profile.get_history),
