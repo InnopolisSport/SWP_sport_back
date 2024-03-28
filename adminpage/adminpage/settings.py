@@ -191,6 +191,7 @@ OAUTH_END_SESSION_URL = os.getenv("oauth_end_session_endpoint")
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'adminpage.authentication.InNoHassleAuthentication',
         'django_auth_adfs.rest_framework.AdfsAccessTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     )
@@ -228,6 +229,13 @@ AUTH_ADFS = {
         "last_name": "family_name",
         "role": "role",
     },
+}
+
+AUTH_INNOHASSLE = {
+    "API_URL": "https://api.innohassle.ru/accounts/v0",
+    "KEYS_RELOAD_INTERVAL": 24,  # hours
+    "AUDIENCE": "sport",
+    "USERNAME_CLAIM": "email",
 }
 
 LOGIN_URL = "login"
