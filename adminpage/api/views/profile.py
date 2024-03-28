@@ -18,7 +18,25 @@ from api.serializers import (
     HasQRSerializer,
 )
 from api.serializers.profile import GenderSerializer
+from api.serializers.student import StudentSerializer
 from sport.models import Semester, Student, Group
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: StudentSerializer(),
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsStudent])
+def get_student_info(request, **kwargs):
+    """
+    Get info about current student.
+    """
+    student: Student = request.user.student
+    serializer = StudentSerializer(student)
+    return Response(serializer.data)
 
 
 @swagger_auto_schema(
