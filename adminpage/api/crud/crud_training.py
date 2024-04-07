@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 
-from django.conf import settings
 from django.db import connection
-from django.db.models import Q, Sum
+from django.db.models import Q, Prefetch
 from django.utils import timezone
 
 from api.crud.crud_semester import get_ongoing_semester
@@ -46,95 +45,97 @@ def get_group_info(group_id: int, student: Student):
         return info
 
 
-def can_check_in(student: Student, training: Training):
-    all_checkins = TrainingCheckIn.objects.filter(
-        student=student,
-        training__start__date=training.start.date()
+_week_delta = timedelta(days=7)
+
+
+def can_check_in(student: Student, training: Training, total_hours, same_type_hours, free_places,
+                 allowed_medical_groups, time_now):
+    """
+    Determines if a student can check into a training session based on several criteria.
+
+    :param student: Student instance for whom the check is being made.
+    :param training: Training instance the student wishes to check into.
+    :param total_hours: Total hours of training the student has checked into on the same day.
+    :param same_type_hours: Total hours of the same type of sport training the student has checked into on the same day.
+    :param free_places: Number of free places available in the training session.
+    :param allowed_medical_groups: Queryset or list of medical groups allowed for the training session.
+    :return: True if the student can check into the training session, False otherwise.
+    """
+
+    # All conditions must be True for the student to be able to check in.
+    result = (
+        free_places > 0 and
+        training.start < (time_now + _week_delta) and time_now < training.end and
+        (total_hours + training.academic_duration) <= 4 and
+        (same_type_hours + training.academic_duration) <= 2 and
+        student.medical_group in allowed_medical_groups and
+        training.group.allowed_gender in (student.gender, -1)
     )
-    same_type_checkins = TrainingCheckIn.objects.filter(
-        student=student,
-        training__group__sport=training.group.sport,
-        training__start__date=training.start.date()
-    )
-    same_training_checkins = TrainingCheckIn.objects.filter(
-        training=training
-    )
 
-    total_hours = sum(c.training.academic_duration for c in all_checkins)
-    same_type_hours = sum(
-        c.training.academic_duration for c in same_type_checkins)
-    free_places = training.group.capacity - same_training_checkins.count()
-
-    time_now = timezone.now()
-    conditions = [
-        free_places > 0,
-        student.medical_group in training.group.allowed_medical_groups.all(),
-        training.group.allowed_gender in [student.gender, -1],
-        total_hours + training.academic_duration <= 4,
-        same_type_hours + training.academic_duration <= 2,
-        training.start < (time_now + timedelta(days=7)),
-        time_now < training.end
-    ]
-
-    return all(conditions)
+    return result
 
 
-# TODO: Rewrite
 def get_trainings_for_student(student: Student, start: datetime, end: datetime):
-    """
-    Retrieves existing trainings in the given range for given student
-    @param student - searched student
-    @param start - range start date
-    @param end - range end date
-    @return list of trainings for student
-    """
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT '
-                       't.id AS id, '
-                       't.start AS start, '
-                       't."end" AS "end", '
-                       'g.id AS group_id, '
-                       'g.name AS group_name, '
-                       'tc.name AS training_class, '
-                       'FALSE AS can_grade, '
-                       'g.accredited AS group_accredited '
-                       'FROM "group" g, sport s, training t '
-                       'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE ((t.start > %(start)s AND t.start < %(end)s) '
-                       'OR (t."end" > %(start)s AND t."end" < %(end)s) '
-                       'OR (t.start < %(start)s AND t."end" > %(end)s)) '
-                       'AND g.sport_id = s.id '
-                       'AND s.name != %(extra_sport)s '
-                       'AND t.group_id = g.id '
-                       'AND g.semester_id = current_semester() '
-                       'UNION DISTINCT '
-                       'SELECT '
-                       't.id AS id, '
-                       't.start AS start, '
-                       't."end" AS "end", '
-                       'g.id AS group_id, '
-                       'COALESCE(t.custom_name, g.name) AS group_name, '
-                       'tc.name AS training_class, '
-                       'FALSE AS can_grade, '
-                       'g.accredited AS group_accredited '
-                       'FROM attendance a, "group" g, training t '
-                       'LEFT JOIN training_class tc ON t.training_class_id = tc.id '
-                       'WHERE ((t.start > %(start)s AND t.start < %(end)s) OR (t."end" > %(start)s AND t."end" < %(end)s) OR (t.start < %(start)s AND t."end" > %(end)s)) '
-                       'AND a.student_id = %(student_id)s '
-                       'AND t.group_id = g.id '
-                       'AND a.training_id = t.id '
-                       'AND g.semester_id = current_semester()',
-                       {"start": start, "end": end,
-                           "extra_sport": settings.OTHER_SPORT_NAME, "student_id": student.pk}
-                       )
-        d = dictfetchall(cursor)
-        for e in d:
-            t = Training.objects.get(pk=e['id'])
-            e['can_check_in'] = can_check_in(student, t)
-            e['checked_in'] = t.checkins.filter(student=student).exists()
-            e['group_name'] = t.group.to_frontend_name()
+    # Assume current_semester() is a function that retrieves the current semester object.
+    # Prefetch groups and allowed medical groups.
+    group_prefetch = Prefetch("group", queryset=Group.objects.select_related("sport").prefetch_related(
+        "allowed_medical_groups"))
 
-        return d
+    # Assuming TrainingCheckIn model has a 'student' and 'training' foreign key.
+    # And Training has a 'group' foreign key with an 'allowed_medical_groups' many-to-many field.
+    semester_id = get_ongoing_semester().id
+    trainings = Training.objects.filter(
+        Q(start__range=(start, end)) | Q(end__range=(start, end)) | (Q(start__lte=start) & Q(end__gte=end)),
+        ~Q(group__sport=None),
+        group__semester=semester_id,
+    ).prefetch_related(
+        group_prefetch,
+        "training_class",
+        "checkins",
+    )
+
+    # get all student check-ins for the given time range
+    student_checkins = (
+        TrainingCheckIn.objects.filter(student=student, training__start__range=(start, end))
+        .select_related("training", "training__group__sport")
+    )
+    student_checkins_map = {checkin.training_id: checkin for checkin in student_checkins}
+
+    trainings_data = []
+    time_now = timezone.now()
+
+    for t in trainings:
+        # Example of calculating can_check_in data. You need to adapt this to your actual model structure and data.
+        # This is a placeholder for the logic to calculate the necessary data for can_check_in.
+        t_date = t.start.date()
+        t_sport_id = t.group.sport.id if t.group.sport else None
+        total_hours = sum(c.training.academic_duration for c in student_checkins if c.training.start.date() == t_date)
+        same_type_hours = sum(
+            c.training.academic_duration
+            for c in student_checkins
+            if c.training.group.sport.id == t_sport_id and c.training.start.date() == t_date
+        )
+        free_places = t.group.capacity - t.checkins.count()
+        allowed_medical_groups = t.group.allowed_medical_groups.all()
+        can_check_in_result = can_check_in(
+            student, t, total_hours, same_type_hours, free_places, allowed_medical_groups, time_now
+        )
+        group_frontend_name = t.group.to_frontend_name()
+
+        training_dict = {
+            "id": t.id,
+            "start": t.start,
+            "end": t.end,
+            "group_id": t.group.id,
+            "group_name": group_frontend_name,
+            "training_class": t.training_class.name if t.training_class else None,
+            "group_accredited": t.group.accredited,
+            "can_grade": False,
+            "can_check_in": can_check_in_result,
+            "checked_in": student_checkins_map.get(t.id) is not None,
+        }
+        trainings_data.append(training_dict)
+    return trainings_data
 
 
 def get_trainings_for_trainer(trainer: Trainer, start: datetime, end: datetime):
