@@ -48,19 +48,32 @@ def get_group_info(group_id: int, student: Student):
 _week_delta = timedelta(days=7)
 
 
-def can_check_in(student: Student, training: Training, total_hours, same_type_hours, free_places,
-                 allowed_medical_groups, time_now):
-    """
-    Determines if a student can check into a training session based on several criteria.
+def can_check_in(
+    student: Student, training: Training, student_checkins=None, time_now=None
+):
+    """Determines if a student can check into a training session based on several criteria."""
 
-    :param student: Student instance for whom the check is being made.
-    :param training: Training instance the student wishes to check into.
-    :param total_hours: Total hours of training the student has checked into on the same day.
-    :param same_type_hours: Total hours of the same type of sport training the student has checked into on the same day.
-    :param free_places: Number of free places available in the training session.
-    :param allowed_medical_groups: Queryset or list of medical groups allowed for the training session.
-    :return: True if the student can check into the training session, False otherwise.
-    """
+    student_checkins = student_checkins or (
+        TrainingCheckIn.objects.filter(
+            student=student, training__start__date=training.start.date()
+        ).select_related("training", "training__group__sport")
+    )
+    time_now = time_now or timezone.now()
+
+    t_date = training.start.date()
+    t_sport_id = training.group.sport.id if training.group.sport else None
+    total_hours = sum(
+        c.training.academic_duration
+        for c in student_checkins
+        if c.training.start.date() == t_date
+    )
+    same_type_hours = sum(
+        c.training.academic_duration
+        for c in student_checkins
+        if c.training.group.sport.id == t_sport_id and c.training.start.date() == t_date
+    )
+    free_places = training.group.capacity - training.checkins.count()
+    allowed_medical_groups = training.group.allowed_medical_groups.all()
 
     # All conditions must be True for the student to be able to check in.
     result = (
@@ -107,19 +120,7 @@ def get_trainings_for_student(student: Student, start: datetime, end: datetime):
     for t in trainings:
         # Example of calculating can_check_in data. You need to adapt this to your actual model structure and data.
         # This is a placeholder for the logic to calculate the necessary data for can_check_in.
-        t_date = t.start.date()
-        t_sport_id = t.group.sport.id if t.group.sport else None
-        total_hours = sum(c.training.academic_duration for c in student_checkins if c.training.start.date() == t_date)
-        same_type_hours = sum(
-            c.training.academic_duration
-            for c in student_checkins
-            if c.training.group.sport.id == t_sport_id and c.training.start.date() == t_date
-        )
-        free_places = t.group.capacity - t.checkins.count()
-        allowed_medical_groups = t.group.allowed_medical_groups.all()
-        can_check_in_result = can_check_in(
-            student, t, total_hours, same_type_hours, free_places, allowed_medical_groups, time_now
-        )
+        can_check_in_result = can_check_in(student, t, student_checkins, time_now)
         group_frontend_name = t.group.to_frontend_name()
 
         training_dict = {
