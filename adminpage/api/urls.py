@@ -16,6 +16,8 @@ from api.views import (
     semester,
     analytics,
     medical_groups,
+    student,
+    system
 )
 
 
@@ -54,6 +56,7 @@ urlpatterns = [
     path(r"training/<int:training_id>/cancel_check_in", training.training_cancel_checkin),
 
     # attendance
+    path(r"attendance", attendance.attendance), #Misha
     path(r"attendance/suggest_student", attendance.suggest_student),
     path(r"attendance/<int:training_id>/grades", attendance.get_grades),
     path(r"attendance/<int:group_id>/report",
@@ -99,6 +102,14 @@ urlpatterns = [
 
     # medical groups
     path(r"medical_groups/", medical_groups.medical_groups_view),
+
+    #student
+    path(r"student/<int:studentID>/attendance", student.attendance), #Misha
+    path(r"student/<int:studentID>/attendance/<int:attendanceID>", student.attendance_update), #Misha
+    path(r"student/batch-delete", student.batch_delete), #Misha
+    
+    #system
+    path(r"system/backup", system.backup), #Misha
 ]
 
 urlpatterns.extend([
