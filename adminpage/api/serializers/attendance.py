@@ -15,6 +15,7 @@ class SuggestionSerializer(serializers.Serializer):
     label = serializers.CharField()
 
 
+
 class StudentInfoSerializer(serializers.Serializer):
     student_id = serializers.IntegerField()
     first_name = serializers.CharField()
@@ -83,3 +84,6 @@ class HoursInfoFullSerializer(serializers.Serializer):
 
 class BetterThanInfoSerializer(serializers.Serializer):
     better_than = serializers.FloatField()
+
+class AttendanceSerializer(serializers.Serializer):
+    attendance = serializers.JSONField()
