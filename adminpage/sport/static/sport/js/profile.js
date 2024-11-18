@@ -515,10 +515,9 @@ function parse_student_from_server(data, h = 0) {
             maxHours
         ); // add if student isn't present
         local_hours_changes[student_id] = hours;
-    } else {
-        student_row[0].scrollIntoView(); // scroll to the row with student
-        student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
+    $(`#student_${student_id}`)[0]?.scrollIntoView(); // scroll to the row with student
+    $(`#student_${student_id}`).delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
 }
 
 function autocomplete_select(event, ui) {
