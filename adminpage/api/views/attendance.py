@@ -1,6 +1,9 @@
+import csv
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
@@ -17,7 +20,8 @@ from api.permissions import IsStaff, IsStudent, IsTrainer
 from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
     TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, \
-    BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer, HoursInfoSerializer, HoursInfoFullSerializer
+    BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer, HoursInfoSerializer, \
+    HoursInfoFullSerializer
 from api.serializers.attendance import BetterThanInfoSerializer
 from sport.models import Group, Student, Semester, SelfSportReport, Attendance
 
@@ -105,6 +109,43 @@ def get_grades(request, training_id, **kwargs):
         "grades": get_students_grades(training_id),
         "academic_duration": training.academic_duration,
     })
+
+
+@swagger_auto_schema(
+    method="GET",
+    responses={
+        status.HTTP_200_OK: "CSV file with grades",
+        status.HTTP_404_NOT_FOUND: NotFoundSerializer,
+        status.HTTP_403_FORBIDDEN: InbuiltErrorSerializer,
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsTrainer])
+def get_grades_csv(request, training_id, **kwargs):
+    trainer = request.user  # trainer.pk == trainer.user.pk
+    try:
+        training = Training.objects.select_related(
+            "group"
+        ).only("group", "start").get(pk=training_id)
+    except Training.DoesNotExist:
+        raise NotFound()
+
+    is_training_group(training.group, trainer)
+
+    # Prepare data for CSV
+    grades = get_students_grades(training_id)  # List of dictionaries or objects
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="grades_training_{training_id}.csv"'
+
+    # Writing to CSV
+    writer = csv.DictWriter(response, ["full_name", "email", "hours", "med_group"], extrasaction="ignore")
+    writer.writeheader()
+
+    # Data rows
+    for grade in grades:
+        writer.writerow(grade)
+
+    return response
 
 
 @swagger_auto_schema(

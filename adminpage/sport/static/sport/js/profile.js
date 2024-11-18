@@ -425,6 +425,7 @@ async function open_trainer_modal({ event }) {
     const mark_all_btn = $('#put-default-hours-btn');
     mark_all_btn.attr('data-hours', current_duration_academic_hours);
     $('#mark-all-hours-value').text(current_duration_academic_hours);
+    $('#export-csv-btn').attr('href', `/api/attendance/${event.extendedProps.id}/grades.csv`);
     modal.append(make_grades_table(grades, current_duration_academic_hours));
 
     $('#csv-file-input')
@@ -753,7 +754,7 @@ fetch('/api/fitnesstest/result', {
                                     <div class="modal-header">
                                         <h5 class="modal-title">
                                             Fitness test exercises for the
-                                            <span id="ft-results-modal-sem-${semester_result['semester']}" class="text-uppercase"></span> 
+                                            <span id="ft-results-modal-sem-${semester_result['semester']}" class="text-uppercase"></span>
                                             semester
                                         </h5>
                                         <button type="button" class="close" data-dismiss="modal"

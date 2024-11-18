@@ -56,6 +56,7 @@ urlpatterns = [
     # attendance
     path(r"attendance/suggest_student", attendance.suggest_student),
     path(r"attendance/<int:training_id>/grades", attendance.get_grades),
+    path(r"attendance/<int:training_id>/grades.csv", attendance.get_grades_csv),
     path(r"attendance/<int:group_id>/report",
          attendance.get_last_attended_dates),
     path(r"attendance/mark", attendance.mark_attendance),
