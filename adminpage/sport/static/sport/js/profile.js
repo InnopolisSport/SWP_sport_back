@@ -282,11 +282,11 @@ function add_student_row(
                     <td class="hours-in-trainer-table-right" style="cursor: pointer">
                         <form onsubmit="return false">
                         <div class="btn-group">
-                            <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).next().val(0).change()">0</a>
+                            <button type="button" class="btn btn-outline-primary trainer-editable" onclick="$(this).next().val(0).change()">0</button>
                             <input class="studentHourField form-control trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
                             onchange="local_save_hours(this, ${student_id}); calc_marked_students();" value="${hours}" step="1"
                             />
-                            <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</a>
+                            <button type="button" class="btn btn-outline-primary trainer-editable" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</button>
                         </div>
                      </form></td>
                 </tr>`;
