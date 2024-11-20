@@ -6,14 +6,35 @@
 The platform for conducting, tracking and checking students' sports activity at Innopolis University.
 
 ## Requirements:
-* Python3
-* Docker
+
+* Python 3.7
+* Docker and Docker Compose
+
+## How to start coding
+
+1. Install dependencies: `pip3 install -r ./adminpage/requirements.txt`
+2. Copy environment variables: `cp compose/example.env compose/.env`
+3. Start services: `docker compose -f ./compose/docker-compose.yml up`
+4. Make migrations and create superuser:
+   - Enter shell: `docker exec -it sport_adminpanel bash`
+   - Autocreate migration files: `python manage.py makemigrations`
+   - Apply migrations to db: `python manage.py migrate`
+     > If there are problems with migrations applying, try to run the same migrate command with `--fake` option.
+   - Create a new superuser: `python manage.py createsuperuser`
+5. View admin panel at `http://localhost/admin`
+
+> [!NOTE]
+> Server supports auto-reload on code change in debug mode
+
+API documentation:
+* Swagger is at http://localhost/api/swagger
+* Redoc is at http://localhost/api/redoc
 
 ## Environment Variables
+
 See `compose/example.env` for reference.
 
-The project require a file `compose/.env` to contain
-following environment variables:
+The project requires a file `compose/.env` with the following environment variables:
 
 * `POSTGRES_USER`- Username for the db
 * `POSTGRES_PASSWORD`- database password
@@ -36,25 +57,10 @@ following environment variables:
 * `oauth_tokenURL`- an URL to obtain token
 * `oauth_end_session_endpoint`- end oauth session endpoint
 
+You can leave the default values for development.
 
-## How to start coding
-1. Clone the repository
-1. Go to repo folder
-1. `pip3 install -r ./adminpage/requirements.txt`
-1. To start server
-    1. Copy file: `example.env` to `.env` (`cp example.env .env`)
-    1. From repo folder: `docker-compose -f ./compose/docker-compose.yml up`
-1. To create superuser and make migrations
-    1. `docker exec -it compose_adminpanel_1 bash`
-    1. `python manage.py makemigrations`
-    1. `python manage.py migrate`
-    1. `python manage.py createsuperuser`
+## Project structure
 
-Server supports auto-reload on code change in debug mode
-
-Documentation for `api` module:
-* Swagger is at `/api/swagger`
-* Redoc is at `/api/redoc`
 ```
 .
 ├── adminpage - Django project
