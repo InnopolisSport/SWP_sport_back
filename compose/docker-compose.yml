@@ -44,10 +44,7 @@ services:
 
   db:
     container_name: sport_db
-    image: db
-    build:
-      context: ..
-      dockerfile: Dockerfile.db
+    image: postgres:11-alpine
     restart: always
     ports:
       - "5432:5432"

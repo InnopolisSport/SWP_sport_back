@@ -15,10 +15,7 @@ services:
       - .env.test
 
   db:
-    image: db
-    build:
-      context: ..
-      dockerfile: Dockerfile.db
+    image: postgres:11-alpine
     restart: always
     env_file:
       - .env.test

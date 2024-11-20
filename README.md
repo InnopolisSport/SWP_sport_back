@@ -98,6 +98,5 @@ You can leave the default values for development.
 │   ├── conf - configuration folder
 │   ├── Dockerfile
 │   └── logs - log folder
-├── Dockerfile.db - Dockerfile for db image
 └── README.md
 ```
