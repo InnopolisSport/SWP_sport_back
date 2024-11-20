@@ -282,11 +282,11 @@ function add_student_row(
                     <td class="hours-in-trainer-table-right" style="cursor: pointer">
                         <form onsubmit="return false">
                         <div class="btn-group">
-                            <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).next().val(0).change()">0</a>
+                            <button type="button" class="btn btn-outline-primary trainer-editable" onclick="$(this).next().val(0).change()">0</button>
                             <input class="studentHourField form-control trainer-editable" type="number" min="0" max="${current_duration_academic_hours}"
                             onchange="local_save_hours(this, ${student_id}); calc_marked_students();" value="${hours}" step="1"
                             />
-                            <a href="#" class="btn btn-outline-primary trainer-editable" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</a>
+                            <button type="button" class="btn btn-outline-primary trainer-editable" onclick="$(this).prev().val(${maxHours}).change()">${maxHours}</button>
                         </div>
                      </form></td>
                 </tr>`;
@@ -425,6 +425,7 @@ async function open_trainer_modal({ event }) {
     const mark_all_btn = $('#put-default-hours-btn');
     mark_all_btn.attr('data-hours', current_duration_academic_hours);
     $('#mark-all-hours-value').text(current_duration_academic_hours);
+    $('#export-csv-btn').attr('href', `/api/attendance/${event.extendedProps.id}/grades.csv`);
     modal.append(make_grades_table(grades, current_duration_academic_hours));
 
     $('#csv-file-input')
@@ -514,10 +515,9 @@ function parse_student_from_server(data, h = 0) {
             maxHours
         ); // add if student isn't present
         local_hours_changes[student_id] = hours;
-    } else {
-        student_row[0].scrollIntoView(); // scroll to the row with student
-        student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
     }
+    $(`#student_${student_id}`)[0]?.scrollIntoView(); // scroll to the row with student
+    $(`#student_${student_id}`).delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
 }
 
 function autocomplete_select(event, ui) {
@@ -753,7 +753,7 @@ fetch('/api/fitnesstest/result', {
                                     <div class="modal-header">
                                         <h5 class="modal-title">
                                             Fitness test exercises for the
-                                            <span id="ft-results-modal-sem-${semester_result['semester']}" class="text-uppercase"></span> 
+                                            <span id="ft-results-modal-sem-${semester_result['semester']}" class="text-uppercase"></span>
                                             semester
                                         </h5>
                                         <button type="button" class="close" data-dismiss="modal"
