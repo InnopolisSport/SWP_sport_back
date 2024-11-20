@@ -1,7 +1,7 @@
 # InnoSport website
 
-[![Tests](https://github.com/one-zero-eight/sport/actions/workflows/tests.yml/badge.svg)](https://github.com/one-zero-eight/sport/actions/workflows/tests.yml)
-[![Production deploy](https://github.com/one-zero-eight/sport/actions/workflows/deploy_production.yml/badge.svg)](https://github.com/one-zero-eight/sport/actions/workflows/deploy_production.yml)
+[![Tests](https://github.com/one-zero-eight/sport/actions/workflows/tests.yaml/badge.svg)](https://github.com/one-zero-eight/sport/actions/workflows/tests.yaml)
+[![Production deploy](https://github.com/one-zero-eight/sport/actions/workflows/deploy_production.yaml/badge.svg)](https://github.com/one-zero-eight/sport/actions/workflows/deploy_production.yaml)
 
 The platform for conducting, tracking and checking students' sports activity at Innopolis University.
 

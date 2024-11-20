@@ -6,7 +6,7 @@ on:
 jobs:
   deploy:
     name: Deploy to production server
-    runs-on: self-hosted
+    runs-on: [self-hosted, sport]
     environment:
       name: production
       url: https://sport.innopolis.university

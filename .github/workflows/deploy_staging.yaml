@@ -9,7 +9,7 @@ on:
 jobs:
   deploy:
     name: Deploy to staging server
-    runs-on: self-hosted
+    runs-on: [self-hosted, sport]
     environment:
       name: development
       url: https://stage.sport.innopolis.university
