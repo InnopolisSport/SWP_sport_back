@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows: ["Tests"]
-    branches: [master]
+    branches: [main]
     types:
       - completed
 jobs:

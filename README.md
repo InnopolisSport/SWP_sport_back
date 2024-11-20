@@ -1,7 +1,9 @@
-# [SWP] SportComplex service
+# InnoSport website
 
-![Tests](https://github.com/WinnerOK/SWP_sport_back/workflows/Tests/badge.svg)
-![Production deploy](https://github.com/WinnerOK/SWP_sport_back/workflows/Production%20deploy/badge.svg?branch=master)
+[![Tests](https://github.com/one-zero-eight/sport/actions/workflows/tests.yml/badge.svg)](https://github.com/one-zero-eight/sport/actions/workflows/tests.yml)
+[![Production deploy](https://github.com/one-zero-eight/sport/actions/workflows/deploy_production.yml/badge.svg)](https://github.com/one-zero-eight/sport/actions/workflows/deploy_production.yml)
+
+The platform for conducting, tracking and checking students' sports activity at Innopolis University.
 
 ## Requirements:
 * Python3
