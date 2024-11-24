@@ -100,3 +100,22 @@ You can leave the default values for development.
 │   └── logs - log folder
 └── README.md
 ```
+
+## Flows
+
+### Releasing a new version
+
+1. Merge your changes to 'main' branch.
+2. Verify that a new version works on the staging server.
+3. Create a new tag with the version number in the format `vF24.22.20`,
+   where F24 is the semester number and 22.20 is the release number.
+   You can create the tag via GitHub releases tab.
+4. Ask maintainer (@ArtemSBulgakov) to allow the deployment via GitHub Actions.
+5. Verify that changes work on the production server.
+
+### Changing JS or CSS
+
+When changing JS scripts or CSS styles,
+you also should update 'JS_VERSION' setting in `adminpage/adminpage/settings.py`.
+This is needed to update the cache in browsers.
+
