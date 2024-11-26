@@ -95,7 +95,6 @@ You can leave the default values for development.
 │   └── docker-compose.yml
 ├── nginx - load balancer and proxy
 │   ├── conf - configuration folder
-│   ├── Dockerfile
 │   └── logs - log folder
 └── README.md
 ```
