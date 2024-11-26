@@ -939,14 +939,18 @@ version = "0.4.2"
 description = "Wrap tests with fixtures in freeze_time"
 optional = false
 python-versions = "*"
-files = [
-    {file = "pytest-freezegun-0.4.2.zip", hash = "sha256:19c82d5633751bf3ec92caa481fb5cffaac1787bd485f0df6436fd6242176949"},
-    {file = "pytest_freezegun-0.4.2-py2.py3-none-any.whl", hash = "sha256:5318a6bfb8ba4b709c8471c94d0033113877b3ee02da5bfcd917c1889cde99a7"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 freezegun = ">0.3"
 pytest = ">=3.0.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/oizik/pytest-freezegun.git"
+reference = "master"
+resolved_reference = "f8d3606ff67432e4a8fdacb6700292dad5216df0"
 
 [[package]]
 name = "python-dateutil"
@@ -1259,4 +1263,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.6.3)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "9d633ad2017604b103fbf206ee3d4d7ebc2dcc8c59686a7e3699cde418a12144"
+content-hash = "c371d10f9b5dada1aabee8265925758264d07ec3d2ef9e117f5ceab7f47c4267"
