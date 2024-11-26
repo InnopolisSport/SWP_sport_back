@@ -259,8 +259,6 @@ function round(num, decimal_places) {
 
 let student_hours_tbody = null;
 let current_duration_academic_hours = 0;
-let students_in_table = {}; // <student_id: jquery selector of a row in the table>
-let student_name_id = [];
 
 function add_student_row(
     student_id,
@@ -290,30 +288,21 @@ function add_student_row(
                         </div>
                      </form></td>
                 </tr>`;
-    student_name_id.push({full_name: full_name, student_id: student_id});
-    student_name_id.sort((a, b) => a.full_name.localeCompare(b.full_name));
-    const insert_idx = student_name_id.indexOf(student_name_id.find(s => s.student_id == student_id)) - 1;
-    console.log(insert_idx);
-    if (insert_idx === -1) {
-        student_hours_tbody.prepend($(row));
-    } else {
-        const prev_row = student_hours_tbody.find('tr').eq(insert_idx);
-        $(row).insertAfter(prev_row);
-    }
-    students_in_table[student_id] = $(row);
+    student_hours_tbody.prepend($(row));
     calc_marked_students();
 }
 
 function calc_marked_students() {
     let students_with_hours = 0;
-    for (const v of Object.values(students_in_table)) {
-        if (v[0].getElementsByClassName('studentHourField')[0].value > 0)
+    for (const v of student_hours_tbody.children()) {
+        if (v.getElementsByClassName('studentHourField')[0].value > 0) {
             students_with_hours += 1;
+        }
     }
     document.getElementById(
         'marked-students'
     ).innerText = `${students_with_hours}/${
-        Object.keys(students_in_table).length
+        student_hours_tbody.children().length
     }`;
 }
 
@@ -351,8 +340,6 @@ window.addEventListener('resize', function (event) {
 });
 
 function make_grades_table(grades, maxHours) {
-    students_in_table = {};
-    student_name_id = []
     const table = $('<table class="table table-hover table-responsive-md" id="marking-students-table">');
     table
         .append('<thead class="trainer-table-width">')
@@ -499,32 +486,30 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar.render();
 });
 
-function parse_student_from_server(data, h = 0) {
+function parse_student_from_server(data, hours = 0) {
     const [student_id, full_name, email, med_group] = data.split('_');
-    const hours = h;
-    const student_row = students_in_table[student_id];
-    if (student_row == null) {
-        // check if current student is in the table
-        const maxHours = $('#put-default-hours-btn').attr('data-hours');
+    // check if current student is in the table
+    if ($(`#student_${student_id}`).length === 0) {
         add_student_row(
             student_id,
             full_name,
             email,
             med_group,
             hours,
-            maxHours
+            current_duration_academic_hours,
         ); // add if student isn't present
-        local_hours_changes[student_id] = hours;
     }
-    $(`#student_${student_id}`)[0]?.scrollIntoView(); // scroll to the row with student
-    $(`#student_${student_id}`).delay(25).fadeOut().fadeIn().fadeOut().fadeIn();
+    const student_row = $(`#student_${student_id}`);
+    student_row[0]?.scrollIntoView(); // scroll to the row with student
+    student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn(); // highlight the row
+    $(`#student_${student_id} .studentHourField`).val(hours).change(); // set maximum hours
 }
 
 function autocomplete_select(event, ui) {
     event.preventDefault(); // prevent adding the value into the text field
     event.stopPropagation(); // stop other handlers from execution
     $(this).val(''); // clear the input field
-    parse_student_from_server(ui.item.value);
+    parse_student_from_server(ui.item.value, current_duration_academic_hours);
 }
 
 async function submit_reference() {
@@ -691,10 +676,8 @@ function csv_upload(object) {
                 })
                 .then((data) => {
                     if (data.length === 1) {
-                        parse_student_from_server(
-                            data[0].value,
-                            current_duration_academic_hours
-                        ); // All students from CSV file get current max hours attendance
+                        // All students from CSV file get current max hours attendance
+                        parse_student_from_server(data[0].value, current_duration_academic_hours);
                     } else if (data.length === 0) {
                         toastr.error(
                             `There is no such student (${record[0]}) or student does not choose its sport`,
