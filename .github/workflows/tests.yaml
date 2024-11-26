@@ -35,4 +35,4 @@ jobs:
 #    runs-on: self-hosted
 #    steps:
 #      - name: Remove docker containers
-#        run: docker-compose -f compose/docker-compose.test.yaml down --volumes --rmi all
+#        run: docker compose -f compose/docker-compose.test.yaml down --volumes --rmi all
