@@ -7,7 +7,7 @@ services:
       args:
         PYTHON_VERSION: 3.12
     #   Wait for postgres to startup before running server
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py migrate; python manage.py runserver 0.0.0.0:8000'
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
     restart: always
     depends_on:
       - db
