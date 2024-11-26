@@ -17,7 +17,7 @@ from api.crud import get_email_name_like_students, Training, \
     get_students_grades, mark_hours, get_student_last_attended_dates, get_detailed_hours, get_ongoing_semester, \
     get_student_hours, get_negative_hours, better_than, get_email_name_like_students_filtered_by_group
 from api.permissions import IsStaff, IsStudent, IsTrainer
-from api.serializers import SuggestionQuerySerializer, SuggestionSerializer, \
+from api.serializers import AttendanceSerializer, SuggestionQuerySerializer, SuggestionSerializer, \
     NotFoundSerializer, InbuiltErrorSerializer, \
     TrainingGradesSerializer, AttendanceMarkSerializer, error_detail, \
     BadGradeReportGradeSerializer, BadGradeReport, LastAttendedDatesSerializer, HoursInfoSerializer, \
@@ -295,3 +295,33 @@ def mark_attendance(request, **kwargs):
                 hours_to_mark
             )
         ))
+#Misha TODO
+@swagger_auto_schema(
+    method="POST",
+    query_serializer=AttendanceSerializer,
+    responses={
+        status.HTTP_200_OK: AttendanceSerializer,
+    }
+)
+@api_view(["POST"])
+@permission_classes([IsTrainer | IsStudent])
+def attendance(request, **kwargs):
+
+    #student = Student.objects.get(user_id=student_id)
+    trainer = request.user
+    serializer = AttendanceSerializer()
+    serializer.is_valid(raise_exception=True)
+    try:
+        training = Training.objects.select_related(
+            "group"
+        ).only(
+            "group__trainer", "start", "end"
+        ).get(
+            pk=serializer.validated_data["training_id"]
+        )
+    except Training.DoesNotExist:
+        raise NotFound()
+
+    is_training_group(training.group, trainer)
+
+#Don't touch
