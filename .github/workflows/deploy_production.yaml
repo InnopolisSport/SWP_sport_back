@@ -21,14 +21,14 @@ jobs:
           script: |
             cd ${{ secrets.REPOSITORY_PATH }}/compose
             git reset --hard
-            git checkout ${GITHUB_REF}
+            git checkout ${{ github.ref_name }}
             git pull
             python3 ${{ secrets.BACKUP_SCRIPT }}
-            docker-compose -f docker-compose-prod.yml build
-            docker-compose -f docker-compose-prod.yml down
-            docker-compose -f docker-compose-prod.yml up -d
-            docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
-            docker-compose -f docker-compose-prod.yml exec -T adminpanel bash -c './manage.py collectstatic --noinput && ./manage.py migrate && ./manage.py createcachetable'
-            docker-compose -f docker-compose-prod.yml build nginx
-            docker-compose -f docker-compose-prod.yml restart nginx
+            docker-compose -f docker-compose.prod.yaml build
+            docker-compose -f docker-compose.prod.yaml down
+            docker-compose -f docker-compose.prod.yaml up -d
+            docker-compose -f docker-compose.prod.yaml exec -T adminpanel bash -c "while !</dev/tcp/db/5432; do sleep 1; done;"
+            docker-compose -f docker-compose.prod.yaml exec -T adminpanel bash -c './manage.py collectstatic --noinput && ./manage.py migrate && ./manage.py createcachetable'
+            docker-compose -f docker-compose.prod.yaml build nginx
+            docker-compose -f docker-compose.prod.yaml restart nginx
             python3 ${{ secrets.BACKUP_SCRIPT }}

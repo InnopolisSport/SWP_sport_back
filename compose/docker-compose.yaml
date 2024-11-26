@@ -1,7 +1,6 @@
 version: '3.5'
 services:
   nginx:
-    container_name: sport_nginx
     restart: always
     image: "nginx:1.27"
     ports: [ "80:80" ]
@@ -15,7 +14,6 @@ services:
       - uploaded_media:/media:ro
 
   adminpanel:
-    container_name: sport_adminpanel
     build:
       context: ../adminpage
       dockerfile: Dockerfile
@@ -39,7 +37,6 @@ services:
       DEBUG: 'true'
 
   db:
-    container_name: sport_db
     image: postgres:11-alpine
     restart: always
     ports:
@@ -50,7 +47,6 @@ services:
       - .env
 
   prometheus:
-    container_name: sport_prometheus
     image: "prom/prometheus:latest"
     restart: always
     volumes:
@@ -59,7 +55,6 @@ services:
       - "9090:9090"
 
   prometheus-postgres:
-    container_name: sport_prometheus_postgres
     image: "quay.io/prometheuscommunity/postgres-exporter:latest"
     restart: always
     environment:
@@ -72,7 +67,6 @@ services:
       - db
 
   grafana:
-    container_name: sport_grafana
     image: "grafana/grafana:latest"
     ports:
       - "127.0.0.1:3000:3000"

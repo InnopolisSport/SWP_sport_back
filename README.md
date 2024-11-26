@@ -13,10 +13,10 @@ The platform for conducting, tracking and checking students' sports activity at 
 ## How to start coding
 
 1. Install dependencies: `pip3 install -r ./adminpage/requirements.txt`
-2. Copy environment variables: `cp compose/example.env compose/.env`
-3. Start services: `docker compose -f ./compose/docker-compose.yml up`
+2. Copy environment variables: `cp compose/.env.example compose/.env`
+3. Start services: `docker compose -f ./compose/docker-compose.yaml up`
 4. Make migrations and create superuser:
-   - Enter shell: `docker exec -it sport_adminpanel bash`
+   - Enter shell: `docker compose -f ./compose/docker-compose.yaml exec -it adminpanel bash`
    - Autocreate migration files: `python manage.py makemigrations`
    - Apply migrations to db: `python manage.py migrate`
      > If there are problems with migrations applying, try to run the same migrate command with `--fake` option.
@@ -32,7 +32,7 @@ API documentation:
 
 ## Environment Variables
 
-See `compose/example.env` for reference.
+See `compose/.env.example` for reference.
 
 The project requires a file `compose/.env` with the following environment variables:
 
@@ -92,7 +92,7 @@ You can leave the default values for development.
 │   │   ├── templates - django templates for app pages
 │   │   └── views - app pages url handlers
 ├── compose - compose for the project
-│   └── docker-compose.yml
+│   └── docker-compose.yaml
 ├── nginx - load balancer and proxy
 │   ├── conf - configuration folder
 │   └── logs - log folder

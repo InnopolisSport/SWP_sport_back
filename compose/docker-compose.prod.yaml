@@ -30,6 +30,14 @@ services:
     env_file:
       - .env
 
+  db:
+    image: postgres:11-alpine
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
   prometheus:
     image: "prom/prometheus:latest"
     restart: always
@@ -67,14 +75,6 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ../grafana/provisioning/:/etc/grafana/provisioning/
-
-  db:
-    image: postgres:11-alpine
-    restart: always
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    env_file:
-      - .env
 
 
 volumes:
