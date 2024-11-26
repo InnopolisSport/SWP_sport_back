@@ -10,7 +10,6 @@ services:
       - adminpanel
     volumes:
       - ../nginx/logs:/var/log/nginx
-      - ../nginx/access.d:/etc/nginx/access.d
       - django-static:/static
       - /sport/media:/media:ro
 
