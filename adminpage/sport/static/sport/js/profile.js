@@ -500,7 +500,11 @@ function parse_student_from_server(data, hours = 0) {
         ); // add if student isn't present
     }
     const student_row = $(`#student_${student_id}`);
-    student_row[0]?.scrollIntoView(); // scroll to the row with student
+    student_row[0]?.scrollIntoView({
+        behavior: "instant",
+        block: "nearest",
+        inline: "end",
+    }); // scroll to the row with student
     student_row.delay(25).fadeOut().fadeIn().fadeOut().fadeIn(); // highlight the row
     $(`#student_${student_id} .studentHourField`).val(hours).change(); // set maximum hours
 }
