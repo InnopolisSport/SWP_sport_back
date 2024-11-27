@@ -1,5 +1,6 @@
 from django.urls import path, re_path
 from django.contrib.admin.views.decorators import staff_member_required
+from django.views.generic import RedirectView
 
 from .views import *
 
@@ -29,8 +30,13 @@ urlpatterns = [
         name="process_med_group_form"
     ),
     re_path(
-        r'dashboard/(?P<path>.*)$',
-        staff_member_required(GraphanaProxyView.as_view()),
+        r'grafana/(?P<path>.*)$',
+        staff_member_required(GrafanaProxyView.as_view()),
         name='grafana-dashboard'
+    ),
+    re_path(
+        r'dashboard/(?P<path>.*)$',
+        RedirectView.as_view(url="/grafana/dashboards"),
+        name='redirect-to-grafana'
     ),
 ]

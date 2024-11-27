@@ -77,12 +77,13 @@ services:
       - "127.0.0.1:3000:3000"
     environment:
       GF_SERVER_SERVE_FROM_SUB_PATH: "true"
-      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/dashboard"
+      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana"
       GF_AUTH_PROXY_ENABLED: "true"
-      GF_AUTH_PROXY_HEADER_NAME: "X-WEBAUTH-USER"
-      GF_AUTH_PROXY_HEADER_PROPERTY: "username"
+      GF_AUTH_PROXY_HEADER_NAME: "X-WEBAUTH-EMAIL"
+      GF_AUTH_PROXY_HEADER_PROPERTY: "email"
+      GF_AUTH_PROXY_HEADERS: "Name:X-WEBAUTH-NAME"
       GF_AUTH_PROXY_AUTO_SIGN_UP: "true"
-      GF_AUTH_PROXY_LDAP_SYNC_TTL: "60"
+      GF_AUTH_PROXY_SYNC_TTL: "0"
     env_file:
       - .env
     volumes:

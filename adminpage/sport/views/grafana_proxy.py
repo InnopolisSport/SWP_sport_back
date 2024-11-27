@@ -1,13 +1,14 @@
 from revproxy.views import ProxyView
 
 
-class GraphanaProxyView(ProxyView):
-    upstream = 'http://grafana:3000/dashboard/'
+class GrafanaProxyView(ProxyView):
+    upstream = 'http://grafana:3000/grafana/'
 
     def get_proxy_request_headers(self, request):
-        headers = super(GraphanaProxyView, self).get_proxy_request_headers(
-            request)
-        headers['X-WEBAUTH-USER'] = request.user.email
+        headers = super(GrafanaProxyView, self).get_proxy_request_headers(request)
+        # Pass authentication to Grafana
+        headers['X-WEBAUTH-EMAIL'] = request.user.email
+        headers['X-WEBAUTH-NAME'] = (request.user.first_name + ' ' + request.user.last_name).strip()
         # Set original Host
         headers['Host'] = request.get_host()
         return headers
