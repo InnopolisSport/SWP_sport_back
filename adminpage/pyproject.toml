@@ -6,7 +6,7 @@ authors = ["one_zero_eight"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.12"
 django = "5.1.3"
 pyjwt = "2.4.0"
 django-admin-autocomplete-filter = "^0.7.1"
