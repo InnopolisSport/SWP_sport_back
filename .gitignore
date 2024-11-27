@@ -1,25 +1,20 @@
-compose/db_data/*
-!compose/db_data/.keep
-compose/*.sh
-
-.idea/
-
 __pycache__/
-/nginx/logs/error.log
-/nginx/logs/access.log
-/compose/example.env
-/compose/.env
+
+/deploy/nginx-logs
+
+.env
+.env.local
+
 .coverage
 .coveragerc
 htmlcov/
 
 .vscode/
+.idea/
 
 /media/
 
 venv/
 .prettierrc
-
-frontend/
 
 .DS_Store

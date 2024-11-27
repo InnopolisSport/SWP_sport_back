@@ -8,4 +8,6 @@ class GraphanaProxyView(ProxyView):
         headers = super(GraphanaProxyView, self).get_proxy_request_headers(
             request)
         headers['X-WEBAUTH-USER'] = request.user.email
+        # Set original Host
+        headers['Host'] = request.get_host()
         return headers

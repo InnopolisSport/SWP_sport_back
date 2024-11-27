@@ -1,72 +1,70 @@
+name: sport
+
 services:
   nginx:
-    restart: always
+    # See more: https://registry.hub.docker.com/_/nginx
     image: "nginx:1.27"
+    restart: always
     ports: [ "80:80" ]
     depends_on:
       - adminpanel
-      - adminer
     volumes:
-      - "../nginx/conf/dev.conf:/etc/nginx/conf.d/default.conf:ro"
-      - ../nginx/logs:/var/log/nginx
-      - django-static:/static
-      - uploaded_media:/media:ro
+      - "./nginx-conf/prod.conf:/etc/nginx/conf.d/default.conf:ro"
+      - "./nginx-logs:/var/log/nginx"
+      - "django-static:/static"
+      - "/sport/media:/media:ro"
 
   adminpanel:
     build:
       context: ../adminpage
-      dockerfile: Dockerfile
       args:
-        - PYTHON_VERSION=3.7
+        - PYTHON_VERSION
     #   Wait for postgres to startup before running server
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn adminpage.asgi:application --host 0.0.0.0 --port 8000 --workers 4 --lifespan off --proxy-headers'
     restart: always
     volumes:
-      - ../adminpage:/src
-      - django-auth-preserve:/usr/local/lib/python${PYTHON_VERSION}/site-packages/django/contrib/auth/migrations/
-      - django-static:/static
-      - uploaded_media:/uploaded_media
-    ports:
-      - "8000:8000"
+      - "django-auth-preserve:/usr/local/lib/python${PYTHON_VERSION}/site-packages/django/contrib/auth/migrations/"
+      - "django-static:/static"
+      - "/sport/media:/uploaded_media"
     depends_on:
       - db
     env_file:
       - .env
-    environment:
-      DEBUG: 'true'
 
   db:
-    image: postgres:11-alpine
+    # See more: https://registry.hub.docker.com/_/postgres
+    image: "postgres:11-alpine"
     restart: always
-    ports:
-      - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - "db-data:/var/lib/postgresql/data"
     env_file:
       - .env
 
   prometheus:
-    image: "prom/prometheus:latest"
+    # See more: https://registry.hub.docker.com/r/prom/prometheus
+    image: "prom/prometheus:v2.55.1"
     restart: always
     volumes:
-      - ../prometheus:/etc/prometheus
+      - "./prometheus:/etc/prometheus"
     ports:
-      - "9090:9090"
+      - "127.0.0.1:9090:9090"
 
   prometheus-postgres:
-    image: "quay.io/prometheuscommunity/postgres-exporter:latest"
+    # See more: https://github.com/prometheus-community/postgres_exporter
+    image: "quay.io/prometheuscommunity/postgres-exporter:v0.16.0"
     restart: always
     environment:
       DATA_SOURCE_URI: "${POSTGRES_SERVER}:5432/${POSTGRES_DB}?sslmode=disable"
       DATA_SOURCE_USER: "${POSTGRES_USER}"
       DATA_SOURCE_PASS: "${POSTGRES_PASSWORD}"
     ports:
-      - "9187:9187"
+      - "127.0.0.1:9187:9187"
     depends_on:
       - db
 
   grafana:
-    image: "grafana/grafana:latest"
+    # See more: https://registry.hub.docker.com/r/grafana/grafana
+    image: "grafana/grafana:11.3.1"
     ports:
       - "127.0.0.1:3000:3000"
     environment:
@@ -80,26 +78,16 @@ services:
     env_file:
       - .env
     volumes:
-      - grafana-data:/var/lib/grafana
-      - ../grafana/provisioning/:/etc/grafana/provisioning/
-
-  adminer:
-    container_name: sport_adminer
-    image: adminer
-    restart: always
-    depends_on:
-      - db
-    ports:
-      - "8081:8080"
+      - "grafana-data:/var/lib/grafana"
+      - "./grafana-provisioning:/etc/grafana/provisioning/"
 
 
 volumes:
   db-data:
-  grafana-data:
   django-static:
+  grafana-data:
   # required to preserve change to django.contrib.auth.models.Group class.
   # (verbose_name added)
   # since Innopolis adfs provides groupsid as universal identifier
   # (group - can be either in Russian or English)
   django-auth-preserve:
-  uploaded_media:
