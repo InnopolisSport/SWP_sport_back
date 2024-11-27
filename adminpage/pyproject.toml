@@ -16,7 +16,7 @@ psycopg2-binary = "^2.9.10"
 pytest = "^8.3.3"
 pytest-django = "^4.9.0"
 pytest-freezegun = { git = "https://github.com/oizik/pytest-freezegun.git", branch = "master" }
-pillow = "11.0.0"
+pillow = "9.5.0"
 uvicorn = "^0.32.1"
 django-import-export = "^4.3.1"
 django-image-optimizer = "^1.0.3"
