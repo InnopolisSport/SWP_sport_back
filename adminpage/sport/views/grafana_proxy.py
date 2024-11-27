@@ -1,4 +1,3 @@
-import urllib.parse
 from revproxy.views import ProxyView
 
 
@@ -9,7 +8,6 @@ class GrafanaProxyView(ProxyView):
         headers = super(GrafanaProxyView, self).get_proxy_request_headers(request)
         # Pass authentication to Grafana
         headers['X-WEBAUTH-EMAIL'] = request.user.email
-        headers['X-WEBAUTH-NAME'] = urllib.parse.quote((request.user.first_name + ' ' + request.user.last_name).strip())
         # Set original Host
         headers['Host'] = request.get_host()
         return headers
