@@ -15,7 +15,7 @@ from sport.utils import set_session_notification
 
 
 class MedicalGroupReferenceForm(forms.Form):
-    references = forms.ImageField(widget=forms.widgets.ClearableFileInput(attrs={"multiple": True}))
+    references = forms.FileField(widget=forms.widgets.ClearableFileInput(attrs={"multiple": True}))
     student_comment = forms.CharField(
         widget=forms.Textarea,
         max_length=1024,
