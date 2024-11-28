@@ -2,7 +2,7 @@ from django import forms
 
 
 class MedicalGroupReferenceForm(forms.Form):
-    references = forms.ImageField(widget=forms.FileInput(attrs={"multiple": True}))
+    references = forms.ImageField()
     student_comment = forms.CharField(
         widget=forms.Textarea,
         max_length=1024,
