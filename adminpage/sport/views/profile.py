@@ -10,12 +10,12 @@ from api.crud import get_ongoing_semester, get_student_groups, \
     get_brief_hours, \
     get_trainer_groups, get_negative_hours, get_student_hours, get_faq, get_sports
 from api.permissions import IsStudent
-from sport.models import Student, MedicalGroupReference, Debt
+from sport.models import Student, MedicalGroupReference, MedicalGroupReferenceImage, Debt
 from sport.utils import set_session_notification
 
 
 class MedicalGroupReferenceForm(forms.Form):
-    reference = forms.ImageField()
+    references = forms.ImageField(widget=forms.widgets.ClearableFileInput(attrs={"multiple": True}))
     student_comment = forms.CharField(
         widget=forms.Textarea,
         max_length=1024,
@@ -35,11 +35,10 @@ def profile_view(request, **kwargs):
     trainer = getattr(user, "trainer", None)  # type: Optional[Trainer]
 
     current_semester = get_ongoing_semester()
-    utc_date = timezone.localdate(timezone=timezone.utc)
     sports = get_sports(student=student)
 
     context = {
-        "now": datetime.datetime.utcnow(),
+        "now": datetime.datetime.now(tz=datetime.timezone.utc),
         "user": request.user,
         "common": {
             "semester_name": current_semester.name
@@ -118,12 +117,15 @@ def profile_view(request, **kwargs):
 def process_med_group_form(request, *args, **kwargs):
     form = MedicalGroupReferenceForm(request.POST, request.FILES)
     if form.is_valid():
-        MedicalGroupReference.objects.create(
+        reference = MedicalGroupReference.objects.create(
             student_id=request.user.pk,
             semester=get_ongoing_semester(),
-            image=form.cleaned_data["reference"],
             student_comment=form.cleaned_data['student_comment']
         )
+        reference_images = []
+        for image in request.FILES.getlist('references'):
+            reference_images.append(MedicalGroupReferenceImage(reference=reference, image=image))
+        MedicalGroupReferenceImage.objects.bulk_create(reference_images)
 
         set_session_notification(
             request,
