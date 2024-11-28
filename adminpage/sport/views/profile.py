@@ -1,9 +1,7 @@
-from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.utils import timezone
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import permission_classes
 import datetime
 
 from api.crud import get_ongoing_semester, get_student_groups, \
@@ -12,17 +10,7 @@ from api.crud import get_ongoing_semester, get_student_groups, \
 from api.permissions import IsStudent
 from sport.models import Student, MedicalGroupReference, MedicalGroupReferenceImage, Debt
 from sport.utils import set_session_notification
-
-
-class MedicalGroupReferenceForm(forms.Form):
-    references = forms.FileField(widget=forms.widgets.ClearableFileInput(attrs={"multiple": True}))
-    student_comment = forms.CharField(
-        widget=forms.Textarea,
-        max_length=1024,
-        label="Comments (optional)",
-        required=False,
-        empty_value='-'
-    )
+from sport.forms.medical import MedicalGroupReferenceForm
 
 
 @login_required
