@@ -339,7 +339,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                    {% if student.obj.course is not None and student.obj.course in (1, 2, 3) %}
+                    {% if student.obj.course is not None and student.obj.course != 4 %}
                         <p>
                             <b>Any other questions?</b> Please contact your course curator
                             {% if student.obj.course == 1 %}
