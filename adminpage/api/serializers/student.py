@@ -11,3 +11,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ('id', 'name', 'email', 'medical_group')
+
+
+class StudentAttendanceSerializer(serializers.Serializer):
+    attendance = serializers.JSONField()
